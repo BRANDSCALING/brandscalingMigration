@@ -11,6 +11,8 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import CommunityPost from "@/components/ui/community-post";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import {
   MessageSquare,
   Heart,
