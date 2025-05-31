@@ -28,6 +28,7 @@ export default function Header() {
             <Link href="/courses" className="text-slate-600 hover:text-primary">Courses</Link>
             <Link href="/blog" className="text-slate-600 hover:text-primary">Blog</Link>
             <Link href="/community" className="text-slate-600 hover:text-primary">Community</Link>
+            <Link href="/contact" className="text-slate-600 hover:text-primary">Contact</Link>
           </nav>
           
           {/* Desktop Auth Buttons */}
@@ -64,6 +65,7 @@ export default function Header() {
               <Link href="/courses" className="text-slate-600 hover:text-primary">Courses</Link>
               <Link href="/blog" className="text-slate-600 hover:text-primary">Blog</Link>
               <Link href="/community" className="text-slate-600 hover:text-primary">Community</Link>
+              <Link href="/contact" className="text-slate-600 hover:text-primary">Contact</Link>
               <div className="flex flex-col space-y-2 pt-4 border-t border-slate-200">
                 <Link href="/login">
                   <Button variant="outline" className="w-full border-primary text-primary hover:bg-primary hover:text-white">

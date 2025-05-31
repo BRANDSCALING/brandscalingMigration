@@ -14,6 +14,7 @@ import Courses from "@/pages/Courses";
 import Community from "@/pages/Community";
 import Quiz from "@/pages/Quiz";
 import About from "@/pages/About";
+import Contact from "@/pages/Contact";
 import Blog from "@/pages/Blog";
 import Admin from "@/pages/Admin";
 import AdminDashboard from "@/pages/AdminDashboard";
@@ -56,6 +57,7 @@ function Router() {
     <Switch>
       {/* Public pages accessible to everyone */}
       <Route path="/about" component={About} />
+      <Route path="/contact" component={Contact} />
       <Route path="/blog" component={Blog} />
       <Route path="/courses" component={Courses} />
       <Route path="/community" component={Community} />
