@@ -15,9 +15,9 @@ interface BrandPillarsProps {
 
 export default function BrandPillars({ title, subtitle, pillars }: BrandPillarsProps) {
   const gradients = [
-    'bg-gradient-to-br from-purple-600 to-blue-600',
-    'bg-alchemist-gradient',
-    'bg-gradient-to-br from-pink-500 to-rose-500'
+    'bg-brand-purple',
+    'bg-brand-orange', 
+    'bg-brand-magenta'
   ];
 
   return (
@@ -32,17 +32,15 @@ export default function BrandPillars({ title, subtitle, pillars }: BrandPillarsP
           </p>
         </div>
         
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-3 gap-6">
           {pillars.map((pillar, index) => (
             <Link key={index} href={pillar.link}>
-              <Card className={`text-center hover:shadow-xl transition-all hover:transform hover:scale-105 cursor-pointer border-0 text-white ${gradients[index]} relative overflow-hidden`}>
+              <Card className={`text-center hover:shadow-xl transition-all hover:transform hover:scale-105 cursor-pointer border-0 text-white ${gradients[index]} relative overflow-hidden h-40 flex items-center justify-center`}>
                 <div className="absolute inset-0 bg-black/10"></div>
-                <CardHeader className="relative">
-                  <CardTitle className="text-2xl text-white drop-shadow-lg">{pillar.name}</CardTitle>
-                </CardHeader>
-                <CardContent className="relative">
-                  <p className="text-white/90 drop-shadow">{pillar.description}</p>
-                </CardContent>
+                <div className="relative text-center px-6">
+                  <h3 className="text-2xl font-bold text-white drop-shadow-lg mb-2">{pillar.name}</h3>
+                  <p className="text-white/90 drop-shadow text-sm">{pillar.description}</p>
+                </div>
               </Card>
             </Link>
           ))}
