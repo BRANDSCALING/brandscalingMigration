@@ -23,7 +23,7 @@ function FoundersSection() {
           But Fariza's power doesn't come from theory—it's lived.
         </p>
         <p className="mb-4">
-          At just 23, she launched her first business: Property People, a letting agency to then venturing out building and investing in various fields. Her most recent before retiring was a global beauty distribution business supplying hundreds of SKUs from multiple brands, that scaled across the UK, Europe, South Korea & the United States, combining logistics, branding, and ecommerce and supplying every major retailer from Harrods, Sephora, Selfridges, Boots, Next, Beauty Bay, Look Fantastic, Cult Beauty, Feel Unique, and Urban Outfitters—all while raising four children.
+          At just 23, she launched her first business: Property People, a letting agency to then venturing out building and investing in various fields. Her most recent before retiring was a global beauty distribution business supplying hundreds of SKUs from multiple brands, that scaled across the UK, Europe, South Korea & the United States, combining logistics, branding, and ecommerce and supplying every major retailer from Harrods, Sephora, Selfridges, Boots, Next, Beauty Bay, Look Fantastic, Cult Beauty, Feel Unique, Urban Outfitters—the list was endless—all whilst raising four children.
         </p>
         <p className="mb-4">
           As a mentor and strategist, Fariza has helped multiple founders unlock growth by removing internal resistance, simplifying brand messaging, and reconnecting to the parts of their business that still feel magnetic. She helps founders scale without silencing themselves—and lead without leaking energy and find their business's true voice and vision.
