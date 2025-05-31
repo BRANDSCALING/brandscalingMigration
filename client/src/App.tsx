@@ -17,6 +17,7 @@ import About from "@/pages/About";
 import Blog from "@/pages/Blog";
 import Admin from "@/pages/Admin";
 import AdminDashboard from "@/pages/AdminDashboard";
+import DebugAuth from "@/pages/DebugAuth";
 import Layout from "@/components/Layout";
 
 function Router() {
@@ -72,6 +73,7 @@ function Router() {
           <Route path="/quiz" component={Quiz} />
           <Route path="/about" component={About} />
           <Route path="/blog" component={Blog} />
+          <Route path="/debug-auth" component={DebugAuth} />
           <Route path="/admin" component={AdminDashboard} />
         </Layout>
       )}
