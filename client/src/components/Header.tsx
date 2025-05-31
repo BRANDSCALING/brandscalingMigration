@@ -10,14 +10,14 @@ export default function Header() {
   return (
     <header className="bg-white/95 backdrop-blur-sm border-b border-slate-200 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <div className="flex items-center">
-            <Link href="/">
+            <Link href="/" className="flex items-center">
               <img 
                 src={brandscalingLogo} 
                 alt="Brandscaling" 
-                className="h-8 w-auto hover:opacity-80 transition-opacity"
+                className="h-16 w-auto hover:opacity-80 transition-opacity cursor-pointer"
               />
             </Link>
           </div>
