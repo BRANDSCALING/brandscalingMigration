@@ -3,12 +3,11 @@ import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBicKgFa84qdZCipGerGJRqAZWlWZIY3g",
-  authDomain: "brandscaling-platform.firebaseapp.com",
-  projectId: "brandscaling-platform",
-  storageBucket: "brandscaling-platform.firebasestorage.app",
-  messagingSenderId: "920887831613",
-  appId: "1:920887831613:web:601417c226e55c309ace54"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: `${import.meta.env.VITE_FIREBASE_PROJECT_ID}.firebaseapp.com`,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: `${import.meta.env.VITE_FIREBASE_PROJECT_ID}.firebasestorage.app`,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
 // Initialize Firebase

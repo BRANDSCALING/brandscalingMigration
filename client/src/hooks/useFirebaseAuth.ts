@@ -58,7 +58,7 @@ export function useFirebaseAuth() {
     }
   };
 
-  // Create user profile in Firestore
+  // Create user profile in Firestore and backend
   const createUserProfile = async (user: User, role: UserProfile['role'] = 'guest') => {
     try {
       const userProfile: UserProfile = {
@@ -69,7 +69,25 @@ export function useFirebaseAuth() {
         createdAt: new Date()
       };
 
+      // Create profile in Firestore
       await setDoc(doc(db, 'users', user.uid), userProfile);
+      
+      // Also create profile in backend via API
+      const token = await user.getIdToken();
+      await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          uid: user.uid,
+          email: user.email,
+          displayName: user.displayName,
+          role
+        })
+      });
+      
       setUserProfile(userProfile);
       return userProfile;
     } catch (error) {

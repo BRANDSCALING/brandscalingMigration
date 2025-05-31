@@ -2,33 +2,61 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
-import { setupAuth, isAuthenticated } from "./replitAuth";
+import { verifyFirebaseToken, requireAuth, requireRole, createUserProfile, getUserProfile, updateUserRole } from "./firebaseAuth";
 import { chatWithAgent } from "./openai";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Auth middleware
-  await setupAuth(app);
+  // Apply Firebase auth middleware to all API routes
+  app.use('/api', verifyFirebaseToken);
 
-  // Health check route
+  // Health check route (public)
   app.get("/api/health", async (req, res) => {
     res.json({ status: "ok", timestamp: new Date().toISOString() });
   });
 
-  // Auth routes
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+  // Firebase Auth routes
+  app.post('/api/auth/signup', async (req, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      res.json(user);
+      const { uid, email, displayName, role = 'guest' } = req.body;
+      await createUserProfile(uid, email, displayName, role);
+      res.json({ success: true, message: 'User profile created' });
+    } catch (error) {
+      console.error("Error creating user profile:", error);
+      res.status(500).json({ message: "Failed to create user profile" });
+    }
+  });
+
+  app.get('/api/auth/user', requireAuth, async (req, res) => {
+    try {
+      const userProfile = await getUserProfile(req.user!.uid);
+      if (!userProfile) {
+        return res.status(404).json({ message: "User profile not found" });
+      }
+      res.json(userProfile);
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });
     }
   });
 
+  app.put('/api/auth/user/role', requireRole(['admin']), async (req, res) => {
+    try {
+      const { uid, role } = req.body;
+      const success = await updateUserRole(uid, role);
+      if (success) {
+        res.json({ success: true, message: 'User role updated' });
+      } else {
+        res.status(500).json({ message: "Failed to update user role" });
+      }
+    } catch (error) {
+      console.error("Error updating user role:", error);
+      res.status(500).json({ message: "Failed to update user role" });
+    }
+  });
+
   // Course routes
-  app.get("/api/courses", isAuthenticated, async (req: any, res) => {
+  app.get("/api/courses", requireAuth, async (req, res) => {
     try {
       const track = req.query.track as string;
       const courses = await storage.getCourses(track);
@@ -39,7 +67,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/courses/:id", isAuthenticated, async (req, res) => {
+  app.get("/api/courses/:id", requireAuth, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const course = await storage.getCourse(id);
@@ -53,7 +81,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/user/progress", isAuthenticated, async (req: any, res) => {
+  app.get("/api/user/progress", requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const courseId = req.query.courseId ? parseInt(req.query.courseId as string) : undefined;
@@ -65,7 +93,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/user/progress", isAuthenticated, async (req: any, res) => {
+  app.post("/api/user/progress", requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const { courseId, progress, currentModule } = req.body;
@@ -93,7 +121,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Community routes
-  app.get("/api/posts", isAuthenticated, async (req, res) => {
+  app.get("/api/posts", requireAuth, async (req, res) => {
     try {
       const limit = req.query.limit ? parseInt(req.query.limit as string) : 20;
       const posts = await storage.getPosts(limit);
@@ -104,7 +132,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/posts/:id", isAuthenticated, async (req, res) => {
+  app.get("/api/posts/:id", requireAuth, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const post = await storage.getPost(id);
@@ -118,7 +146,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/posts", isAuthenticated, async (req: any, res) => {
+  app.post("/api/posts", requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const { title, content } = req.body;
@@ -143,7 +171,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/posts/:id/reply", isAuthenticated, async (req: any, res) => {
+  app.post("/api/posts/:id/reply", requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const postId = parseInt(req.params.id);
@@ -163,7 +191,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/posts/:id/like", isAuthenticated, async (req, res) => {
+  app.post("/api/posts/:id/like", requireAuth, async (req, res) => {
     try {
       const postId = parseInt(req.params.id);
       await storage.likePost(postId);
@@ -175,7 +203,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Quiz routes
-  app.get("/api/quizzes", isAuthenticated, async (req, res) => {
+  app.get("/api/quizzes", requireAuth, async (req, res) => {
     try {
       const quizzes = await storage.getQuizzes();
       res.json(quizzes);
@@ -185,7 +213,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/quizzes/:id", isAuthenticated, async (req, res) => {
+  app.get("/api/quizzes/:id", requireAuth, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const quiz = await storage.getQuiz(id);
@@ -199,7 +227,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/quizzes/:id/submit", isAuthenticated, async (req: any, res) => {
+  app.post("/api/quizzes/:id/submit", requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const quizId = parseInt(req.params.id);
@@ -226,7 +254,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/user/quiz-results", isAuthenticated, async (req: any, res) => {
+  app.get("/api/user/quiz-results", requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const quizId = req.query.quizId ? parseInt(req.query.quizId as string) : undefined;
@@ -239,7 +267,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // AI Agent routes
-  app.get("/api/ai-agents", isAuthenticated, async (req, res) => {
+  app.get("/api/ai-agents", requireAuth, async (req, res) => {
     try {
       const agents = await storage.getAiAgents();
       res.json(agents);
@@ -249,7 +277,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/ai-agents/:id/chat", isAuthenticated, async (req: any, res) => {
+  app.post("/api/ai-agents/:id/chat", requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const agentId = parseInt(req.params.id);
@@ -290,7 +318,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Events routes
-  app.get("/api/events", isAuthenticated, async (req: any, res) => {
+  app.get("/api/events", requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const events = await storage.getUpcomingEvents(userId);
@@ -301,7 +329,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/events/:id/register", isAuthenticated, async (req: any, res) => {
+  app.post("/api/events/:id/register", requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const eventId = parseInt(req.params.id);
@@ -315,7 +343,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin routes
-  app.get("/api/admin/users", isAuthenticated, async (req: any, res) => {
+  app.get("/api/admin/users", requireAuth, async (req: any, res) => {
     try {
       const userRole = req.user.claims.role || "buyer";
       if (userRole !== "admin") {
@@ -330,7 +358,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/admin/users/:id/role", isAuthenticated, async (req: any, res) => {
+  app.post("/api/admin/users/:id/role", requireAuth, async (req: any, res) => {
     try {
       const userRole = req.user.claims.role || "buyer";
       if (userRole !== "admin") {
@@ -354,7 +382,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/admin/stats", isAuthenticated, async (req: any, res) => {
+  app.get("/api/admin/stats", requireAuth, async (req: any, res) => {
     try {
       const userRole = req.user.claims.role || "buyer";
       if (userRole !== "admin") {
@@ -369,7 +397,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/admin/courses", isAuthenticated, async (req: any, res) => {
+  app.post("/api/admin/courses", requireAuth, async (req: any, res) => {
     try {
       const userRole = req.user.claims.role || "buyer";
       if (userRole !== "admin") {
@@ -385,7 +413,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/admin/ai-agents", isAuthenticated, async (req: any, res) => {
+  app.post("/api/admin/ai-agents", requireAuth, async (req: any, res) => {
     try {
       const userRole = req.user.claims.role || "buyer";
       if (userRole !== "admin") {
