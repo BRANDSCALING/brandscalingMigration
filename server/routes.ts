@@ -1,0 +1,433 @@
+import type { Express } from "express";
+import { createServer, type Server } from "http";
+import { WebSocketServer, WebSocket } from "ws";
+import { storage } from "./storage";
+import { setupAuth, isAuthenticated } from "./replitAuth";
+import { chatWithAgent } from "./openai";
+import { z } from "zod";
+
+export async function registerRoutes(app: Express): Promise<Server> {
+  // Auth middleware
+  await setupAuth(app);
+
+  // Health check route
+  app.get("/api/health", async (req, res) => {
+    res.json({ status: "ok", timestamp: new Date().toISOString() });
+  });
+
+  // Auth routes
+  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      res.json(user);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
+
+  // Course routes
+  app.get("/api/courses", isAuthenticated, async (req: any, res) => {
+    try {
+      const track = req.query.track as string;
+      const courses = await storage.getCourses(track);
+      res.json(courses);
+    } catch (error) {
+      console.error("Error fetching courses:", error);
+      res.status(500).json({ message: "Failed to fetch courses" });
+    }
+  });
+
+  app.get("/api/courses/:id", isAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const course = await storage.getCourse(id);
+      if (!course) {
+        return res.status(404).json({ message: "Course not found" });
+      }
+      res.json(course);
+    } catch (error) {
+      console.error("Error fetching course:", error);
+      res.status(500).json({ message: "Failed to fetch course" });
+    }
+  });
+
+  app.get("/api/user/progress", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const courseId = req.query.courseId ? parseInt(req.query.courseId as string) : undefined;
+      const progress = await storage.getUserProgress(userId, courseId);
+      res.json(progress);
+    } catch (error) {
+      console.error("Error fetching user progress:", error);
+      res.status(500).json({ message: "Failed to fetch user progress" });
+    }
+  });
+
+  app.post("/api/user/progress", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { courseId, progress, currentModule } = req.body;
+      
+      const progressSchema = z.object({
+        courseId: z.number(),
+        progress: z.number().min(0).max(1),
+        currentModule: z.number().optional(),
+      });
+
+      const validatedData = progressSchema.parse({ courseId, progress, currentModule });
+      
+      const updatedProgress = await storage.updateUserProgress(
+        userId,
+        validatedData.courseId,
+        validatedData.progress,
+        validatedData.currentModule
+      );
+      
+      res.json(updatedProgress);
+    } catch (error) {
+      console.error("Error updating user progress:", error);
+      res.status(500).json({ message: "Failed to update user progress" });
+    }
+  });
+
+  // Community routes
+  app.get("/api/posts", isAuthenticated, async (req, res) => {
+    try {
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : 20;
+      const posts = await storage.getPosts(limit);
+      res.json(posts);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+      res.status(500).json({ message: "Failed to fetch posts" });
+    }
+  });
+
+  app.get("/api/posts/:id", isAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const post = await storage.getPost(id);
+      if (!post) {
+        return res.status(404).json({ message: "Post not found" });
+      }
+      res.json(post);
+    } catch (error) {
+      console.error("Error fetching post:", error);
+      res.status(500).json({ message: "Failed to fetch post" });
+    }
+  });
+
+  app.post("/api/posts", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { title, content } = req.body;
+
+      const postSchema = z.object({
+        title: z.string().optional(),
+        content: z.string().min(1),
+      });
+
+      const validatedData = postSchema.parse({ title, content });
+      
+      const post = await storage.createPost({
+        userId,
+        title: validatedData.title,
+        content: validatedData.content,
+      });
+      
+      res.json(post);
+    } catch (error) {
+      console.error("Error creating post:", error);
+      res.status(500).json({ message: "Failed to create post" });
+    }
+  });
+
+  app.post("/api/posts/:id/reply", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const postId = parseInt(req.params.id);
+      const { content } = req.body;
+
+      const replySchema = z.object({
+        content: z.string().min(1),
+      });
+
+      const validatedData = replySchema.parse({ content });
+      
+      const reply = await storage.createPostReply(postId, userId, validatedData.content);
+      res.json(reply);
+    } catch (error) {
+      console.error("Error creating reply:", error);
+      res.status(500).json({ message: "Failed to create reply" });
+    }
+  });
+
+  app.post("/api/posts/:id/like", isAuthenticated, async (req, res) => {
+    try {
+      const postId = parseInt(req.params.id);
+      await storage.likePost(postId);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error liking post:", error);
+      res.status(500).json({ message: "Failed to like post" });
+    }
+  });
+
+  // Quiz routes
+  app.get("/api/quizzes", isAuthenticated, async (req, res) => {
+    try {
+      const quizzes = await storage.getQuizzes();
+      res.json(quizzes);
+    } catch (error) {
+      console.error("Error fetching quizzes:", error);
+      res.status(500).json({ message: "Failed to fetch quizzes" });
+    }
+  });
+
+  app.get("/api/quizzes/:id", isAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const quiz = await storage.getQuiz(id);
+      if (!quiz) {
+        return res.status(404).json({ message: "Quiz not found" });
+      }
+      res.json(quiz);
+    } catch (error) {
+      console.error("Error fetching quiz:", error);
+      res.status(500).json({ message: "Failed to fetch quiz" });
+    }
+  });
+
+  app.post("/api/quizzes/:id/submit", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const quizId = parseInt(req.params.id);
+      const { answers, score } = req.body;
+
+      const submissionSchema = z.object({
+        answers: z.any(),
+        score: z.number().min(0).max(1),
+      });
+
+      const validatedData = submissionSchema.parse({ answers, score });
+      
+      const result = await storage.saveQuizResult(
+        userId,
+        quizId,
+        validatedData.answers,
+        validatedData.score
+      );
+      
+      res.json(result);
+    } catch (error) {
+      console.error("Error submitting quiz:", error);
+      res.status(500).json({ message: "Failed to submit quiz" });
+    }
+  });
+
+  app.get("/api/user/quiz-results", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const quizId = req.query.quizId ? parseInt(req.query.quizId as string) : undefined;
+      const results = await storage.getUserQuizResults(userId, quizId);
+      res.json(results);
+    } catch (error) {
+      console.error("Error fetching quiz results:", error);
+      res.status(500).json({ message: "Failed to fetch quiz results" });
+    }
+  });
+
+  // AI Agent routes
+  app.get("/api/ai-agents", isAuthenticated, async (req, res) => {
+    try {
+      const agents = await storage.getAiAgents();
+      res.json(agents);
+    } catch (error) {
+      console.error("Error fetching AI agents:", error);
+      res.status(500).json({ message: "Failed to fetch AI agents" });
+    }
+  });
+
+  app.post("/api/ai-agents/:id/chat", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const agentId = parseInt(req.params.id);
+      const { message } = req.body;
+
+      const chatSchema = z.object({
+        message: z.string().min(1),
+      });
+
+      const validatedData = chatSchema.parse({ message });
+      
+      const agent = await storage.getAiAgent(agentId);
+      if (!agent) {
+        return res.status(404).json({ message: "AI agent not found" });
+      }
+
+      // Get existing conversation
+      const conversation = await storage.getConversation(userId, agentId);
+      const messages = conversation?.messages || [];
+
+      // Add user message
+      messages.push({ role: "user", content: validatedData.message });
+
+      // Get AI response
+      const aiResponse = await chatWithAgent(agent, messages);
+      
+      // Add AI response to messages
+      messages.push({ role: "assistant", content: aiResponse });
+
+      // Save conversation
+      await storage.createOrUpdateConversation(userId, agentId, messages);
+
+      res.json({ response: aiResponse });
+    } catch (error) {
+      console.error("Error chatting with AI agent:", error);
+      res.status(500).json({ message: "Failed to chat with AI agent" });
+    }
+  });
+
+  // Events routes
+  app.get("/api/events", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const events = await storage.getUpcomingEvents(userId);
+      res.json(events);
+    } catch (error) {
+      console.error("Error fetching events:", error);
+      res.status(500).json({ message: "Failed to fetch events" });
+    }
+  });
+
+  app.post("/api/events/:id/register", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const eventId = parseInt(req.params.id);
+      
+      const registration = await storage.registerForEvent(eventId, userId);
+      res.json(registration);
+    } catch (error) {
+      console.error("Error registering for event:", error);
+      res.status(500).json({ message: "Failed to register for event" });
+    }
+  });
+
+  // Admin routes
+  app.get("/api/admin/users", isAuthenticated, async (req: any, res) => {
+    try {
+      const userRole = req.user.claims.role || "buyer";
+      if (userRole !== "admin") {
+        return res.status(403).json({ message: "Access denied" });
+      }
+
+      const users = await storage.getAllUsers();
+      res.json(users);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      res.status(500).json({ message: "Failed to fetch users" });
+    }
+  });
+
+  app.post("/api/admin/users/:id/role", isAuthenticated, async (req: any, res) => {
+    try {
+      const userRole = req.user.claims.role || "buyer";
+      if (userRole !== "admin") {
+        return res.status(403).json({ message: "Access denied" });
+      }
+
+      const userId = req.params.id;
+      const { role } = req.body;
+
+      const roleSchema = z.object({
+        role: z.enum(["buyer", "mastermind", "admin"]),
+      });
+
+      const validatedData = roleSchema.parse({ role });
+      
+      const user = await storage.updateUserRole(userId, validatedData.role);
+      res.json(user);
+    } catch (error) {
+      console.error("Error updating user role:", error);
+      res.status(500).json({ message: "Failed to update user role" });
+    }
+  });
+
+  app.get("/api/admin/stats", isAuthenticated, async (req: any, res) => {
+    try {
+      const userRole = req.user.claims.role || "buyer";
+      if (userRole !== "admin") {
+        return res.status(403).json({ message: "Access denied" });
+      }
+
+      const stats = await storage.getSystemStats();
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching system stats:", error);
+      res.status(500).json({ message: "Failed to fetch system stats" });
+    }
+  });
+
+  app.post("/api/admin/courses", isAuthenticated, async (req: any, res) => {
+    try {
+      const userRole = req.user.claims.role || "buyer";
+      if (userRole !== "admin") {
+        return res.status(403).json({ message: "Access denied" });
+      }
+
+      const courseData = req.body;
+      const course = await storage.createCourse(courseData);
+      res.json(course);
+    } catch (error) {
+      console.error("Error creating course:", error);
+      res.status(500).json({ message: "Failed to create course" });
+    }
+  });
+
+  app.post("/api/admin/ai-agents", isAuthenticated, async (req: any, res) => {
+    try {
+      const userRole = req.user.claims.role || "buyer";
+      if (userRole !== "admin") {
+        return res.status(403).json({ message: "Access denied" });
+      }
+
+      const agentData = req.body;
+      const agent = await storage.createAiAgent(agentData);
+      res.json(agent);
+    } catch (error) {
+      console.error("Error creating AI agent:", error);
+      res.status(500).json({ message: "Failed to create AI agent" });
+    }
+  });
+
+  const httpServer = createServer(app);
+
+  // WebSocket setup for real-time chat
+  const wss = new WebSocketServer({ server: httpServer, path: '/ws' });
+
+  wss.on('connection', (ws: WebSocket) => {
+    console.log('New WebSocket connection');
+
+    ws.on('message', (message: string) => {
+      try {
+        const data = JSON.parse(message);
+        
+        // Broadcast to all connected clients (for community chat)
+        wss.clients.forEach((client) => {
+          if (client !== ws && client.readyState === WebSocket.OPEN) {
+            client.send(JSON.stringify(data));
+          }
+        });
+      } catch (error) {
+        console.error('Error processing WebSocket message:', error);
+      }
+    });
+
+    ws.on('close', () => {
+      console.log('WebSocket connection closed');
+    });
+  });
+
+  return httpServer;
+}
