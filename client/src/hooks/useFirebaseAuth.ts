@@ -3,7 +3,8 @@ import {
   User,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   signOut,
   onAuthStateChanged
 } from 'firebase/auth';
@@ -39,6 +40,24 @@ export function useFirebaseAuth() {
       setLoading(false);
     });
 
+    // Check for redirect result on page load
+    const checkRedirectResult = async () => {
+      try {
+        const result = await getRedirectResult(auth);
+        if (result) {
+          // Check if user profile exists, if not create one
+          const existingProfile = await getUserProfile(result.user.uid);
+          if (!existingProfile) {
+            await createUserProfile(result.user);
+          }
+        }
+      } catch (error: any) {
+        console.error('Error handling redirect result:', error);
+        setError(error.message);
+      }
+    };
+
+    checkRedirectResult();
     return () => unsubscribe();
   }, []);
 
@@ -125,15 +144,8 @@ export function useFirebaseAuth() {
   const signInWithGoogle = async () => {
     try {
       setError(null);
-      const result = await signInWithPopup(auth, googleProvider);
-      
-      // Check if user profile exists, if not create one
-      const existingProfile = await getUserProfile(result.user.uid);
-      if (!existingProfile) {
-        await createUserProfile(result.user);
-      }
-      
-      return result.user;
+      await signInWithRedirect(auth, googleProvider);
+      // The redirect will handle the rest
     } catch (error: any) {
       setError(error.message);
       throw error;
