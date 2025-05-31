@@ -26,7 +26,7 @@ export default function Landing() {
 
         <BrandPhilosophy
           heading="Why Scaling Should Start With Understanding Your DNA, Not Process."
-          paragraph="You've followed frameworks, joined programs, hired experts. But they weren't built for how you actually think. Brandscaling flips the model. We teach through your DNA — your operating system — Architect or Alchemist — then map systems, automation, and team structures around it."
+          paragraph="You've followed frameworks, joined programs, hired experts. But they weren't built for how you actually think. Brandscaling flips the model. We teach through your DNA - your operating system - Architect or Alchemist - then map systems, automation, and team structures around it."
           visualType="clarity-to-scale-diagram"
         />
 
@@ -34,28 +34,28 @@ export default function Landing() {
           title="If You've Felt This, You're Home."
           avatars={[
             {
-              icon: '💡',
-              title: 'Idea-Stuck Dreamer',
-              headline: 'It's all in your head — but nowhere in motion.',
-              description: 'You've stayed up at night with ideas that feel world-changing… but never been able to execute them.'
+              icon: "💡",
+              title: "Idea-Stuck Dreamer",
+              headline: "It's all in your head - but nowhere in motion.",
+              description: "You've stayed up at night with ideas that feel world-changing but never been able to execute them."
             },
             {
-              icon: '🔧',
-              title: 'Framework-Frustrated',
-              headline: 'You followed the blueprints. It didn't match your DNA.',
-              description: 'You've tried the "proven" methods. Burnout followed. Maybe the frameworks weren't built for your type.'
+              icon: "🔧",
+              title: "Framework-Frustrated",
+              headline: "You followed the blueprints. It didn't match your DNA.",
+              description: "You've tried the proven methods. Burnout followed. Maybe the frameworks weren't built for your type."
             },
             {
-              icon: '🔁',
-              title: 'Mastermind Graduate',
-              headline: 'The rooms that once grew you now shrink you.',
-              description: 'You're thinking bigger than your peers now. You've outgrown the space — but don't want to stagnate.'
+              icon: "🔁",
+              title: "Mastermind Graduate",
+              headline: "The rooms that once grew you now shrink you.",
+              description: "You're thinking bigger than your peers now. You've outgrown the space - but don't want to stagnate."
             },
             {
-              icon: '⚖️',
-              title: 'Successful-but-Stuck',
-              headline: 'The wins are real. The next move isn't.',
-              description: 'You're profitable. But the system you built wasn't designed to scale like this. Now what?'
+              icon: "⚖️",
+              title: "Successful-but-Stuck",
+              headline: "The wins are real. The next move isn't.",
+              description: "You're profitable. But the system you built wasn't designed to scale like this. Now what?"
             }
           ]}
           cta="Explore the Right Track for You"
@@ -63,7 +63,7 @@ export default function Landing() {
 
         <QuizCTA 
           heading="Architect or Alchemist?"
-          paragraph="You'll learn faster and scale smoother once you know how you're wired. Take the free quiz to unlock your type — and build from your strengths."
+          paragraph="You'll learn faster and scale smoother once you know how you're wired. Take the free quiz to unlock your type - and build from your strengths."
           cta1="Take the 3-Minute Quiz"
           cta2="Learn What It Means"
           background="split-circle-icon"
@@ -71,25 +71,25 @@ export default function Landing() {
 
         <CoursesPreview 
           title="Start With Strategy. Scale With System."
-          subtitle="Every course has two tracks — one for structure, one for presence. Learn in your natural style, or build your opposite muscle."
+          subtitle="Every course has two tracks - one for structure, one for presence. Learn in your natural style, or build your opposite muscle."
           courses={[
             {
-              icon: '🧱',
-              title: 'Infinite Scaling Method',
-              description: 'Your business's new spine—layered to unlock long-term growth & strength.',
-              link: '/courses/infinite-scaling'
+              icon: "🧱",
+              title: "Infinite Scaling Method",
+              description: "Your business new spine - layered to unlock long-term growth and strength.",
+              link: "/courses/infinite-scaling"
             },
             {
-              icon: '🪞',
-              title: 'Confidence Architecture',
-              description: 'Rebuild your internal self-command and external clarity.',
-              link: '/courses/confidence-architecture'
+              icon: "🪞",
+              title: "Confidence Architecture",
+              description: "Rebuild your internal self-command and external clarity.",
+              link: "/courses/confidence-architecture"
             },
             {
-              icon: '🧠',
-              title: 'Limiting Beliefs Reframe',
-              description: 'Identify the mental weights hidden inside your systems.',
-              link: '/courses/limiting-beliefs'
+              icon: "🧠",
+              title: "Limiting Beliefs Reframe",
+              description: "Identify the mental weights hidden inside your systems.",
+              link: "/courses/limiting-beliefs"
             }
           ]}
           viewAllLink="/courses"
@@ -97,8 +97,8 @@ export default function Landing() {
 
         <AIAgents 
           title="Ask an AI That Actually Gets Your Business."
-          subtext="Try our trained advisors — Strategy, Startup, Social Media, and more."
-          tags={['Startup', 'Scaleup', 'Architect', 'Alchemist']}
+          subtext="Try our trained advisors - Strategy, Startup, Social Media, and more."
+          tags={["Startup", "Scaleup", "Architect", "Alchemist"]}
           samplePrompt="How do I reposition my offer?"
         />
 
@@ -107,19 +107,19 @@ export default function Landing() {
           subtitle="Course • Collaborate • Community"
           pillars={[
             {
-              name: 'Course',
-              description: 'LMS with Architect/Alchemist split',
-              link: '/courses'
+              name: "Course",
+              description: "LMS with Architect/Alchemist split",
+              link: "/courses"
             },
             {
-              name: 'Collaborate',
-              description: 'AI agents, workflow tools',
-              link: '/collaborate'
+              name: "Collaborate",
+              description: "AI agents, workflow tools",
+              link: "/collaborate"
             },
             {
-              name: 'Community',
-              description: 'Real convos, no fluff',
-              link: '/community'
+              name: "Community",
+              description: "Real convos, no fluff",
+              link: "/community"
             }
           ]}
         />
@@ -127,14 +127,14 @@ export default function Landing() {
         <ReflectionQuotes 
           quotes={[
             {
-              text: 'Clarity is the real catalyst—internally and operationally.',
-              author: 'The Architect',
-              color: 'indigo'
+              text: "Clarity is the real catalyst - internally and operationally.",
+              author: "The Architect",
+              color: "indigo"
             },
             {
-              text: 'The next level of your business lives in a deeper level of yourself.',
-              author: 'The Alchemist',
-              color: 'orange'
+              text: "The next level of your business lives in a deeper level of yourself.",
+              author: "The Alchemist",
+              color: "orange"
             }
           ]}
         />
