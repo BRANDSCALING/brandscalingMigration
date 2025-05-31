@@ -54,25 +54,24 @@ function Router() {
 
   return (
     <Switch>
+      {/* Public pages accessible to everyone */}
+      <Route path="/about" component={About} />
+      <Route path="/blog" component={Blog} />
+      <Route path="/courses" component={Courses} />
+      <Route path="/community" component={Community} />
+      <Route path="/quiz" component={Quiz} />
+      
       {!isAuthenticated ? (
         <>
           <Route path="/" component={Landing} />
           <Route path="/login" component={Login} />
           <Route path="/signup" component={Signup} />
-          <Route path="/about" component={About} />
-          <Route path="/blog" component={Blog} />
-          <Route path="/courses" component={Courses} />
         </>
       ) : (
         <Layout>
           <Route path="/" component={Dashboard} />
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/mastermind-dashboard" component={Dashboard} />
-          <Route path="/courses" component={Courses} />
-          <Route path="/community" component={Community} />
-          <Route path="/quiz" component={Quiz} />
-          <Route path="/about" component={About} />
-          <Route path="/blog" component={Blog} />
           <Route path="/debug-auth" component={DebugAuth} />
           <Route path="/admin" component={AdminDashboard} />
         </Layout>
