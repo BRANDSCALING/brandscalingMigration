@@ -12,7 +12,7 @@ export default function FinalCTA({ heading, cta1, cta2 }: FinalCTAProps) {
   return (
     <section className="py-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
-        <Card className="bg-gradient-to-r from-primary to-blue-600 text-white">
+        <Card className="bg-brandscaling-gradient text-white">
           <CardContent className="p-12 text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-8">
               {heading}

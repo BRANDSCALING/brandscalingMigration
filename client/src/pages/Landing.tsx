@@ -12,7 +12,7 @@ import FinalCTA from "@/components/FinalCTA";
 
 export default function Landing() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+    <div className="min-h-screen bg-white">
       <Header />
       
       <main className="font-poppins text-brand-gray">
