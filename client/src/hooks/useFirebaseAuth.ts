@@ -44,25 +44,32 @@ export function useFirebaseAuth() {
     return () => unsubscribe();
   }, []);
 
-  // Get user profile from Firestore
+  // Get user profile from PostgreSQL database via API
   const getUserProfile = async (uid: string): Promise<UserProfile | null> => {
     try {
-      // Check if Firestore is available
-      if (!db) {
-        console.warn('Firestore not available');
-        return null;
-      }
+      if (!user) return null;
       
-      const docRef = doc(db, 'users', uid);
-      const docSnap = await getDoc(docRef);
+      const token = await user.getIdToken();
+      const response = await fetch('/api/auth/user', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
       
-      if (docSnap.exists()) {
-        return docSnap.data() as UserProfile;
+      if (response.ok) {
+        const userData = await response.json();
+        return {
+          uid: userData.id,
+          email: userData.email,
+          displayName: userData.firstName || userData.email || '',
+          role: userData.role, // This comes from PostgreSQL now
+          createdAt: new Date(userData.createdAt || Date.now())
+        };
       }
       return null;
     } catch (error) {
       console.error('Error getting user profile:', error);
-      // Return null instead of throwing to allow authentication to continue
       return null;
     }
   };
