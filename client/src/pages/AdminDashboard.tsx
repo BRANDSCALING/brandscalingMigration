@@ -75,10 +75,10 @@ export default function AdminDashboard() {
 
   // Redirect if not admin
   useEffect(() => {
-    if (!loading && !isAdmin) {
+    if (!loading && userProfile && !isAdmin) {
       window.location.href = '/';
     }
-  }, [loading, isAdmin]);
+  }, [loading, isAdmin, userProfile]);
 
   // Fetch users
   const { data: users = [], isLoading: usersLoading } = useQuery<User[]>({
@@ -161,10 +161,29 @@ export default function AdminDashboard() {
     },
   });
 
-  if (loading || !isAdmin) {
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="max-w-md text-center">
+          <h1 className="text-2xl font-bold text-red-600 mb-4">Access Denied</h1>
+          <p className="text-muted-foreground mb-4">
+            You need admin privileges to access this page.
+          </p>
+          <p className="text-sm text-muted-foreground mb-4">
+            Current role: {userProfile?.role || 'unknown'}
+          </p>
+          <Button onClick={() => window.location.reload()}>
+            Refresh Page
+          </Button>
+        </div>
       </div>
     );
   }
