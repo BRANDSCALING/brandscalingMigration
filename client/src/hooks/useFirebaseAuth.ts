@@ -3,8 +3,7 @@ import {
   User,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  signInWithRedirect,
-  getRedirectResult,
+  signInWithPopup,
   signOut,
   onAuthStateChanged
 } from 'firebase/auth';
@@ -40,24 +39,7 @@ export function useFirebaseAuth() {
       setLoading(false);
     });
 
-    // Check for redirect result on page load
-    const checkRedirectResult = async () => {
-      try {
-        const result = await getRedirectResult(auth);
-        if (result) {
-          // Check if user profile exists, if not create one
-          const existingProfile = await getUserProfile(result.user.uid);
-          if (!existingProfile) {
-            await createUserProfile(result.user);
-          }
-        }
-      } catch (error: any) {
-        console.error('Error handling redirect result:', error);
-        setError(error.message);
-      }
-    };
-
-    checkRedirectResult();
+    // No need for redirect result checking since we're using popup authentication
     return () => unsubscribe();
   }, []);
 
@@ -144,8 +126,18 @@ export function useFirebaseAuth() {
   const signInWithGoogle = async () => {
     try {
       setError(null);
-      await signInWithRedirect(auth, googleProvider);
-      // The redirect will handle the rest
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      
+      // Check if user already has a profile
+      let profile = await getUserProfile(user.uid);
+      
+      if (!profile) {
+        // Create new profile with default role 'buyer'
+        profile = await createUserProfile(user, 'buyer');
+      }
+      
+      return profile;
     } catch (error: any) {
       setError(error.message);
       throw error;
