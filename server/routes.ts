@@ -83,7 +83,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/user/progress", requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.uid;
       const courseId = req.query.courseId ? parseInt(req.query.courseId as string) : undefined;
       const progress = await storage.getUserProgress(userId, courseId);
       res.json(progress);
@@ -95,7 +95,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/user/progress", requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.uid;
       const { courseId, progress, currentModule } = req.body;
       
       const progressSchema = z.object({
@@ -148,7 +148,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/posts", requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.uid;
       const { title, content } = req.body;
 
       const postSchema = z.object({
@@ -173,7 +173,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/posts/:id/reply", requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.uid;
       const postId = parseInt(req.params.id);
       const { content } = req.body;
 
@@ -229,7 +229,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/quizzes/:id/submit", requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.uid;
       const quizId = parseInt(req.params.id);
       const { answers, score } = req.body;
 
@@ -256,7 +256,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/user/quiz-results", requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.uid;
       const quizId = req.query.quizId ? parseInt(req.query.quizId as string) : undefined;
       const results = await storage.getUserQuizResults(userId, quizId);
       res.json(results);
@@ -279,7 +279,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/ai-agents/:id/chat", requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.uid;
       const agentId = parseInt(req.params.id);
       const { message } = req.body;
 
@@ -320,7 +320,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Events routes
   app.get("/api/events", requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.uid;
       const events = await storage.getUpcomingEvents(userId);
       res.json(events);
     } catch (error) {
@@ -331,7 +331,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/events/:id/register", requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.uid;
       const eventId = parseInt(req.params.id);
       
       const registration = await storage.registerForEvent(eventId, userId);

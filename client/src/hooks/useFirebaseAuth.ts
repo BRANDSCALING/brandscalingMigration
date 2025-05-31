@@ -5,6 +5,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithPopup,
   signOut,
+  sendPasswordResetEmail,
   onAuthStateChanged
 } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
@@ -155,6 +156,18 @@ export function useFirebaseAuth() {
       }
       
       return profile;
+    } catch (error: any) {
+      setError(error.message);
+      throw error;
+    }
+  };
+
+  // Reset password
+  const resetPassword = async (email: string) => {
+    try {
+      setError(null);
+      await sendPasswordResetEmail(auth, email);
+      return true;
     } catch (error: any) {
       setError(error.message);
       throw error;
