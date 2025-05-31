@@ -24,7 +24,6 @@ export default function Header() {
           
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-8">
-            <Link href="/" className="text-slate-600 hover:text-primary">Home</Link>
             <Link href="/about" className="text-slate-600 hover:text-primary">About</Link>
             <Link href="/courses" className="text-slate-600 hover:text-primary">Courses</Link>
             <Link href="/blog" className="text-slate-600 hover:text-primary">Blog</Link>
@@ -61,7 +60,6 @@ export default function Header() {
         {mobileMenuOpen && (
           <div className="md:hidden border-t border-slate-200 py-4">
             <nav className="flex flex-col space-y-4">
-              <Link href="/" className="text-slate-600 hover:text-primary">Home</Link>
               <Link href="/about" className="text-slate-600 hover:text-primary">About</Link>
               <Link href="/courses" className="text-slate-600 hover:text-primary">Courses</Link>
               <Link href="/blog" className="text-slate-600 hover:text-primary">Blog</Link>
