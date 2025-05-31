@@ -9,6 +9,7 @@ import AIAgents from "@/components/AIAgents";
 import BrandPillars from "@/components/BrandPillars";
 import ReflectionQuotes from "@/components/ReflectionQuotes";
 import FinalCTA from "@/components/FinalCTA";
+import BrandscalingAgents from "@/components/BrandscalingAgents";
 
 export default function Landing() {
   return (
@@ -94,6 +95,8 @@ export default function Landing() {
           ]}
           viewAllLink="/courses"
         />
+
+        <BrandscalingAgents />
 
         <AIAgents 
           title="Ask an AI That Actually Gets Your Business."

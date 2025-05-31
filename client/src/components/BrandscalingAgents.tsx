@@ -7,7 +7,7 @@ const agents = [
   { id: "alchemist", label: "📱 Alchemist", color: "#EC4049" },  // Founder Red
 ];
 
-const AgentChatPlaceholder = ({ active }) => (
+const AgentChatPlaceholder = ({ active }: { active: string }) => (
   <div className="border rounded-lg bg-white p-5 shadow-md text-sm mt-6">
     <div className="text-gray-700 mb-2">
       🤖 <span className="capitalize font-semibold">{active}</span> Agent is standing by.
@@ -19,7 +19,7 @@ const AgentChatPlaceholder = ({ active }) => (
 );
 
 const BrandscalingAgents = () => {
-  const [activeAgent, setActiveAgent] = useState(null);
+  const [activeAgent, setActiveAgent] = useState<string | null>(null);
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-16">
