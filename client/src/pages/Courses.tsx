@@ -7,6 +7,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import CourseCard from "@/components/ui/course-card";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import {
   DraftingCompass,
   Wand2,
@@ -180,8 +182,10 @@ export default function Courses() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Header */}
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+      <Header />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-slate-900 mb-2">Learning Paths</h1>
         <p className="text-slate-600">
@@ -264,6 +268,8 @@ export default function Courses() {
           {renderCourseList(alchemistCourses || [], "Alchemist")}
         </TabsContent>
       </Tabs>
+      </div>
+      <Footer />
     </div>
   );
 }
