@@ -7,13 +7,24 @@ import { chatWithAgent } from "./openai";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Apply Firebase auth middleware to all API routes
-  app.use('/api', verifyFirebaseToken);
-
   // Health check route (public)
   app.get("/api/health", async (req, res) => {
     res.json({ status: "ok", timestamp: new Date().toISOString() });
   });
+
+  // Public blog posts endpoint (must be before auth middleware)
+  app.get("/api/blog-posts/published", async (req, res) => {
+    try {
+      const posts = await storage.getBlogPosts(true); // Only published posts
+      res.json(posts);
+    } catch (error) {
+      console.error("Error fetching published blog posts:", error);
+      res.status(500).json({ message: "Failed to fetch blog posts" });
+    }
+  });
+
+  // Apply Firebase auth middleware to all other API routes
+  app.use('/api', verifyFirebaseToken);
 
   // Firebase Auth routes
   app.post('/api/auth/signup', async (req, res) => {
@@ -499,16 +510,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(posts);
     } catch (error) {
       console.error("Error fetching blog posts:", error);
-      res.status(500).json({ message: "Failed to fetch blog posts" });
-    }
-  });
-
-  app.get("/api/blog-posts/published", async (req, res) => {
-    try {
-      const posts = await storage.getBlogPosts(true); // Only published posts
-      res.json(posts);
-    } catch (error) {
-      console.error("Error fetching published blog posts:", error);
       res.status(500).json({ message: "Failed to fetch blog posts" });
     }
   });
