@@ -5,44 +5,44 @@
 @tailwind utilities;
 
 :root {
-  /* Brand Colors */
-  --architect-indigo: 270 94% 25%; /* #42047D */
-  --scale-orange: 20 92% 58%; /* #F6782F */
-  --deep-plum: 288 83% 30%; /* #841477 */
-  --precision-pink: 333 73% 46%; /* #C72170 */
-  --strategic-black: 0 0% 4%; /* #0B0B0B */
+  /* Brandscaling Logo Colors */
+  --brand-purple: 270 91% 25%; /* Deep purple from logo */
+  --brand-magenta: 320 85% 45%; /* Magenta from logo */
+  --brand-coral: 15 90% 60%; /* Coral/red from logo */
+  --brand-orange: 35 95% 55%; /* Orange from logo */
+  --brand-navy: 250 100% 15%; /* Navy for text */
   --pure-white: 0 0% 100%; /* #FFFFFF */
   
   /* UI Variables */
   --background: var(--pure-white);
-  --foreground: var(--strategic-black);
+  --foreground: var(--brand-navy);
   --muted: 270 15% 96%;
   --muted-foreground: 270 10% 45%;
   --popover: var(--pure-white);
-  --popover-foreground: var(--strategic-black);
+  --popover-foreground: var(--brand-navy);
   --card: var(--pure-white);
-  --card-foreground: var(--strategic-black);
+  --card-foreground: var(--brand-navy);
   --border: 270 15% 90%;
   --input: 270 15% 95%;
-  --primary: var(--architect-indigo);
+  --primary: var(--brand-purple);
   --primary-foreground: var(--pure-white);
-  --secondary: 270 20% 95%; /* Light indigo tint */
-  --secondary-foreground: var(--strategic-black);
-  --accent: var(--scale-orange);
+  --secondary: 270 20% 95%;
+  --secondary-foreground: var(--brand-navy);
+  --accent: var(--brand-orange);
   --accent-foreground: var(--pure-white);
   --destructive: 0 84% 60%;
   --destructive-foreground: var(--pure-white);
-  --ring: var(--architect-indigo);
+  --ring: var(--brand-purple);
   --radius: 0.75rem;
-  --chart-1: var(--architect-indigo);
-  --chart-2: var(--scale-orange);
-  --chart-3: var(--deep-plum);
-  --chart-4: var(--precision-pink);
+  --chart-1: var(--brand-purple);
+  --chart-2: var(--brand-orange);
+  --chart-3: var(--brand-magenta);
+  --chart-4: var(--brand-coral);
   --chart-5: 270 50% 60%;
 }
 
 .dark {
-  --background: var(--strategic-black);
+  --background: var(--brand-navy);
   --foreground: var(--pure-white);
   --muted: 270 20% 15%;
   --muted-foreground: 270 15% 65%;
@@ -52,19 +52,19 @@
   --card-foreground: var(--pure-white);
   --border: 270 20% 20%;
   --input: 270 20% 15%;
-  --primary: var(--architect-indigo);
+  --primary: var(--brand-purple);
   --primary-foreground: var(--pure-white);
   --secondary: 270 20% 15%;
   --secondary-foreground: var(--pure-white);
-  --accent: var(--scale-orange);
-  --accent-foreground: var(--strategic-black);
+  --accent: var(--brand-orange);
+  --accent-foreground: var(--brand-navy);
   --destructive: 0 75% 55%;
   --destructive-foreground: var(--pure-white);
-  --ring: var(--architect-indigo);
-  --chart-1: var(--architect-indigo);
-  --chart-2: var(--scale-orange);
-  --chart-3: var(--deep-plum);
-  --chart-4: var(--precision-pink);
+  --ring: var(--brand-purple);
+  --chart-1: var(--brand-purple);
+  --chart-2: var(--brand-orange);
+  --chart-3: var(--brand-magenta);
+  --chart-4: var(--brand-coral);
   --chart-5: 270 50% 60%;
 }
 
@@ -87,54 +87,67 @@
   }
 }
 
-/* Brand-specific utility classes */
+/* Brandscaling utility classes */
 @layer utilities {
-  .text-architect-indigo {
-    color: hsl(var(--architect-indigo));
+  .text-brand-purple {
+    color: hsl(var(--brand-purple));
   }
   
-  .text-scale-orange {
-    color: hsl(var(--scale-orange));
+  .text-brand-orange {
+    color: hsl(var(--brand-orange));
   }
   
-  .text-deep-plum {
-    color: hsl(var(--deep-plum));
+  .text-brand-magenta {
+    color: hsl(var(--brand-magenta));
   }
   
-  .text-precision-pink {
-    color: hsl(var(--precision-pink));
+  .text-brand-coral {
+    color: hsl(var(--brand-coral));
   }
   
-  .bg-architect-indigo {
-    background-color: hsl(var(--architect-indigo));
+  .bg-brand-purple {
+    background-color: hsl(var(--brand-purple));
   }
   
-  .bg-scale-orange {
-    background-color: hsl(var(--scale-orange));
+  .bg-brand-orange {
+    background-color: hsl(var(--brand-orange));
   }
   
-  .bg-deep-plum {
-    background-color: hsl(var(--deep-plum));
+  .bg-brand-magenta {
+    background-color: hsl(var(--brand-magenta));
   }
   
-  .bg-precision-pink {
-    background-color: hsl(var(--precision-pink));
+  .bg-brand-coral {
+    background-color: hsl(var(--brand-coral));
   }
   
-  .border-architect-indigo {
-    border-color: hsl(var(--architect-indigo));
+  .border-brand-purple {
+    border-color: hsl(var(--brand-purple));
   }
   
-  .border-scale-orange {
-    border-color: hsl(var(--scale-orange));
+  .border-brand-orange {
+    border-color: hsl(var(--brand-orange));
   }
   
-  .hover\:bg-architect-indigo:hover {
-    background-color: hsl(var(--architect-indigo));
+  .hover\:bg-brand-purple:hover {
+    background-color: hsl(var(--brand-purple));
   }
   
-  .hover\:bg-scale-orange:hover {
-    background-color: hsl(var(--scale-orange));
+  .hover\:bg-brand-orange:hover {
+    background-color: hsl(var(--brand-orange));
+  }
+
+  /* Brandscaling gradient backgrounds */
+  .bg-brandscaling-gradient {
+    background: linear-gradient(135deg, hsl(var(--brand-orange)), hsl(var(--brand-coral)), hsl(var(--brand-magenta)), hsl(var(--brand-purple)));
+  }
+  
+  .bg-architect-gradient {
+    background: linear-gradient(135deg, hsl(var(--brand-purple)), hsl(var(--brand-magenta)));
+  }
+  
+  .bg-alchemist-gradient {
+    background: linear-gradient(135deg, hsl(var(--brand-orange)), hsl(var(--brand-coral)));
   }
 
   .line-clamp-2 {
