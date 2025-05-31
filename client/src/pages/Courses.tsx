@@ -14,7 +14,7 @@ export default function Courses() {
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Hero Section */}
-        <section className="text-center px-6 py-20 bg-brand-purple text-white rounded-lg mb-12">
+        <section className="text-center px-6 py-20 bg-[#42047D] text-white">
           <h1 className="text-5xl font-bold mb-4">📚 Explore Brandscaling Courses</h1>
           <p className="text-xl max-w-2xl mx-auto">From free masterclasses to high-ticket immersive strategy — choose the track that matches your scale season.</p>
         </section>
@@ -26,25 +26,25 @@ export default function Courses() {
             {/* Free Course */}
             <div className="border rounded-lg shadow-md p-6">
               <img src="https://via.placeholder.com/400x250" alt="Free Webinar" className="rounded mb-4 w-full" />
-              <h3 className="text-2xl font-semibold text-brand-purple mb-2">🚀 Free Webinar: Infinite Scaling™ Intro</h3>
+              <h3 className="text-2xl font-semibold text-[#42047D] mb-2">🚀 Free Webinar: Infinite Scaling™ Intro</h3>
               <p className="text-gray-700 mb-4">Discover the exact 7-layer framework we've used to scale service businesses from 6 to 8 figures — without paid ads or burnout.</p>
-              <a href="/webinar" className="text-brand-orange font-semibold underline">Watch Now →</a>
+              <a href="/webinar" className="text-[#F6782F] font-semibold underline">Watch Now →</a>
             </div>
 
             {/* Paid Course */}
             <div className="border rounded-lg shadow-md p-6">
               <img src="https://via.placeholder.com/400x250" alt="90 Day Course" className="rounded mb-4 w-full" />
-              <h3 className="text-2xl font-semibold text-brand-orange mb-2">📈 90-Day Scaling Course</h3>
+              <h3 className="text-2xl font-semibold text-[#F6782F] mb-2">📈 90-Day Scaling Course</h3>
               <p className="text-gray-700 mb-4">Weekly modules, live Q&A, and our full scaling OS. Ideal if you're doing 5–30k/month and want to break your next revenue ceiling.</p>
-              <a href="/course/90day" className="text-brand-purple font-semibold underline">See Curriculum →</a>
+              <a href="/course/90day" className="text-[#42047D] font-semibold underline">See Curriculum →</a>
             </div>
 
             {/* Mastermind */}
             <div className="border rounded-lg shadow-md p-6">
               <img src="https://via.placeholder.com/400x250" alt="Mastermind" className="rounded mb-4 w-full" />
-              <h3 className="text-2xl font-semibold text-purple-700 mb-2">🧠 Brandscaling Mastermind</h3>
+              <h3 className="text-2xl font-semibold text-[#841477] mb-2">🧠 Brandscaling Mastermind</h3>
               <p className="text-gray-700 mb-4">Apply to work directly with our core team. Designed for high-performance business owners scaling with embedded growth partners.</p>
-              <a href="/apply" className="text-brand-orange font-semibold underline">Apply Now →</a>
+              <a href="/apply" className="text-[#F6782F] font-semibold underline">Apply Now →</a>
             </div>
 
           </div>
