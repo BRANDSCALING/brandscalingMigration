@@ -12,7 +12,7 @@ import Signup from "@/pages/Signup";
 import Dashboard from "@/pages/Dashboard";
 import Courses from "@/pages/Courses";
 import Community from "@/pages/Community";
-import Quiz from "@/pages/Quiz";
+import Quiz, { QuizResult } from "@/pages/Quiz";
 import About from "@/pages/About";
 import Contact from "@/pages/Contact";
 import Blog from "@/pages/Blog";
@@ -62,6 +62,7 @@ function Router() {
       <Route path="/courses" component={Courses} />
       <Route path="/community" component={Community} />
       <Route path="/quiz" component={Quiz} />
+      <Route path="/quiz/result" component={QuizResult} />
       
       {!isAuthenticated ? (
         <>

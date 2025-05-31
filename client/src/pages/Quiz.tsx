@@ -1,189 +1,232 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { ClipboardList, Target, TrendingUp, ArrowRight, CheckCircle2 } from "lucide-react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import { Link } from "wouter";
+import { useState } from 'react';
+import { useLocation } from 'wouter';
+
+const questions = [
+  {
+    prompt: "When faced with a challenge, you prefer to:",
+    options: [
+      { text: "Analyze the logic and plan a system", type: "Architect" },
+      { text: "Trust your gut and feel your way through", type: "Alchemist" },
+    ],
+  },
+  {
+    prompt: "You make decisions by:",
+    options: [
+      { text: "Mapping pros and cons", type: "Architect" },
+      { text: "Following the energy and excitement", type: "Alchemist" },
+    ],
+  },
+  {
+    prompt: "Your ideal work environment is:",
+    options: [
+      { text: "Organized, structured, and predictable", type: "Architect" },
+      { text: "Dynamic, flexible, and inspiring", type: "Alchemist" },
+    ],
+  },
+  {
+    prompt: "When building your business, you focus on:",
+    options: [
+      { text: "Systems, processes, and scalable frameworks", type: "Architect" },
+      { text: "Relationships, creativity, and emotional connection", type: "Alchemist" },
+    ],
+  },
+  {
+    prompt: "Your communication style is:",
+    options: [
+      { text: "Clear, direct, and fact-based", type: "Architect" },
+      { text: "Warm, expressive, and story-driven", type: "Alchemist" },
+    ],
+  },
+  {
+    prompt: "You approach problems by:",
+    options: [
+      { text: "Breaking them down into logical steps", type: "Architect" },
+      { text: "Exploring creative solutions and possibilities", type: "Alchemist" },
+    ],
+  },
+  {
+    prompt: "Your leadership style is:",
+    options: [
+      { text: "Strategic and systematic", type: "Architect" },
+      { text: "Inspirational and intuitive", type: "Alchemist" },
+    ],
+  },
+  {
+    prompt: "When scaling your business, you prioritize:",
+    options: [
+      { text: "Efficiency and optimization", type: "Architect" },
+      { text: "Innovation and transformation", type: "Alchemist" },
+    ],
+  },
+  {
+    prompt: "Your ideal client outcome is:",
+    options: [
+      { text: "Achieving measurable, predictable results", type: "Architect" },
+      { text: "Experiencing breakthrough transformations", type: "Alchemist" },
+    ],
+  },
+  {
+    prompt: "You measure success by:",
+    options: [
+      { text: "Concrete metrics and systematic progress", type: "Architect" },
+      { text: "Impact, fulfillment, and meaningful change", type: "Alchemist" },
+    ],
+  },
+];
 
 export default function Quiz() {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-      <Header />
-      
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Hero Section */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
-            Brand Assessment Quiz
+  const [step, setStep] = useState(-1);
+  const [answers, setAnswers] = useState<string[]>([]);
+  const [, setLocation] = useLocation();
+
+  const handleAnswer = (type: string) => {
+    const updated = [...answers, type];
+    setAnswers(updated);
+    if (step < questions.length - 1) {
+      setStep(step + 1);
+    } else {
+      const architectCount = updated.filter((a) => a === 'Architect').length;
+      const alchemistCount = updated.filter((a) => a === 'Alchemist').length;
+      const result = architectCount > alchemistCount ? 'Architect' : 'Alchemist';
+      localStorage.setItem('quizResult', result);
+      setLocation('/quiz/result');
+    }
+  };
+
+  if (step === -1) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center text-center p-4 bg-gradient-to-br from-purple-50 to-orange-50">
+        <div className="max-w-2xl mx-auto">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-orange-500 bg-clip-text text-transparent">
+            Are You the Architect or the Alchemist?
           </h1>
-          <p className="text-xl text-slate-600 max-w-3xl mx-auto mb-8">
-            Discover your current brand maturity level and get personalized recommendations for your next steps.
+          <p className="mb-8 text-xl text-gray-600">
+            Discover your unique scaling style and how to harness it.
           </p>
+          <button 
+            onClick={() => setStep(0)} 
+            className="bg-gradient-to-r from-purple-600 to-orange-500 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+          >
+            Start Quiz
+          </button>
         </div>
-
-        {/* Quiz Builder Placeholder */}
-        <div className="text-center py-16">
-          <div className="w-20 h-20 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-            <ClipboardList className="w-10 h-10 text-primary" />
-          </div>
-          <h3 className="text-2xl font-semibold text-slate-900 mb-4">Assessment Coming Soon</h3>
-          <p className="text-slate-600 max-w-md mx-auto mb-8">
-            We're developing a comprehensive brand assessment tool to help you identify your strengths and growth opportunities.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/courses">
-              <Button size="lg" className="bg-primary hover:bg-blue-600">
-                Explore Courses <ArrowRight className="ml-2 w-5 h-5" />
-              </Button>
-            </Link>
-            <Link href="/login">
-              <Button size="lg" variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white">
-                Get Notified
-              </Button>
-            </Link>
-          </div>
-        </div>
-
-        {/* Assessment Preview */}
-        <div className="grid md:grid-cols-3 gap-8 mb-16">
-          <Card className="text-center border-blue-200 bg-gradient-to-br from-blue-50 to-blue-100/20">
-            <CardContent className="p-8">
-              <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Target className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-4">Brand Foundation</h3>
-              <p className="text-slate-600">
-                Assess your brand's core elements, positioning, and strategic foundation.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="text-center border-emerald-200 bg-gradient-to-br from-emerald-50 to-emerald-100/20">
-            <CardContent className="p-8">
-              <div className="w-16 h-16 bg-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <TrendingUp className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-4">Growth Potential</h3>
-              <p className="text-slate-600">
-                Evaluate your current growth strategies and identify expansion opportunities.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="text-center border-purple-200 bg-gradient-to-br from-purple-50 to-purple-100/20">
-            <CardContent className="p-8">
-              <div className="w-16 h-16 bg-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <CheckCircle2 className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-4">Optimization Areas</h3>
-              <p className="text-slate-600">
-                Discover specific areas where you can improve and optimize your brand performance.
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* What You'll Get */}
-        <Card className="mb-16">
-          <CardHeader>
-            <CardTitle className="text-2xl text-center">What You'll Receive</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid md:grid-cols-2 gap-8">
-              <div>
-                <h4 className="font-semibold text-slate-900 mb-4">Personalized Assessment</h4>
-                <ul className="space-y-3 text-slate-600">
-                  <li className="flex items-start space-x-2">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-600 mt-0.5 flex-shrink-0" />
-                    <span>Comprehensive brand maturity score</span>
-                  </li>
-                  <li className="flex items-start space-x-2">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-600 mt-0.5 flex-shrink-0" />
-                    <span>Detailed analysis of strengths and gaps</span>
-                  </li>
-                  <li className="flex items-start space-x-2">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-600 mt-0.5 flex-shrink-0" />
-                    <span>Custom recommendations for improvement</span>
-                  </li>
-                  <li className="flex items-start space-x-2">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-600 mt-0.5 flex-shrink-0" />
-                    <span>Strategic roadmap for next steps</span>
-                  </li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-semibold text-slate-900 mb-4">Actionable Insights</h4>
-                <ul className="space-y-3 text-slate-600">
-                  <li className="flex items-start space-x-2">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-600 mt-0.5 flex-shrink-0" />
-                    <span>Recommended course track (Architect or Alchemist)</span>
-                  </li>
-                  <li className="flex items-start space-x-2">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-600 mt-0.5 flex-shrink-0" />
-                    <span>Priority areas for immediate focus</span>
-                  </li>
-                  <li className="flex items-start space-x-2">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-600 mt-0.5 flex-shrink-0" />
-                    <span>Resource recommendations and tools</span>
-                  </li>
-                  <li className="flex items-start space-x-2">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-600 mt-0.5 flex-shrink-0" />
-                    <span>Performance benchmarks and goals</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Quiz Preview Layout */}
-        <Card className="mb-16 opacity-50">
-          <CardHeader>
-            <CardTitle className="text-xl">Assessment Preview</CardTitle>
-            <p className="text-slate-600">A glimpse of what the brand assessment will look like</p>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-6">
-              <div className="border-l-4 border-primary pl-4">
-                <h4 className="font-semibold text-slate-900 mb-2">Sample Question</h4>
-                <p className="text-slate-600 mb-4">How would you describe your current brand positioning strategy?</p>
-                <div className="space-y-2">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-4 h-4 border-2 border-slate-300 rounded-full"></div>
-                    <span className="text-slate-600">We have a clear, differentiated position</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-4 h-4 border-2 border-slate-300 rounded-full"></div>
-                    <span className="text-slate-600">We're working on defining our position</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-4 h-4 border-2 border-slate-300 rounded-full"></div>
-                    <span className="text-slate-600">We haven't established positioning yet</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* CTA Section */}
-        <Card className="bg-gradient-to-r from-primary to-blue-600 text-white">
-          <CardContent className="p-12 text-center">
-            <h2 className="text-3xl font-bold mb-4">Ready to Assess Your Brand?</h2>
-            <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-              Join our waitlist to be the first to access the comprehensive brand assessment tool.
-            </p>
-            <Link href="/login">
-              <Button size="lg" className="bg-white text-primary hover:bg-gray-100">
-                Join Assessment Waitlist <ArrowRight className="ml-2 w-5 h-5" />
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
       </div>
-      
-      <Footer />
+    );
+  }
+
+  const current = questions[step];
+  const progress = ((step + 1) / questions.length) * 100;
+
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-br from-purple-50 to-orange-50">
+      <div className="w-full max-w-2xl mx-auto">
+        {/* Progress Bar */}
+        <div className="mb-8">
+          <div className="flex justify-between text-sm text-gray-600 mb-2">
+            <span>Question {step + 1} of {questions.length}</span>
+            <span>{Math.round(progress)}%</span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-2">
+            <div 
+              className="bg-gradient-to-r from-purple-600 to-orange-500 h-2 rounded-full transition-all duration-300"
+              style={{ width: `${progress}%` }}
+            ></div>
+          </div>
+        </div>
+
+        {/* Question */}
+        <div className="text-center mb-8">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6">
+            {current.prompt}
+          </h2>
+        </div>
+
+        {/* Answer Options */}
+        <div className="space-y-4">
+          {current.options.map((option, idx) => (
+            <button
+              key={idx}
+              onClick={() => handleAnswer(option.type)}
+              className="w-full py-4 px-6 text-left border-2 border-gray-200 rounded-lg shadow-sm hover:shadow-lg bg-white hover:border-purple-300 transition-all duration-300 text-lg"
+            >
+              <div className="flex items-center">
+                <span className="w-6 h-6 rounded-full border-2 border-gray-300 mr-4 flex-shrink-0"></span>
+                {option.text}
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function QuizResult() {
+  const result = localStorage.getItem('quizResult') || 'Architect';
+  const [, setLocation] = useLocation();
+  
+  const isArchitect = result === 'Architect';
+  const background = isArchitect ? '#42047D' : '#F6782F';
+  
+  const summary = isArchitect
+    ? 'You lead with structure, systems, and clarity. Your superpower is strategic vision and building scalable frameworks that create predictable growth.'
+    : 'You lead with energy, intuition, and connection. Your superpower is magnetic creativity and transforming businesses through emotional resonance.';
+
+  const traits = isArchitect
+    ? [
+        'Strategic thinker who loves frameworks',
+        'Natural systems builder and optimizer',
+        'Thrives on logic and measurable outcomes',
+        'Creates scalable, repeatable processes'
+      ]
+    : [
+        'Intuitive leader who follows energy',
+        'Master of transformation and connection',
+        'Builds through relationships and stories',
+        'Creates breakthrough moments and experiences'
+      ];
+
+  return (
+    <div 
+      className="min-h-screen flex flex-col items-center justify-center text-center p-6 text-white"
+      style={{ background }}
+    >
+      <div className="max-w-3xl mx-auto">
+        <h1 className="text-5xl md:text-6xl font-bold mb-6">
+          You're the {result}
+        </h1>
+        
+        <p className="mb-8 text-xl md:text-2xl leading-relaxed max-w-2xl mx-auto">
+          {summary}
+        </p>
+
+        <div className="mb-8">
+          <h3 className="text-2xl font-semibold mb-4">Your Key Traits:</h3>
+          <div className="grid md:grid-cols-2 gap-4">
+            {traits.map((trait, idx) => (
+              <div key={idx} className="bg-white bg-opacity-20 rounded-lg p-4">
+                <p className="text-lg">{trait}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <button
+            onClick={() => setLocation('/courses')}
+            className="bg-white text-gray-800 px-8 py-4 rounded-lg text-lg font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105 mr-4"
+          >
+            View {result} Resources
+          </button>
+          
+          <button
+            onClick={() => setLocation('/quiz')}
+            className="bg-transparent border-2 border-white text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-white hover:text-gray-800 transition-all duration-300"
+          >
+            Retake Quiz
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
