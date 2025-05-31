@@ -1,8 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Rocket, GraduationCap, Users, Target, ArrowRight, Bot, TrendingUp, Megaphone, Share2, MessageCircle, X } from "lucide-react";
+import { Rocket, GraduationCap, Users, Target, ArrowRight, TrendingUp, Megaphone, Share2, MessageCircle, X } from "lucide-react";
 import { Link } from "wouter";
 import { useState } from "react";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 export default function Landing() {
   const [activeChatAgent, setActiveChatAgent] = useState<string | null>(null);
@@ -16,42 +18,7 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-      {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-2">
-              <Link href="/">
-                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                  <Rocket className="text-white w-4 h-4" />
-                </div>
-              </Link>
-              <span className="text-xl font-bold text-slate-900">Brandscaling</span>
-            </div>
-            
-            <nav className="hidden md:flex space-x-8">
-              <Link href="/" className="text-slate-600 hover:text-primary">Home</Link>
-              <Link href="/about" className="text-slate-600 hover:text-primary">About</Link>
-              <Link href="/courses" className="text-slate-600 hover:text-primary">Courses</Link>
-              <Link href="/blog" className="text-slate-600 hover:text-primary">Blog</Link>
-              <Link href="/community" className="text-slate-600 hover:text-primary">Community</Link>
-            </nav>
-            
-            <div className="flex space-x-2">
-              <Link href="/login">
-                <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white">
-                  Sign In
-                </Button>
-              </Link>
-              <Link href="/signup">
-                <Button className="bg-primary hover:bg-blue-600">
-                  Sign Up
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       {/* Hero Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8">
@@ -232,54 +199,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-slate-900 text-white py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                  <Rocket className="text-white w-4 h-4" />
-                </div>
-                <span className="text-xl font-bold">Brandscaling</span>
-              </div>
-              <p className="text-slate-400">
-                Empowering entrepreneurs to build scalable brands through strategic learning and community.
-              </p>
-            </div>
-            
-            <div>
-              <h4 className="font-semibold mb-4">Learn</h4>
-              <div className="space-y-2">
-                <Link href="/courses" className="block text-slate-400 hover:text-white">Courses</Link>
-                <Link href="/quiz" className="block text-slate-400 hover:text-white">Assessment</Link>
-                <Link href="/community" className="block text-slate-400 hover:text-white">Community</Link>
-              </div>
-            </div>
-            
-            <div>
-              <h4 className="font-semibold mb-4">Company</h4>
-              <div className="space-y-2">
-                <Link href="/about" className="block text-slate-400 hover:text-white">About</Link>
-                <Link href="/blog" className="block text-slate-400 hover:text-white">Blog</Link>
-              </div>
-            </div>
-            
-            <div>
-              <h4 className="font-semibold mb-4">Get Started</h4>
-              <Link href="/signup">
-                <Button className="w-full bg-primary hover:bg-blue-600">
-                  Start Your Journey
-                </Button>
-              </Link>
-            </div>
-          </div>
-          
-          <div className="border-t border-slate-800 mt-8 pt-8 text-center text-slate-400">
-            <p>&copy; 2024 Brandscaling Platform. Built for entrepreneurs.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
