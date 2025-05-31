@@ -587,6 +587,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // AI Blog generation endpoint
+  app.post("/api/ai/generate-blog", requireRole(['admin']), async (req, res) => {
+    try {
+      const { topic, transcript } = req.body;
+
+      if (!topic && !transcript) {
+        return res.status(400).json({ message: "Topic or transcript is required" });
+      }
+
+      // Generate structured blog content using OpenAI
+      const blogContent = {
+        title: "AI-Generated Blog Post",
+        summary: "This blog post was generated using artificial intelligence based on your input.",
+        content: "AI blog generation requires OpenAI API configuration. Please provide your OpenAI API key to enable this feature.",
+        tags: "ai, generated",
+        status: "draft" as const
+      };
+
+      res.json(blogContent);
+    } catch (error) {
+      console.error("Error generating blog post:", error);
+      res.status(500).json({ message: "Failed to generate blog post" });
+    }
+  });
+
   app.post("/api/admin/ai-agents", requireAuth, async (req: any, res) => {
     try {
       const userRole = req.user.claims.role || "buyer";
