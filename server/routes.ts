@@ -55,6 +55,85 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin routes
+  app.get('/api/admin/users', requireRole(['admin']), async (req, res) => {
+    try {
+      const users = await storage.getAllUsers();
+      res.json(users);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      res.status(500).json({ message: 'Failed to fetch users' });
+    }
+  });
+
+  app.patch('/api/admin/users/:userId/role', requireRole(['admin']), async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const { role } = req.body;
+      
+      if (!['guest', 'buyer', 'mastermind', 'admin'].includes(role)) {
+        return res.status(400).json({ message: 'Invalid role' });
+      }
+      
+      const updatedUser = await storage.updateUserRole(userId, role);
+      res.json(updatedUser);
+    } catch (error) {
+      console.error('Error updating user role:', error);
+      res.status(500).json({ message: 'Failed to update user role' });
+    }
+  });
+
+  app.get('/api/admin/courses', requireRole(['admin']), async (req, res) => {
+    try {
+      const courses = await storage.getCourses();
+      res.json(courses);
+    } catch (error) {
+      console.error('Error fetching courses:', error);
+      res.status(500).json({ message: 'Failed to fetch courses' });
+    }
+  });
+
+  app.post('/api/admin/courses', requireRole(['admin']), async (req, res) => {
+    try {
+      const course = await storage.createCourse(req.body);
+      res.json(course);
+    } catch (error) {
+      console.error('Error creating course:', error);
+      res.status(500).json({ message: 'Failed to create course' });
+    }
+  });
+
+  app.get('/api/admin/ai-agents', requireRole(['admin']), async (req, res) => {
+    try {
+      const agents = await storage.getAiAgents();
+      res.json(agents);
+    } catch (error) {
+      console.error('Error fetching AI agents:', error);
+      res.status(500).json({ message: 'Failed to fetch AI agents' });
+    }
+  });
+
+  app.patch('/api/admin/ai-agents/:id', requireRole(['admin']), async (req, res) => {
+    try {
+      const { id } = req.params;
+      const updatedAgent = await storage.updateAiAgent(parseInt(id), req.body);
+      res.json(updatedAgent);
+    } catch (error) {
+      console.error('Error updating AI agent:', error);
+      res.status(500).json({ message: 'Failed to update AI agent' });
+    }
+  });
+
+  app.get('/api/admin/stats', requireRole(['admin']), async (req, res) => {
+    try {
+      const stats = await storage.getSystemStats();
+      res.json(stats);
+    } catch (error) {
+      console.error('Error fetching stats:', error);
+      res.status(500).json({ message: 'Failed to fetch stats' });
+    }
+  });
+
   // Course routes
   app.get("/api/courses", requireAuth, async (req, res) => {
     try {

@@ -16,6 +16,7 @@ import Quiz from "@/pages/Quiz";
 import About from "@/pages/About";
 import Blog from "@/pages/Blog";
 import Admin from "@/pages/Admin";
+import AdminDashboard from "@/pages/AdminDashboard";
 import Layout from "@/components/Layout";
 
 function Router() {
@@ -72,7 +73,7 @@ function Router() {
           <Route path="/about" component={About} />
           <Route path="/blog" component={Blog} />
           {userProfile?.role === 'admin' && (
-            <Route path="/admin" component={Admin} />
+            <Route path="/admin" component={AdminDashboard} />
           )}
         </Layout>
       )}
