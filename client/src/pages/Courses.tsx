@@ -19,125 +19,36 @@ export default function Courses() {
           <p className="text-xl max-w-2xl mx-auto">From free masterclasses to high-ticket immersive strategy — choose the track that matches your scale season.</p>
         </section>
 
-        {/* Course Tracks */}
-        <Tabs defaultValue="free" className="mb-12">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="free">Free Courses</TabsTrigger>
-            <TabsTrigger value="paid">Paid Programs</TabsTrigger>
-            <TabsTrigger value="mastermind">Mastermind</TabsTrigger>
-          </TabsList>
+        {/* Course Grid */}
+        <section className="px-6 py-16 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
 
-          {/* Free Courses */}
-          <TabsContent value="free" className="space-y-6">
-            <div className="text-center py-16">
-              <BookOpen className="w-16 h-16 text-slate-400 mx-auto mb-6" />
-              <h3 className="text-2xl font-semibold text-slate-900 mb-4">Free Courses Coming Soon</h3>
-              <p className="text-slate-600 max-w-md mx-auto mb-8">
-                We're preparing foundational courses to help you get started with brand building fundamentals.
-              </p>
-              <Link href="/login">
-                <Button size="lg" className="bg-primary hover:bg-blue-600">
-                  Get Notified <ArrowRight className="ml-2 w-5 h-5" />
-                </Button>
-              </Link>
+            {/* Free Course */}
+            <div className="border rounded-lg shadow-md p-6">
+              <img src="https://via.placeholder.com/400x250" alt="Free Webinar" className="rounded mb-4 w-full" />
+              <h3 className="text-2xl font-semibold text-brand-purple mb-2">🚀 Free Webinar: Infinite Scaling™ Intro</h3>
+              <p className="text-gray-700 mb-4">Discover the exact 7-layer framework we've used to scale service businesses from 6 to 8 figures — without paid ads or burnout.</p>
+              <a href="/webinar" className="text-brand-orange font-semibold underline">Watch Now →</a>
             </div>
-          </TabsContent>
 
-          {/* Paid Programs */}
-          <TabsContent value="paid" className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-8">
-              {/* Architect Track Placeholder */}
-              <Card className="border-blue-200 bg-gradient-to-br from-blue-50 to-blue-100/20">
-                <CardHeader>
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center">
-                      <DraftingCompass className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-xl">Architect Track</CardTitle>
-                      <Badge variant="secondary">Strategic Foundation</Badge>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-slate-600 mb-6">
-                    Master the strategic frameworks for building scalable brand foundations and systems.
-                  </p>
-                  <div className="space-y-3 mb-6">
-                    <div className="flex items-center space-x-2">
-                      <Clock className="w-4 h-4 text-slate-500" />
-                      <span className="text-sm text-slate-600">Content being developed</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Users className="w-4 h-4 text-slate-500" />
-                      <span className="text-sm text-slate-600">Expert-led curriculum</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Star className="w-4 h-4 text-slate-500" />
-                      <span className="text-sm text-slate-600">Premium content</span>
-                    </div>
-                  </div>
-                  <Button className="w-full bg-blue-600 hover:bg-blue-700" disabled>
-                    Coming Soon
-                  </Button>
-                </CardContent>
-              </Card>
-
-              {/* Alchemist Track Placeholder */}
-              <Card className="border-purple-200 bg-gradient-to-br from-purple-50 to-purple-100/20">
-                <CardHeader>
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-purple-600 rounded-xl flex items-center justify-center">
-                      <Wand2 className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-xl">Alchemist Track</CardTitle>
-                      <Badge variant="secondary">Growth & Optimization</Badge>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-slate-600 mb-6">
-                    Transform your brand with advanced growth strategies, optimization, and market positioning.
-                  </p>
-                  <div className="space-y-3 mb-6">
-                    <div className="flex items-center space-x-2">
-                      <Clock className="w-4 h-4 text-slate-500" />
-                      <span className="text-sm text-slate-600">Content being developed</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Users className="w-4 h-4 text-slate-500" />
-                      <span className="text-sm text-slate-600">Advanced techniques</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Star className="w-4 h-4 text-slate-500" />
-                      <span className="text-sm text-slate-600">Premium content</span>
-                    </div>
-                  </div>
-                  <Button className="w-full bg-purple-600 hover:bg-purple-700" disabled>
-                    Coming Soon
-                  </Button>
-                </CardContent>
-              </Card>
+            {/* Paid Course */}
+            <div className="border rounded-lg shadow-md p-6">
+              <img src="https://via.placeholder.com/400x250" alt="90 Day Course" className="rounded mb-4 w-full" />
+              <h3 className="text-2xl font-semibold text-brand-orange mb-2">📈 90-Day Scaling Course</h3>
+              <p className="text-gray-700 mb-4">Weekly modules, live Q&A, and our full scaling OS. Ideal if you're doing 5–30k/month and want to break your next revenue ceiling.</p>
+              <a href="/course/90day" className="text-brand-purple font-semibold underline">See Curriculum →</a>
             </div>
-          </TabsContent>
 
-          {/* Mastermind */}
-          <TabsContent value="mastermind" className="space-y-6">
-            <div className="text-center py-16">
-              <Users className="w-16 h-16 text-slate-400 mx-auto mb-6" />
-              <h3 className="text-2xl font-semibold text-slate-900 mb-4">Exclusive Mastermind Program</h3>
-              <p className="text-slate-600 max-w-md mx-auto mb-8">
-                Join an elite community of entrepreneurs for peer learning, expert mentorship, and collaborative growth.
-              </p>
-              <Link href="/community">
-                <Button size="lg" variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white">
-                  Learn More <ArrowRight className="ml-2 w-5 h-5" />
-                </Button>
-              </Link>
+            {/* Mastermind */}
+            <div className="border rounded-lg shadow-md p-6">
+              <img src="https://via.placeholder.com/400x250" alt="Mastermind" className="rounded mb-4 w-full" />
+              <h3 className="text-2xl font-semibold text-purple-700 mb-2">🧠 Brandscaling Mastermind</h3>
+              <p className="text-gray-700 mb-4">Apply to work directly with our core team. Designed for high-performance business owners scaling with embedded growth partners.</p>
+              <a href="/apply" className="text-brand-orange font-semibold underline">Apply Now →</a>
             </div>
-          </TabsContent>
-        </Tabs>
+
+          </div>
+        </section>
 
         {/* CTA Section */}
         <Card className="bg-gradient-to-r from-primary to-blue-600 text-white">
