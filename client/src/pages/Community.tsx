@@ -1,338 +1,166 @@
-import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { apiRequest } from "@/lib/queryClient";
-import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/hooks/useAuth";
-import CommunityPost from "@/components/ui/community-post";
+import { MessageSquare, Users, TrendingUp, ArrowRight, Shield } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import {
-  MessageSquare,
-  Heart,
-  Users,
-  TrendingUp,
-  Plus,
-  Send,
-  Filter,
-  Search,
-} from "lucide-react";
+import { Link } from "wouter";
 
 export default function Community() {
-  const { user } = useAuth();
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
-  const [newPostTitle, setNewPostTitle] = useState("");
-  const [newPostContent, setNewPostContent] = useState("");
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-
-  const { data: posts, isLoading } = useQuery({
-    queryKey: ["/api/posts"],
-  });
-
-  const createPostMutation = useMutation({
-    mutationFn: async (data: { title?: string; content: string }) => {
-      await apiRequest("POST", "/api/posts", data);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/posts"] });
-      setNewPostTitle("");
-      setNewPostContent("");
-      setIsCreateDialogOpen(false);
-      toast({
-        title: "Post Created",
-        description: "Your post has been shared with the community.",
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: "Failed to create post. Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const likePostMutation = useMutation({
-    mutationFn: async (postId: number) => {
-      await apiRequest("POST", `/api/posts/${postId}/like`, {});
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/posts"] });
-    },
-  });
-
-  const handleCreatePost = () => {
-    if (!newPostContent.trim()) {
-      toast({
-        title: "Error",
-        description: "Please add content to your post.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    createPostMutation.mutate({
-      title: newPostTitle.trim() || undefined,
-      content: newPostContent.trim(),
-    });
-  };
-
-  const handleLikePost = (postId: number) => {
-    likePostMutation.mutate(postId);
-  };
-
-  const getRoleBadgeColor = (role: string) => {
-    switch (role) {
-      case "mastermind":
-        return "bg-emerald-100 text-emerald-700";
-      case "admin":
-        return "bg-purple-100 text-purple-700";
-      case "buyer":
-        return "bg-blue-100 text-blue-700";
-      default:
-        return "bg-slate-100 text-slate-700";
-    }
-  };
-
-  const getRoleLabel = (role: string) => {
-    switch (role) {
-      case "mastermind":
-        return "Mastermind";
-      case "admin":
-        return "Admin";
-      case "buyer":
-        return "Member";
-      default:
-        return "Guest";
-    }
-  };
-
-  if (isLoading) {
-    return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="animate-pulse space-y-4">
-          {[...Array(3)].map((_, i) => (
-            <Card key={i}>
-              <CardContent className="p-6">
-                <div className="h-4 bg-slate-200 rounded w-3/4 mb-2"></div>
-                <div className="h-4 bg-slate-200 rounded w-1/2"></div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Community</h1>
-          <p className="text-slate-600">
-            Connect, share insights, and learn from fellow entrepreneurs
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+      <Header />
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Hero Section */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
+            Join Our Private Community
+          </h1>
+          <p className="text-xl text-slate-600 max-w-3xl mx-auto mb-8">
+            Connect with like-minded entrepreneurs, share insights, and grow together in an exclusive environment.
           </p>
         </div>
-        
-        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-          <DialogTrigger asChild>
-            <Button className="bg-primary hover:bg-blue-600 mt-4 md:mt-0">
-              <Plus className="w-4 h-4 mr-2" />
-              New Post
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>Share with the Community</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              <Input
-                placeholder="Post title (optional)"
-                value={newPostTitle}
-                onChange={(e) => setNewPostTitle(e.target.value)}
-              />
-              <Textarea
-                placeholder="What would you like to share? Ask questions, share insights, or celebrate wins..."
-                value={newPostContent}
-                onChange={(e) => setNewPostContent(e.target.value)}
-                rows={6}
-              />
-              <div className="flex justify-end space-x-2">
-                <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
-                  Cancel
-                </Button>
-                <Button 
-                  onClick={handleCreatePost}
-                  disabled={createPostMutation.isPending}
-                >
-                  <Send className="w-4 h-4 mr-2" />
-                  {createPostMutation.isPending ? "Posting..." : "Post"}
-                </Button>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
-      </div>
 
-      {/* Community Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                <Users className="w-6 h-6 text-primary" />
-              </div>
-              <div>
-                <h3 className="text-2xl font-bold text-slate-900">2,847</h3>
-                <p className="text-slate-600 text-sm">Active Members</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                <MessageSquare className="w-6 h-6 text-emerald-600" />
-              </div>
-              <div>
-                <h3 className="text-2xl font-bold text-slate-900">{posts?.length || 0}</h3>
-                <p className="text-slate-600 text-sm">Discussions</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                <TrendingUp className="w-6 h-6 text-purple-600" />
-              </div>
-              <div>
-                <h3 className="text-2xl font-bold text-slate-900">847</h3>
-                <p className="text-slate-600 text-sm">This Week</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Filters and Search */}
-      <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 mb-6">
-        <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
-          <Input placeholder="Search discussions..." className="pl-10" />
-        </div>
-        <Button variant="outline" className="flex items-center space-x-2">
-          <Filter className="w-4 h-4" />
-          <span>Filter</span>
-        </Button>
-      </div>
-
-      {/* Content Tabs */}
-      <Tabs defaultValue="recent" className="w-full">
-        <TabsList className="grid w-full grid-cols-4 mb-8">
-          <TabsTrigger value="recent">Recent</TabsTrigger>
-          <TabsTrigger value="trending">Trending</TabsTrigger>
-          <TabsTrigger value="questions">Questions</TabsTrigger>
-          <TabsTrigger value="wins">Wins</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="recent" className="space-y-6">
-          {posts && posts.length > 0 ? (
-            posts.map((post: any) => (
-              <Card key={post.id} className="hover:shadow-md transition-shadow">
-                <CardContent className="p-6">
-                  <div className="flex items-start space-x-4">
-                    <img
-                      src={post.user.profileImageUrl || `https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&w=40&h=40&fit=crop&crop=face`}
-                      alt={`${post.user.firstName || 'User'} avatar`}
-                      className="w-10 h-10 rounded-full object-cover"
-                    />
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-2 mb-2">
-                        <h4 className="font-medium text-slate-900">
-                          {post.user.firstName || post.user.email?.split("@")[0] || "Anonymous"}
-                        </h4>
-                        <Badge variant="secondary" className={getRoleBadgeColor(post.user.role)}>
-                          {getRoleLabel(post.user.role)}
-                        </Badge>
-                        <span className="text-xs text-slate-500">
-                          {new Date(post.createdAt).toLocaleDateString()}
-                        </span>
-                      </div>
-                      
-                      {post.title && (
-                        <h3 className="font-semibold text-slate-900 mb-2">{post.title}</h3>
-                      )}
-                      
-                      <p className="text-slate-700 mb-4 whitespace-pre-wrap">{post.content}</p>
-                      
-                      <div className="flex items-center space-x-6 text-sm text-slate-500">
-                        <button 
-                          className="flex items-center space-x-1 hover:text-red-500 transition-colors"
-                          onClick={() => handleLikePost(post.id)}
-                        >
-                          <Heart className="w-4 h-4" />
-                          <span>{post.likes} likes</span>
-                        </button>
-                        <button className="flex items-center space-x-1 hover:text-primary transition-colors">
-                          <MessageSquare className="w-4 h-4" />
-                          <span>{post.replies?.length || 0} replies</span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))
-          ) : (
-            <div className="text-center py-12">
-              <MessageSquare className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-slate-900 mb-2">No discussions yet</h3>
-              <p className="text-slate-600 mb-4">Be the first to start a conversation!</p>
-              <Button onClick={() => setIsCreateDialogOpen(true)}>
-                <Plus className="w-4 h-4 mr-2" />
-                Create First Post
+        {/* Community Access CTA */}
+        <div className="text-center py-16">
+          <div className="w-20 h-20 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <Shield className="w-10 h-10 text-primary" />
+          </div>
+          <h3 className="text-2xl font-semibold text-slate-900 mb-4">Private Community Access</h3>
+          <p className="text-slate-600 max-w-md mx-auto mb-8">
+            Our community is exclusively available to registered members. Join us to participate in discussions and connect with fellow entrepreneurs.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/login">
+              <Button size="lg" className="bg-primary hover:bg-blue-600">
+                Login <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
+            </Link>
+            <Link href="/signup">
+              <Button size="lg" variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white">
+                Register
+              </Button>
+            </Link>
+          </div>
+        </div>
+
+        {/* Community Features Preview */}
+        <div className="grid md:grid-cols-3 gap-8 mb-16">
+          <Card className="text-center border-blue-200 bg-gradient-to-br from-blue-50 to-blue-100/20">
+            <CardContent className="p-8">
+              <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <MessageSquare className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-4">Discussion Forums</h3>
+              <p className="text-slate-600">
+                Engage in meaningful conversations about brand strategy, growth tactics, and entrepreneurship.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="text-center border-emerald-200 bg-gradient-to-br from-emerald-50 to-emerald-100/20">
+            <CardContent className="p-8">
+              <div className="w-16 h-16 bg-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <Users className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-4">Peer Networking</h3>
+              <p className="text-slate-600">
+                Connect with entrepreneurs at similar stages and build valuable professional relationships.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="text-center border-purple-200 bg-gradient-to-br from-purple-50 to-purple-100/20">
+            <CardContent className="p-8">
+              <div className="w-16 h-16 bg-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <TrendingUp className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-4">Growth Insights</h3>
+              <p className="text-slate-600">
+                Share wins, challenges, and learn from real experiences of fellow community members.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Community Guidelines */}
+        <Card className="mb-16">
+          <CardHeader>
+            <CardTitle className="text-2xl text-center">Community Guidelines</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid md:grid-cols-2 gap-8">
+              <div>
+                <h4 className="font-semibold text-slate-900 mb-4">What to Expect</h4>
+                <ul className="space-y-3 text-slate-600">
+                  <li className="flex items-start space-x-2">
+                    <span className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></span>
+                    <span>Respectful and constructive discussions</span>
+                  </li>
+                  <li className="flex items-start space-x-2">
+                    <span className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></span>
+                    <span>Expert insights and peer learning opportunities</span>
+                  </li>
+                  <li className="flex items-start space-x-2">
+                    <span className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></span>
+                    <span>Regular community events and Q&A sessions</span>
+                  </li>
+                  <li className="flex items-start space-x-2">
+                    <span className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></span>
+                    <span>Access to exclusive resources and content</span>
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-semibold text-slate-900 mb-4">Community Standards</h4>
+                <ul className="space-y-3 text-slate-600">
+                  <li className="flex items-start space-x-2">
+                    <span className="w-2 h-2 bg-emerald-500 rounded-full mt-2 flex-shrink-0"></span>
+                    <span>Be respectful and professional</span>
+                  </li>
+                  <li className="flex items-start space-x-2">
+                    <span className="w-2 h-2 bg-emerald-500 rounded-full mt-2 flex-shrink-0"></span>
+                    <span>Share valuable insights and experiences</span>
+                  </li>
+                  <li className="flex items-start space-x-2">
+                    <span className="w-2 h-2 bg-emerald-500 rounded-full mt-2 flex-shrink-0"></span>
+                    <span>Support fellow entrepreneurs</span>
+                  </li>
+                  <li className="flex items-start space-x-2">
+                    <span className="w-2 h-2 bg-emerald-500 rounded-full mt-2 flex-shrink-0"></span>
+                    <span>Keep discussions relevant and constructive</span>
+                  </li>
+                </ul>
+              </div>
             </div>
-          )}
-        </TabsContent>
+          </CardContent>
+        </Card>
 
-        <TabsContent value="trending" className="space-y-6">
-          <div className="text-center py-12">
-            <TrendingUp className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-slate-900 mb-2">Trending content coming soon</h3>
-            <p className="text-slate-600">Popular discussions will appear here.</p>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="questions" className="space-y-6">
-          <div className="text-center py-12">
-            <MessageSquare className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-slate-900 mb-2">Questions section coming soon</h3>
-            <p className="text-slate-600">Q&A discussions will be organized here.</p>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="wins" className="space-y-6">
-          <div className="text-center py-12">
-            <TrendingUp className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-slate-900 mb-2">Celebrate wins together</h3>
-            <p className="text-slate-600">Share your successes and milestones here.</p>
-          </div>
-        </TabsContent>
-      </Tabs>
+        {/* Join CTA */}
+        <Card className="bg-gradient-to-r from-primary to-blue-600 text-white">
+          <CardContent className="p-12 text-center">
+            <h2 className="text-3xl font-bold mb-4">Ready to Connect?</h2>
+            <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+              Join our community of ambitious entrepreneurs and start building meaningful connections today.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/login">
+                <Button size="lg" className="bg-white text-primary hover:bg-gray-100">
+                  Sign In to Community <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
+              </Link>
+              <Link href="/signup">
+                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-primary">
+                  Create Account
+                </Button>
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+      
+      <Footer />
     </div>
   );
 }
