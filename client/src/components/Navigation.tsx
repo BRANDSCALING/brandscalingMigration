@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { useAuth } from "@/hooks/useAuth";
+import { useFirebaseAuth } from "@/hooks/useFirebaseAuth";
 import { Button } from "@/components/ui/button";
 import { Bell, Rocket } from "lucide-react";
 import {
@@ -12,7 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function Navigation() {
   const [location] = useLocation();
-  const { user, isAuthenticated } = useAuth();
+  const { userProfile, isAuthenticated, logout } = useFirebaseAuth();
 
   const navItems = [
     { href: "/", label: "Dashboard" },
@@ -94,17 +94,17 @@ export default function Navigation() {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="flex items-center space-x-3 h-auto p-2">
                   <Avatar className="w-8 h-8">
-                    <AvatarImage src={user?.profileImageUrl || ""} alt="User avatar" />
+                    <AvatarImage src="" alt="User avatar" />
                     <AvatarFallback>
-                      {user?.firstName?.[0] || user?.email?.[0] || "U"}
+                      {userProfile?.displayName?.[0] || userProfile?.email?.[0] || "U"}
                     </AvatarFallback>
                   </Avatar>
                   <div className="hidden sm:block text-left">
                     <p className="text-sm font-medium text-slate-900">
-                      {user?.firstName || user?.email?.split("@")[0] || "User"}
+                      {userProfile?.displayName || userProfile?.email?.split("@")[0] || "User"}
                     </p>
-                    <p className={`text-xs px-2 py-1 rounded-full ${getRoleBadgeColor(user?.role || "buyer")}`}>
-                      {getRoleDisplay(user?.role || "buyer")}
+                    <p className={`text-xs px-2 py-1 rounded-full ${getRoleBadgeColor(userProfile?.role || "buyer")}`}>
+                      {getRoleDisplay(userProfile?.role || "buyer")}
                     </p>
                   </div>
                 </Button>
@@ -113,13 +113,13 @@ export default function Navigation() {
                 <DropdownMenuItem asChild>
                   <Link href="/profile">Profile Settings</Link>
                 </DropdownMenuItem>
-                {user?.role === "admin" && (
+                {userProfile?.role === "admin" && (
                   <DropdownMenuItem asChild>
                     <Link href="/admin">Admin Dashboard</Link>
                   </DropdownMenuItem>
                 )}
                 <DropdownMenuItem
-                  onClick={() => (window.location.href = "/api/logout")}
+                  onClick={logout}
                   className="text-red-600"
                 >
                   Log Out

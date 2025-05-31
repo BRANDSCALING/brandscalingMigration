@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Rocket, GraduationCap, Users, Target, Star, ArrowRight } from "lucide-react";
+import { Link } from "wouter";
 
 export default function Landing() {
   return (
@@ -16,12 +17,18 @@ export default function Landing() {
               <span className="text-xl font-bold text-slate-900">Brandscaling</span>
             </div>
             
-            <Button 
-              onClick={() => window.location.href = "/api/login"}
-              className="bg-primary hover:bg-blue-600"
-            >
-              Sign In
-            </Button>
+            <div className="flex space-x-2">
+              <Link href="/login">
+                <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white">
+                  Sign In
+                </Button>
+              </Link>
+              <Link href="/signup">
+                <Button className="bg-primary hover:bg-blue-600">
+                  Sign Up
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </header>
@@ -39,13 +46,14 @@ export default function Landing() {
               AI-powered insights, and exclusive mastermind community.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
-                size="lg" 
-                onClick={() => window.location.href = "/api/login"}
-                className="bg-primary hover:bg-blue-600 text-lg px-8 py-6"
-              >
-                Get Started Today <ArrowRight className="ml-2 w-5 h-5" />
-              </Button>
+              <Link href="/signup">
+                <Button 
+                  size="lg" 
+                  className="bg-primary hover:bg-blue-600 text-lg px-8 py-6"
+                >
+                  Get Started Today <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
+              </Link>
               <Button 
                 size="lg" 
                 variant="outline"
@@ -141,13 +149,14 @@ export default function Landing() {
           <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
             Join our community of successful entrepreneurs and start your brandscaling journey today.
           </p>
-          <Button 
-            size="lg"
-            onClick={() => window.location.href = "/api/login"}
-            className="bg-white text-primary hover:bg-gray-100 text-lg px-8 py-6"
-          >
-            Start Your Journey <ArrowRight className="ml-2 w-5 h-5" />
-          </Button>
+          <Link href="/signup">
+            <Button 
+              size="lg"
+              className="bg-white text-primary hover:bg-gray-100 text-lg px-8 py-6"
+            >
+              Start Your Journey <ArrowRight className="ml-2 w-5 h-5" />
+            </Button>
+          </Link>
         </div>
       </section>
 
