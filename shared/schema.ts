@@ -253,7 +253,11 @@ export const eventAttendeesRelations = relations(eventAttendees, ({ one }) => ({
 
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).omit({
-  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const upsertUserSchema = createInsertSchema(users).omit({
   createdAt: true,
   updatedAt: true,
 });
@@ -290,7 +294,7 @@ export const insertEventSchema = createInsertSchema(events).omit({
 });
 
 // Types
-export type UpsertUser = z.infer<typeof insertUserSchema>;
+export type UpsertUser = z.infer<typeof upsertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 
