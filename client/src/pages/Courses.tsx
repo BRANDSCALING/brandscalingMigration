@@ -14,14 +14,10 @@ export default function Courses() {
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Hero Section */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
-            Master Your Brand Journey
-          </h1>
-          <p className="text-xl text-slate-600 max-w-3xl mx-auto mb-8">
-            Choose your path and unlock the strategic frameworks to build, scale, and optimize your brand.
-          </p>
-        </div>
+        <section className="text-center px-6 py-20 bg-brand-purple text-white rounded-lg mb-12">
+          <h1 className="text-5xl font-bold mb-4">📚 Explore Brandscaling Courses</h1>
+          <p className="text-xl max-w-2xl mx-auto">From free masterclasses to high-ticket immersive strategy — choose the track that matches your scale season.</p>
+        </section>
 
         {/* Course Tracks */}
         <Tabs defaultValue="free" className="mb-12">
