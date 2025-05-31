@@ -77,7 +77,7 @@ function AIBlogGenerator({
         transcript: transcript.trim(),
       });
 
-      onGenerate(response);
+      onGenerate(response as BlogFormData);
       setTopic("");
       setTranscript("");
       
@@ -259,6 +259,8 @@ export default function BlogManagement() {
   const queryClient = useQueryClient();
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [showAIDialog, setShowAIDialog] = useState(false);
+  const [aiGeneratedData, setAiGeneratedData] = useState<BlogFormData | null>(null);
 
   // Fetch blog posts
   const { data: blogPosts = [], isLoading } = useQuery({
@@ -381,6 +383,12 @@ export default function BlogManagement() {
     createPostMutation.mutate(data);
   };
 
+  const handleAIGenerate = (data: BlogFormData) => {
+    setAiGeneratedData(data);
+    setShowAIDialog(false);
+    setShowCreateDialog(true);
+  };
+
   const handleUpdatePost = (data: BlogFormData) => {
     if (editingPost) {
       updatePostMutation.mutate({ id: editingPost.id, data });
@@ -397,20 +405,55 @@ export default function BlogManagement() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-slate-900">Blog Post Management</h2>
-        <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="w-4 h-4 mr-2" />
-              New Post
-            </Button>
-          </DialogTrigger>
+        <div className="flex gap-2">
+          <Dialog open={showAIDialog} onOpenChange={setShowAIDialog}>
+            <DialogTrigger asChild>
+              <Button variant="outline">
+                <Sparkles className="w-4 h-4 mr-2" />
+                Generate with AI
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl">
+              <DialogHeader>
+                <DialogTitle>Generate Blog Post with AI</DialogTitle>
+              </DialogHeader>
+              <AIBlogGenerator onGenerate={handleAIGenerate} />
+            </DialogContent>
+          </Dialog>
+          
+          <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="w-4 h-4 mr-2" />
+                New Post
+              </Button>
+            </DialogTrigger>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Create New Blog Post</DialogTitle>
             </DialogHeader>
             <BlogPostForm
-              onSubmit={handleCreatePost}
-              onCancel={() => setShowCreateDialog(false)}
+              post={aiGeneratedData ? {
+                id: 0,
+                title: aiGeneratedData.title,
+                slug: '',
+                summary: aiGeneratedData.summary,
+                content: aiGeneratedData.content,
+                tags: aiGeneratedData.tags,
+                status: aiGeneratedData.status,
+                authorId: '',
+                createdAt: '',
+                updatedAt: '',
+                author: { id: '', firstName: '', lastName: '', email: '' }
+              } : undefined}
+              onSubmit={(data) => {
+                handleCreatePost(data);
+                setAiGeneratedData(null);
+              }}
+              onCancel={() => {
+                setShowCreateDialog(false);
+                setAiGeneratedData(null);
+              }}
             />
           </DialogContent>
         </Dialog>
