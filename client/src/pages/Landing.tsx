@@ -21,11 +21,21 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <Rocket className="text-white w-4 h-4" />
-              </div>
+              <Link href="/">
+                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                  <Rocket className="text-white w-4 h-4" />
+                </div>
+              </Link>
               <span className="text-xl font-bold text-slate-900">Brandscaling</span>
             </div>
+            
+            <nav className="hidden md:flex space-x-8">
+              <Link href="/" className="text-slate-600 hover:text-primary">Home</Link>
+              <Link href="/about" className="text-slate-600 hover:text-primary">About</Link>
+              <Link href="/courses" className="text-slate-600 hover:text-primary">Courses</Link>
+              <Link href="/blog" className="text-slate-600 hover:text-primary">Blog</Link>
+              <Link href="/community" className="text-slate-600 hover:text-primary">Community</Link>
+            </nav>
             
             <div className="flex space-x-2">
               <Link href="/login">
