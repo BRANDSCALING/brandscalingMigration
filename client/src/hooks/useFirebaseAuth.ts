@@ -46,6 +46,12 @@ export function useFirebaseAuth() {
   // Get user profile from Firestore
   const getUserProfile = async (uid: string): Promise<UserProfile | null> => {
     try {
+      // Check if Firestore is available
+      if (!db) {
+        console.warn('Firestore not available');
+        return null;
+      }
+      
       const docRef = doc(db, 'users', uid);
       const docSnap = await getDoc(docRef);
       
@@ -55,6 +61,7 @@ export function useFirebaseAuth() {
       return null;
     } catch (error) {
       console.error('Error getting user profile:', error);
+      // Return null instead of throwing to allow authentication to continue
       return null;
     }
   };
@@ -70,24 +77,34 @@ export function useFirebaseAuth() {
         createdAt: new Date()
       };
 
-      // Create profile in Firestore
-      await setDoc(doc(db, 'users', user.uid), userProfile);
+      // Try to create profile in Firestore if available
+      try {
+        if (db) {
+          await setDoc(doc(db, 'users', user.uid), userProfile);
+        }
+      } catch (firestoreError) {
+        console.warn('Firestore not available, skipping user profile creation:', firestoreError);
+      }
       
       // Also create profile in backend via API
-      const token = await user.getIdToken();
-      await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          uid: user.uid,
-          email: user.email,
-          displayName: user.displayName,
-          role
-        })
-      });
+      try {
+        const token = await user.getIdToken();
+        await fetch('/api/auth/signup', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName,
+            role
+          })
+        });
+      } catch (apiError) {
+        console.warn('Backend API not available:', apiError);
+      }
       
       setUserProfile(userProfile);
       return userProfile;
