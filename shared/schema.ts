@@ -170,6 +170,20 @@ export const eventAttendees = pgTable("event_attendees", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Blog posts
+export const blogPosts = pgTable("blog_posts", {
+  id: serial("id").primaryKey(),
+  title: varchar("title").notNull(),
+  slug: varchar("slug").notNull().unique(),
+  summary: text("summary"),
+  content: text("content"),
+  tags: text("tags"), // comma-separated
+  status: varchar("status").notNull().default("draft"), // draft, published
+  authorId: varchar("author_id").notNull().references(() => users.id),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   progress: many(userProgress),
@@ -178,6 +192,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   quizResults: many(quizResults),
   conversations: many(aiConversations),
   eventAttendees: many(eventAttendees),
+  blogPosts: many(blogPosts),
 }));
 
 export const coursesRelations = relations(courses, ({ many }) => ({
@@ -251,6 +266,13 @@ export const eventAttendeesRelations = relations(eventAttendees, ({ one }) => ({
   }),
 }));
 
+export const blogPostsRelations = relations(blogPosts, ({ one }) => ({
+  author: one(users, {
+    fields: [blogPosts.authorId],
+    references: [users.id],
+  }),
+}));
+
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).omit({
   createdAt: true,
@@ -293,6 +315,12 @@ export const insertEventSchema = createInsertSchema(events).omit({
   createdAt: true,
 });
 
+export const insertBlogPostSchema = createInsertSchema(blogPosts).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 // Types
 export type UpsertUser = z.infer<typeof upsertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -324,3 +352,6 @@ export type Event = typeof events.$inferSelect;
 export type InsertEvent = z.infer<typeof insertEventSchema>;
 
 export type EventAttendee = typeof eventAttendees.$inferSelect;
+
+export type BlogPost = typeof blogPosts.$inferSelect;
+export type InsertBlogPost = z.infer<typeof insertBlogPostSchema>;

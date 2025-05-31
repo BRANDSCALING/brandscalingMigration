@@ -11,6 +11,7 @@ import {
   events,
   eventAttendees,
   workflows,
+  blogPosts,
   type User,
   type UpsertUser,
   type Course,
@@ -29,6 +30,8 @@ import {
   type InsertEvent,
   type EventAttendee,
   type Workflow,
+  type BlogPost,
+  type InsertBlogPost,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, or, sql } from "drizzle-orm";
@@ -81,6 +84,14 @@ export interface IStorage {
   // Workflows
   getActiveWorkflows(): Promise<Workflow[]>;
   
+  // Blog operations
+  getBlogPosts(publishedOnly?: boolean): Promise<(BlogPost & { author: User })[]>;
+  getBlogPost(id: number): Promise<(BlogPost & { author: User }) | undefined>;
+  getBlogPostBySlug(slug: string): Promise<(BlogPost & { author: User }) | undefined>;
+  createBlogPost(post: InsertBlogPost): Promise<BlogPost>;
+  updateBlogPost(id: number, post: Partial<InsertBlogPost>): Promise<BlogPost>;
+  deleteBlogPost(id: number): Promise<void>;
+
   // Admin operations
   getAllUsers(): Promise<User[]>;
   updateUserRole(userId: string, role: string): Promise<User>;
@@ -89,6 +100,7 @@ export interface IStorage {
     totalCourses: number;
     totalPosts: number;
     activeEvents: number;
+    totalBlogPosts: number;
   }>;
 }
 
@@ -430,11 +442,125 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
 
+  // Blog operations
+  async getBlogPosts(publishedOnly = false): Promise<(BlogPost & { author: User })[]> {
+    const query = db
+      .select({
+        id: blogPosts.id,
+        title: blogPosts.title,
+        slug: blogPosts.slug,
+        summary: blogPosts.summary,
+        content: blogPosts.content,
+        tags: blogPosts.tags,
+        status: blogPosts.status,
+        authorId: blogPosts.authorId,
+        createdAt: blogPosts.createdAt,
+        updatedAt: blogPosts.updatedAt,
+        author: {
+          id: users.id,
+          email: users.email,
+          firstName: users.firstName,
+          lastName: users.lastName,
+          profileImageUrl: users.profileImageUrl,
+          role: users.role,
+        },
+      })
+      .from(blogPosts)
+      .innerJoin(users, eq(blogPosts.authorId, users.id))
+      .orderBy(desc(blogPosts.createdAt));
+
+    if (publishedOnly) {
+      query.where(eq(blogPosts.status, "published"));
+    }
+
+    return query;
+  }
+
+  async getBlogPost(id: number): Promise<(BlogPost & { author: User }) | undefined> {
+    const [post] = await db
+      .select({
+        id: blogPosts.id,
+        title: blogPosts.title,
+        slug: blogPosts.slug,
+        summary: blogPosts.summary,
+        content: blogPosts.content,
+        tags: blogPosts.tags,
+        status: blogPosts.status,
+        authorId: blogPosts.authorId,
+        createdAt: blogPosts.createdAt,
+        updatedAt: blogPosts.updatedAt,
+        author: {
+          id: users.id,
+          email: users.email,
+          firstName: users.firstName,
+          lastName: users.lastName,
+          profileImageUrl: users.profileImageUrl,
+          role: users.role,
+        },
+      })
+      .from(blogPosts)
+      .innerJoin(users, eq(blogPosts.authorId, users.id))
+      .where(eq(blogPosts.id, id));
+
+    return post;
+  }
+
+  async getBlogPostBySlug(slug: string): Promise<(BlogPost & { author: User }) | undefined> {
+    const [post] = await db
+      .select({
+        id: blogPosts.id,
+        title: blogPosts.title,
+        slug: blogPosts.slug,
+        summary: blogPosts.summary,
+        content: blogPosts.content,
+        tags: blogPosts.tags,
+        status: blogPosts.status,
+        authorId: blogPosts.authorId,
+        createdAt: blogPosts.createdAt,
+        updatedAt: blogPosts.updatedAt,
+        author: {
+          id: users.id,
+          email: users.email,
+          firstName: users.firstName,
+          lastName: users.lastName,
+          profileImageUrl: users.profileImageUrl,
+          role: users.role,
+        },
+      })
+      .from(blogPosts)
+      .innerJoin(users, eq(blogPosts.authorId, users.id))
+      .where(eq(blogPosts.slug, slug));
+
+    return post;
+  }
+
+  async createBlogPost(post: InsertBlogPost): Promise<BlogPost> {
+    const [newPost] = await db
+      .insert(blogPosts)
+      .values(post)
+      .returning();
+    return newPost;
+  }
+
+  async updateBlogPost(id: number, post: Partial<InsertBlogPost>): Promise<BlogPost> {
+    const [updatedPost] = await db
+      .update(blogPosts)
+      .set({ ...post, updatedAt: new Date() })
+      .where(eq(blogPosts.id, id))
+      .returning();
+    return updatedPost;
+  }
+
+  async deleteBlogPost(id: number): Promise<void> {
+    await db.delete(blogPosts).where(eq(blogPosts.id, id));
+  }
+
   async getSystemStats(): Promise<{
     totalUsers: number;
     totalCourses: number;
     totalPosts: number;
     activeEvents: number;
+    totalBlogPosts: number;
   }> {
     const [userCount] = await db.select({ count: sql<number>`count(*)` }).from(users);
     const [courseCount] = await db.select({ count: sql<number>`count(*)` }).from(courses);
@@ -443,12 +569,14 @@ export class DatabaseStorage implements IStorage {
       .select({ count: sql<number>`count(*)` })
       .from(events)
       .where(sql`${events.scheduledAt} > NOW()`);
+    const [blogPostCount] = await db.select({ count: sql<number>`count(*)` }).from(blogPosts);
 
     return {
       totalUsers: userCount.count,
       totalCourses: courseCount.count,
       totalPosts: postCount.count,
       activeEvents: eventCount.count,
+      totalBlogPosts: blogPostCount.count,
     };
   }
 }
