@@ -216,6 +216,7 @@ export function useFirebaseAuth() {
     signUp,
     signIn,
     signInWithGoogle,
+    resetPassword,
     logout,
     updateUserRole
   };
