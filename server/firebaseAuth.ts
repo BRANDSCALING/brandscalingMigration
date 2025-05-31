@@ -1,39 +1,5 @@
-import admin from 'firebase-admin';
 import type { Express, RequestHandler } from "express";
 import { storage } from "./storage";
-
-// Initialize Firebase Admin SDK
-if (!admin.apps.length) {
-  try {
-    // Try to initialize with service account credentials if available
-    if (process.env.FIREBASE_ADMIN_PRIVATE_KEY && process.env.FIREBASE_ADMIN_CLIENT_EMAIL) {
-      const privateKey = process.env.FIREBASE_ADMIN_PRIVATE_KEY.replace(/\\n/g, '\n');
-      admin.initializeApp({
-        credential: admin.credential.cert({
-          projectId: process.env.VITE_FIREBASE_PROJECT_ID,
-          clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
-          privateKey: privateKey,
-        }),
-        projectId: process.env.VITE_FIREBASE_PROJECT_ID,
-      });
-    } else {
-      // Fallback: Use client-side verification for development
-      console.log('Firebase Admin credentials not available, using client-side verification');
-      admin.initializeApp({
-        projectId: process.env.VITE_FIREBASE_PROJECT_ID,
-      });
-    }
-  } catch (error) {
-    console.error('Firebase Admin initialization failed:', error);
-    // Initialize with minimal config for development
-    admin.initializeApp({
-      projectId: process.env.VITE_FIREBASE_PROJECT_ID,
-    });
-  }
-}
-
-const auth = admin.auth();
-const firestore = admin.firestore();
 
 // Extend Express Request type to include user
 declare global {
