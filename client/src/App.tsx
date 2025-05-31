@@ -72,9 +72,7 @@ function Router() {
           <Route path="/quiz" component={Quiz} />
           <Route path="/about" component={About} />
           <Route path="/blog" component={Blog} />
-          {userProfile?.role === 'admin' && (
-            <Route path="/admin" component={AdminDashboard} />
-          )}
+          <Route path="/admin" component={AdminDashboard} />
         </Layout>
       )}
       <Route component={NotFound} />

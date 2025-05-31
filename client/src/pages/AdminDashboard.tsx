@@ -81,19 +81,19 @@ export default function AdminDashboard() {
   }, [loading, isAdmin]);
 
   // Fetch users
-  const { data: users = [], isLoading: usersLoading } = useQuery({
+  const { data: users = [], isLoading: usersLoading } = useQuery<User[]>({
     queryKey: ['/api/admin/users'],
     enabled: isAdmin,
   });
 
   // Fetch courses
-  const { data: courses = [], isLoading: coursesLoading } = useQuery({
+  const { data: courses = [], isLoading: coursesLoading } = useQuery<Course[]>({
     queryKey: ['/api/admin/courses'],
     enabled: isAdmin,
   });
 
   // Fetch AI agents
-  const { data: aiAgents = [], isLoading: agentsLoading } = useQuery({
+  const { data: aiAgents = [], isLoading: agentsLoading } = useQuery<AiAgent[]>({
     queryKey: ['/api/admin/ai-agents'],
     enabled: isAdmin,
   });
