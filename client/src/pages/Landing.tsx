@@ -96,8 +96,6 @@ export default function Landing() {
           viewAllLink="/courses"
         />
 
-        <BrandscalingAgents />
-
         <AIAgents 
           title="Ask an AI That Actually Gets Your Business."
           subtext="Try our trained advisors - Strategy, Startup, Social Media, and more."
@@ -147,6 +145,8 @@ export default function Landing() {
           cta1="Take the Quiz"
           cta2="Join the Newsletter"
         />
+
+        <BrandscalingAgents />
       </main>
       
       <Footer />
