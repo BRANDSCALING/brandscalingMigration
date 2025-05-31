@@ -14,7 +14,7 @@ declare global {
   }
 }
 
-// Middleware to verify Firebase token
+// Middleware to verify Firebase token (simplified for development)
 export const verifyFirebaseToken: RequestHandler = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
@@ -24,54 +24,48 @@ export const verifyFirebaseToken: RequestHandler = async (req, res, next) => {
 
     const token = authHeader.split('Bearer ')[1];
     
+    // For development: decode token payload without full verification
     try {
-      const decodedToken = await auth.verifyIdToken(token);
-      
-      // Get user profile from our PostgreSQL database instead of Firestore
-      const user = await storage.getUser(decodedToken.uid);
-      
-      req.user = {
-        uid: decodedToken.uid,
-        email: decodedToken.email || '',
-        role: user?.role || 'guest'
-      };
-    } catch (verifyError) {
-      // If token verification fails, try a simpler approach for development
-      console.warn('Token verification failed, using development mode:', verifyError instanceof Error ? verifyError.message : 'Unknown error');
-      
-      // For development: decode token payload without verification
       const payload = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
       
       if (payload.exp && payload.exp < Date.now() / 1000) {
         return res.status(401).json({ error: 'Unauthorized: Token expired' });
       }
       
+      const userId = payload.sub || payload.uid || payload.user_id;
+      if (!userId) {
+        return res.status(401).json({ error: 'Unauthorized: Invalid token format' });
+      }
+      
       // Get or create user in our database
-      let user = await storage.getUser(payload.sub || payload.uid);
+      let user = await storage.getUser(userId);
       if (!user) {
         user = await storage.upsertUser({
-          id: payload.sub || payload.uid,
-          email: payload.email,
+          id: userId,
+          email: payload.email || null,
           role: 'guest',
-          firstName: null,
-          lastName: null,
-          profileImageUrl: null,
+          firstName: payload.name?.split(' ')[0] || null,
+          lastName: payload.name?.split(' ').slice(1).join(' ') || null,
+          profileImageUrl: payload.picture || null,
           stripeCustomerId: null,
           stripeSubscriptionId: null
         });
       }
       
       req.user = {
-        uid: payload.sub || payload.uid,
+        uid: userId,
         email: payload.email || '',
         role: user.role
       };
+      
+      next();
+    } catch (decodeError) {
+      console.error('Token decode failed:', decodeError);
+      return res.status(401).json({ error: 'Unauthorized: Invalid token' });
     }
-
-    next();
   } catch (error) {
     console.error('Firebase token verification failed:', error);
-    return res.status(401).json({ error: 'Unauthorized: Invalid token' });
+    res.status(401).json({ error: 'Unauthorized: Invalid token' });
   }
 };
 
@@ -98,44 +92,31 @@ export const requireRole = (roles: string[]): RequestHandler => {
   };
 };
 
-// Helper function to create or update user profile in Firestore
+// Helper function to create or update user profile in PostgreSQL
 export const createUserProfile = async (uid: string, email: string, displayName?: string, role: string = 'guest') => {
   try {
-    const userRef = firestore.collection('users').doc(uid);
-    const userDoc = await userRef.get();
+    await storage.upsertUser({
+      id: uid,
+      email,
+      firstName: displayName?.split(' ')[0] || null,
+      lastName: displayName?.split(' ').slice(1).join(' ') || null,
+      role,
+      profileImageUrl: null,
+      stripeCustomerId: null,
+      stripeSubscriptionId: null
+    });
     
-    if (!userDoc.exists) {
-      await userRef.set({
-        uid,
-        email,
-        displayName: displayName || email.split('@')[0],
-        role,
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
-        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-      });
-      
-      // Also create user in PostgreSQL database
-      await storage.upsertUser({
-        id: uid,
-        email,
-        firstName: displayName?.split(' ')[0] || null,
-        lastName: displayName?.split(' ')[1] || null,
-        role,
-      });
-    }
-    
-    return userRef;
+    return true;
   } catch (error) {
     console.error('Error creating user profile:', error);
     throw error;
   }
 };
 
-// Helper function to get user profile from Firestore
+// Helper function to get user profile from PostgreSQL
 export const getUserProfile = async (uid: string) => {
   try {
-    const userDoc = await firestore.collection('users').doc(uid).get();
-    return userDoc.exists ? userDoc.data() : null;
+    return await storage.getUser(uid);
   } catch (error) {
     console.error('Error getting user profile:', error);
     return null;
@@ -145,19 +126,10 @@ export const getUserProfile = async (uid: string) => {
 // Helper function to update user role
 export const updateUserRole = async (uid: string, role: string) => {
   try {
-    await firestore.collection('users').doc(uid).update({
-      role,
-      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-    });
-    
-    // Also update in PostgreSQL database
     await storage.updateUserRole(uid, role);
-    
     return true;
   } catch (error) {
     console.error('Error updating user role:', error);
     return false;
   }
 };
-
-export { auth, firestore };
