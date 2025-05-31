@@ -492,6 +492,101 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Blog management routes (admin only)
+  app.get("/api/blog-posts", requireRole(['admin']), async (req, res) => {
+    try {
+      const posts = await storage.getBlogPosts(false); // Get all posts including drafts
+      res.json(posts);
+    } catch (error) {
+      console.error("Error fetching blog posts:", error);
+      res.status(500).json({ message: "Failed to fetch blog posts" });
+    }
+  });
+
+  app.get("/api/blog-posts/published", async (req, res) => {
+    try {
+      const posts = await storage.getBlogPosts(true); // Only published posts
+      res.json(posts);
+    } catch (error) {
+      console.error("Error fetching published blog posts:", error);
+      res.status(500).json({ message: "Failed to fetch blog posts" });
+    }
+  });
+
+  app.post("/api/blog-posts", requireRole(['admin']), async (req: any, res) => {
+    try {
+      const { title, summary, content, tags, status = 'draft' } = req.body;
+      
+      // Auto-generate slug from title
+      const slug = title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '');
+
+      const blogPostData = {
+        title,
+        slug,
+        summary,
+        content,
+        tags,
+        status,
+        authorId: req.user.uid,
+      };
+
+      const blogPostSchema = z.object({
+        title: z.string().min(1),
+        slug: z.string().min(1),
+        summary: z.string().optional(),
+        content: z.string().optional(),
+        tags: z.string().optional(),
+        status: z.enum(['draft', 'published']),
+        authorId: z.string(),
+      });
+
+      const validatedData = blogPostSchema.parse(blogPostData);
+      const post = await storage.createBlogPost(validatedData);
+      res.json(post);
+    } catch (error) {
+      console.error("Error creating blog post:", error);
+      res.status(500).json({ message: "Failed to create blog post" });
+    }
+  });
+
+  app.put("/api/blog-posts/:id", requireRole(['admin']), async (req: any, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { title, summary, content, tags, status } = req.body;
+      
+      let updateData: any = { summary, content, tags, status };
+      
+      // If title changed, regenerate slug
+      if (title) {
+        updateData.title = title;
+        updateData.slug = title
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/(^-|-$)/g, '');
+      }
+
+      const post = await storage.updateBlogPost(id, updateData);
+      res.json(post);
+    } catch (error) {
+      console.error("Error updating blog post:", error);
+      res.status(500).json({ message: "Failed to update blog post" });
+    }
+  });
+
+  app.delete("/api/blog-posts/:id", requireRole(['admin']), async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteBlogPost(id);
+      res.json({ message: "Blog post deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting blog post:", error);
+      res.status(500).json({ message: "Failed to delete blog post" });
+    }
+  });
+
   app.post("/api/admin/ai-agents", requireAuth, async (req: any, res) => {
     try {
       const userRole = req.user.claims.role || "buyer";

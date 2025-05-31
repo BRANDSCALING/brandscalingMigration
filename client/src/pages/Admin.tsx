@@ -28,6 +28,7 @@ import {
   Calendar,
   TrendingUp,
 } from "lucide-react";
+import BlogManagement from "@/components/BlogManagement";
 
 export default function Admin() {
   const { user } = useAuth();
@@ -263,10 +264,11 @@ export default function Admin() {
 
       {/* Admin Tabs */}
       <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-5 mb-8">
+        <TabsList className="grid w-full grid-cols-6 mb-8">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="users">Users</TabsTrigger>
           <TabsTrigger value="courses">Courses</TabsTrigger>
+          <TabsTrigger value="blog">Blog Posts</TabsTrigger>
           <TabsTrigger value="ai-agents">AI Agents</TabsTrigger>
           <TabsTrigger value="settings">Settings</TabsTrigger>
         </TabsList>
@@ -435,6 +437,10 @@ export default function Admin() {
             <h3 className="text-lg font-medium text-slate-900 mb-2">Course management coming soon</h3>
             <p className="text-slate-600">Advanced course editing and management features will be available here.</p>
           </div>
+        </TabsContent>
+
+        <TabsContent value="blog" className="space-y-6">
+          <BlogManagement />
         </TabsContent>
 
         <TabsContent value="ai-agents" className="space-y-6">
