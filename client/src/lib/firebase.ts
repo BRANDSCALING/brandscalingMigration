@@ -3,7 +3,7 @@ import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  apiKey: "AIzaSyBicKPeM4qDZipGrGJMqA2Z1R21VZg",
   authDomain: "brandscaling-platform.firebaseapp.com",
   projectId: "brandscaling-platform",
   storageBucket: "brandscaling-platform.firebasestorage.app",
