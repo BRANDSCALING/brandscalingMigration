@@ -19,6 +19,8 @@ import {
   Calendar,
   Eye,
   EyeOff,
+  Sparkles,
+  FileUp,
 } from "lucide-react";
 
 interface BlogPost {
@@ -46,6 +48,109 @@ interface BlogFormData {
   content: string;
   tags: string;
   status: 'draft' | 'published';
+}
+
+function AIBlogGenerator({ 
+  onGenerate 
+}: { 
+  onGenerate: (data: BlogFormData) => void;
+}) {
+  const [topic, setTopic] = useState("");
+  const [transcript, setTranscript] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
+  const { toast } = useToast();
+
+  const generateBlog = async () => {
+    if (!topic.trim() && !transcript.trim()) {
+      toast({
+        title: "Input Required",
+        description: "Please enter a topic or paste a transcript",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsGenerating(true);
+    try {
+      const response = await apiRequest("POST", "/api/ai/generate-blog", {
+        topic: topic.trim(),
+        transcript: transcript.trim(),
+      });
+
+      onGenerate(response);
+      setTopic("");
+      setTranscript("");
+      
+      toast({
+        title: "Blog Generated",
+        description: "AI has generated a blog draft for you to review and edit",
+      });
+    } catch (error) {
+      console.error("Error generating blog:", error);
+      toast({
+        title: "Generation Failed",
+        description: "Failed to generate blog content. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <Label htmlFor="topic">Blog Topic</Label>
+        <Input
+          id="topic"
+          value={topic}
+          onChange={(e) => setTopic(e.target.value)}
+          placeholder="e.g., 'Scaling customer service without losing personal touch'"
+          disabled={isGenerating}
+        />
+        <p className="text-sm text-gray-500 mt-1">
+          Describe what you want to write about
+        </p>
+      </div>
+
+      <div className="text-center text-gray-500 text-sm">
+        OR
+      </div>
+
+      <div>
+        <Label htmlFor="transcript">Paste Transcript</Label>
+        <Textarea
+          id="transcript"
+          value={transcript}
+          onChange={(e) => setTranscript(e.target.value)}
+          placeholder="Paste interview, podcast, or video transcript here..."
+          rows={6}
+          disabled={isGenerating}
+        />
+        <p className="text-sm text-gray-500 mt-1">
+          AI will extract key insights and create a structured blog post
+        </p>
+      </div>
+
+      <Button 
+        onClick={generateBlog} 
+        disabled={isGenerating || (!topic.trim() && !transcript.trim())}
+        className="w-full"
+      >
+        {isGenerating ? (
+          <>
+            <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2" />
+            Generating...
+          </>
+        ) : (
+          <>
+            <Sparkles className="w-4 h-4 mr-2" />
+            Generate Blog with AI
+          </>
+        )}
+      </Button>
+    </div>
+  );
 }
 
 function BlogPostForm({ 
