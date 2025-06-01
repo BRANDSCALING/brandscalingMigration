@@ -8,8 +8,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
-import { Plus, MessageCircle, Search, Filter, ArrowLeft } from "lucide-react";
+import { Plus, MessageCircle, Search, Filter, ArrowLeft, MoreVertical, Pin, Star, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { auth } from "@/lib/firebase";
@@ -168,6 +169,83 @@ export default function StudentCommunity() {
       toast({
         title: "Error",
         description: "Failed to delete post",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Pin post mutation
+  const pinPostMutation = useMutation({
+    mutationFn: (postId: string) => apiRequest("POST", `/api/community/posts/${postId}/pin`),
+    onSuccess: async () => {
+      await refetch();
+      toast({
+        title: "Post Pinned",
+        description: "Post has been pinned to the top",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to pin post",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Unpin post mutation
+  const unpinPostMutation = useMutation({
+    mutationFn: (postId: string) => apiRequest("DELETE", `/api/community/posts/${postId}/pin`),
+    onSuccess: async () => {
+      await refetch();
+      toast({
+        title: "Post Unpinned",
+        description: "Post has been unpinned",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to unpin post",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Feature post mutation
+  const featurePostMutation = useMutation({
+    mutationFn: ({ postId, featuredType }: { postId: string; featuredType: string }) => 
+      apiRequest("POST", `/api/community/posts/${postId}/featured`, { featuredType }),
+    onSuccess: async () => {
+      await refetch();
+      toast({
+        title: "Post Featured",
+        description: "Post has been featured as an announcement",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to feature post",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Unfeature post mutation
+  const unfeaturePostMutation = useMutation({
+    mutationFn: (postId: string) => apiRequest("DELETE", `/api/community/posts/${postId}/featured`),
+    onSuccess: async () => {
+      await refetch();
+      toast({
+        title: "Post Unfeatured",
+        description: "Post is no longer featured",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to unfeature post",
         variant: "destructive",
       });
     },
@@ -418,9 +496,126 @@ export default function StudentCommunity() {
         </div>
       </div>
 
-      {/* Posts List */}
+      {/* Featured Announcements */}
+      {posts && posts.filter(post => post.featuredType).length > 0 && (
+        <div className="space-y-3">
+          <h3 className="font-semibold text-lg text-gray-900">Featured Announcements</h3>
+          {posts
+            .filter(post => post.featuredType)
+            .map((post) => {
+              const getFeaturedIcon = (type: string) => {
+                switch (type) {
+                  case 'launch': return '🎉';
+                  case 'update': return '📢';
+                  case 'tip': return '🧠';
+                  case 'warning': return '⚠️';
+                  case 'direction': return '🧭';
+                  default: return '📌';
+                }
+              };
+
+              const getFeaturedColor = (type: string) => {
+                switch (type) {
+                  case 'launch': return 'bg-green-50 border-green-200 text-green-800';
+                  case 'update': return 'bg-blue-50 border-blue-200 text-blue-800';
+                  case 'tip': return 'bg-purple-50 border-purple-200 text-purple-800';
+                  case 'warning': return 'bg-yellow-50 border-yellow-200 text-yellow-800';
+                  case 'direction': return 'bg-indigo-50 border-indigo-200 text-indigo-800';
+                  default: return 'bg-gray-50 border-gray-200 text-gray-800';
+                }
+              };
+
+              return (
+                <Card key={post.id} className={`border-2 ${getFeaturedColor(post.featuredType)}`}>
+                  <CardContent className="p-4">
+                    <div className="flex items-start gap-3">
+                      <span className="text-2xl">{getFeaturedIcon(post.featuredType)}</span>
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-lg mb-2">{post.title}</h4>
+                        <p className="mb-3">{post.body}</p>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2 text-sm">
+                            <Avatar className="h-6 w-6">
+                              <AvatarImage src={post.user.profileImageUrl || undefined} />
+                              <AvatarFallback className="text-xs">
+                                {post.user.firstName?.[0] || post.user.email?.[0] || "U"}
+                              </AvatarFallback>
+                            </Avatar>
+                            <span>{post.user.firstName || post.user.email}</span>
+                            {(post.user.role === 'admin' || post.user.role === 'staff') && (
+                              <Badge variant="default" className="text-xs bg-purple-600">
+                                {post.user.role === 'admin' ? 'Admin' : 'Staff'}
+                              </Badge>
+                            )}
+                          </div>
+                          {(user?.role === 'admin' || user?.role === 'staff') && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => unfeaturePostMutation.mutate(post.id)}
+                              disabled={unfeaturePostMutation.isPending}
+                            >
+                              Remove Featured
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+        </div>
+      )}
+
+      {/* Pinned Posts */}
+      {posts && posts.filter(post => post.isPinned && !post.featuredType).length > 0 && (
+        <div className="space-y-3">
+          <h3 className="font-semibold text-lg text-gray-900">📌 Pinned Posts</h3>
+          {posts
+            .filter(post => post.isPinned && !post.featuredType)
+            .map((post) => (
+              <Card key={post.id} className="border-l-4 border-l-blue-500 bg-blue-50">
+                <CardContent className="p-4">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <h4 className="font-semibold text-lg mb-2">{post.title}</h4>
+                      <p className="text-gray-700 mb-3">{post.body}</p>
+                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                        <Avatar className="h-6 w-6">
+                          <AvatarImage src={post.user.profileImageUrl || undefined} />
+                          <AvatarFallback className="text-xs">
+                            {post.user.firstName?.[0] || post.user.email?.[0] || "U"}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span>{post.user.firstName || post.user.email}</span>
+                        {(post.user.role === 'admin' || post.user.role === 'staff') && (
+                          <Badge variant="default" className="text-xs bg-purple-600">
+                            {post.user.role === 'admin' ? 'Admin' : 'Staff'}
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                    {(user?.role === 'admin' || user?.role === 'staff') && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => unpinPostMutation.mutate(post.id)}
+                        disabled={unpinPostMutation.isPending}
+                      >
+                        Unpin
+                      </Button>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+        </div>
+      )}
+
+      {/* Regular Posts List */}
       <div className="space-y-4">
-        {filteredPosts.length === 0 ? (
+        {filteredPosts.filter(post => !post.featuredType && !post.isPinned).length === 0 ? (
           <Card>
             <CardContent className="p-8 text-center">
               <MessageCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
@@ -532,15 +727,48 @@ export default function StudentCommunity() {
                       )}
                       
                       {/* Admin moderation controls */}
-                      {(user?.role === 'admin' || user?.role === 'staff') && !isAuthor && (
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          onClick={() => handleAdminDeletePost(post)}
-                          className="text-red-600 hover:text-red-700"
-                        >
-                          Admin Delete
-                        </Button>
+                      {(user?.role === 'admin' || user?.role === 'staff') && (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="outline" size="sm">
+                              <MoreVertical className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            {!post.isPinned && (
+                              <DropdownMenuItem onClick={() => pinPostMutation.mutate(post.id)}>
+                                <Pin className="h-4 w-4 mr-2" />
+                                Pin Post
+                              </DropdownMenuItem>
+                            )}
+                            {post.isPinned && (
+                              <DropdownMenuItem onClick={() => unpinPostMutation.mutate(post.id)}>
+                                <Pin className="h-4 w-4 mr-2" />
+                                Unpin Post
+                              </DropdownMenuItem>
+                            )}
+                            <DropdownMenuItem onClick={() => featurePostMutation.mutate({ postId: post.id, featuredType: 'update' })}>
+                              <Star className="h-4 w-4 mr-2" />
+                              Feature as Update
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => featurePostMutation.mutate({ postId: post.id, featuredType: 'tip' })}>
+                              <Star className="h-4 w-4 mr-2" />
+                              Feature as Tip
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => featurePostMutation.mutate({ postId: post.id, featuredType: 'warning' })}>
+                              <Star className="h-4 w-4 mr-2" />
+                              Feature as Warning
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem 
+                              onClick={() => handleAdminDeletePost(post)}
+                              className="text-red-600 focus:text-red-600"
+                            >
+                              <Trash2 className="h-4 w-4 mr-2" />
+                              Delete Post
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       )}
                     </div>
                   </div>
