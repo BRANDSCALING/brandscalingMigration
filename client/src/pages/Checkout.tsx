@@ -126,7 +126,7 @@ export default function Checkout() {
             <div className="text-center">
               <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
               <p className="text-2xl font-bold text-purple-600 mt-2">
-                ${isSubscription ? '97/month' : (amount ? `${amount}` : '497')}
+                £{isSubscription ? '97/month' : (amount ? `${amount}` : '497')}
               </p>
             </div>
           </CardHeader>
