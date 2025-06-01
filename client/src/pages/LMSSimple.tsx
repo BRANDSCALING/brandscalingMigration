@@ -91,18 +91,34 @@ export default function LMSSimple() {
     }
   }, [user]);
 
-  // Redirect if not authenticated (but don't redirect if still loading)
+  // Redirect if not authenticated after loading completes
   useEffect(() => {
     if (!userLoading && !user) {
-      // Instead of hard redirect, show login message
-      console.log('User not authenticated, should redirect to login');
+      window.location.href = "/login";
     }
   }, [user, userLoading]);
 
-  if (userLoading || !user) {
+  if (userLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-orange-50">
         <div className="animate-spin w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-orange-50">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold mb-2">Authentication Required</h2>
+          <p className="text-gray-600 mb-4">Please log in to access the LMS dashboard.</p>
+          <button 
+            onClick={() => window.location.href = "/login"}
+            className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700"
+          >
+            Go to Login
+          </button>
+        </div>
       </div>
     );
   }
