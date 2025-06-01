@@ -21,6 +21,8 @@ export default function StudentCommunity() {
   const [selectedTag, setSelectedTag] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState("");
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [editingPost, setEditingPost] = useState<CommunityPost | null>(null);
   const [newPost, setNewPost] = useState({
     title: "",
     body: "",
@@ -83,6 +85,70 @@ export default function StudentCommunity() {
     },
   });
 
+  // Undo post mutation
+  const undoPostMutation = useMutation({
+    mutationFn: (postId: string) => apiRequest("DELETE", `/api/community/posts/${postId}/undo`),
+    onSuccess: async () => {
+      await refetch();
+      toast({
+        title: "Post Undone",
+        description: "Your post has been removed from the community.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to undo post. The 60-second window may have expired.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Edit post mutation
+  const editPostMutation = useMutation({
+    mutationFn: async (data: { postId: string; title: string; body: string; tags?: string[] }) => {
+      const response = await apiRequest("PUT", `/api/community/posts/${data.postId}`, {
+        title: data.title,
+        body: data.body,
+        tags: data.tags,
+      });
+      return await response.json();
+    },
+    onSuccess: async () => {
+      await refetch();
+      setIsEditDialogOpen(false);
+      setEditingPost(null);
+      setNewPost({ title: "", body: "", tags: [] });
+      setTagInput("");
+      toast({
+        title: "Post Updated",
+        description: "Your post has been successfully updated.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to update post. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleUndoPost = (postId: string) => {
+    undoPostMutation.mutate(postId);
+  };
+
+  const handleEditPost = (post: CommunityPost) => {
+    setEditingPost(post);
+    setNewPost({
+      title: post.title,
+      body: post.body,
+      tags: post.tags || [],
+    });
+    setTagInput("");
+    setIsEditDialogOpen(true);
+  };
+
   const handleCreatePost = async () => {
     console.log("Form data:", { title: newPost.title, body: newPost.body });
     console.log("Firebase user:", auth.currentUser);
@@ -110,6 +176,24 @@ export default function StudentCommunity() {
       title: newPost.title,
       body: newPost.body,
       tags: newPost.tags.length > 0 ? newPost.tags : undefined,
+    });
+  };
+
+  const handleEditSubmit = async () => {
+    if (!editingPost || !newPost.title.trim() || !newPost.body.trim()) {
+      toast({
+        title: "Error",
+        description: "Please fill in all required fields.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    editPostMutation.mutate({
+      postId: editingPost.id,
+      title: newPost.title.trim(),
+      body: newPost.body.trim(),
+      tags: newPost.tags.filter(tag => tag.trim() !== ""),
     });
   };
 
@@ -340,17 +424,133 @@ export default function StudentCommunity() {
                   </div>
                 )}
 
-                <div className="flex items-center gap-4 text-sm text-gray-600">
-                  <Button variant="ghost" size="sm" className="flex items-center gap-1">
-                    <MessageCircle className="h-4 w-4" />
-                    AWAITING USER CONTENT
-                  </Button>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4 text-sm text-gray-600">
+                    <Button variant="ghost" size="sm" className="flex items-center gap-1">
+                      <MessageCircle className="h-4 w-4" />
+                      Reply
+                    </Button>
+                  </div>
+                  
+                  {/* Show edit/undo controls only for post author */}
+                  {user && post.userId === user.id && (
+                    <div className="flex items-center gap-2">
+                      {/* Show undo button only within 60 seconds of creation */}
+                      {new Date().getTime() - new Date(post.createdAt).getTime() < 60000 && (
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => handleUndoPost(post.id)}
+                          disabled={undoPostMutation.isPending}
+                          className="text-red-600 hover:text-red-700"
+                        >
+                          Undo
+                        </Button>
+                      )}
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => handleEditPost(post)}
+                        className="text-blue-600 hover:text-blue-700"
+                      >
+                        Edit
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
           ))
         )}
       </div>
+
+      {/* Edit Post Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit Post</DialogTitle>
+            <DialogDescription>
+              Update your post content and tags.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="edit-title">Post Title</Label>
+              <Input
+                id="edit-title"
+                value={newPost.title}
+                onChange={(e) => setNewPost(prev => ({ ...prev, title: e.target.value }))}
+                placeholder="Enter post title"
+                className="w-full"
+              />
+            </div>
+            <div>
+              <Label htmlFor="edit-body">What would you like to share or ask?</Label>
+              <Textarea
+                id="edit-body"
+                value={newPost.body}
+                onChange={(e) => setNewPost(prev => ({ ...prev, body: e.target.value }))}
+                placeholder="Share your thoughts, questions, or insights..."
+                className="w-full min-h-[100px]"
+              />
+            </div>
+            <div>
+              <Label htmlFor="edit-tags">Tags</Label>
+              <div className="flex gap-2 mb-2">
+                <Input
+                  id="edit-tags"
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
+                  placeholder="Add tags..."
+                  className="flex-1"
+                  onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTag())}
+                />
+                <Button type="button" onClick={handleAddTag} variant="outline" size="sm">
+                  Add
+                </Button>
+              </div>
+              {newPost.tags.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {newPost.tags.map((tag, index) => (
+                    <Badge
+                      key={index}
+                      variant="secondary"
+                      className="cursor-pointer"
+                      onClick={() => setNewPost(prev => ({
+                        ...prev,
+                        tags: prev.tags.filter((_, i) => i !== index)
+                      }))}
+                    >
+                      {tag} ×
+                    </Badge>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                setIsEditDialogOpen(false);
+                setEditingPost(null);
+                setNewPost({ title: "", body: "", tags: [] });
+                setTagInput("");
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              onClick={handleEditSubmit}
+              disabled={editPostMutation.isPending}
+            >
+              {editPostMutation.isPending ? "Updating..." : "Update Post"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
