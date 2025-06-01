@@ -42,7 +42,6 @@ function Router() {
             setLocation('/dashboard');
             break;
           case 'student':
-          case 'buyer':
             setLocation('/lms');
             break;
           default:
@@ -50,23 +49,21 @@ function Router() {
         }
       }
       // Redirect students away from admin dashboard and public pages
-      else if (userProfile.role === 'student' || userProfile.role === 'buyer') {
+      else if (userProfile.role === 'student') {
         if (location === '/dashboard' || location === '/admin' || 
             location === '/about' || location === '/courses' || 
-            location === '/community' || location === '/contact' || location === '/blog') {
+            location === '/community' || location === '/contact' || 
+            location === '/blog' || location === '/quiz') {
           setLocation('/lms');
         }
       }
-      // Redirect non-admin users away from admin dashboard
-      else if (userProfile.role !== 'admin' && 
-               (location === '/dashboard' || location === '/admin')) {
-        setLocation('/lms');
-      }
-      // Redirect admin users away from public pages to admin dashboard
-      else if (userProfile.role === 'admin' && 
-               (location === '/about' || location === '/courses' || 
-                location === '/community' || location === '/contact' || location === '/blog')) {
-        setLocation('/dashboard');
+      // Redirect admin users away from public pages and student areas
+      else if (userProfile.role === 'admin') {
+        if (location === '/about' || location === '/courses' || 
+            location === '/community' || location === '/contact' || 
+            location === '/blog' || location === '/quiz' || location === '/lms') {
+          setLocation('/dashboard');
+        }
       }
     }
     // Redirect unauthenticated users trying to access protected routes
@@ -123,8 +120,8 @@ function Router() {
         </Layout>
       )}
 
-      {/* Student routes - only for student/buyer users */}
-      {isAuthenticated && (userProfile?.role === 'student' || userProfile?.role === 'buyer') && (
+      {/* Student routes - only for student users */}
+      {isAuthenticated && userProfile?.role === 'student' && (
         <Layout>
           <Route path="/lms" component={LMS} />
           <Route path="/quiz/deep" component={DeepQuiz} />

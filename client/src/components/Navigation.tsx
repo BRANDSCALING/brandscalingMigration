@@ -69,7 +69,10 @@ export default function Navigation() {
         <div className="flex justify-between items-center h-16">
           {/* Logo & Brand */}
           <div className="flex items-center space-x-4">
-            <a href="/" className="flex items-center">
+            <a href="/" className="flex items-center" onClick={(e) => {
+              e.preventDefault();
+              window.location.href = '/';
+            }}>
               <img 
                 src={brandscalingLogo} 
                 alt="Brandscaling" 
