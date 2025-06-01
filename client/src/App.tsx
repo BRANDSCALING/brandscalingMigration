@@ -17,6 +17,7 @@ import Contact from "@/pages/Contact";
 import Blog from "@/pages/Blog";
 import Checkout from "@/pages/Checkout";
 import ThankYou from "@/pages/ThankYou";
+import Affiliates from "@/pages/Affiliates";
 import Layout from "@/components/Layout";
 
 // Sandboxed Modules
@@ -127,6 +128,7 @@ function Router() {
       <Route path="/deep-quiz" component={() => <PublicPage><DeepQuiz /></PublicPage>} />
       <Route path="/checkout" component={() => <PublicPage><Checkout /></PublicPage>} />
       <Route path="/thank-you" component={() => <PublicPage><ThankYou /></PublicPage>} />
+      <Route path="/affiliates" component={() => <PublicPage><Affiliates /></PublicPage>} />
 
       {/* SANDBOXED AUTHENTICATED ROUTES */}
       {/* Student Module - ONLY accessible to students */}

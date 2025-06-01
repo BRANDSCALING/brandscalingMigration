@@ -33,6 +33,8 @@ export default function Footer() {
             <div className="space-y-2">
               <Link href="/about" className="block text-slate-400 hover:text-white">About</Link>
               <Link href="/blog" className="block text-slate-400 hover:text-white">Blog</Link>
+              <Link href="/contact" className="block text-slate-400 hover:text-white">Contact</Link>
+              <Link href="/affiliates" className="block text-slate-400 hover:text-white">Affiliates</Link>
             </div>
           </div>
           
