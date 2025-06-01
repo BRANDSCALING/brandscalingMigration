@@ -98,7 +98,6 @@ export default function Landing() {
           title="Ask an AI That Actually Gets Your Business."
           subtext="Try our trained advisors - Strategy, Startup, Social Media, and more."
           tags={["Startup", "Scaleup", "Architect", "Alchemist"]}
-          samplePrompt="How do I reposition my offer?"
         />
 
         <BrandPillars 

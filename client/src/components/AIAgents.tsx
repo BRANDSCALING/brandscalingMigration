@@ -7,10 +7,9 @@ interface AIAgentsProps {
   title: string;
   subtext: string;
   tags: string[];
-  samplePrompt: string;
 }
 
-export default function AIAgents({ title, subtext, tags, samplePrompt }: AIAgentsProps) {
+export default function AIAgents({ title, subtext, tags }: AIAgentsProps) {
   return (
     <section className="py-20 px-4 sm:px-6 lg:px-8 bg-alchemist-gradient relative overflow-hidden">
       <div className="absolute inset-0 bg-black/15"></div>
@@ -29,16 +28,6 @@ export default function AIAgents({ title, subtext, tags, samplePrompt }: AIAgent
             </Badge>
           ))}
         </div>
-        
-        <Card className="max-w-md mx-auto mb-8 bg-white/90 backdrop-blur-sm border-0">
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-3 mb-4">
-              <MessageCircle className="w-6 h-6 text-brand-orange" />
-              <span className="font-semibold text-slate-900">Try asking:</span>
-            </div>
-            <p className="text-slate-600 italic">"{samplePrompt}"</p>
-          </CardContent>
-        </Card>
         
         <Button size="lg" className="bg-white text-brand-orange hover:bg-gray-50 shadow-xl">
           Chat with AI Advisors
