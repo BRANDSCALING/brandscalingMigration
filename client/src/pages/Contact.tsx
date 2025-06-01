@@ -34,20 +34,20 @@ export default function Contact() {
               <input
                 type="text"
                 name="name"
-                placeholder="Full Name"
+                placeholder=""
                 className="border border-gray-300 px-4 py-3 rounded-lg"
                 required
               />
               <input
                 type="email"
                 name="email"
-                placeholder="Email Address"
+                placeholder=""
                 className="border border-gray-300 px-4 py-3 rounded-lg"
                 required
               />
               <textarea
                 name="message"
-                placeholder="Tell us about your goals or enquiry..."
+                placeholder=""
                 className="border border-gray-300 px-4 py-3 rounded-lg"
                 rows={5}
                 required
