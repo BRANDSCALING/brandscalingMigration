@@ -109,6 +109,7 @@ export interface IStorage {
 
   // LMS operations
   getLmsModules(): Promise<LmsModule[]>;
+  getLmsModulesWithAccess(userId: string): Promise<(LmsModule & { isAccessible: boolean; unlockDate?: Date })[]>;
   getLmsModule(id: number): Promise<LmsModule | undefined>;
   createLmsModule(module: InsertLmsModule): Promise<LmsModule>;
   updateLmsModule(id: number, module: Partial<InsertLmsModule>): Promise<LmsModule>;
@@ -607,6 +608,45 @@ export class DatabaseStorage implements IStorage {
   // LMS operations
   async getLmsModules(): Promise<LmsModule[]> {
     return await db.select().from(lmsModules).where(eq(lmsModules.isActive, true)).orderBy(lmsModules.order);
+  }
+
+  async getLmsModulesWithAccess(userId: string): Promise<(LmsModule & { isAccessible: boolean; unlockDate?: Date })[]> {
+    const user = await this.getUser(userId);
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const modules = await this.getLmsModules();
+    
+    return modules.map(module => {
+      let isAccessible = false;
+      let unlockDate: Date | undefined;
+
+      if (user.role === "mastermind") {
+        // Mastermind users have full access to all modules
+        isAccessible = true;
+      } else if (user.role === "buyer") {
+        // Buyer users unlock 1 module every 30 days after purchase
+        if (user.stripePaidAt) {
+          const daysSincePurchase = Math.floor(
+            (Date.now() - user.stripePaidAt.getTime()) / (1000 * 60 * 60 * 24)
+          );
+          
+          if (daysSincePurchase >= (module.unlockAfterDays || 0)) {
+            isAccessible = true;
+          } else {
+            unlockDate = new Date(user.stripePaidAt.getTime() + ((module.unlockAfterDays || 0) * 24 * 60 * 60 * 1000));
+          }
+        }
+      }
+      // Guest users have no access to LMS modules
+
+      return {
+        ...module,
+        isAccessible,
+        unlockDate
+      };
+    });
   }
 
   async getLmsModule(id: number): Promise<LmsModule | undefined> {

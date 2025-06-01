@@ -65,9 +65,14 @@ export const payments = pgTable("payments", {
 export const lmsModules = pgTable("lms_modules", {
   id: serial("id").primaryKey(),
   title: varchar("title").notNull(),
+  slug: varchar("slug").notNull().unique(),
   description: text("description"),
   order: integer("order").notNull(),
   requiredRole: varchar("required_role").notNull().default("buyer"), // buyer, mastermind, admin
+  
+  // Access control
+  isLocked: boolean("is_locked").default(true),
+  unlockAfterDays: integer("unlock_after_days").default(0), // Days after purchase to unlock
   
   // Architect content
   architectVideoUrl: varchar("architect_video_url"),
@@ -91,6 +96,7 @@ export const lmsProgress = pgTable("lms_progress", {
   moduleId: integer("module_id").notNull().references(() => lmsModules.id),
   completed: boolean("completed").default(false),
   completedAt: timestamp("completed_at"),
+  viewMode: varchar("view_mode").notNull().default("architect"), // architect, alchemist
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 }, (table) => {
