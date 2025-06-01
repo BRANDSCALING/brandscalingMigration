@@ -149,8 +149,37 @@ export default function StudentCommunity() {
     },
   });
 
+  // Admin delete post mutation
+  const adminDeleteMutation = useMutation({
+    mutationFn: async ({ postId, reason }: { postId: string; reason: string }) => {
+      await apiRequest("DELETE", `/api/community/posts/${postId}/admin-delete`, { reason });
+    },
+    onSuccess: async () => {
+      await refetch();
+      setIsAdminDeleteDialogOpen(false);
+      setDeletingPost(null);
+      setDeleteReason("");
+      toast({
+        title: "Post Deleted",
+        description: "Post has been removed by admin",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to delete post",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleUndoPost = (postId: string) => {
     undoPostMutation.mutate(postId);
+  };
+
+  const handleAdminDeletePost = (post: CommunityPost) => {
+    setDeletingPost(post);
+    setIsAdminDeleteDialogOpen(true);
   };
 
   const handleEditPost = (post: CommunityPost) => {
@@ -425,6 +454,12 @@ export default function StudentCommunity() {
                             {post.user.firstName || post.user.email}
                             {post.createdAt && ` • ${createdTime.toLocaleDateString()}`}
                           </span>
+                          {/* Admin/Staff Badge */}
+                          {(post.user.role === 'admin' || post.user.role === 'staff') && (
+                            <Badge variant="default" className="text-xs bg-purple-600 hover:bg-purple-700">
+                              {post.user.role === 'admin' ? 'Admin' : 'Staff'}
+                            </Badge>
+                          )}
                           {isEdited && (
                             <span 
                               className="text-xs text-gray-500 cursor-help"
@@ -469,31 +504,45 @@ export default function StudentCommunity() {
                       </Button>
                     </div>
                     
-                    {/* Show edit/undo controls only for post author */}
-                    {isAuthor && (
-                      <div className="flex items-center gap-2">
-                        {/* Show undo button only within 60 seconds of creation */}
-                        {undoStatus.isActive && (
+                    <div className="flex items-center gap-2">
+                      {/* Show edit/undo controls only for post author */}
+                      {isAuthor && (
+                        <>
+                          {/* Show undo button only within 60 seconds of creation */}
+                          {undoStatus.isActive && (
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              onClick={() => handleUndoPost(post.id)}
+                              disabled={undoPostMutation.isPending}
+                              className="text-red-600 hover:text-red-700"
+                            >
+                              Undo Post ({undoStatus.timeLeft}s)
+                            </Button>
+                          )}
                           <Button 
                             variant="outline" 
                             size="sm" 
-                            onClick={() => handleUndoPost(post.id)}
-                            disabled={undoPostMutation.isPending}
-                            className="text-red-600 hover:text-red-700"
+                            onClick={() => handleEditPost(post)}
+                            className="text-blue-600 hover:text-blue-700"
                           >
-                            Undo Post ({undoStatus.timeLeft}s)
+                            Edit Post
                           </Button>
-                        )}
+                        </>
+                      )}
+                      
+                      {/* Admin moderation controls */}
+                      {(user?.role === 'admin' || user?.role === 'staff') && !isAuthor && (
                         <Button 
                           variant="outline" 
                           size="sm" 
-                          onClick={() => handleEditPost(post)}
-                          className="text-blue-600 hover:text-blue-700"
+                          onClick={() => handleAdminDeletePost(post)}
+                          className="text-red-600 hover:text-red-700"
                         >
-                          Edit Post
+                          Admin Delete
                         </Button>
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -585,6 +634,64 @@ export default function StudentCommunity() {
               disabled={editPostMutation.isPending}
             >
               {editPostMutation.isPending ? "Saving..." : "Save Changes"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Admin Delete Confirmation Dialog */}
+      <Dialog open={isAdminDeleteDialogOpen} onOpenChange={setIsAdminDeleteDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Delete Post (Admin)</DialogTitle>
+            <DialogDescription>
+              This action will permanently delete the post. Please provide a reason for moderation logging.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            {deletingPost && (
+              <div className="bg-gray-50 p-3 rounded-md">
+                <p className="font-medium text-sm">{deletingPost.title}</p>
+                <p className="text-xs text-gray-600">by {deletingPost.user.firstName || deletingPost.user.email}</p>
+              </div>
+            )}
+            <div>
+              <Label htmlFor="delete-reason">Reason for deletion</Label>
+              <Textarea
+                id="delete-reason"
+                value={deleteReason}
+                onChange={(e) => setDeleteReason(e.target.value)}
+                placeholder="Please explain why this post is being removed..."
+                rows={3}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                setIsAdminDeleteDialogOpen(false);
+                setDeletingPost(null);
+                setDeleteReason("");
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={() => {
+                if (deletingPost && deleteReason.trim()) {
+                  adminDeleteMutation.mutate({ 
+                    postId: deletingPost.id, 
+                    reason: deleteReason.trim() 
+                  });
+                }
+              }}
+              disabled={adminDeleteMutation.isPending || !deleteReason.trim()}
+            >
+              {adminDeleteMutation.isPending ? "Deleting..." : "Delete Post"}
             </Button>
           </DialogFooter>
         </DialogContent>
