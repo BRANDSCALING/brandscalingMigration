@@ -80,13 +80,15 @@ export default function LMSSimple() {
       setUserRole((user as any).role || 'guest');
     }
     
-    const quizResult = localStorage.getItem('quiz-result');
-    if (quizResult) {
+    if (typeof window !== 'undefined' && window.localStorage) {
       try {
-        const result = JSON.parse(quizResult);
-        setSelectedMode(result.type?.toLowerCase() === 'alchemist' ? 'alchemist' : 'architect');
+        const quizResult = localStorage.getItem('quiz-result');
+        if (quizResult) {
+          const result = JSON.parse(quizResult);
+          setSelectedMode(result.type?.toLowerCase() === 'alchemist' ? 'alchemist' : 'architect');
+        }
       } catch (e) {
-        console.error('Failed to parse quiz result:', e);
+        console.error('Failed to access or parse quiz result:', e);
       }
     }
   }, [user]);
