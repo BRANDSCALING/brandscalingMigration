@@ -3,6 +3,8 @@ import {
   courses,
   posts,
   postReplies,
+  postActivityLogs,
+  uploads,
   quizzes,
   quizResults,
   userProgress,
@@ -21,6 +23,11 @@ import {
   type Post,
   type InsertPost,
   type PostReply,
+  type InsertPostReply,
+  type PostActivityLog,
+  type InsertPostActivityLog,
+  type Upload,
+  type InsertUpload,
   type Quiz,
   type InsertQuiz,
   type QuizResult,
@@ -67,12 +74,15 @@ export interface IStorage {
   getUserProgress(userId: string, courseId?: number): Promise<UserProgress[]>;
   updateUserProgress(userId: string, courseId: number, progress: number, currentModule?: number): Promise<UserProgress>;
 
-  // Community operations
-  getPosts(limit?: number): Promise<(Post & { user: User; replies: PostReply[] })[]>;
-  getPost(id: number): Promise<(Post & { user: User; replies: (PostReply & { user: User })[] }) | undefined>;
-  createPost(post: InsertPost): Promise<Post>;
-  createPostReply(postId: number, userId: string, content: string): Promise<PostReply>;
-  likePost(postId: number): Promise<void>;
+  // Community Hub operations (STUDENT ROLE ONLY)
+  getCommunityPosts(tag?: string): Promise<(Post & { user: User })[]>;
+  createCommunityPost(post: { userId: string; title: string; body: string; tags?: string[]; uploadUrls?: string[] }): Promise<Post>;
+  updateCommunityPost(postId: string, userId: string, data: { title: string; body: string; tags?: string[]; uploadUrls?: string[] }): Promise<Post | null>;
+  deleteCommunityPost(postId: string, userId: string): Promise<boolean>;
+  createPostReply(reply: { postId: string; userId: string; body: string }): Promise<PostReply>;
+  getPostReplies(postId: string): Promise<(PostReply & { user: User })[]>;
+  createUpload(upload: { userId: string; url: string; postId?: string }): Promise<Upload>;
+  createPostActivity(activity: { postId: string; userId: string; action: string }): Promise<PostActivityLog>;
 
   // Quiz operations
   getQuizzes(): Promise<Quiz[]>;
@@ -732,6 +742,150 @@ export class DatabaseStorage implements IStorage {
       .where(eq(users.id, userId))
       .returning();
     return updated;
+  }
+
+  // Community Hub operations (STUDENT ROLE ONLY)
+  async getCommunityPosts(tag?: string): Promise<(Post & { user: User })[]> {
+    let query = db
+      .select({
+        id: posts.id,
+        userId: posts.userId,
+        title: posts.title,
+        body: posts.body,
+        tags: posts.tags,
+        uploadUrls: posts.uploadUrls,
+        createdAt: posts.createdAt,
+        updatedAt: posts.updatedAt,
+        isDeleted: posts.isDeleted,
+        user: {
+          id: users.id,
+          email: users.email,
+          firstName: users.firstName,
+          lastName: users.lastName,
+          profileImageUrl: users.profileImageUrl,
+          role: users.role,
+        },
+      })
+      .from(posts)
+      .innerJoin(users, eq(posts.userId, users.id))
+      .where(eq(posts.isDeleted, false))
+      .orderBy(desc(posts.createdAt));
+
+    if (tag) {
+      query = query.where(sql`${posts.tags} @> ARRAY[${tag}]`);
+    }
+
+    return await query;
+  }
+
+  async createCommunityPost(post: { userId: string; title: string; body: string; tags?: string[]; uploadUrls?: string[] }): Promise<Post> {
+    const id = crypto.randomUUID();
+    const [created] = await db
+      .insert(posts)
+      .values({
+        id,
+        userId: post.userId,
+        title: post.title,
+        body: post.body,
+        tags: post.tags || null,
+        uploadUrls: post.uploadUrls || null,
+      })
+      .returning();
+    return created;
+  }
+
+  async updateCommunityPost(postId: string, userId: string, data: { title: string; body: string; tags?: string[]; uploadUrls?: string[] }): Promise<Post | null> {
+    const [updated] = await db
+      .update(posts)
+      .set({
+        title: data.title,
+        body: data.body,
+        tags: data.tags || null,
+        uploadUrls: data.uploadUrls || null,
+        updatedAt: new Date(),
+      })
+      .where(and(eq(posts.id, postId), eq(posts.userId, userId), eq(posts.isDeleted, false)))
+      .returning();
+    return updated || null;
+  }
+
+  async deleteCommunityPost(postId: string, userId: string): Promise<boolean> {
+    const [updated] = await db
+      .update(posts)
+      .set({
+        isDeleted: true,
+        updatedAt: new Date(),
+      })
+      .where(and(eq(posts.id, postId), eq(posts.userId, userId), eq(posts.isDeleted, false)))
+      .returning();
+    return !!updated;
+  }
+
+  async createPostReply(reply: { postId: string; userId: string; body: string }): Promise<PostReply> {
+    const id = crypto.randomUUID();
+    const [created] = await db
+      .insert(postReplies)
+      .values({
+        id,
+        postId: reply.postId,
+        userId: reply.userId,
+        body: reply.body,
+      })
+      .returning();
+    return created;
+  }
+
+  async getPostReplies(postId: string): Promise<(PostReply & { user: User })[]> {
+    return await db
+      .select({
+        id: postReplies.id,
+        postId: postReplies.postId,
+        userId: postReplies.userId,
+        body: postReplies.body,
+        createdAt: postReplies.createdAt,
+        updatedAt: postReplies.updatedAt,
+        isDeleted: postReplies.isDeleted,
+        user: {
+          id: users.id,
+          email: users.email,
+          firstName: users.firstName,
+          lastName: users.lastName,
+          profileImageUrl: users.profileImageUrl,
+          role: users.role,
+        },
+      })
+      .from(postReplies)
+      .innerJoin(users, eq(postReplies.userId, users.id))
+      .where(and(eq(postReplies.postId, postId), eq(postReplies.isDeleted, false)))
+      .orderBy(postReplies.createdAt);
+  }
+
+  async createUpload(upload: { userId: string; url: string; postId?: string }): Promise<Upload> {
+    const id = crypto.randomUUID();
+    const [created] = await db
+      .insert(uploads)
+      .values({
+        id,
+        userId: upload.userId,
+        url: upload.url,
+        postId: upload.postId || null,
+      })
+      .returning();
+    return created;
+  }
+
+  async createPostActivity(activity: { postId: string; userId: string; action: string }): Promise<PostActivityLog> {
+    const id = crypto.randomUUID();
+    const [created] = await db
+      .insert(postActivityLogs)
+      .values({
+        id,
+        postId: activity.postId,
+        userId: activity.userId,
+        action: activity.action,
+      })
+      .returning();
+    return created;
   }
 
   async getSystemStats(): Promise<{
