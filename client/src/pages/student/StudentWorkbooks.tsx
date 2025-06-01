@@ -7,7 +7,6 @@ import StudentHeader from "./StudentHeader";
 export default function StudentWorkbooks() {
   const { userProfile } = useFirebaseAuth();
 
-  // No dummy data - will be replaced with real data when workbooks are added
   const workbooks: any[] = [];
 
   return (
