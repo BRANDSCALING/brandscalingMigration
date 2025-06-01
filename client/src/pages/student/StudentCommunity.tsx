@@ -30,10 +30,13 @@ export default function StudentCommunity() {
   const queryClient = useQueryClient();
 
   // Fetch community posts
-  const { data: posts = [], isLoading } = useQuery<CommunityPost[]>({
+  const { data: postsData, isLoading } = useQuery<CommunityPost[]>({
     queryKey: ["/api/community/posts", selectedTag],
     queryFn: () => apiRequest("GET", `/api/community/posts${selectedTag ? `?tag=${selectedTag}` : ""}`),
   });
+
+  // Ensure posts is always an array
+  const posts = Array.isArray(postsData) ? postsData : [];
 
   // Create post mutation
   const createPostMutation = useMutation({
