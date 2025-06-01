@@ -513,7 +513,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const updatedPost = await storage.updatePost(postId, userId, validatedData);
       res.json(updatedPost);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error updating post:", error);
       if (error.message === 'Post not found or user not authorized') {
         res.status(404).json({ message: error.message });
