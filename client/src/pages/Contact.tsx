@@ -73,11 +73,7 @@ export default function Contact() {
 
           <section>
             <h2 className="text-2xl font-semibold text-brand-purple mb-4">🧬 Stay Connected</h2>
-            <ul className="text-brand-orange space-y-2">
-              <li>🔗 Instagram → <a href="#" className="underline"> @brandscaling</a></li>
-              <li>🔗 LinkedIn → <a href="#" className="underline"> Brandscaling HQ</a></li>
-              <li>🔗 YouTube → <a href="#" className="underline"> Brandscaling TV</a></li>
-            </ul>
+            <p className="text-gray-600">Social media links will be added once channels are active.</p>
           </section>
         </div>
       </main>

@@ -175,7 +175,7 @@ export default function Auth() {
                       <Input
                         id="signin-password"
                         type={showPassword ? "text" : "password"}
-                        placeholder="Enter your password"
+                        placeholder=""
                         value={signInPassword}
                         onChange={(e) => setSignInPassword(e.target.value)}
                         required
@@ -229,7 +229,7 @@ export default function Auth() {
                       <Input
                         id="signup-password"
                         type={showPassword ? "text" : "password"}
-                        placeholder="Create a password"
+                        placeholder=""
                         value={signUpPassword}
                         onChange={(e) => setSignUpPassword(e.target.value)}
                         required
@@ -255,7 +255,7 @@ export default function Auth() {
                     <Input
                       id="confirm-password"
                       type={showPassword ? "text" : "password"}
-                      placeholder="Confirm your password"
+                      placeholder=""
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       required
