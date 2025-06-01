@@ -23,6 +23,7 @@ import Admin from "@/pages/Admin";
 import AdminDashboard from "@/pages/AdminDashboard";
 import DebugAuth from "@/pages/DebugAuth";
 import LMS from "@/pages/LMSSimple";
+import TestRoute from "@/pages/TestRoute";
 import Layout from "@/components/Layout";
 
 function Router() {
@@ -59,6 +60,9 @@ function Router() {
 
   return (
     <Switch>
+      {/* Test route for debugging */}
+      <Route path="/test" component={TestRoute} />
+      
       {/* Public pages accessible to everyone */}
       <Route path="/about" component={About} />
       <Route path="/contact" component={Contact} />
