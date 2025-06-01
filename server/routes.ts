@@ -613,6 +613,108 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Stripe payment routes
+  app.post("/api/create-payment-intent", requireAuth, async (req: any, res) => {
+    try {
+      const { amount, courseId, currency = "usd" } = req.body;
+      
+      if (!process.env.STRIPE_SECRET_KEY) {
+        throw new Error('Stripe secret key not configured');
+      }
+
+      const Stripe = require('stripe');
+      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: Math.round(amount * 100), // Convert to cents
+        currency,
+        metadata: {
+          courseId: courseId || '',
+          userId: req.user.uid,
+        },
+      });
+
+      res.json({ clientSecret: paymentIntent.client_secret });
+    } catch (error: any) {
+      console.error("Error creating payment intent:", error);
+      res.status(500).json({ message: "Error creating payment intent: " + error.message });
+    }
+  });
+
+  app.post("/api/create-subscription", requireAuth, async (req: any, res) => {
+    try {
+      if (!process.env.STRIPE_SECRET_KEY) {
+        throw new Error('Stripe secret key not configured');
+      }
+
+      const Stripe = require('stripe');
+      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+      const userId = req.user.uid;
+      const userProfile = await storage.getUser(userId);
+      
+      if (!userProfile || !userProfile.email) {
+        return res.status(400).json({ message: "User profile or email not found" });
+      }
+
+      // Check if user already has a subscription
+      if (userProfile.stripeSubscriptionId) {
+        const subscription = await stripe.subscriptions.retrieve(userProfile.stripeSubscriptionId);
+        if (subscription.status === 'active') {
+          return res.json({
+            subscriptionId: subscription.id,
+            clientSecret: subscription.latest_invoice?.payment_intent?.client_secret,
+          });
+        }
+      }
+
+      // Create or get customer
+      let customerId = userProfile.stripeCustomerId;
+      if (!customerId) {
+        const customer = await stripe.customers.create({
+          email: userProfile.email,
+          name: `${userProfile.firstName || ''} ${userProfile.lastName || ''}`.trim(),
+          metadata: {
+            userId: userId,
+          },
+        });
+        customerId = customer.id;
+        await storage.updateUserStripeInfo(userId, customerId);
+      }
+
+      // Create subscription with a default price (you'll need to create this in Stripe)
+      const subscription = await stripe.subscriptions.create({
+        customer: customerId,
+        items: [{
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: 'Brandscaling Platform Access',
+              description: 'Monthly access to all Brandscaling courses and resources',
+            },
+            unit_amount: 9700, // $97.00
+            recurring: {
+              interval: 'month',
+            },
+          },
+        }],
+        payment_behavior: 'default_incomplete',
+        expand: ['latest_invoice.payment_intent'],
+      });
+
+      // Update user with subscription info
+      await storage.updateUserStripeInfo(userId, customerId, subscription.id);
+
+      res.json({
+        subscriptionId: subscription.id,
+        clientSecret: subscription.latest_invoice?.payment_intent?.client_secret,
+      });
+    } catch (error: any) {
+      console.error("Error creating subscription:", error);
+      res.status(500).json({ message: "Error creating subscription: " + error.message });
+    }
+  });
+
   app.post("/api/admin/ai-agents", requireAuth, async (req: any, res) => {
     try {
       const userRole = req.user.claims.role || "buyer";
