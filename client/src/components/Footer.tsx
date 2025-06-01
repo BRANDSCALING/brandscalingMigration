@@ -15,7 +15,7 @@ export default function Footer() {
               <span className="text-xl font-bold">Brandscaling</span>
             </div>
             <p className="text-slate-400">
-              Empowering entrepreneurs to build scalable brands through strategic learning and community.
+              {/* AWAITING REAL CONTENT */}
             </p>
           </div>
           
@@ -42,14 +42,14 @@ export default function Footer() {
             <h4 className="font-semibold mb-4">Get Started</h4>
             <Link href="/signup">
               <Button className="w-full bg-primary hover:bg-blue-600">
-                Start Your Journey
+                {/* AWAITING REAL CONTENT */}
               </Button>
             </Link>
           </div>
         </div>
         
         <div className="border-t border-slate-800 mt-8 pt-8 text-center text-slate-400">
-          <p>&copy; 2024 Brandscaling Platform. Built for entrepreneurs.</p>
+          <p>&copy; 2024 Brandscaling Platform. {/* AWAITING REAL CONTENT */}</p>
         </div>
       </div>
     </footer>

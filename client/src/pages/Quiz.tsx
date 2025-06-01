@@ -17,10 +17,10 @@ export default function Quiz() {
           <div className="text-center mb-12">
             <Brain className="h-16 w-16 text-purple-600 mx-auto mb-6" />
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              Business Type Assessment
+              {/* AWAITING REAL CONTENT */}
             </h1>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              The assessment is currently being configured. Please check back soon.
+              {/* AWAITING REAL CONTENT */}
             </p>
           </div>
 
@@ -51,10 +51,10 @@ export default function Quiz() {
         <div className="text-center mb-12">
           <Brain className="h-16 w-16 text-purple-600 mx-auto mb-6" />
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Assessment Coming Soon
+            {/* AWAITING REAL CONTENT */}
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Our business assessment tool is being developed.
+            {/* AWAITING REAL CONTENT */}
           </p>
         </div>
       </div>
