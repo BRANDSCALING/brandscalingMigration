@@ -89,6 +89,7 @@ export function useFirebaseAuth() {
         email: user.email!,
         displayName: user.displayName || '',
         role,
+        accessTier: 'beginner',
         createdAt: new Date()
       };
 
@@ -130,7 +131,7 @@ export function useFirebaseAuth() {
   };
 
   // Sign up with email and password
-  const signUp = async (email: string, password: string, role: UserProfile['role'] = 'guest') => {
+  const signUp = async (email: string, password: string, role: UserProfile['role'] = 'student') => {
     try {
       setError(null);
       const result = await createUserWithEmailAndPassword(auth, email, password);
@@ -165,8 +166,8 @@ export function useFirebaseAuth() {
       let profile = await getUserProfile(user.uid);
       
       if (!profile) {
-        // Create new profile with default role 'buyer'
-        profile = await createUserProfile(user, 'buyer');
+        // Create new profile with default role 'student'
+        profile = await createUserProfile(user, 'student');
       }
       
       return profile;
@@ -215,8 +216,8 @@ export function useFirebaseAuth() {
 
   const isAuthenticated = !!user;
   const isAdmin = userProfile?.role === 'admin';
-  const isMastermind = userProfile?.role === 'mastermind';
-  const isBuyer = userProfile?.role === 'buyer';
+  const isStudent = userProfile?.role === 'student';
+  const isMastermind = userProfile?.accessTier === 'mastermind';
 
   return {
     user,
@@ -225,8 +226,8 @@ export function useFirebaseAuth() {
     error,
     isAuthenticated,
     isAdmin,
+    isStudent,
     isMastermind,
-    isBuyer,
     signUp,
     signIn,
     signInWithGoogle,

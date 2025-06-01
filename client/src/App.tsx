@@ -37,14 +37,13 @@ function Router() {
         case 'admin':
           setLocation('/admin');
           break;
-        case 'mastermind':
-          setLocation('/mastermind-dashboard');
-          break;
-        case 'buyer':
-          // Stay on dashboard
-          break;
-        case 'guest':
-          setLocation('/courses');
+        case 'student':
+          // Redirect students to LMS based on their access tier
+          if (userProfile.accessTier === 'mastermind') {
+            setLocation('/mastermind-dashboard');
+          } else {
+            setLocation('/lms');
+          }
           break;
       }
     }
