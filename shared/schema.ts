@@ -135,24 +135,43 @@ export const userProgress = pgTable("user_progress", {
 
 // Community posts
 export const posts = pgTable("posts", {
-  id: serial("id").primaryKey(),
+  id: varchar("id").primaryKey().notNull(),
   userId: varchar("user_id").notNull().references(() => users.id),
-  title: varchar("title"),
-  content: text("content").notNull(),
-  likes: integer("likes").default(0),
-  replies: integer("replies").default(0),
-  isPublished: boolean("is_published").default(true),
+  title: text("title").notNull(),
+  body: text("body").notNull(),
+  tags: text("tags").array(),
+  uploadUrls: text("upload_urls").array(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+  isDeleted: boolean("is_deleted").default(false),
 });
 
 // Post replies
 export const postReplies = pgTable("post_replies", {
-  id: serial("id").primaryKey(),
-  postId: integer("post_id").notNull().references(() => posts.id),
+  id: varchar("id").primaryKey().notNull(),
+  postId: varchar("post_id").notNull().references(() => posts.id),
   userId: varchar("user_id").notNull().references(() => users.id),
-  content: text("content").notNull(),
-  likes: integer("likes").default(0),
+  body: text("body").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+  isDeleted: boolean("is_deleted").default(false),
+});
+
+// Post activity logs
+export const postActivityLogs = pgTable("post_activity_logs", {
+  id: varchar("id").primaryKey().notNull(),
+  postId: varchar("post_id").notNull().references(() => posts.id),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  action: varchar("action").notNull(), // view, like, comment
+  timestamp: timestamp("timestamp").defaultNow(),
+});
+
+// Uploads
+export const uploads = pgTable("uploads", {
+  id: varchar("id").primaryKey().notNull(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  url: text("url").notNull(),
+  postId: varchar("post_id").references(() => posts.id),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -359,10 +378,24 @@ export const insertCourseSchema = createInsertSchema(courses).omit({
 
 export const insertPostSchema = createInsertSchema(posts).omit({
   id: true,
-  likes: true,
-  replies: true,
   createdAt: true,
   updatedAt: true,
+});
+
+export const insertPostReplySchema = createInsertSchema(postReplies).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertPostActivityLogSchema = createInsertSchema(postActivityLogs).omit({
+  id: true,
+  timestamp: true,
+});
+
+export const insertUploadSchema = createInsertSchema(uploads).omit({
+  id: true,
+  createdAt: true,
 });
 
 export const insertQuizSchema = createInsertSchema(quizzes).omit({
@@ -400,6 +433,13 @@ export type Post = typeof posts.$inferSelect;
 export type InsertPost = z.infer<typeof insertPostSchema>;
 
 export type PostReply = typeof postReplies.$inferSelect;
+export type InsertPostReply = z.infer<typeof insertPostReplySchema>;
+
+export type PostActivityLog = typeof postActivityLogs.$inferSelect;
+export type InsertPostActivityLog = z.infer<typeof insertPostActivityLogSchema>;
+
+export type Upload = typeof uploads.$inferSelect;
+export type InsertUpload = z.infer<typeof insertUploadSchema>;
 
 export type Quiz = typeof quizzes.$inferSelect;
 export type InsertQuiz = z.infer<typeof insertQuizSchema>;

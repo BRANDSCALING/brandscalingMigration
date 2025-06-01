@@ -229,54 +229,174 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Community routes
-  app.get("/api/posts", requireAuth, async (req, res) => {
+  // Community Hub routes - STUDENT ROLE ONLY
+  app.get("/api/community/posts", requireRole(['student']), async (req, res) => {
     try {
-      const limit = req.query.limit ? parseInt(req.query.limit as string) : 20;
-      const posts = await storage.getPosts(limit);
+      const tag = req.query.tag as string | undefined;
+      const posts = await storage.getCommunityPosts(tag);
       res.json(posts);
     } catch (error) {
-      console.error("Error fetching posts:", error);
-      res.status(500).json({ message: "Failed to fetch posts" });
+      console.error("Error fetching community posts:", error);
+      res.status(500).json({ message: "Failed to fetch community posts" });
     }
   });
 
-  app.get("/api/posts/:id", requireAuth, async (req, res) => {
-    try {
-      const id = parseInt(req.params.id);
-      const post = await storage.getPost(id);
-      if (!post) {
-        return res.status(404).json({ message: "Post not found" });
-      }
-      res.json(post);
-    } catch (error) {
-      console.error("Error fetching post:", error);
-      res.status(500).json({ message: "Failed to fetch post" });
-    }
-  });
-
-  app.post("/api/posts", requireAuth, async (req: any, res) => {
+  app.post("/api/community/posts", requireRole(['student']), async (req: any, res) => {
     try {
       const userId = req.user.uid;
-      const { title, content } = req.body;
+      const { title, body, tags, uploadUrls } = req.body;
 
       const postSchema = z.object({
-        title: z.string().optional(),
-        content: z.string().min(1),
+        title: z.string().min(1),
+        body: z.string().min(1),
+        tags: z.array(z.string()).optional(),
+        uploadUrls: z.array(z.string()).optional(),
       });
 
-      const validatedData = postSchema.parse({ title, content });
+      const validatedData = postSchema.parse({ title, body, tags, uploadUrls });
       
-      const post = await storage.createPost({
+      const post = await storage.createCommunityPost({
         userId,
         title: validatedData.title,
-        content: validatedData.content,
+        body: validatedData.body,
+        tags: validatedData.tags,
+        uploadUrls: validatedData.uploadUrls,
       });
       
       res.json(post);
     } catch (error) {
-      console.error("Error creating post:", error);
-      res.status(500).json({ message: "Failed to create post" });
+      console.error("Error creating community post:", error);
+      res.status(500).json({ message: "Failed to create community post" });
+    }
+  });
+
+  app.put("/api/community/posts/:id", requireRole(['student']), async (req: any, res) => {
+    try {
+      const postId = req.params.id;
+      const userId = req.user.uid;
+      const { title, body, tags, uploadUrls } = req.body;
+
+      const postSchema = z.object({
+        title: z.string().min(1),
+        body: z.string().min(1),
+        tags: z.array(z.string()).optional(),
+        uploadUrls: z.array(z.string()).optional(),
+      });
+
+      const validatedData = postSchema.parse({ title, body, tags, uploadUrls });
+      
+      const post = await storage.updateCommunityPost(postId, userId, validatedData);
+      if (!post) {
+        return res.status(404).json({ message: "Post not found or not authorized" });
+      }
+      
+      res.json(post);
+    } catch (error) {
+      console.error("Error updating community post:", error);
+      res.status(500).json({ message: "Failed to update community post" });
+    }
+  });
+
+  app.delete("/api/community/posts/:id", requireRole(['student']), async (req: any, res) => {
+    try {
+      const postId = req.params.id;
+      const userId = req.user.uid;
+      
+      const success = await storage.deleteCommunityPost(postId, userId);
+      if (!success) {
+        return res.status(404).json({ message: "Post not found or not authorized" });
+      }
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting community post:", error);
+      res.status(500).json({ message: "Failed to delete community post" });
+    }
+  });
+
+  app.post("/api/community/posts/:id/replies", requireRole(['student']), async (req: any, res) => {
+    try {
+      const postId = req.params.id;
+      const userId = req.user.uid;
+      const { body } = req.body;
+
+      const replySchema = z.object({
+        body: z.string().min(1),
+      });
+
+      const validatedData = replySchema.parse({ body });
+      
+      const reply = await storage.createPostReply({
+        postId,
+        userId,
+        body: validatedData.body,
+      });
+      
+      res.json(reply);
+    } catch (error) {
+      console.error("Error creating post reply:", error);
+      res.status(500).json({ message: "Failed to create post reply" });
+    }
+  });
+
+  app.get("/api/community/posts/:id/replies", requireRole(['student']), async (req, res) => {
+    try {
+      const postId = req.params.id;
+      const replies = await storage.getPostReplies(postId);
+      res.json(replies);
+    } catch (error) {
+      console.error("Error fetching post replies:", error);
+      res.status(500).json({ message: "Failed to fetch post replies" });
+    }
+  });
+
+  app.post("/api/community/upload", requireRole(['student']), async (req: any, res) => {
+    try {
+      const userId = req.user.uid;
+      const { url, postId } = req.body;
+
+      const uploadSchema = z.object({
+        url: z.string().url(),
+        postId: z.string().optional(),
+      });
+
+      const validatedData = uploadSchema.parse({ url, postId });
+      
+      const upload = await storage.createUpload({
+        userId,
+        url: validatedData.url,
+        postId: validatedData.postId,
+      });
+      
+      res.json(upload);
+    } catch (error) {
+      console.error("Error creating upload:", error);
+      res.status(500).json({ message: "Failed to create upload" });
+    }
+  });
+
+  app.post("/api/community/posts/:id/activity", requireRole(['student']), async (req: any, res) => {
+    try {
+      const postId = req.params.id;
+      const userId = req.user.uid;
+      const { action } = req.body;
+
+      const activitySchema = z.object({
+        action: z.enum(['view', 'like', 'comment']),
+      });
+
+      const validatedData = activitySchema.parse({ action });
+      
+      const activity = await storage.createPostActivity({
+        postId,
+        userId,
+        action: validatedData.action,
+      });
+      
+      res.json(activity);
+    } catch (error) {
+      console.error("Error creating post activity:", error);
+      res.status(500).json({ message: "Failed to create post activity" });
     }
   });
 

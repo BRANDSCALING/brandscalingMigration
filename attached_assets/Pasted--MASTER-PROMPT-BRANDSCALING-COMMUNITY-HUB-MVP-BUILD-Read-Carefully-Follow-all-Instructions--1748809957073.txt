@@ -1,0 +1,120 @@
+🧠 MASTER PROMPT – BRANDSCALING COMMUNITY HUB MVP BUILD  
+(Read Carefully – Follow all Instructions Exactly. No Deviations.)
+
+======================
+🛡️ GUARDIAN COMPLIANCE RULES (MANDATORY)
+======================
+1. 🚫 Do NOT create or insert ANY dummy content, placeholder text, or fake UI copy. Use the label "AWAITING USER CONTENT" where real content is not yet available.  
+2. ✅ Follow clean and scalable architecture: all code must match the modular Replit folder structure (frontend, backend, utils, auth, db, api).  
+3. 🔒 Ensure role-based sandboxing is strictly enforced — this build is for **STUDENT role only** and must NOT be accessible by admins or guests.  
+4. 🧱 Frontend and backend must connect to the correct database models. No hardcoded content or logic allowed.  
+5. 📂 Use Firebase for secure uploads and auth. Store URLs of uploaded files in the database, not the files themselves.  
+6. ⚠️ Absolutely no fake testimonials, text blocks, or Lorem Ipsum. Replit prebuild guard is active and will block any non-compliant build.
+
+======================
+📍 BUILD OVERVIEW
+======================
+You are building a **Community Hub** for Brandscaling — similar in functionality to Circle. This is a secure, role-protected space within the student sandbox where paid students can:
+
+- Post insights, questions, or celebrations
+- Comment on others’ posts (threaded replies)
+- React or "like" posts
+- Filter by category or tag (e.g., wins, struggles, strategy, marketing)
+- Upload screenshots, documents, or images with posts
+- View a clean dashboard-style feed
+
+======================
+🧱 BACKEND – DATABASE SCHEMA (FULL)
+======================
+Create the following Postgres tables with correct relationships:
+
+1. `posts`
+- `id` (UUID)
+- `userId` (FK → users)
+- `title` (text)
+- `body` (text)
+- `tags` (array of text)
+- `uploadUrls` (array of text)
+- `createdAt`, `updatedAt` (timestamps)
+- `isDeleted` (boolean default false)
+
+2. `postReplies`
+- `id` (UUID)
+- `postId` (FK → posts)
+- `userId` (FK → users)
+- `body` (text)
+- `createdAt`, `updatedAt`
+- `isDeleted` (boolean)
+
+3. `postActivityLogs`
+- `id` (UUID)
+- `postId` (FK → posts)
+- `userId`
+- `action` (enum: view, like, comment)
+- `timestamp`
+
+4. `uploads`
+- `id` (UUID)
+- `userId`
+- `url` (text)
+- `postId` (nullable)
+- `createdAt`
+
+======================
+⚙️ BACKEND – API ENDPOINTS
+======================
+Create secured backend API routes with Firebase token verification:
+- `GET /api/community/posts` → all non-deleted posts (filter by tag optional)
+- `POST /api/community/posts` → create post
+- `PUT /api/community/posts/:id` → edit post
+- `DELETE /api/community/posts/:id` → soft delete
+- `POST /api/community/posts/:id/replies` → add reply
+- `GET /api/community/posts/:id/replies` → get all replies
+- `POST /api/community/upload` → handle uploads (Firebase only)
+- `POST /api/community/posts/:id/activity` → track views, likes
+
+Use middleware to restrict access to STUDENT role only.
+
+======================
+🎯 FRONTEND – UI & FUNCTIONALITY
+======================
+Create a clean and modern Community page inside the `/student/community` route.
+
+Page Name: `StudentCommunity.tsx`  
+Role: STUDENT  
+Layout: Use shared `StudentLayout` wrapper  
+Components to Build:
+
+- `PostFeed` – lists all posts (title, body preview, tag chips, timestamp, user avatar, like count)
+- `CreatePostModal` – form to post new content (title, body, tags, file uploads)
+- `ReplyThread` – nested replies under post, with reply form
+- `TagFilterBar` – filter posts by tag category
+- `PostCard` – reusable component with post summary, like button, comment count
+- `UploadHandler` – Firebase integration to handle uploads
+
+All text fields MUST use `"AWAITING USER CONTENT"` as placeholder label.
+
+======================
+📦 DELIVERY INSTRUCTIONS
+======================
+Create:
+- All frontend components above
+- Database schema and migration files
+- API routes with protection
+- Firebase integration for upload
+- Use TypeScript and React
+- Keep all content logic compliant with the Guardian Rules
+
+======================
+🔄 FINAL DELIVERY
+======================
+Output:
+- Confirmation of completed Community Hub MVP
+- URL paths used
+- All file names and folder locations (frontend, backend)
+- Console message: ✅ COMMUNITY MVP BUILD COMPLETE – READY FOR AUTHENTIC CONTENT
+
+======================
+🚫 DO NOT SKIP OR MODIFY ANY SECTION ABOVE.
+DO NOT WRITE OR ASSUME CONTENT.
+======================
