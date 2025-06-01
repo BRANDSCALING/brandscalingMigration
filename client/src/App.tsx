@@ -72,39 +72,29 @@ function Router() {
     const [hasMounted, setHasMounted] = useState(false);
     const [shouldRedirect, setShouldRedirect] = useState(false);
 
-    // Set mounted state after initial render
     useEffect(() => {
       setHasMounted(true);
     }, []);
 
-    // Check for redirect conditions only after mount
     useEffect(() => {
       if (hasMounted && isAuthenticated && userProfile) {
         setShouldRedirect(true);
       }
     }, [hasMounted, isAuthenticated, userProfile]);
 
-    // Perform navigation only after mount and when redirect is needed
     useEffect(() => {
-      if (hasMounted && shouldRedirect && userProfile) {
-        if (userProfile.role === 'student') {
+      if (shouldRedirect) {
+        if (userProfile?.role === 'student') {
           setLocation('/student');
-        } else if (userProfile.role === 'admin') {
+        } else if (userProfile?.role === 'admin') {
           setLocation('/admin');
         }
       }
-    }, [hasMounted, shouldRedirect, userProfile, setLocation]);
+    }, [shouldRedirect, userProfile, setLocation]);
 
-    // Return null before mount or during redirect to prevent render side effects
-    if (!hasMounted || shouldRedirect) {
-      return null;
-    }
+    if (!hasMounted || shouldRedirect) return null;
 
-    return (
-      <Layout>
-        {children}
-      </Layout>
-    );
+    return <Layout>{children}</Layout>;
   };
 
   // Helper component for visitor-only pages (community/collab)
