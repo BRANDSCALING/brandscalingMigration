@@ -17,6 +17,7 @@ import About from "@/pages/About";
 import Contact from "@/pages/Contact";
 import Blog from "@/pages/Blog";
 import Checkout from "@/pages/Checkout";
+import ThankYou from "@/pages/ThankYou";
 import Admin from "@/pages/Admin";
 import AdminDashboard from "@/pages/AdminDashboard";
 import DebugAuth from "@/pages/DebugAuth";
@@ -65,6 +66,7 @@ function Router() {
       <Route path="/quiz" component={Quiz} />
       <Route path="/quiz/result" component={QuizResult} />
       <Route path="/checkout" component={Checkout} />
+      <Route path="/thank-you" component={ThankYou} />
       
       {!isAuthenticated ? (
         <>
