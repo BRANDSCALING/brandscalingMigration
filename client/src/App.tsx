@@ -89,6 +89,7 @@ function Router() {
       {/* Public routes - only for unauthenticated users */}
       {!isAuthenticated && (
         <>
+          <Header />
           <Route path="/" component={Landing} />
           <Route path="/auth" component={Auth} />
           <Route path="/about" component={About} />
