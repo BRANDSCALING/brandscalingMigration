@@ -162,31 +162,7 @@ export class DatabaseStorage implements IStorage {
 
   async getAllPosts(): Promise<CommunityPost[]> {
     const postsWithUsers = await db
-      .select({
-        id: posts.id,
-        title: posts.title,
-        body: posts.body,
-        userId: posts.userId,
-        tags: posts.tags,
-        uploadUrls: posts.uploadUrls,
-        isPinned: posts.isPinned,
-        pinnedAt: posts.pinnedAt,
-        pinnedBy: posts.pinnedBy,
-        featuredType: posts.featuredType,
-        featuredAt: posts.featuredAt,
-        featuredBy: posts.featuredBy,
-        isDeleted: posts.isDeleted,
-        createdAt: posts.createdAt,
-        updatedAt: posts.updatedAt,
-        user: {
-          id: users.id,
-          email: users.email,
-          firstName: users.firstName,
-          lastName: users.lastName,
-          profileImageUrl: users.profileImageUrl,
-          role: users.role,
-        }
-      })
+      .select()
       .from(posts)
       .leftJoin(users, eq(posts.userId, users.id))
       .where(eq(posts.isDeleted, false))
@@ -196,11 +172,11 @@ export class DatabaseStorage implements IStorage {
         desc(posts.createdAt)
       );
 
-    return postsWithUsers.map(post => ({
+    return postsWithUsers.map(({ posts: post, users: user }) => ({
       ...post,
       tags: post.tags || [],
       uploadUrls: post.uploadUrls || [],
-      user: post.user || {
+      user: user || {
         id: '',
         email: null,
         firstName: null,
@@ -226,55 +202,39 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getPost(id: string): Promise<CommunityPost | undefined> {
-    const [post] = await db
-      .select({
-        id: posts.id,
-        title: posts.title,
-        body: posts.body,
-        userId: posts.userId,
-        tags: posts.tags,
-        uploadUrls: posts.uploadUrls,
-        isPinned: posts.isPinned,
-        pinnedAt: posts.pinnedAt,
-        pinnedBy: posts.pinnedBy,
-        featuredType: posts.featuredType,
-        featuredAt: posts.featuredAt,
-        featuredBy: posts.featuredBy,
-        isDeleted: posts.isDeleted,
-        createdAt: posts.createdAt,
-        updatedAt: posts.updatedAt,
-        user: {
-          id: users.id,
-          email: users.email,
-          firstName: users.firstName,
-          lastName: users.lastName,
-          profileImageUrl: users.profileImageUrl,
-          role: users.role,
-        }
-      })
+    const [result] = await db
+      .select()
       .from(posts)
       .leftJoin(users, eq(posts.userId, users.id))
       .where(and(eq(posts.id, id), eq(posts.isDeleted, false)));
 
-    if (!post) return undefined;
+    if (!result) return undefined;
+
+    const { posts: post, users: user } = result;
 
     return {
       ...post,
       tags: post.tags || [],
       uploadUrls: post.uploadUrls || [],
-      user: post.user || {
+      user: user || {
         id: '',
         email: null,
         firstName: null,
         lastName: null,
         profileImageUrl: null,
         role: 'student',
-        accessTier: null,
+        accessTier: 'beginner',
         stripeCustomerId: null,
         stripeSubscriptionId: null,
-        firebaseUid: null,
-        isEmailVerified: null,
-        lastLoginAt: null,
+        stripeId: null,
+        stripePaidAt: null,
+        architectScore: null,
+        alchemistScore: null,
+        readinessScore: null,
+        dominantType: null,
+        readinessLevel: null,
+        tags: null,
+        assessmentComplete: false,
         createdAt: null,
         updatedAt: null
       }
