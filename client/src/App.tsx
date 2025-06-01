@@ -13,6 +13,7 @@ import Dashboard from "@/pages/Dashboard";
 import Courses from "@/pages/Courses";
 import Community from "@/pages/Community";
 import Quiz, { QuizResult } from "@/pages/Quiz";
+import DeepQuiz from "@/pages/DeepQuiz";
 import About from "@/pages/About";
 import Contact from "@/pages/Contact";
 import Blog from "@/pages/Blog";
@@ -80,6 +81,7 @@ function Router() {
           <Route path="/" component={Dashboard} />
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/lms" component={LMS} />
+          <Route path="/quiz/deep" component={DeepQuiz} />
           <Route path="/mastermind-dashboard" component={Dashboard} />
           <Route path="/debug-auth" component={DebugAuth} />
           <Route path="/admin" component={AdminDashboard} />

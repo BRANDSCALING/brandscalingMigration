@@ -37,6 +37,16 @@ export const users = pgTable("users", {
   stripeSubscriptionId: varchar("stripe_subscription_id"),
   stripeId: varchar("stripe_id"), // Stripe session/payment ID
   stripePaidAt: timestamp("stripe_paid_at"), // Payment completion timestamp
+  
+  // Deep assessment results
+  architectScore: integer("architect_score"),
+  alchemistScore: integer("alchemist_score"),
+  readinessScore: integer("readiness_score"),
+  dominantType: varchar("dominant_type"), // architect, alchemist
+  readinessLevel: varchar("readiness_level"), // starter, builder, advanced
+  tags: text("tags"), // comma-separated assessment tags
+  assessmentComplete: boolean("assessment_complete").default(false),
+  
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

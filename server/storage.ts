@@ -47,6 +47,15 @@ export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
   updateUserStripeInfo(userId: string, stripeCustomerId: string, stripeSubscriptionId?: string): Promise<User>;
+  updateUserAssessment(userId: string, assessment: {
+    architectScore: number;
+    alchemistScore: number;
+    readinessScore: number;
+    dominantType: string;
+    readinessLevel: string;
+    tags: string;
+    assessmentComplete: boolean;
+  }): Promise<User>;
 
   // Course operations
   getCourses(track?: string): Promise<Course[]>;
@@ -146,6 +155,32 @@ export class DatabaseStorage implements IStorage {
       .set({
         stripeCustomerId,
         stripeSubscriptionId,
+        updatedAt: new Date(),
+      })
+      .where(eq(users.id, userId))
+      .returning();
+    return user;
+  }
+
+  async updateUserAssessment(userId: string, assessment: {
+    architectScore: number;
+    alchemistScore: number;
+    readinessScore: number;
+    dominantType: string;
+    readinessLevel: string;
+    tags: string;
+    assessmentComplete: boolean;
+  }): Promise<User> {
+    const [user] = await db
+      .update(users)
+      .set({
+        architectScore: assessment.architectScore,
+        alchemistScore: assessment.alchemistScore,
+        readinessScore: assessment.readinessScore,
+        dominantType: assessment.dominantType,
+        readinessLevel: assessment.readinessLevel,
+        tags: assessment.tags,
+        assessmentComplete: assessment.assessmentComplete,
         updatedAt: new Date(),
       })
       .where(eq(users.id, userId))

@@ -938,14 +938,58 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
 
       const response = await chatWithAgent(
         { systemPrompt, name: 'lms_assistant' },
-        message,
-        conversationHistory || []
+        message
       );
 
       res.json({ response });
     } catch (error: any) {
       console.error("Error with AI assistant:", error);
       res.status(500).json({ message: "Failed to get AI response" });
+    }
+  });
+
+  // Deep Assessment endpoint
+  app.post("/api/quiz/deep-assessment", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.user.uid;
+      const { answers, architectScore, alchemistScore, readinessScore, dominantType, readinessLevel, tags, completedAt } = req.body;
+      
+      // Update user profile with assessment results
+      await storage.updateUserAssessment(userId, {
+        architectScore,
+        alchemistScore,
+        readinessScore,
+        dominantType,
+        readinessLevel,
+        tags: tags.join(','),
+        assessmentComplete: true
+      });
+
+      // Store detailed quiz results
+      await storage.createQuizResult(userId, 'deep-assessment', {
+        answers,
+        architectScore,
+        alchemistScore,
+        readinessScore,
+        dominantType,
+        readinessLevel,
+        tags
+      });
+
+      res.json({
+        success: true,
+        profile: {
+          architectScore,
+          alchemistScore,
+          readinessScore,
+          dominantType,
+          readinessLevel,
+          tags
+        }
+      });
+    } catch (error: any) {
+      console.error("Error saving deep assessment:", error);
+      res.status(500).json({ message: "Failed to save assessment results" });
     }
   });
 
