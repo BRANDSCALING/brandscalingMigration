@@ -17,7 +17,8 @@ export async function updateUserAfterPurchase(email: string, product: string, st
         id: `stripe_${Date.now()}`, // Generate unique ID
         email,
         role,
-        stripeCustomerId: stripeId,
+        stripeId,
+        stripePaidAt: new Date(),
         createdAt: new Date(),
         updatedAt: new Date(),
       });
@@ -26,7 +27,8 @@ export async function updateUserAfterPurchase(email: string, product: string, st
       await db.update(users)
         .set({
           role,
-          stripeCustomerId: stripeId,
+          stripeId,
+          stripePaidAt: new Date(),
           updatedAt: new Date(),
         })
         .where(eq(users.email, email));

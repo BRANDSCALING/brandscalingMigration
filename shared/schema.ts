@@ -35,6 +35,8 @@ export const users = pgTable("users", {
   role: varchar("role").notNull().default("buyer"), // guest, buyer, mastermind, admin
   stripeCustomerId: varchar("stripe_customer_id"),
   stripeSubscriptionId: varchar("stripe_subscription_id"),
+  stripeId: varchar("stripe_id"), // Stripe session/payment ID
+  stripePaidAt: timestamp("stripe_paid_at"), // Payment completion timestamp
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
