@@ -69,30 +69,26 @@ function Router() {
 
   // Helper component for public pages with safe navigation
   const PublicPage = ({ children }: { children: React.ReactNode }) => {
-    const [hasMounted, setHasMounted] = useState(false);
+    const [shouldRedirect, setShouldRedirect] = useState(false);
 
     useEffect(() => {
-      setHasMounted(true);
-    }, []);
+      if (isAuthenticated && userProfile) {
+        setShouldRedirect(true);
+      }
+    }, [isAuthenticated, userProfile]);
 
     useEffect(() => {
-      if (hasMounted && isAuthenticated && userProfile) {
-        if (userProfile.role === 'student') {
+      if (shouldRedirect) {
+        if (userProfile?.role === 'student') {
           setLocation('/student');
-        } else if (userProfile.role === 'admin') {
+        } else if (userProfile?.role === 'admin') {
           setLocation('/admin');
         }
       }
-    }, [hasMounted, isAuthenticated, userProfile, setLocation]);
+    }, [shouldRedirect, userProfile, setLocation]);
 
-    // Prevent flash of content before redirect
-    if (!hasMounted) {
-      return (
-        <div className="h-screen flex items-center justify-center">
-          <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" aria-label="Loading"/>
-        </div>
-      );
-    }
+    // Prevent rendering children if a redirect is pending
+    if (shouldRedirect) return null;
 
     return (
       <Layout>
