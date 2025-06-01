@@ -163,7 +163,7 @@ export function useFirebaseAuth() {
       const user = result.user;
       
       // Check if user already has a profile
-      let profile = await getUserProfile(user.uid);
+      let profile = await getUserProfile(user);
       
       if (!profile) {
         // Create new profile with default role 'student'

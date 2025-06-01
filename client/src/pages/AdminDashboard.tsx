@@ -1,563 +1,301 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useFirebaseAuth } from '@/hooks/useFirebaseAuth';
-import { useToast } from '@/hooks/use-toast';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
-import { 
-  Users, 
-  Settings, 
-  FileText, 
-  GraduationCap, 
-  Bot, 
-  Workflow, 
-  CreditCard, 
-  Activity,
-  Edit,
-  Save,
-  Plus,
-  Search
-} from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
-
-interface User {
-  id: string;
-  email: string;
-  firstName?: string;
-  lastName?: string;
-  role: string;
-  createdAt: string;
-  profileImageUrl?: string;
-}
-
-interface Course {
-  id: number;
-  title: string;
-  description?: string;
-  track: string;
-  isPublished: boolean;
-  modules: any;
-  createdAt: string;
-}
-
-interface AiAgent {
-  id: number;
-  name: string;
-  description?: string;
-  systemPrompt: string;
-  isActive: boolean;
-}
-
-interface StripeOrder {
-  id: string;
-  customerEmail: string;
-  amount: number;
-  product: string;
-  createdAt: string;
-  status: string;
-}
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Users, BookOpen, MessageSquare, Settings, Calendar, TrendingUp } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 export default function AdminDashboard() {
-  const { userProfile, isAdmin, loading } = useFirebaseAuth();
+  const { userProfile, logout } = useFirebaseAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedRole, setSelectedRole] = useState('all');
-
-  // Redirect if not admin
-  useEffect(() => {
-    if (!loading && userProfile && !isAdmin) {
-      window.location.href = '/';
-    }
-  }, [loading, isAdmin, userProfile]);
-
-  // Fetch users
-  const { data: users = [], isLoading: usersLoading } = useQuery<User[]>({
+  // Queries for admin data
+  const { data: users = [] } = useQuery({
     queryKey: ['/api/admin/users'],
-    enabled: isAdmin,
+    enabled: userProfile?.role === 'admin'
   });
 
-  // Fetch courses
-  const { data: courses = [], isLoading: coursesLoading } = useQuery<Course[]>({
-    queryKey: ['/api/admin/courses'],
-    enabled: isAdmin,
+  const { data: courses = [] } = useQuery({
+    queryKey: ['/api/courses'],
+    enabled: userProfile?.role === 'admin'
   });
 
-  // Fetch AI agents
-  const { data: aiAgents = [], isLoading: agentsLoading } = useQuery<AiAgent[]>({
-    queryKey: ['/api/admin/ai-agents'],
-    enabled: isAdmin,
+  const { data: posts = [] } = useQuery({
+    queryKey: ['/api/posts'],
+    enabled: userProfile?.role === 'admin'
   });
 
-  // Update user role mutation
-  const updateUserRoleMutation = useMutation({
-    mutationFn: async ({ userId, role }: { userId: string; role: string }) => {
-      return apiRequest('PATCH', `/api/admin/users/${userId}/role`, { role });
+  const { data: events = [] } = useQuery({
+    queryKey: ['/api/events'],
+    enabled: userProfile?.role === 'admin'
+  });
+
+  // User management
+  const updateUserTierMutation = useMutation({
+    mutationFn: async ({ userId, accessTier }: { userId: string; accessTier: string }) => {
+      return apiRequest('PATCH', `/api/admin/users/${userId}/tier`, { accessTier });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/admin/users'] });
       toast({
-        title: "Success",
-        description: "User role updated successfully",
+        title: "User Updated",
+        description: "User access tier has been updated successfully.",
       });
     },
-    onError: (error) => {
+    onError: (error: Error) => {
       toast({
-        title: "Error",
-        description: "Failed to update user role",
+        title: "Update Failed",
+        description: error.message,
         variant: "destructive",
       });
-    },
+    }
   });
 
-  // Create course mutation
-  const createCourseMutation = useMutation({
-    mutationFn: async (courseData: any) => {
-      return apiRequest('POST', '/api/admin/courses', courseData);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/admin/courses'] });
-      toast({
-        title: "Success",
-        description: "Course created successfully",
-      });
-    },
-    onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to create course",
-        variant: "destructive",
-      });
-    },
-  });
-
-  // Update AI agent mutation
-  const updateAgentMutation = useMutation({
-    mutationFn: async ({ id, ...data }: any) => {
-      return apiRequest('PATCH', `/api/admin/ai-agents/${id}`, data);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/admin/ai-agents'] });
-      toast({
-        title: "Success",
-        description: "AI agent updated successfully",
-      });
-    },
-    onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to update AI agent",
-        variant: "destructive",
-      });
-    },
-  });
-
-  if (loading) {
+  if (userProfile?.role !== 'admin') {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle className="text-red-600">Access Denied</CardTitle>
+            <CardDescription>
+              This area is restricted to Brandscaling administrators only.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button onClick={logout} className="w-full">
+              Sign Out
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }
-
-  // Temporarily allow access for testing - remove this later
-  const isAdminForTesting = true;
-  
-  if (!isAdminForTesting && !isAdmin) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="max-w-md text-center">
-          <h1 className="text-2xl font-bold text-red-600 mb-4">Access Denied</h1>
-          <p className="text-muted-foreground mb-4">
-            You need admin privileges to access this page.
-          </p>
-          <p className="text-sm text-muted-foreground mb-4">
-            Current role: {userProfile?.role || 'unknown'}
-          </p>
-          <Button onClick={() => window.location.reload()}>
-            Refresh Page
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  const filteredUsers = users.filter((user: User) => {
-    const matchesSearch = user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         (user.firstName && user.firstName.toLowerCase().includes(searchTerm.toLowerCase())) ||
-                         (user.lastName && user.lastName.toLowerCase().includes(searchTerm.toLowerCase()));
-    const matchesRole = selectedRole === 'all' || user.role === selectedRole;
-    return matchesSearch && matchesRole;
-  });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20">
-      <div className="container mx-auto py-8 px-4">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-architect-indigo mb-2">Admin Dashboard</h1>
-          <p className="text-muted-foreground">Manage your brandscaling platform</p>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-6">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+              <p className="text-gray-600">Brandscaling Platform Management</p>
+            </div>
+            <div className="flex items-center space-x-4">
+              <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
+                Administrator
+              </Badge>
+              <Button variant="outline" onClick={logout}>
+                Sign Out
+              </Button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Stats Overview */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Total Students</CardTitle>
+              <Users className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{users.length}</div>
+              <p className="text-xs text-muted-foreground">
+                Active learners on platform
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Active Courses</CardTitle>
+              <BookOpen className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{courses.length}</div>
+              <p className="text-xs text-muted-foreground">
+                Published learning content
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Forum Posts</CardTitle>
+              <MessageSquare className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{posts.length}</div>
+              <p className="text-xs text-muted-foreground">
+                Community discussions
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Upcoming Events</CardTitle>
+              <Calendar className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{events.length}</div>
+              <p className="text-xs text-muted-foreground">
+                Scheduled sessions
+              </p>
+            </CardContent>
+          </Card>
         </div>
 
+        {/* Management Tabs */}
         <Tabs defaultValue="users" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7">
-            <TabsTrigger value="users" className="flex items-center gap-2">
-              <Users className="h-4 w-4" />
-              Users
-            </TabsTrigger>
-            <TabsTrigger value="pages" className="flex items-center gap-2">
-              <FileText className="h-4 w-4" />
-              Pages
-            </TabsTrigger>
-            <TabsTrigger value="courses" className="flex items-center gap-2">
-              <GraduationCap className="h-4 w-4" />
-              Courses
-            </TabsTrigger>
-            <TabsTrigger value="ai-agents" className="flex items-center gap-2">
-              <Bot className="h-4 w-4" />
-              AI Agents
-            </TabsTrigger>
-            <TabsTrigger value="workflows" className="flex items-center gap-2">
-              <Workflow className="h-4 w-4" />
-              Workflows
-            </TabsTrigger>
-            <TabsTrigger value="orders" className="flex items-center gap-2">
-              <CreditCard className="h-4 w-4" />
-              Orders
-            </TabsTrigger>
-            <TabsTrigger value="activity" className="flex items-center gap-2">
-              <Activity className="h-4 w-4" />
-              Activity
-            </TabsTrigger>
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="users">User Management</TabsTrigger>
+            <TabsTrigger value="content">Content Management</TabsTrigger>
+            <TabsTrigger value="analytics">Analytics</TabsTrigger>
+            <TabsTrigger value="settings">Platform Settings</TabsTrigger>
           </TabsList>
 
-          {/* Users Tab */}
+          {/* User Management Tab */}
           <TabsContent value="users">
             <Card>
               <CardHeader>
-                <CardTitle>User Management</CardTitle>
-                <CardDescription>View and manage all platform users</CardDescription>
-                <div className="flex gap-4 mt-4">
-                  <div className="relative flex-1">
-                    <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      placeholder="Search users..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-10"
-                    />
-                  </div>
-                  <Select value={selectedRole} onValueChange={setSelectedRole}>
-                    <SelectTrigger className="w-48">
-                      <SelectValue placeholder="Filter by role" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Roles</SelectItem>
-                      <SelectItem value="guest">Guest</SelectItem>
-                      <SelectItem value="buyer">Buyer</SelectItem>
-                      <SelectItem value="mastermind">Mastermind</SelectItem>
-                      <SelectItem value="admin">Admin</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                <CardTitle>Student Management</CardTitle>
+                <CardDescription>
+                  Manage student access tiers and platform permissions
+                </CardDescription>
               </CardHeader>
               <CardContent>
-                {usersLoading ? (
-                  <div className="flex justify-center py-8">
-                    <div className="animate-spin w-6 h-6 border-4 border-primary border-t-transparent rounded-full" />
-                  </div>
-                ) : (
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Email</TableHead>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Role</TableHead>
-                        <TableHead>Joined</TableHead>
-                        <TableHead>Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {filteredUsers.map((user: User) => (
-                        <TableRow key={user.id}>
-                          <TableCell className="font-medium">{user.email}</TableCell>
-                          <TableCell>
-                            {user.firstName || user.lastName 
-                              ? `${user.firstName || ''} ${user.lastName || ''}`.trim()
-                              : '-'
-                            }
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant={
-                              user.role === 'admin' ? 'default' :
-                              user.role === 'mastermind' ? 'secondary' :
-                              user.role === 'buyer' ? 'outline' : 'destructive'
-                            }>
-                              {user.role}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            {new Date(user.createdAt).toLocaleDateString()}
-                          </TableCell>
-                          <TableCell>
-                            <Select
-                              defaultValue={user.role}
-                              onValueChange={(newRole) => 
-                                updateUserRoleMutation.mutate({ userId: user.id, role: newRole })
-                              }
-                            >
-                              <SelectTrigger className="w-32">
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="guest">Guest</SelectItem>
-                                <SelectItem value="buyer">Buyer</SelectItem>
-                                <SelectItem value="mastermind">Mastermind</SelectItem>
-                                <SelectItem value="admin">Admin</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Page Editor Tab */}
-          <TabsContent value="pages">
-            <Card>
-              <CardHeader>
-                <CardTitle>Page Editor</CardTitle>
-                <CardDescription>Edit content for main pages</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <Card className="cursor-pointer hover:shadow-md transition-shadow">
-                      <CardHeader>
-                        <CardTitle className="text-lg">Homepage</CardTitle>
-                        <CardDescription>Edit hero section and main content</CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <Button className="w-full">
-                          <Edit className="h-4 w-4 mr-2" />
-                          Edit Homepage
-                        </Button>
-                      </CardContent>
-                    </Card>
-                    
-                    <Card className="cursor-pointer hover:shadow-md transition-shadow">
-                      <CardHeader>
-                        <CardTitle className="text-lg">About Page</CardTitle>
-                        <CardDescription>Edit about us content</CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <Button className="w-full">
-                          <Edit className="h-4 w-4 mr-2" />
-                          Edit About
-                        </Button>
-                      </CardContent>
-                    </Card>
-                    
-                    <Card className="cursor-pointer hover:shadow-md transition-shadow">
-                      <CardHeader>
-                        <CardTitle className="text-lg">Blog</CardTitle>
-                        <CardDescription>Manage blog posts</CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <Button className="w-full">
-                          <Edit className="h-4 w-4 mr-2" />
-                          Manage Blog
-                        </Button>
-                      </CardContent>
-                    </Card>
-                  </div>
+                <div className="space-y-4">
+                  {users.map((user: any) => (
+                    <div key={user.id} className="flex items-center justify-between p-4 border rounded-lg">
+                      <div>
+                        <div className="font-medium">{user.firstName} {user.lastName}</div>
+                        <div className="text-sm text-gray-500">{user.email}</div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Badge 
+                          variant={user.accessTier === 'mastermind' ? 'default' : 'secondary'}
+                          className={
+                            user.accessTier === 'mastermind' ? 'bg-purple-100 text-purple-800' :
+                            user.accessTier === 'advanced' ? 'bg-blue-100 text-blue-800' :
+                            user.accessTier === 'intermediate' ? 'bg-green-100 text-green-800' :
+                            'bg-gray-100 text-gray-800'
+                          }
+                        >
+                          {user.accessTier}
+                        </Badge>
+                        <Select
+                          value={user.accessTier}
+                          onValueChange={(value) => updateUserTierMutation.mutate({ userId: user.id, accessTier: value })}
+                        >
+                          <SelectTrigger className="w-[120px]">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="beginner">Beginner</SelectItem>
+                            <SelectItem value="intermediate">Intermediate</SelectItem>
+                            <SelectItem value="advanced">Advanced</SelectItem>
+                            <SelectItem value="mastermind">Mastermind</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
           </TabsContent>
 
-          {/* Courses Tab */}
-          <TabsContent value="courses">
-            <Card>
-              <CardHeader>
-                <div className="flex justify-between items-center">
-                  <div>
-                    <CardTitle>Course Management</CardTitle>
-                    <CardDescription>Manage learning content for both tracks</CardDescription>
-                  </div>
-                  <Button>
-                    <Plus className="h-4 w-4 mr-2" />
-                    New Course
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent>
-                {coursesLoading ? (
-                  <div className="flex justify-center py-8">
-                    <div className="animate-spin w-6 h-6 border-4 border-primary border-t-transparent rounded-full" />
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {courses.map((course: Course) => (
-                      <Card key={course.id}>
-                        <CardHeader>
-                          <div className="flex justify-between items-start">
-                            <CardTitle className="text-lg">{course.title}</CardTitle>
-                            <Badge variant={course.track === 'architect' ? 'default' : 'secondary'}>
-                              {course.track}
-                            </Badge>
-                          </div>
-                          <CardDescription>{course.description}</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="flex justify-between items-center">
-                            <Badge variant={course.isPublished ? 'default' : 'outline'}>
-                              {course.isPublished ? 'Published' : 'Draft'}
-                            </Badge>
-                            <Button size="sm">
-                              <Edit className="h-4 w-4 mr-2" />
-                              Edit
-                            </Button>
-                          </div>
-                        </CardContent>
-                      </Card>
+          {/* Content Management Tab */}
+          <TabsContent value="content">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Course Management</CardTitle>
+                  <CardDescription>Manage learning tracks and modules</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button className="w-full">Create New Course</Button>
+                  <div className="mt-4 space-y-2">
+                    {courses.map((course: any) => (
+                      <div key={course.id} className="flex items-center justify-between p-2 border rounded">
+                        <span className="font-medium">{course.title}</span>
+                        <Badge variant="outline">{course.requiredTier}</Badge>
+                      </div>
                     ))}
                   </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
+                </CardContent>
+              </Card>
 
-          {/* AI Agents Tab */}
-          <TabsContent value="ai-agents">
-            <Card>
-              <CardHeader>
-                <CardTitle>AI Agent Prompt Manager</CardTitle>
-                <CardDescription>Configure AI agents for different specialties</CardDescription>
-              </CardHeader>
-              <CardContent>
-                {agentsLoading ? (
-                  <div className="flex justify-center py-8">
-                    <div className="animate-spin w-6 h-6 border-4 border-primary border-t-transparent rounded-full" />
-                  </div>
-                ) : (
-                  <div className="space-y-6">
-                    {aiAgents.map((agent: AiAgent) => (
-                      <Card key={agent.id}>
-                        <CardHeader>
-                          <div className="flex justify-between items-center">
-                            <CardTitle className="text-lg">{agent.name}</CardTitle>
-                            <Switch
-                              checked={agent.isActive}
-                              onCheckedChange={(checked) =>
-                                updateAgentMutation.mutate({ id: agent.id, isActive: checked })
-                              }
-                            />
-                          </div>
-                          <CardDescription>{agent.description}</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                          <div>
-                            <Label htmlFor={`prompt-${agent.id}`}>System Prompt</Label>
-                            <Textarea
-                              id={`prompt-${agent.id}`}
-                              value={agent.systemPrompt}
-                              onChange={(e) => {
-                                // Update local state - you might want to implement debounced saving
-                              }}
-                              rows={6}
-                              className="mt-2"
-                            />
-                          </div>
-                          <Button
-                            onClick={() =>
-                              updateAgentMutation.mutate({
-                                id: agent.id,
-                                systemPrompt: agent.systemPrompt
-                              })
-                            }
-                          >
-                            <Save className="h-4 w-4 mr-2" />
-                            Save Prompt
-                          </Button>
-                        </CardContent>
-                      </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Event Management</CardTitle>
+                  <CardDescription>Schedule live sessions and workshops</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button className="w-full">Schedule New Event</Button>
+                  <div className="mt-4 space-y-2">
+                    {events.map((event: any) => (
+                      <div key={event.id} className="flex items-center justify-between p-2 border rounded">
+                        <span className="font-medium">{event.title}</span>
+                        <Badge variant="outline">{event.requiredTier}</Badge>
+                      </div>
                     ))}
                   </div>
-                )}
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
 
-          {/* Workflows Tab */}
-          <TabsContent value="workflows">
+          {/* Analytics Tab */}
+          <TabsContent value="analytics">
             <Card>
               <CardHeader>
-                <CardTitle>Workflow Builder</CardTitle>
-                <CardDescription>Create automated workflows for user actions</CardDescription>
+                <CardTitle>Platform Analytics</CardTitle>
+                <CardDescription>
+                  Monitor student engagement and platform performance
+                </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="text-center py-12">
-                  <Workflow className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                  <p className="text-muted-foreground mb-4">Workflow builder coming soon</p>
-                  <Button>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Create Workflow
-                  </Button>
+                <div className="text-center py-8 text-gray-500">
+                  <TrendingUp className="h-12 w-12 mx-auto mb-4" />
+                  <p>Analytics dashboard coming soon</p>
                 </div>
               </CardContent>
             </Card>
           </TabsContent>
 
-          {/* Orders Tab */}
-          <TabsContent value="orders">
+          {/* Settings Tab */}
+          <TabsContent value="settings">
             <Card>
               <CardHeader>
-                <CardTitle>Stripe Order History</CardTitle>
-                <CardDescription>View payment history and customer orders</CardDescription>
+                <CardTitle>Platform Settings</CardTitle>
+                <CardDescription>
+                  Configure platform-wide settings and preferences
+                </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="text-center py-12">
-                  <CreditCard className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                  <p className="text-muted-foreground mb-4">Connect Stripe to view order history</p>
-                  <Button>
-                    <Settings className="h-4 w-4 mr-2" />
-                    Configure Stripe
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Activity Tab */}
-          <TabsContent value="activity">
-            <Card>
-              <CardHeader>
-                <CardTitle>Activity Log</CardTitle>
-                <CardDescription>Recent platform events and user activities</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-12">
-                  <Activity className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                  <p className="text-muted-foreground mb-4">Activity tracking coming soon</p>
+                <div className="text-center py-8 text-gray-500">
+                  <Settings className="h-12 w-12 mx-auto mb-4" />
+                  <p>Settings panel coming soon</p>
                 </div>
               </CardContent>
             </Card>
           </TabsContent>
         </Tabs>
-      </div>
+      </main>
     </div>
   );
 }

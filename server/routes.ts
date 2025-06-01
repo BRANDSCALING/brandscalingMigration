@@ -84,7 +84,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { userId } = req.params;
       const { role } = req.body;
       
-      if (!['guest', 'buyer', 'mastermind', 'admin'].includes(role)) {
+      if (!['admin', 'student'].includes(role)) {
         return res.status(400).json({ message: 'Invalid role' });
       }
       
@@ -93,6 +93,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error updating user role:', error);
       res.status(500).json({ message: 'Failed to update user role' });
+    }
+  });
+
+  app.patch('/api/admin/users/:userId/tier', requireRole(['admin']), async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const { accessTier } = req.body;
+      
+      if (!['beginner', 'intermediate', 'advanced', 'mastermind'].includes(accessTier)) {
+        return res.status(400).json({ message: 'Invalid access tier' });
+      }
+      
+      const updatedUser = await storage.updateUserAccessTier(userId, accessTier);
+      res.json(updatedUser);
+    } catch (error) {
+      console.error('Error updating user access tier:', error);
+      res.status(500).json({ message: 'Failed to update user access tier' });
     }
   });
 

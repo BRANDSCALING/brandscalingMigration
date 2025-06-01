@@ -119,6 +119,8 @@ export interface IStorage {
   // Admin operations
   getAllUsers(): Promise<User[]>;
   updateUserRole(userId: string, role: string): Promise<User>;
+  updateUserAccessTier(userId: string, accessTier: string): Promise<User>;
+  updateUserRole(userId: string, role: string): Promise<User>;
   getSystemStats(): Promise<{
     totalUsers: number;
     totalCourses: number;
