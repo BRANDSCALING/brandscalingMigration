@@ -16,6 +16,7 @@ export default function Navigation() {
 
   const navItems = [
     { href: "/", label: "Dashboard" },
+    { href: "/lms", label: "LMS" },
     { href: "/courses", label: "Courses" },
     { href: "/community", label: "Community" },
     { href: "/quiz", label: "Assessment" },
