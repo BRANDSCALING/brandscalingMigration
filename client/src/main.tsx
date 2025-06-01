@@ -6,7 +6,17 @@ import "./index.css";
 window.addEventListener('unhandledrejection', (event) => {
   // Suppress media play() interruption errors from browser/extensions
   if (event.reason?.name === 'DOMException' && 
-      event.reason?.message?.includes('play()')) {
+      (event.reason?.message?.includes('play()') || 
+       event.reason?.message?.includes('interrupted') ||
+       event.reason?.message?.includes('pause()'))) {
+    event.preventDefault();
+    return;
+  }
+  
+  // Suppress other common browser/extension errors
+  if (event.reason?.message?.includes('Non-Error promise rejection') ||
+      event.reason?.message?.includes('Script error') ||
+      event.reason?.stack?.includes('extension://')) {
     event.preventDefault();
     return;
   }
