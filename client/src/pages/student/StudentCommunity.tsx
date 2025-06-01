@@ -145,6 +145,16 @@ export default function StudentCommunity() {
 
   return (
     <div className="p-6 space-y-6">
+      {/* Return to Dashboard Link */}
+      <div className="mb-4">
+        <Link href="/student">
+          <Button variant="outline" className="flex items-center gap-2">
+            <ArrowLeft className="h-4 w-4" />
+            Return to Dashboard
+          </Button>
+        </Link>
+      </div>
+      
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
