@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useFirebaseAuth } from '@/hooks/useFirebaseAuth';
+import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -47,28 +47,11 @@ interface Module {
 }
 
 export default function LMS() {
-  const { isAuthenticated, loading, userProfile } = useFirebaseAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
   const [selectedMode, setSelectedMode] = useState<'architect' | 'alchemist'>('architect');
   const [selectedModule, setSelectedModule] = useState<number | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
-
-  // Get user's personality type from quiz results
-  useEffect(() => {
-    const quizResult = localStorage.getItem('quiz-result');
-    if (quizResult) {
-      const result = JSON.parse(quizResult);
-      setSelectedMode(result.type?.toLowerCase() === 'alchemist' ? 'alchemist' : 'architect');
-    }
-  }, []);
-
-  // Redirect if not authenticated
-  useEffect(() => {
-    if (!loading && !isAuthenticated) {
-      window.location.href = "/login";
-      return;
-    }
-  }, [isAuthenticated, loading]);
 
   // Fetch modules with access control
   const { data: modules = [], isLoading: modulesLoading } = useQuery({
@@ -98,7 +81,24 @@ export default function LMS() {
     },
   });
 
-  if (loading || !isAuthenticated || modulesLoading) {
+  // Get user's personality type from quiz results
+  useEffect(() => {
+    const quizResult = localStorage.getItem('quiz-result');
+    if (quizResult) {
+      const result = JSON.parse(quizResult);
+      setSelectedMode(result.type?.toLowerCase() === 'alchemist' ? 'alchemist' : 'architect');
+    }
+  }, []);
+
+  // Redirect if not authenticated
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      window.location.href = "/api/login";
+      return;
+    }
+  }, [isAuthenticated, isLoading]);
+
+  if (isLoading || !isAuthenticated || modulesLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-orange-50">
         <div className="animate-spin w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full" />
@@ -148,17 +148,17 @@ export default function LMS() {
             </h1>
             <div className="mt-4 flex items-center gap-2">
               <User className="h-4 w-4 text-gray-600" />
-              <span className="text-sm text-gray-700">{userProfile?.firstName || userProfile?.email}</span>
+              <span className="text-sm text-gray-700">{(user as any)?.firstName || (user as any)?.email}</span>
               <Badge 
                 variant="secondary" 
                 className={`text-xs ${
-                  userProfile?.role === 'mastermind' 
+                  (user as any)?.role === 'mastermind' 
                     ? 'bg-purple-100 text-purple-800' 
                     : 'bg-orange-100 text-orange-800'
                 }`}
               >
-                {userProfile?.role === 'mastermind' && <Crown className="h-3 w-3 mr-1" />}
-                {userProfile?.role}
+                {(user as any)?.role === 'mastermind' && <Crown className="h-3 w-3 mr-1" />}
+                {(user as any)?.role}
               </Badge>
             </div>
             
