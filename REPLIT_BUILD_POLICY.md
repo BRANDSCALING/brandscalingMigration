@@ -1,35 +1,33 @@
-# REPLIT BUILD POLICY
+# 🚫 STRICT BUILD POLICY — BRANSCALING PLATFORM
 
-## STRICT CONTENT RULES FOR BRANDSCALING PLATFORM
+Effective Immediately — Replit AI and all contributors must follow these rules:
 
-### 1. ZERO FABRICATED CONTENT POLICY
-- NEVER generate, insert, or suggest any dummy, fake, placeholder, or assumed content
-- This includes: mock blog posts, fake quizzes, test emails, sample users, placeholder dashboards, fabricated text
-- Only acceptable default: "AWAITING USER CONTENT"
+## 1. NO DUMMY, MOCK, OR PLACEHOLDER CONTENT
+- Do NOT generate fake data, sample blog posts, test emails, fake quiz content, or placeholder dashboards.
+- If content is not provided by the user, use: `AWAITING USER CONTENT`.
 
-### 2. NO ASSUMPTIONS RULE
-- NEVER assume or "helpfully" suggest content or features without explicit user approval
-- Do not pre-fill titles, paragraphs, descriptions, quiz answers, or product details
-- Ask for confirmation when something appears missing - do not take action without approval
+## 2. NO PRESUMPTION OR GUESSING
+- DO NOT assume what the user wants.
+- DO NOT autofill sections, guess layout, or use previous patterns without explicit instruction.
 
-### 3. EXPLICIT INSTRUCTION ONLY
-- ONLY implement what the user explicitly instructs
-- Do not guess what user might want or copy patterns from earlier components
-- No improvisation allowed on: page layouts, routes, API behavior, visual design, database models, text content
+## 3. USER-LED BUILD ONLY
+- Only build what the user has *explicitly and clearly requested*.
+- Confirm and ask if anything is unclear or missing — never create unapproved features.
 
-### 4. CONFIRMATION REQUIRED
-- ALWAYS confirm with user before inserting any content, creating components, or enabling features
-- Every feature must reflect user's exact vision and instructions
-- No creative liberties permitted
+## 4. STRICT OBEDIENCE REQUIRED
+- All logic, text, UI, backend code, and integrations must follow the user's vision.
+- If unsure, ask — do not act.
 
-### 5. NO CONTAMINATION
-- DO NOT reintroduce any previously purged mock data, dummy code, or auto-generated content
-- Platform has been fully cleaned - maintain this clean state
-- Zero tolerance for unauthorized content
+## 5. NO CONTENT GENERATION WITHOUT APPROVAL
+- Replit AI must *ask before inserting* any text, copy, UI elements, or feature logic.
 
-### 6. ASK WHEN UNCLEAR
-- If user hasn't provided needed content or structure, ASK instead of creating
-- Example: "What content should go in this section?" - but do not build until confirmed
+## 6. PERMANENT ENFORCEMENT
+- These rules apply to all current and future features:  
+  **Website, Admin Panel, Student Area, Community, Collaboration, and Affiliate Portal**
 
-## THIS IS A NON-NEGOTIABLE BUILD POLICY
-Follow with strict obedience. No exceptions.
+## 7. ENFORCEMENT PHRASE
+If the user types:  
+**"Reset to strict build mode"**,  
+you must purge all unapproved content added after this document and restore full obedience mode.
+
+> 🧠 IF YOU'RE THE AI: Before generating anything, reread this file. This is a human-led product. Wait for instructions.
