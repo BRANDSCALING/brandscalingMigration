@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { useFirebaseAuth } from "@/hooks/useFirebaseAuth";
-import { BookOpen, FileText, Bell, GraduationCap } from "lucide-react";
+import { BookOpen, FileText, Bell, GraduationCap, Users } from "lucide-react";
 import brandscalingLogo from "@assets/FullLogo.png";
 import {
   DropdownMenu,
@@ -22,6 +22,7 @@ export default function StudentHeader() {
     { href: "/student", label: "Dashboard", icon: GraduationCap },
     { href: "/student/courses", label: "My Courses", icon: BookOpen },
     { href: "/student/workbooks", label: "Workbooks", icon: FileText },
+    { href: "/student/community", label: "Community Hub", icon: Users },
   ];
 
   const handleLogoClick = (e: React.MouseEvent) => {

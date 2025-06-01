@@ -24,6 +24,7 @@ import Layout from "@/components/Layout";
 import StudentDashboard from "@/pages/student/StudentDashboard";
 import StudentCourses from "@/pages/student/StudentCourses";
 import StudentWorkbooks from "@/pages/student/StudentWorkbooks";
+import StudentCommunity from "@/pages/student/StudentCommunity";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import CommunityComingSoon from "@/pages/community/CommunityComingSoon";
 import CollabComingSoon from "@/pages/collab/CollabComingSoon";
@@ -137,6 +138,7 @@ function Router() {
           <Route path="/student" component={StudentDashboard} />
           <Route path="/student/courses" component={StudentCourses} />
           <Route path="/student/workbooks" component={StudentWorkbooks} />
+          <Route path="/student/community" component={StudentCommunity} />
           <Route path="/student/:path*" component={StudentDashboard} />
         </>
       )}
