@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
@@ -30,10 +30,50 @@ export default function StudentCommunity() {
     tags: [] as string[],
   });
   const [tagInput, setTagInput] = useState("");
+  const [undoTimeouts, setUndoTimeouts] = useState<Record<string, number>>({});
 
   const { toast } = useToast();
   const { user } = useAuth();
   const queryClient = useQueryClient();
+
+  // Custom hook for countdown timer
+  const useCountdown = (postId: string, createdAt: string) => {
+    const [timeLeft, setTimeLeft] = useState(0);
+    const [isActive, setIsActive] = useState(false);
+
+    useEffect(() => {
+      const createdTime = new Date(createdAt).getTime();
+      const currentTime = new Date().getTime();
+      const elapsed = currentTime - createdTime;
+      const remaining = Math.max(0, 60000 - elapsed); // 60 seconds in ms
+
+      if (remaining > 0) {
+        setTimeLeft(remaining);
+        setIsActive(true);
+      } else {
+        setTimeLeft(0);
+        setIsActive(false);
+        return;
+      }
+
+      const timer = setInterval(() => {
+        const now = new Date().getTime();
+        const newElapsed = now - createdTime;
+        const newRemaining = Math.max(0, 60000 - newElapsed);
+        
+        setTimeLeft(newRemaining);
+        
+        if (newRemaining <= 0) {
+          setIsActive(false);
+          clearInterval(timer);
+        }
+      }, 1000);
+
+      return () => clearInterval(timer);
+    }, [postId, createdAt]);
+
+    return { timeLeft: Math.ceil(timeLeft / 1000), isActive };
+  };
 
   // Fetch community posts
   const { data: postsData, isLoading, refetch } = useQuery<CommunityPost[]>({
@@ -269,7 +309,7 @@ export default function StudentCommunity() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold">Brandscaling Community</h1>
-          <p className="text-gray-600">AWAITING USER CONTENT</p>
+          <p className="text-gray-600">Connect, share, and learn with fellow students.</p>
         </div>
         
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
@@ -383,86 +423,116 @@ export default function StudentCommunity() {
             <CardContent className="p-8 text-center">
               <MessageCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-semibold mb-2">No posts yet — start the conversation!</h3>
-              <p className="text-gray-600">AWAITING USER CONTENT</p>
+              <p className="text-gray-600">Be the first to share something with the community.</p>
             </CardContent>
           </Card>
         ) : (
-          filteredPosts.map((post) => (
-            <Card key={post.id} className="hover:shadow-md transition-shadow">
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    <Avatar className="h-10 w-10">
-                      <AvatarImage src={post.user.profileImageUrl || undefined} />
-                      <AvatarFallback>
-                        {post.user.firstName?.[0] || post.user.email?.[0] || "U"}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <CardTitle className="text-lg">{post.title}</CardTitle>
-                      <p className="text-sm text-gray-600">
-                        AWAITING USER CONTENT {post.user.firstName || post.user.email}
-                        {post.createdAt && ` • ${new Date(post.createdAt).toLocaleDateString()}`}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-700 mb-4">{post.body}</p>
-                
-                {post.tags && post.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {post.tags.map((tag) => (
-                      <Badge
-                        key={tag}
-                        variant="outline"
-                        className="cursor-pointer"
-                        onClick={() => setSelectedTag(tag)}
-                      >
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                )}
+          filteredPosts.map((post) => {
+            const PostCountdown = () => {
+              const { timeLeft, isActive } = useCountdown(post.id, post.createdAt);
+              return isActive ? (
+                <Badge variant="secondary" className="text-xs">
+                  Undo: {timeLeft}s
+                </Badge>
+              ) : null;
+            };
 
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4 text-sm text-gray-600">
-                    <Button variant="ghost" size="sm" className="flex items-center gap-1">
-                      <MessageCircle className="h-4 w-4" />
-                      Reply
-                    </Button>
+            const isAuthor = user && post.userId === user.id;
+            const createdTime = new Date(post.createdAt);
+            const updatedTime = post.updatedAt ? new Date(post.updatedAt) : null;
+            const isEdited = updatedTime && updatedTime.getTime() !== createdTime.getTime();
+
+            return (
+              <Card key={post.id} className="hover:shadow-md transition-shadow">
+                <CardHeader>
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-3">
+                      <Avatar className="h-10 w-10">
+                        <AvatarImage src={post.user.profileImageUrl || undefined} />
+                        <AvatarFallback>
+                          {post.user.firstName?.[0] || post.user.email?.[0] || "U"}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <CardTitle className="text-lg">{post.title}</CardTitle>
+                        <div className="flex items-center gap-2 text-sm text-gray-600">
+                          <span>
+                            {post.user.firstName || post.user.email}
+                            {post.createdAt && ` • ${createdTime.toLocaleDateString()}`}
+                          </span>
+                          {isEdited && (
+                            <span 
+                              className="text-xs text-gray-500 cursor-help"
+                              title={`Last edited at ${updatedTime?.toLocaleString()}`}
+                            >
+                              (edited)
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    {isAuthor && <PostCountdown />}
                   </div>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-700 mb-4">{post.body}</p>
                   
-                  {/* Show edit/undo controls only for post author */}
-                  {user && post.userId === user.id && (
-                    <div className="flex items-center gap-2">
-                      {/* Show undo button only within 60 seconds of creation */}
-                      {new Date().getTime() - new Date(post.createdAt).getTime() < 60000 && (
+                  {post.tags && post.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {post.tags.map((tag, index) => (
+                        <Badge
+                          key={index}
+                          variant="outline"
+                          className="cursor-pointer"
+                          onClick={() => setSelectedTag(tag)}
+                        >
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4 text-sm text-gray-600">
+                      <Button variant="ghost" size="sm" className="flex items-center gap-1">
+                        <MessageCircle className="h-4 w-4" />
+                        Reply
+                      </Button>
+                    </div>
+                    
+                    {/* Show edit/undo controls only for post author */}
+                    {isAuthor && (
+                      <div className="flex items-center gap-2">
+                        {/* Show undo button only within 60 seconds of creation */}
+                        {(() => {
+                          const { timeLeft, isActive } = useCountdown(post.id, post.createdAt);
+                          return isActive ? (
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              onClick={() => handleUndoPost(post.id)}
+                              disabled={undoPostMutation.isPending}
+                              className="text-red-600 hover:text-red-700"
+                            >
+                              Undo Post ({timeLeft}s)
+                            </Button>
+                          ) : null;
+                        })()}
                         <Button 
                           variant="outline" 
                           size="sm" 
-                          onClick={() => handleUndoPost(post.id)}
-                          disabled={undoPostMutation.isPending}
-                          className="text-red-600 hover:text-red-700"
+                          onClick={() => handleEditPost(post)}
+                          className="text-blue-600 hover:text-blue-700"
                         >
-                          Undo
+                          Edit Post
                         </Button>
-                      )}
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        onClick={() => handleEditPost(post)}
-                        className="text-blue-600 hover:text-blue-700"
-                      >
-                        Edit
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          ))
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })
         )}
       </div>
 
@@ -548,7 +618,7 @@ export default function StudentCommunity() {
               onClick={handleEditSubmit}
               disabled={editPostMutation.isPending}
             >
-              {editPostMutation.isPending ? "Updating..." : "Update Post"}
+              {editPostMutation.isPending ? "Saving..." : "Save Changes"}
             </Button>
           </DialogFooter>
         </DialogContent>
