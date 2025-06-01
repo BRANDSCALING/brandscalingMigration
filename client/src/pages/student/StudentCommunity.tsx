@@ -526,10 +526,10 @@ export default function StudentCommunity() {
               };
 
               return (
-                <Card key={post.id} className={`border-2 ${getFeaturedColor(post.featuredType)}`}>
+                <Card key={post.id} className={`border-2 ${getFeaturedColor(post.featuredType || '')}`}>
                   <CardContent className="p-4">
                     <div className="flex items-start gap-3">
-                      <span className="text-2xl">{getFeaturedIcon(post.featuredType)}</span>
+                      <span className="text-2xl">{getFeaturedIcon(post.featuredType || '')}</span>
                       <div className="flex-1">
                         <h4 className="font-semibold text-lg mb-2">{post.title}</h4>
                         <p className="mb-3">{post.body}</p>

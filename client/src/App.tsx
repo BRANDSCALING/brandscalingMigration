@@ -69,17 +69,15 @@ function Router() {
 
   // Helper component for public pages with access control
   const PublicPage = ({ children }: { children: React.ReactNode }) => {
-    // Redirect authenticated users to their dashboards from public pages
-    if (isAuthenticated && userProfile) {
-      if (userProfile.role === 'student') {
-        setLocation('/student');
-        return null;
+    useEffect(() => {
+      if (isAuthenticated && userProfile) {
+        if (userProfile.role === 'student') {
+          setLocation('/student');
+        } else if (userProfile.role === 'admin') {
+          setLocation('/admin');
+        }
       }
-      if (userProfile.role === 'admin') {
-        setLocation('/admin');
-        return null;
-      }
-    }
+    }, [isAuthenticated, userProfile, setLocation]);
     
     return (
       <Layout>
@@ -90,17 +88,15 @@ function Router() {
 
   // Helper component for visitor-only pages (community/collab)
   const VisitorOnlyPage = ({ children }: { children: React.ReactNode }) => {
-    // Redirect authenticated users to their dashboards
-    if (isAuthenticated && userProfile) {
-      if (userProfile.role === 'student') {
-        setLocation('/student');
-        return null;
+    useEffect(() => {
+      if (isAuthenticated && userProfile) {
+        if (userProfile.role === 'student') {
+          setLocation('/student');
+        } else if (userProfile.role === 'admin') {
+          setLocation('/admin');
+        }
       }
-      if (userProfile.role === 'admin') {
-        setLocation('/admin');
-        return null;
-      }
-    }
+    }, [isAuthenticated, userProfile, setLocation]);
     
     return (
       <Layout>
