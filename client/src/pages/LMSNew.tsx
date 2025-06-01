@@ -148,17 +148,17 @@ export default function LMS() {
             </h1>
             <div className="mt-4 flex items-center gap-2">
               <User className="h-4 w-4 text-gray-600" />
-              <span className="text-sm text-gray-700">{(user as any)?.firstName || (user as any)?.email}</span>
+              <span className="text-sm text-gray-700">{userProfile?.firstName || userProfile?.email}</span>
               <Badge 
                 variant="secondary" 
                 className={`text-xs ${
-                  (user as any)?.role === 'mastermind' 
+                  userProfile?.role === 'mastermind' 
                     ? 'bg-purple-100 text-purple-800' 
                     : 'bg-orange-100 text-orange-800'
                 }`}
               >
-                {(user as any)?.role === 'mastermind' && <Crown className="h-3 w-3 mr-1" />}
-                {(user as any)?.role}
+                {userProfile?.role === 'mastermind' && <Crown className="h-3 w-3 mr-1" />}
+                {userProfile?.role}
               </Badge>
             </div>
             
