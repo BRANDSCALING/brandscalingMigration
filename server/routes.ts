@@ -1,9 +1,11 @@
 import type { Express } from "express";
+import express from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
 import { verifyFirebaseToken, requireAuth, requireRole, createUserProfile, getUserProfile, updateUserRole } from "./firebaseAuth";
 import { chatWithAgent } from "./openai";
+import { updateUserAfterPurchase } from "./updateUserAfterPurchase";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -827,20 +829,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (email && product) {
           try {
             // Update user access based on product purchased
-            switch (product) {
-              case 'taster-day':
-                console.log(`Granting taster day access to ${email}`);
-                // Add logic to grant taster day access
-                break;
-              
-              case 'mastermind':
-                console.log(`Granting mastermind access to ${email}`);
-                // Add logic to grant mastermind access
-                break;
-              
-              default:
-                console.log(`Unknown product: ${product}`);
-            }
+            await updateUserAfterPurchase(email, product, stripeId);
+            console.log(`Successfully updated user ${email} after purchasing ${product}`);
           } catch (updateError: any) {
             console.error('Error updating user after purchase:', updateError);
           }
