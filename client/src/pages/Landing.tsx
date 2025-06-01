@@ -1,5 +1,3 @@
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "wouter";
@@ -7,8 +5,6 @@ import { Link } from "wouter";
 export default function Landing() {
   return (
     <div className="min-h-screen bg-white">
-      <Header />
-      
       <main className="font-poppins">
         {/* Hero Section */}
         <section className="px-6 py-16 max-w-6xl mx-auto text-center">
@@ -228,8 +224,6 @@ export default function Landing() {
           </div>
         </section>
       </main>
-      
-      <Footer />
     </div>
   );
 }

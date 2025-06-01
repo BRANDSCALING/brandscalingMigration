@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { Rocket } from "lucide-react";
 import { Link } from "wouter";
+import brandscalingLogo from "@assets/FullLogo.png";
 
 export default function Footer() {
   return (
@@ -9,10 +9,11 @@ export default function Footer() {
         <div className="grid md:grid-cols-4 gap-8">
           <div>
             <div className="flex items-center space-x-2 mb-4">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <Rocket className="text-white w-4 h-4" />
-              </div>
-              <span className="text-xl font-bold">Brandscaling</span>
+              <img 
+                src={brandscalingLogo} 
+                alt="Brandscaling" 
+                className="h-8 w-auto"
+              />
             </div>
             <p className="text-slate-400">
               {/* AWAITING REAL CONTENT */}
