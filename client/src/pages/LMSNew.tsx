@@ -47,20 +47,21 @@ interface Module {
 }
 
 export default function LMS() {
+  // All hooks must be called unconditionally at the top level
   const { isAuthenticated, loading, userProfile } = useFirebaseAuth();
   const [selectedMode, setSelectedMode] = useState<'architect' | 'alchemist'>('architect');
   const [selectedModule, setSelectedModule] = useState<number | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Fetch modules with access control
+  // Fetch modules with access control - always call this hook
   const { data: modules = [], isLoading: modulesLoading } = useQuery({
     queryKey: ['/api/lms/modules'],
     enabled: isAuthenticated,
     retry: false,
   });
 
-  // Mark module as complete
+  // Mark module as complete - always declare this mutation
   const markCompleteMutation = useMutation({
     mutationFn: async (moduleId: number) => {
       await apiRequest('POST', '/api/lms/progress', { moduleId });
@@ -81,23 +82,26 @@ export default function LMS() {
     },
   });
 
-  // Get user's personality type from quiz results
+  // Effects - always call these unconditionally
   useEffect(() => {
     const quizResult = localStorage.getItem('quiz-result');
     if (quizResult) {
-      const result = JSON.parse(quizResult);
-      setSelectedMode(result.type?.toLowerCase() === 'alchemist' ? 'alchemist' : 'architect');
+      try {
+        const result = JSON.parse(quizResult);
+        setSelectedMode(result.type?.toLowerCase() === 'alchemist' ? 'alchemist' : 'architect');
+      } catch (e) {
+        console.error('Failed to parse quiz result:', e);
+      }
     }
   }, []);
 
-  // Redirect if not authenticated
   useEffect(() => {
     if (!loading && !isAuthenticated) {
       window.location.href = "/login";
-      return;
     }
   }, [isAuthenticated, loading]);
 
+  // Loading state - render early return after all hooks
   if (loading || !isAuthenticated || modulesLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-orange-50">
