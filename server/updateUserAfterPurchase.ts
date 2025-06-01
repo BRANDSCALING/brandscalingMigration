@@ -15,7 +15,6 @@ export async function updateUserAfterPurchase(email: string, product: string, st
     let userId: string;
 
     if (!existingUser) {
-      console.log(`User with email ${email} not found, creating new user`);
       
       userId = `stripe_${Date.now()}`;
       
@@ -52,10 +51,7 @@ export async function updateUserAfterPurchase(email: string, product: string, st
       paidAt: new Date(),
     });
 
-    console.log(`User ${email} updated with role ${role}, payment recorded: ${product} - £${amount / 100}`);
 
-    // TODO: Trigger onboarding email flow (integrate with your ESP)
-    // await sendOnboardingEmail(email, product, role);
 
   } catch (error) {
     console.error('Error updating user after purchase:', error);

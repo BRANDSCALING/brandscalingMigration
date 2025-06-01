@@ -841,13 +841,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const product = session.metadata?.product;
         const stripeId = session.id;
 
-        console.log('Payment completed:', { email, product, stripeId });
-
         if (email && product) {
           try {
             // Update user access based on product purchased
             await updateUserAfterPurchase(email, product, stripeId);
-            console.log(`Successfully updated user ${email} after purchasing ${product}`);
           } catch (updateError: any) {
             console.error('Error updating user after purchase:', updateError);
           }
@@ -1050,7 +1047,6 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
   const wss = new WebSocketServer({ server: httpServer, path: '/ws' });
 
   wss.on('connection', (ws: WebSocket) => {
-    console.log('New WebSocket connection');
 
     ws.on('message', (message: string) => {
       try {
@@ -1068,7 +1064,6 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
     });
 
     ws.on('close', () => {
-      console.log('WebSocket connection closed');
     });
   });
 
