@@ -888,6 +888,92 @@ export class DatabaseStorage implements IStorage {
     return created;
   }
 
+  async undoPost(postId: string, userId: string): Promise<Post> {
+    // Soft delete the post and log the action
+    const [updated] = await db
+      .update(posts)
+      .set({ isDeleted: true, updatedAt: new Date() })
+      .where(and(eq(posts.id, postId), eq(posts.userId, userId)))
+      .returning();
+    
+    if (!updated) {
+      throw new Error('Post not found or user not authorized');
+    }
+
+    // Log the undo action
+    await this.createPostActivity({
+      postId,
+      userId,
+      action: 'undo'
+    });
+
+    return updated;
+  }
+
+  async updatePost(postId: string, userId: string, updates: { title: string; body: string; tags?: string[] }): Promise<Post> {
+    // First get the current post data for history
+    const [currentPost] = await db
+      .select()
+      .from(posts)
+      .where(and(eq(posts.id, postId), eq(posts.userId, userId), eq(posts.isDeleted, false)));
+    
+    if (!currentPost) {
+      throw new Error('Post not found or user not authorized');
+    }
+
+    // Save current version to history
+    await this.createPostHistory({
+      postId,
+      oldTitle: currentPost.title,
+      oldBody: currentPost.body,
+      oldTags: currentPost.tags
+    });
+
+    // Update the post
+    const [updated] = await db
+      .update(posts)
+      .set({
+        title: updates.title,
+        body: updates.body,
+        tags: updates.tags || null,
+        updatedAt: new Date()
+      })
+      .where(and(eq(posts.id, postId), eq(posts.userId, userId)))
+      .returning();
+
+    // Log the edit action
+    await this.createPostActivity({
+      postId,
+      userId,
+      action: 'edit'
+    });
+
+    return updated;
+  }
+
+  async createPostHistory(history: { postId: string; oldTitle: string; oldBody: string; oldTags?: string[] | null }): Promise<PostHistory> {
+    const id = crypto.randomUUID();
+    const [created] = await db
+      .insert(postHistory)
+      .values({
+        id,
+        postId: history.postId,
+        oldTitle: history.oldTitle,
+        oldBody: history.oldBody,
+        oldTags: history.oldTags || null,
+      })
+      .returning();
+    return created;
+  }
+
+  async getPostHistory(postId: string): Promise<PostHistory[]> {
+    return await db
+      .select()
+      .from(postHistory)
+      .where(eq(postHistory.postId, postId))
+      .orderBy(desc(postHistory.editedAt));
+  }
+
   async getSystemStats(): Promise<{
     totalUsers: number;
     totalCourses: number;

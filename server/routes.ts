@@ -400,6 +400,64 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Undo post within 60 seconds
+  app.delete("/api/community/posts/:id/undo", requireRole(['student']), async (req: any, res) => {
+    try {
+      const postId = req.params.id;
+      const userId = req.user.uid;
+      
+      const undonePost = await storage.undoPost(postId, userId);
+      res.json(undonePost);
+    } catch (error) {
+      console.error("Error undoing post:", error);
+      if (error.message === 'Post not found or user not authorized') {
+        res.status(404).json({ message: error.message });
+      } else {
+        res.status(500).json({ message: "Failed to undo post" });
+      }
+    }
+  });
+
+  // Edit post
+  app.put("/api/community/posts/:id", requireRole(['student']), async (req: any, res) => {
+    try {
+      const postId = req.params.id;
+      const userId = req.user.uid;
+      const { title, body, tags } = req.body;
+
+      const updateSchema = z.object({
+        title: z.string().min(1),
+        body: z.string().min(1),
+        tags: z.array(z.string()).optional(),
+      });
+
+      const validatedData = updateSchema.parse({ title, body, tags });
+      
+      const updatedPost = await storage.updatePost(postId, userId, validatedData);
+      res.json(updatedPost);
+    } catch (error) {
+      console.error("Error updating post:", error);
+      if (error.message === 'Post not found or user not authorized') {
+        res.status(404).json({ message: error.message });
+      } else {
+        res.status(500).json({ message: "Failed to update post" });
+      }
+    }
+  });
+
+  // Get post history
+  app.get("/api/community/posts/:id/history", requireRole(['student']), async (req, res) => {
+    try {
+      const postId = req.params.id;
+      
+      const history = await storage.getPostHistory(postId);
+      res.json(history);
+    } catch (error) {
+      console.error("Error fetching post history:", error);
+      res.status(500).json({ message: "Failed to fetch post history" });
+    }
+  });
+
   app.post("/api/posts/:id/reply", requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.uid;

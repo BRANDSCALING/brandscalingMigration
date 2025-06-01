@@ -56,9 +56,22 @@ export default function StudentCommunity() {
       setIsCreateDialogOpen(false);
       setNewPost({ title: "", body: "", tags: [] });
       setTagInput("");
+      
+      const postData = await newPost.json();
+      
+      // Show undo toast notification
       toast({
         title: "✅ Post Shared",
         description: "Your post has been shared with the community!",
+        action: (
+          <button
+            onClick={() => handleUndoPost(postData.id)}
+            className="px-3 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-700"
+          >
+            Undo
+          </button>
+        ),
+        duration: 60000, // 60 seconds
       });
     },
     onError: (error) => {

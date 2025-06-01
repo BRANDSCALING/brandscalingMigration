@@ -162,8 +162,18 @@ export const postActivityLogs = pgTable("post_activity_logs", {
   id: varchar("id").primaryKey().notNull(),
   postId: varchar("post_id").notNull().references(() => posts.id),
   userId: varchar("user_id").notNull().references(() => users.id),
-  action: varchar("action").notNull(), // view, like, comment
+  action: varchar("action").notNull(), // view, like, comment, edit, undo
   timestamp: timestamp("timestamp").defaultNow(),
+});
+
+// Post edit history
+export const postHistory = pgTable("post_history", {
+  id: varchar("id").primaryKey().notNull(),
+  postId: varchar("post_id").notNull().references(() => posts.id),
+  oldTitle: text("old_title").notNull(),
+  oldBody: text("old_body").notNull(),
+  oldTags: text("old_tags").array(),
+  editedAt: timestamp("edited_at").defaultNow(),
 });
 
 // Uploads
@@ -393,6 +403,11 @@ export const insertPostActivityLogSchema = createInsertSchema(postActivityLogs).
   timestamp: true,
 });
 
+export const insertPostHistorySchema = createInsertSchema(postHistory).omit({
+  id: true,
+  editedAt: true,
+});
+
 export const insertUploadSchema = createInsertSchema(uploads).omit({
   id: true,
   createdAt: true,
@@ -437,6 +452,9 @@ export type InsertPostReply = z.infer<typeof insertPostReplySchema>;
 
 export type PostActivityLog = typeof postActivityLogs.$inferSelect;
 export type InsertPostActivityLog = z.infer<typeof insertPostActivityLogSchema>;
+
+export type PostHistory = typeof postHistory.$inferSelect;
+export type InsertPostHistory = z.infer<typeof insertPostHistorySchema>;
 
 export type Upload = typeof uploads.$inferSelect;
 export type InsertUpload = z.infer<typeof insertUploadSchema>;
