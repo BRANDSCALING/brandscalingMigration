@@ -45,14 +45,12 @@ export default function StudentCommunity() {
     mutationFn: (postData: { title: string; body: string; tags?: string[] }) =>
       apiRequest("POST", "/api/community/posts", postData),
     onSuccess: (newPost) => {
-      // Optimistically update the cache with the new post
-      queryClient.setQueryData(["/api/community/posts"], (oldData: CommunityPost[]) => {
-        if (!oldData) return [newPost];
-        return [newPost, ...oldData];
-      });
+      console.log("Mutation success, new post:", newPost);
+      console.log("Current cache data:", queryClient.getQueryData(["/api/community/posts"]));
       
-      // Also invalidate to ensure fresh data
+      // Force invalidate and refetch immediately
       queryClient.invalidateQueries({ queryKey: ["/api/community/posts"] });
+      queryClient.refetchQueries({ queryKey: ["/api/community/posts"] });
       
       setIsCreateDialogOpen(false);
       setNewPost({ title: "", body: "", tags: [] });
