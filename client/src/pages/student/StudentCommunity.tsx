@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from "@/components/ui/label";
 import { Plus, MessageCircle, Search, Filter } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { auth } from "@/lib/firebase";
 import type { Post, User } from "@shared/schema";
 
 type CommunityPost = Post & { user: User };
@@ -61,13 +62,24 @@ export default function StudentCommunity() {
     },
   });
 
-  const handleCreatePost = () => {
+  const handleCreatePost = async () => {
     console.log("Form data:", { title: newPost.title, body: newPost.body });
+    console.log("Firebase user:", auth.currentUser);
     
     if (!newPost.title.trim() || !newPost.body.trim()) {
       toast({
         title: "Error",
         description: "Please fill in all required fields.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check if user is authenticated
+    if (!auth.currentUser) {
+      toast({
+        title: "Authentication Error",
+        description: "Please log in to create a post.",
         variant: "destructive",
       });
       return;
