@@ -6,8 +6,8 @@ export async function updateUserAfterPurchase(email: string, product: string, st
   try {
     const role = product === "mastermind" ? "mastermind" : "buyer";
     
-    // Calculate amount based on product
-    const amount = product === "mastermind" ? 2400000 : 29700; // £24,000 or £297 in pence
+    // Amount should come from the actual payment data, not hardcoded
+    const amount = 0; // This should be passed from the actual payment
 
     // Find user by email
     const [existingUser] = await db.select().from(users).where(eq(users.email, email));

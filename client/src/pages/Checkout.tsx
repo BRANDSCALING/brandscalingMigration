@@ -37,7 +37,7 @@ export default function Checkout() {
           setClientSecret(data.clientSecret);
         } else {
           const response = await apiRequest("POST", "/api/create-payment-intent", {
-            amount: parseInt(amount || "497"),
+            amount: parseInt(amount || "0"),
             courseId: courseId,
             currency: "usd"
           });

@@ -38,30 +38,7 @@ export default function Courses() {
           <p className="text-xl max-w-2xl mx-auto">From free masterclasses to high-ticket immersive strategy — choose the track that matches your scale season.</p>
         </section>
 
-        {/* Subscription Banner */}
-        <section className="mb-12">
-          <Card className="bg-gradient-to-r from-purple-50 to-orange-50 border-2 border-purple-200">
-            <CardContent className="p-8 text-center">
-              <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-orange-500 bg-clip-text text-transparent">
-                All-Access Monthly Subscription
-              </h2>
-              <p className="text-lg text-gray-700 mb-6 max-w-2xl mx-auto">
-                Get unlimited access to all courses, live Q&A sessions, community forum, and exclusive resources for one monthly price.
-              </p>
-              <div className="flex items-center justify-center space-x-4 mb-6">
-                <span className="text-4xl font-bold text-purple-600">£97</span>
-                <span className="text-gray-500">/month</span>
-              </div>
-              <Button
-                onClick={handleSubscription}
-                className="bg-gradient-to-r from-purple-600 to-orange-500 hover:from-purple-700 hover:to-orange-600 text-white px-8 py-3 text-lg"
-              >
-                <CreditCard className="mr-2 h-5 w-5" />
-                Start Subscription
-              </Button>
-            </CardContent>
-          </Card>
-        </section>
+
 
         {/* Course Grid */}
         <section className="px-6 py-16 max-w-6xl mx-auto">
@@ -89,15 +66,14 @@ export default function Courses() {
                 <div className="bg-gradient-to-r from-orange-100 to-red-100 rounded-lg h-48 mb-4 flex items-center justify-center">
                   <ArrowRight className="h-16 w-16 text-orange-600" />
                 </div>
-                <Badge className="mb-2 bg-orange-100 text-orange-800">£497</Badge>
                 <h3 className="text-2xl font-semibold text-orange-600 mb-2">90-Day Scaling Course</h3>
                 <p className="text-gray-700 mb-4">Weekly modules, live Q&A, and our full scaling OS. Ideal if you're doing 5–30k/month and want to break your next revenue ceiling.</p>
                 <Button 
-                  onClick={() => handlePurchase('90day', '497', '90-Day Scaling Course')}
-                  className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600"
+                  variant="outline"
+                  className="w-full"
+                  disabled
                 >
-                  <CreditCard className="mr-2 h-4 w-4" />
-                  Purchase Course
+                  Coming Soon
                 </Button>
               </CardContent>
             </Card>
@@ -108,15 +84,14 @@ export default function Courses() {
                 <div className="bg-gradient-to-r from-purple-100 to-indigo-100 rounded-lg h-48 mb-4 flex items-center justify-center">
                   <DraftingCompass className="h-16 w-16 text-purple-600" />
                 </div>
-                <Badge className="mb-2 bg-purple-100 text-purple-800">£297</Badge>
                 <h3 className="text-2xl font-semibold text-purple-600 mb-2">Architect Track</h3>
                 <p className="text-gray-700 mb-4">Systems-focused approach to scaling. Perfect for logical, process-driven founders who love frameworks and measurable outcomes.</p>
                 <Button 
-                  onClick={() => handlePurchase('architect', '297', 'Architect Track')}
-                  className="w-full bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600"
+                  variant="outline"
+                  className="w-full"
+                  disabled
                 >
-                  <CreditCard className="mr-2 h-4 w-4" />
-                  Purchase Course
+                  Coming Soon
                 </Button>
               </CardContent>
             </Card>
@@ -127,15 +102,14 @@ export default function Courses() {
                 <div className="bg-gradient-to-r from-orange-100 to-yellow-100 rounded-lg h-48 mb-4 flex items-center justify-center">
                   <Wand2 className="h-16 w-16 text-orange-600" />
                 </div>
-                <Badge className="mb-2 bg-orange-100 text-orange-800">£297</Badge>
                 <h3 className="text-2xl font-semibold text-orange-600 mb-2">Alchemist Track</h3>
                 <p className="text-gray-700 mb-4">Intuition-based scaling approach. Ideal for creative, relationship-driven founders who excel at transformation and connection.</p>
                 <Button 
-                  onClick={() => handlePurchase('alchemist', '297', 'Alchemist Track')}
-                  className="w-full bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600"
+                  variant="outline"
+                  className="w-full"
+                  disabled
                 >
-                  <CreditCard className="mr-2 h-4 w-4" />
-                  Purchase Course
+                  Coming Soon
                 </Button>
               </CardContent>
             </Card>
