@@ -34,7 +34,10 @@ export default function StudentCommunity() {
   // Fetch community posts
   const { data: postsData, isLoading, refetch } = useQuery<CommunityPost[]>({
     queryKey: ["/api/community/posts"],
-    queryFn: () => apiRequest("GET", "/api/community/posts"),
+    queryFn: async () => {
+      const response = await apiRequest("GET", "/api/community/posts");
+      return await response.json();
+    },
     staleTime: 0, // Always fetch fresh data
     cacheTime: 0, // Don't cache the response
   });

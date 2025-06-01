@@ -43,7 +43,7 @@ export const verifyFirebaseToken: RequestHandler = async (req, res, next) => {
         user = await storage.upsertUser({
           id: userId,
           email: payload.email || null,
-          role: 'guest',
+          role: 'student',
           firstName: payload.name?.split(' ')[0] || null,
           lastName: payload.name?.split(' ').slice(1).join(' ') || null,
           profileImageUrl: payload.picture || null,
