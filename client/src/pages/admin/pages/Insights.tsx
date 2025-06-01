@@ -1,263 +1,319 @@
+import { useState, useEffect, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { format, subDays, startOfDay, endOfDay } from 'date-fns';
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { TrendingUp, Users, Eye, MessageSquare, Activity, Calendar } from 'lucide-react';
+  Users,
+  FileText,
+  TrendingUp,
+  AlertTriangle,
+  Shield,
+  Activity,
+  Calendar,
+  Eye
+} from 'lucide-react';
+import { useFirebaseAuth } from '@/hooks/useFirebaseAuth';
 import { apiRequest } from '@/lib/queryClient';
+import InsightsHeader from '../components/insights/InsightsHeader';
+import InsightCard from '../components/insights/InsightCard';
+import InsightChart from '../components/insights/InsightChart';
 
 export default function Insights() {
-  const { data: analytics, isLoading } = useQuery({
-    queryKey: ['/api/admin/analytics'],
-    queryFn: async () => {
-      const response = await apiRequest('GET', '/api/admin/analytics');
-      return await response.json();
-    },
-  });
+  const { userProfile, loading, isAuthenticated } = useFirebaseAuth();
+  const [printMode, setPrintMode] = useState(false);
 
-  const { data: topContent } = useQuery({
-    queryKey: ['/api/admin/analytics/top-content'],
-    queryFn: async () => {
-      const response = await apiRequest('GET', '/api/admin/analytics/top-content');
-      return await response.json();
-    },
-  });
+  // Redirect non-admins before rendering any admin content
+  useEffect(() => {
+    if (!loading && (!isAuthenticated || userProfile?.role !== 'admin')) {
+      window.location.href = '/';
+    }
+  }, [loading, isAuthenticated, userProfile]);
 
-  const { data: userActivity } = useQuery({
-    queryKey: ['/api/admin/analytics/user-activity'],
-    queryFn: async () => {
-      const response = await apiRequest('GET', '/api/admin/analytics/user-activity');
-      return await response.json();
-    },
-  });
-
-  if (isLoading) {
+  // Show loading while auth check is in progress
+  if (loading) {
     return (
-      <div className="space-y-6">
-        <h1 className="text-3xl font-bold text-gray-900">Platform Insights</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[...Array(6)].map((_, i) => (
-            <Card key={i} className="animate-pulse">
-              <CardHeader className="pb-2">
-                <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-              </CardHeader>
-              <CardContent>
-                <div className="h-8 bg-gray-200 rounded w-1/2"></div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-purple-600"></div>
       </div>
     );
   }
 
-  const insightCards = [
-    {
-      title: 'Total Page Views',
-      value: analytics?.totalPageViews || 0,
-      change: `+${analytics?.pageViewsGrowth || 0}% this month`,
-      icon: Eye,
-      color: 'text-blue-600 bg-blue-100',
+  // Don't render anything if not admin
+  if (!isAuthenticated || userProfile?.role !== 'admin') {
+    return null;
+  }
+
+  // Fetch analytics data
+  const { data: dailyActiveUsers } = useQuery({
+    queryKey: ['/api/admin/analytics/daily-active-users'],
+    queryFn: async () => {
+      const response = await apiRequest('GET', '/api/admin/analytics/daily-active-users');
+      return await response.json();
     },
-    {
-      title: 'Active Users (30d)',
-      value: analytics?.activeUsers || 0,
-      change: `+${analytics?.userGrowth || 0}% this month`,
-      icon: Users,
-      color: 'text-green-600 bg-green-100',
+  });
+
+  const { data: newPostsData } = useQuery({
+    queryKey: ['/api/admin/analytics/new-posts'],
+    queryFn: async () => {
+      const response = await apiRequest('GET', '/api/admin/analytics/new-posts');
+      return await response.json();
     },
-    {
-      title: 'Engagement Rate',
-      value: `${analytics?.engagementRate || 0}%`,
-      change: `${analytics?.engagementChange > 0 ? '+' : ''}${analytics?.engagementChange || 0}% vs last month`,
-      icon: Activity,
-      color: 'text-purple-600 bg-purple-100',
+  });
+
+  const { data: userGrowthData } = useQuery({
+    queryKey: ['/api/admin/analytics/user-growth'],
+    queryFn: async () => {
+      const response = await apiRequest('GET', '/api/admin/analytics/user-growth');
+      return await response.json();
     },
-    {
-      title: 'Avg. Session Duration',
-      value: `${analytics?.avgSessionDuration || 0}m`,
-      change: `+${analytics?.sessionGrowth || 0}% this month`,
-      icon: Calendar,
-      color: 'text-orange-600 bg-orange-100',
+  });
+
+  const { data: moderationData } = useQuery({
+    queryKey: ['/api/admin/analytics/moderation'],
+    queryFn: async () => {
+      const response = await apiRequest('GET', '/api/admin/analytics/moderation');
+      return await response.json();
     },
-    {
-      title: 'Content Views',
-      value: analytics?.contentViews || 0,
-      change: `+${analytics?.contentGrowth || 0}% this month`,
-      icon: TrendingUp,
-      color: 'text-indigo-600 bg-indigo-100',
+  });
+
+  const { data: bannedUsersData } = useQuery({
+    queryKey: ['/api/admin/analytics/banned-users'],
+    queryFn: async () => {
+      const response = await apiRequest('GET', '/api/admin/analytics/banned-users');
+      return await response.json();
     },
-    {
-      title: 'Community Posts',
-      value: analytics?.totalPosts || 0,
-      change: `+${analytics?.postsGrowth || 0}% this month`,
-      icon: MessageSquare,
-      color: 'text-pink-600 bg-pink-100',
-    },
-  ];
+  });
+
+  // Process data for charts
+  const dauChartData = useMemo(() => {
+    if (!dailyActiveUsers) return { labels: [], datasets: [] };
+    
+    const last7Days = Array.from({ length: 7 }, (_, i) => {
+      const date = subDays(new Date(), 6 - i);
+      return format(date, 'MMM dd');
+    });
+
+    return {
+      labels: last7Days,
+      datasets: [
+        {
+          label: 'Daily Active Users',
+          data: dailyActiveUsers.daily || Array(7).fill(0),
+          borderColor: 'rgb(59, 130, 246)',
+          backgroundColor: 'rgba(59, 130, 246, 0.1)',
+          tension: 0.4,
+        },
+      ],
+    };
+  }, [dailyActiveUsers]);
+
+  const postsChartData = useMemo(() => {
+    if (!newPostsData) return { labels: [], datasets: [] };
+    
+    const last30Days = Array.from({ length: 30 }, (_, i) => {
+      const date = subDays(new Date(), 29 - i);
+      return format(date, 'MMM dd');
+    });
+
+    return {
+      labels: last30Days,
+      datasets: [
+        {
+          label: 'New Posts',
+          data: newPostsData.daily || Array(30).fill(0),
+          backgroundColor: 'rgba(34, 197, 94, 0.6)',
+          borderColor: 'rgb(34, 197, 94)',
+          borderWidth: 1,
+        },
+      ],
+    };
+  }, [newPostsData]);
+
+  const growthChartData = useMemo(() => {
+    if (!userGrowthData) return { labels: [], datasets: [] };
+
+    return {
+      labels: userGrowthData.labels || [],
+      datasets: [
+        {
+          label: 'Cumulative Users',
+          data: userGrowthData.cumulative || [],
+          borderColor: 'rgb(168, 85, 247)',
+          backgroundColor: 'rgba(168, 85, 247, 0.1)',
+          tension: 0.4,
+          fill: true,
+        },
+      ],
+    };
+  }, [userGrowthData]);
+
+  const moderationChartData = useMemo(() => {
+    if (!moderationData) return { labels: [], datasets: [] };
+
+    return {
+      labels: ['Pending', 'Approved', 'Rejected'],
+      datasets: [
+        {
+          data: [
+            moderationData.pending || 0,
+            moderationData.approved || 0,
+            moderationData.rejected || 0,
+          ],
+          backgroundColor: [
+            'rgba(245, 158, 11, 0.8)',
+            'rgba(34, 197, 94, 0.8)',
+            'rgba(239, 68, 68, 0.8)',
+          ],
+          borderWidth: 2,
+          borderColor: '#fff',
+        },
+      ],
+    };
+  }, [moderationData]);
+
+  // Generate CSV data
+  const csvData = useMemo(() => {
+    const data = [
+      ['Metric', 'Value', 'Date'],
+      ...((dailyActiveUsers?.daily || []).map((value: number, index: number) => [
+        'Daily Active Users',
+        value,
+        format(subDays(new Date(), 6 - index), 'yyyy-MM-dd'),
+      ])),
+      ...((newPostsData?.daily || []).map((value: number, index: number) => [
+        'New Posts',
+        value,
+        format(subDays(new Date(), 29 - index), 'yyyy-MM-dd'),
+      ])),
+      ['Banned Users', bannedUsersData?.total || 0, format(new Date(), 'yyyy-MM-dd')],
+      ['Pending Moderation', moderationData?.pending || 0, format(new Date(), 'yyyy-MM-dd')],
+    ];
+    return data;
+  }, [dailyActiveUsers, newPostsData, bannedUsersData, moderationData]);
+
+  const handlePrint = () => {
+    setPrintMode(true);
+    setTimeout(() => {
+      window.print();
+      setPrintMode(false);
+    }, 100);
+  };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Platform Insights</h1>
-        <p className="text-gray-600 mt-2">Analytics and performance metrics</p>
+    <div className={`space-y-6 ${printMode ? 'print-mode' : ''}`}>
+      <style jsx global>{`
+        @media print {
+          .no-print { display: none !important; }
+          .chart-container { break-inside: avoid; }
+          body { font-size: 12px; }
+          .grid { break-inside: avoid; }
+        }
+      `}</style>
+
+      <div className="no-print">
+        <InsightsHeader
+          csvData={csvData}
+          csvFilename={`brandscaling-insights-${format(new Date(), 'yyyy-MM-dd')}.csv`}
+          onPrint={handlePrint}
+        />
       </div>
 
-      {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {insightCards.map((metric) => {
-          const IconComponent = metric.icon;
-          return (
-            <Card key={metric.title}>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-gray-600">
-                  {metric.title}
-                </CardTitle>
-                <div className={`p-2 rounded-lg ${metric.color}`}>
-                  <IconComponent className="h-4 w-4" />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-gray-900">{metric.value.toLocaleString()}</div>
-                <p className="text-xs text-gray-500 mt-1">{metric.change}</p>
-              </CardContent>
-            </Card>
-          );
-        })}
+      {/* Key Metrics Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+        <InsightCard
+          title="Daily Active Users (7d avg)"
+          value={dailyActiveUsers?.average || 0}
+          change={`${dailyActiveUsers?.change > 0 ? '+' : ''}${dailyActiveUsers?.change || 0}% vs last week`}
+          changeType={dailyActiveUsers?.change > 0 ? 'positive' : dailyActiveUsers?.change < 0 ? 'negative' : 'neutral'}
+          icon={Users}
+          iconColor="text-blue-600 bg-blue-100"
+          description="Average daily active users over the last 7 days"
+        />
+
+        <InsightCard
+          title="New Posts (30d)"
+          value={newPostsData?.total || 0}
+          change={`${newPostsData?.change > 0 ? '+' : ''}${newPostsData?.change || 0}% vs last month`}
+          changeType={newPostsData?.change > 0 ? 'positive' : newPostsData?.change < 0 ? 'negative' : 'neutral'}
+          icon={FileText}
+          iconColor="text-green-600 bg-green-100"
+          description="Total new posts created in the last 30 days"
+        />
+
+        <InsightCard
+          title="Total Users"
+          value={userGrowthData?.total || 0}
+          change={`${userGrowthData?.growth > 0 ? '+' : ''}${userGrowthData?.growth || 0}% growth`}
+          changeType={userGrowthData?.growth > 0 ? 'positive' : 'neutral'}
+          icon={TrendingUp}
+          iconColor="text-purple-600 bg-purple-100"
+          description="Cumulative user growth over time"
+        />
+
+        <InsightCard
+          title="Banned Users"
+          value={bannedUsersData?.total || 0}
+          change={`${bannedUsersData?.recent || 0} this week`}
+          changeType="neutral"
+          icon={Shield}
+          iconColor="text-red-600 bg-red-100"
+          description="Total number of banned user accounts"
+        />
+
+        <InsightCard
+          title="Pending Moderation"
+          value={moderationData?.pending || 0}
+          change={`${moderationData?.trend > 0 ? '+' : ''}${moderationData?.trend || 0} today`}
+          changeType={moderationData?.trend > 0 ? 'negative' : moderationData?.trend < 0 ? 'positive' : 'neutral'}
+          icon={AlertTriangle}
+          iconColor="text-orange-600 bg-orange-100"
+          description="Posts awaiting moderation review"
+        />
+      </div>
+
+      {/* Charts Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <InsightCard
+          title="Daily Active Users"
+          value="Last 7 Days"
+          icon={Activity}
+          iconColor="text-blue-600 bg-blue-100"
+          description="Daily active user trend"
+        >
+          <InsightChart type="line" data={dauChartData} height={250} />
+        </InsightCard>
+
+        <InsightCard
+          title="New Posts Created"
+          value="Last 30 Days"
+          icon={FileText}
+          iconColor="text-green-600 bg-green-100"
+          description="Daily post creation volume"
+        >
+          <InsightChart type="bar" data={postsChartData} height={250} />
+        </InsightCard>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Top Content */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Top Performing Content</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {topContent && Array.isArray(topContent) ? (
-                topContent.slice(0, 5).map((content: any, index: number) => (
-                  <div key={content.id} className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className="flex-shrink-0">
-                        <span className="flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full text-sm font-medium text-gray-600">
-                          #{index + 1}
-                        </span>
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="font-medium text-gray-900 truncate">{content.title}</p>
-                        <p className="text-sm text-gray-500">{content.views} views</p>
-                      </div>
-                    </div>
-                    <Badge variant="outline">{content.type}</Badge>
-                  </div>
-                ))
-              ) : (
-                <p className="text-gray-500 text-sm">No content data available</p>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+        <InsightCard
+          title="User Growth Curve"
+          value="Cumulative Growth"
+          icon={TrendingUp}
+          iconColor="text-purple-600 bg-purple-100"
+          description="Total registered users over time"
+        >
+          <InsightChart type="line" data={growthChartData} height={250} />
+        </InsightCard>
 
-        {/* User Activity */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent User Activity</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {userActivity && Array.isArray(userActivity) ? (
-                userActivity.slice(0, 5).map((activity: any) => (
-                  <div key={activity.id} className="flex items-center space-x-3">
-                    <div className="flex-shrink-0">
-                      <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm text-gray-900">
-                        <span className="font-medium">{activity.userEmail}</span> {activity.action}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        {new Date(activity.timestamp).toLocaleString()}
-                      </p>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <p className="text-gray-500 text-sm">No activity data available</p>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+        <InsightCard
+          title="Moderation Overview"
+          value="Current Status"
+          icon={Shield}
+          iconColor="text-orange-600 bg-orange-100"
+          description="Content moderation breakdown"
+        >
+          <InsightChart type="doughnut" data={moderationChartData} height={250} />
+        </InsightCard>
       </div>
-
-      {/* Detailed Analytics Table */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Content Performance Details</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {topContent && Array.isArray(topContent) && topContent.length > 0 ? (
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Content</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Views</TableHead>
-                    <TableHead>Engagement</TableHead>
-                    <TableHead>Created</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {topContent.map((content: any) => (
-                    <TableRow key={content.id}>
-                      <TableCell>
-                        <div>
-                          <p className="font-medium text-gray-900 truncate max-w-xs">
-                            {content.title}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            by {content.author || 'Unknown'}
-                          </p>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline" className="capitalize">
-                          {content.type}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <span className="font-medium">{content.views?.toLocaleString() || 0}</span>
-                      </TableCell>
-                      <TableCell>
-                        <span className="text-sm text-gray-600">
-                          {content.engagementRate || 0}%
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        <span className="text-sm text-gray-500">
-                          {new Date(content.createdAt).toLocaleDateString()}
-                        </span>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          ) : (
-            <div className="text-center py-8">
-              <TrendingUp className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No analytics data</h3>
-              <p className="text-gray-500">Analytics data will appear here once content is created and viewed.</p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
     </div>
   );
 }

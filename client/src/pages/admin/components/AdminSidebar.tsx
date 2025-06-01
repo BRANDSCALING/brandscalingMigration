@@ -90,7 +90,7 @@ export default function AdminSidebar({ currentPage }: AdminSidebarProps) {
       <Button
         variant="ghost"
         size="icon"
-        className="lg:hidden fixed top-4 left-4 z-50 bg-white shadow-md"
+        className="lg:hidden fixed top-4 left-52 z-50 bg-white shadow-md"
         onClick={() => setIsMobileOpen(!isMobileOpen)}
       >
         {isMobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
