@@ -762,6 +762,57 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Analytics endpoints for Insights dashboard
+  app.get("/api/admin/analytics/daily-active-users", requireRole(['admin']), async (req: any, res) => {
+    try {
+      const analytics = await storage.getDailyActiveUsers();
+      res.json(analytics);
+    } catch (error) {
+      console.error("Error fetching daily active users:", error);
+      res.status(500).json({ message: "Failed to fetch daily active users analytics" });
+    }
+  });
+
+  app.get("/api/admin/analytics/new-posts", requireRole(['admin']), async (req: any, res) => {
+    try {
+      const analytics = await storage.getNewPostsAnalytics();
+      res.json(analytics);
+    } catch (error) {
+      console.error("Error fetching new posts analytics:", error);
+      res.status(500).json({ message: "Failed to fetch new posts analytics" });
+    }
+  });
+
+  app.get("/api/admin/analytics/user-growth", requireRole(['admin']), async (req: any, res) => {
+    try {
+      const analytics = await storage.getUserGrowthAnalytics();
+      res.json(analytics);
+    } catch (error) {
+      console.error("Error fetching user growth analytics:", error);
+      res.status(500).json({ message: "Failed to fetch user growth analytics" });
+    }
+  });
+
+  app.get("/api/admin/analytics/moderation", requireRole(['admin']), async (req: any, res) => {
+    try {
+      const analytics = await storage.getModerationAnalytics();
+      res.json(analytics);
+    } catch (error) {
+      console.error("Error fetching moderation analytics:", error);
+      res.status(500).json({ message: "Failed to fetch moderation analytics" });
+    }
+  });
+
+  app.get("/api/admin/analytics/banned-users", requireRole(['admin']), async (req: any, res) => {
+    try {
+      const analytics = await storage.getBannedUsersAnalytics();
+      res.json(analytics);
+    } catch (error) {
+      console.error("Error fetching banned users analytics:", error);
+      res.status(500).json({ message: "Failed to fetch banned users analytics" });
+    }
+  });
+
   app.post("/api/admin/courses", requireAuth, async (req: any, res) => {
     try {
       const userRole = req.user.claims.role || "buyer";
