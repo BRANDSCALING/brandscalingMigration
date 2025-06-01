@@ -3,14 +3,12 @@ import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { isUnauthorizedError } from '@/lib/authUtils';
-import LmsAiAssistant from '@/components/LmsAiAssistant';
 import { 
   BookOpen, 
   Download, 
@@ -19,7 +17,6 @@ import {
   Lock,
   User,
   Brain,
-  Calendar,
   Clock,
   Crown,
   Play,
@@ -48,12 +45,6 @@ interface Module {
     workbookUrl: string;
     summary: string;
   };
-}
-
-interface UserProgress {
-  moduleId: number;
-  completed: boolean;
-  completedAt?: string;
 }
 
 export default function LMS() {
@@ -283,7 +274,8 @@ export default function LMS() {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 p-8">{currentModule ? (
+        <div className="flex-1 p-8">
+          {currentModule ? (
             <div className="max-w-4xl">
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-4">
@@ -316,9 +308,9 @@ export default function LMS() {
                     <div className="aspect-video bg-gray-100 rounded-lg flex items-center justify-center mb-4">
                       <div className="text-center">
                         <Play className="h-12 w-12 text-gray-400 mx-auto mb-2" />
-                        <p className="text-gray-500">Video player would load here</p>
+                        <p className="text-gray-500">Video player will load here</p>
                         <p className="text-xs text-gray-400 mt-1">
-                          URL: {selectedMode === 'architect' 
+                          Ready for: {selectedMode === 'architect' 
                             ? currentModule.architectContent.videoUrl 
                             : currentModule.alchemistContent.videoUrl}
                         </p>
@@ -402,230 +394,6 @@ export default function LMS() {
           )}
         </div>
       </div>
-    </div>
-  );
-}
-                    
-                    return (
-                      <Button
-                        key={module.id}
-                        variant={selectedModule === module.id ? "default" : "ghost"}
-                        className={`w-full justify-start text-left h-auto p-3 ${
-                          !isAccessible ? 'opacity-50 cursor-not-allowed' : ''
-                        }`}
-                        onClick={() => isAccessible && setSelectedModule(module.id)}
-                        disabled={!isAccessible}
-                      >
-                        <div className="flex items-center gap-3 w-full">
-                          {isAccessible ? (
-                            isCompleted ? (
-                              <CheckCircle className="h-5 w-5 text-green-500" />
-                            ) : (
-                              <BookOpen className="h-5 w-5" />
-                            )
-                          ) : (
-                            <Lock className="h-5 w-5" />
-                          )}
-                          <div className="flex-1 min-w-0">
-                            <div className="font-medium text-sm">Module {module.order}</div>
-                            <div className="text-xs text-gray-500 truncate">{module.title}</div>
-                          </div>
-                        </div>
-                      </Button>
-                    );
-                  })
-                )}
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Main Content */}
-          <div className="lg:col-span-3">
-            {currentModule ? (
-              <div className="space-y-6">
-                {/* Module Header */}
-                <Card>
-                  <CardHeader>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <CardTitle className="text-2xl">
-                          Module {currentModule.order}: {currentModule.title}
-                        </CardTitle>
-                        <p className="text-gray-600 mt-2">{currentModule.description}</p>
-                      </div>
-                      {moduleProgress?.completed && (
-                        <Badge className="bg-green-100 text-green-800">
-                          <CheckCircle className="h-4 w-4 mr-1" />
-                          Completed
-                        </Badge>
-                      )}
-                    </div>
-                  </CardHeader>
-                </Card>
-
-                {/* Mode Toggle */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-lg flex items-center gap-2">
-                      <Brain className="h-5 w-5" />
-                      Learning Mode
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <Tabs value={selectedMode} onValueChange={(v) => setSelectedMode(v as 'architect' | 'alchemist')}>
-                      <TabsList className="grid w-full grid-cols-2">
-                        <TabsTrigger value="architect" className="data-[state=active]:bg-purple-100 data-[state=active]:text-purple-700">
-                          🏗️ Architect Mode
-                        </TabsTrigger>
-                        <TabsTrigger value="alchemist" className="data-[state=active]:bg-orange-100 data-[state=active]:text-orange-700">
-                          🧪 Alchemist Mode
-                        </TabsTrigger>
-                      </TabsList>
-                      
-                      <TabsContent value="architect" className="mt-6">
-                        <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
-                          <h4 className="font-semibold text-purple-800 mb-2">Architect Approach</h4>
-                          <p className="text-purple-700">{currentModule.architectContent?.summary}</p>
-                        </div>
-                      </TabsContent>
-                      
-                      <TabsContent value="alchemist" className="mt-6">
-                        <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
-                          <h4 className="font-semibold text-orange-800 mb-2">Alchemist Approach</h4>
-                          <p className="text-orange-700">{currentModule.alchemistContent?.summary}</p>
-                        </div>
-                      </TabsContent>
-                    </Tabs>
-                  </CardContent>
-                </Card>
-
-                {/* Content */}
-                <div className="grid md:grid-cols-2 gap-6">
-                  {/* Video */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-lg flex items-center gap-2">
-                        <Video className="h-5 w-5" />
-                        Training Video
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="aspect-video bg-gray-100 rounded-lg flex items-center justify-center">
-                        {selectedMode === 'architect' && currentModule.architectContent?.videoUrl ? (
-                          <iframe
-                            src={currentModule.architectContent.videoUrl}
-                            className="w-full h-full rounded-lg"
-                            allowFullScreen
-                          />
-                        ) : selectedMode === 'alchemist' && currentModule.alchemistContent?.videoUrl ? (
-                          <iframe
-                            src={currentModule.alchemistContent.videoUrl}
-                            className="w-full h-full rounded-lg"
-                            allowFullScreen
-                          />
-                        ) : (
-                          <div className="text-center text-gray-500">
-                            <Video className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                            <p>Video content coming soon</p>
-                          </div>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  {/* Resources */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-lg flex items-center gap-2">
-                        <Download className="h-5 w-5" />
-                        Resources
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      {/* Workbook Download */}
-                      <div className="border rounded-lg p-4">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <h4 className="font-medium">{selectedMode === 'architect' ? 'Architect' : 'Alchemist'} Workbook</h4>
-                            <p className="text-sm text-gray-600">PDF workbook and exercises</p>
-                          </div>
-                          <Button 
-                            size="sm" 
-                            variant="outline"
-                            onClick={() => {
-                              const url = selectedMode === 'architect' 
-                                ? currentModule.architectContent?.workbookUrl 
-                                : currentModule.alchemistContent?.workbookUrl;
-                              if (url) {
-                                window.open(url, '_blank');
-                              } else {
-                                toast({
-                                  title: "Coming Soon",
-                                  description: "Workbook will be available soon",
-                                });
-                              }
-                            }}
-                          >
-                            <Download className="h-4 w-4 mr-1" />
-                            Download
-                          </Button>
-                        </div>
-                      </div>
-
-                      {/* Progress Checkbox */}
-                      <div className="border rounded-lg p-4">
-                        <div className="flex items-center space-x-3">
-                          <Checkbox 
-                            id={`complete-${currentModule.id}`}
-                            checked={moduleProgress?.completed || false}
-                            onCheckedChange={(checked) => {
-                              if (checked && !moduleProgress?.completed) {
-                                markCompleteMutation.mutate(currentModule.id);
-                              }
-                            }}
-                            disabled={markCompleteMutation.isPending}
-                          />
-                          <label 
-                            htmlFor={`complete-${currentModule.id}`}
-                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                          >
-                            Mark as Complete
-                          </label>
-                        </div>
-                        {moduleProgress?.completed && moduleProgress.completedAt && (
-                          <p className="text-xs text-gray-500 mt-2">
-                            <Calendar className="h-3 w-3 inline mr-1" />
-                            Completed on {new Date(moduleProgress.completedAt).toLocaleDateString()}
-                          </p>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              </div>
-            ) : (
-              <Card>
-                <CardContent className="text-center py-12">
-                  <BookOpen className="h-12 w-12 mx-auto mb-4 text-gray-400" />
-                  <h3 className="text-lg font-medium mb-2">Select a Module</h3>
-                  <p className="text-gray-600">Choose a module from the sidebar to begin learning</p>
-                </CardContent>
-              </Card>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* AI Assistant */}
-      {currentModule && (
-        <LmsAiAssistant
-          moduleId={currentModule.id}
-          moduleTitle={currentModule.title}
-          userMode={selectedMode}
-          isOpen={aiAssistantOpen}
-          onToggle={() => setAiAssistantOpen(!aiAssistantOpen)}
-        />
-      )}
     </div>
   );
 }
