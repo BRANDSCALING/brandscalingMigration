@@ -36,43 +36,14 @@ export default function StudentCommunity() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
-  // Custom hook for countdown timer
-  const useCountdown = (postId: string, createdAt: string) => {
-    const [timeLeft, setTimeLeft] = useState(0);
-    const [isActive, setIsActive] = useState(false);
-
-    useEffect(() => {
-      const createdTime = new Date(createdAt).getTime();
-      const currentTime = new Date().getTime();
-      const elapsed = currentTime - createdTime;
-      const remaining = Math.max(0, 60000 - elapsed); // 60 seconds in ms
-
-      if (remaining > 0) {
-        setTimeLeft(remaining);
-        setIsActive(true);
-      } else {
-        setTimeLeft(0);
-        setIsActive(false);
-        return;
-      }
-
-      const timer = setInterval(() => {
-        const now = new Date().getTime();
-        const newElapsed = now - createdTime;
-        const newRemaining = Math.max(0, 60000 - newElapsed);
-        
-        setTimeLeft(newRemaining);
-        
-        if (newRemaining <= 0) {
-          setIsActive(false);
-          clearInterval(timer);
-        }
-      }, 1000);
-
-      return () => clearInterval(timer);
-    }, [postId, createdAt]);
-
-    return { timeLeft: Math.ceil(timeLeft / 1000), isActive };
+  // Helper function to check if undo is available
+  const getUndoStatus = (createdAt: string) => {
+    const createdTime = new Date(createdAt).getTime();
+    const currentTime = new Date().getTime();
+    const elapsed = currentTime - createdTime;
+    const remaining = Math.max(0, 60000 - elapsed);
+    const timeLeft = Math.ceil(remaining / 1000);
+    return { timeLeft, isActive: remaining > 0 };
   };
 
   // Fetch community posts
@@ -133,8 +104,7 @@ export default function StudentCommunity() {
     onSuccess: async () => {
       await refetch();
       toast({
-        title: "Post Undone",
-        description: "Your post has been removed from the community.",
+        title: "🗑️ Post removed — you can repost any time.",
       });
     },
     onError: () => {
@@ -428,19 +398,11 @@ export default function StudentCommunity() {
           </Card>
         ) : (
           filteredPosts.map((post) => {
-            const PostCountdown = () => {
-              const { timeLeft, isActive } = useCountdown(post.id, post.createdAt);
-              return isActive ? (
-                <Badge variant="secondary" className="text-xs">
-                  Undo: {timeLeft}s
-                </Badge>
-              ) : null;
-            };
-
             const isAuthor = user && post.userId === user.id;
             const createdTime = new Date(post.createdAt);
             const updatedTime = post.updatedAt ? new Date(post.updatedAt) : null;
             const isEdited = updatedTime && updatedTime.getTime() !== createdTime.getTime();
+            const undoStatus = getUndoStatus(post.createdAt);
 
             return (
               <Card key={post.id} className="hover:shadow-md transition-shadow">
@@ -471,7 +433,11 @@ export default function StudentCommunity() {
                         </div>
                       </div>
                     </div>
-                    {isAuthor && <PostCountdown />}
+                    {isAuthor && undoStatus.isActive && (
+                      <Badge variant="secondary" className="text-xs">
+                        Undo: {undoStatus.timeLeft}s
+                      </Badge>
+                    )}
                   </div>
                 </CardHeader>
                 <CardContent>
@@ -504,20 +470,17 @@ export default function StudentCommunity() {
                     {isAuthor && (
                       <div className="flex items-center gap-2">
                         {/* Show undo button only within 60 seconds of creation */}
-                        {(() => {
-                          const { timeLeft, isActive } = useCountdown(post.id, post.createdAt);
-                          return isActive ? (
-                            <Button 
-                              variant="outline" 
-                              size="sm" 
-                              onClick={() => handleUndoPost(post.id)}
-                              disabled={undoPostMutation.isPending}
-                              className="text-red-600 hover:text-red-700"
-                            >
-                              Undo Post ({timeLeft}s)
-                            </Button>
-                          ) : null;
-                        })()}
+                        {undoStatus.isActive && (
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            onClick={() => handleUndoPost(post.id)}
+                            disabled={undoPostMutation.isPending}
+                            className="text-red-600 hover:text-red-700"
+                          >
+                            Undo Post ({undoStatus.timeLeft}s)
+                          </Button>
+                        )}
                         <Button 
                           variant="outline" 
                           size="sm" 
