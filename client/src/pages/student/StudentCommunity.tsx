@@ -32,24 +32,26 @@ export default function StudentCommunity() {
   const queryClient = useQueryClient();
 
   // Fetch community posts
-  const { data: postsData, isLoading } = useQuery<CommunityPost[]>({
+  const { data: postsData, isLoading, refetch } = useQuery<CommunityPost[]>({
     queryKey: ["/api/community/posts"],
     queryFn: () => apiRequest("GET", "/api/community/posts"),
+    staleTime: 0, // Always fetch fresh data
+    cacheTime: 0, // Don't cache the response
   });
 
   // Ensure posts is always an array
   const posts = Array.isArray(postsData) ? postsData : [];
+  
+  console.log("Posts data:", postsData);
+  console.log("Filtered posts:", posts);
 
   // Create post mutation
   const createPostMutation = useMutation({
     mutationFn: (postData: { title: string; body: string; tags?: string[] }) =>
       apiRequest("POST", "/api/community/posts", postData),
     onSuccess: async (newPost) => {
-      // Clear the existing cache and force a fresh fetch
-      queryClient.removeQueries({ queryKey: ["/api/community/posts"] });
-      
-      // Immediately fetch fresh data
-      await queryClient.refetchQueries({ queryKey: ["/api/community/posts"] });
+      // Use the direct refetch function from the query
+      await refetch();
       
       setIsCreateDialogOpen(false);
       setNewPost({ title: "", body: "", tags: [] });
