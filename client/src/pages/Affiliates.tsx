@@ -6,7 +6,7 @@ export default function Affiliates() {
       <div className="container mx-auto px-6 py-20">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-            Brandscaling Affiliate Program
+            {/* AWAITING REAL CONTENT */}
           </h1>
           
           <div className="inline-flex items-center px-4 py-2 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm font-medium mb-8">
@@ -14,14 +14,14 @@ export default function Affiliates() {
           </div>
           
           <p className="text-xl text-gray-600 dark:text-gray-300 mb-12 max-w-2xl mx-auto leading-relaxed">
-            Earn generous commissions by sharing Brandscaling with your audience. Our affiliate program will launch soon. Register your interest below.
+            {/* AWAITING REAL CONTENT */}
           </p>
           
           <Button 
             size="lg" 
             className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg font-semibold rounded-lg"
           >
-            Register Your Interest
+            {/* AWAITING REAL CONTENT */}
           </Button>
         </div>
       </div>

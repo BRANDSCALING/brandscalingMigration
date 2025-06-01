@@ -11,11 +11,11 @@ export default function Community() {
           </div>
           
           <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
-            Brandscaling Community
+            {/* AWAITING REAL CONTENT */}
           </h1>
           
           <p className="text-xl text-slate-600 mb-8">
-            Connect, learn, and grow with fellow entrepreneurs building extraordinary brands
+            {/* AWAITING REAL CONTENT */}
           </p>
           
           <div className="inline-flex items-center justify-center px-6 py-3 bg-slate-100 rounded-full">
