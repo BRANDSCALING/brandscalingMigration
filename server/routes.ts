@@ -844,18 +844,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // LMS API endpoints
+  // LMS API endpoints with role-based access control
   app.get("/api/lms/modules", requireAuth, async (req: any, res) => {
     try {
-      const modules = await storage.getLmsModules();
+      const userId = req.user.uid;
+      const user = await storage.getUser(userId);
       
-      // Transform modules to include separated content for architect/alchemist
-      const transformedModules = modules.map(module => ({
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Implement role-based access control
+      if (user.role === "guest") {
+        return res.status(401).json({ message: "Login required to access LMS modules" });
+      }
+      
+      const modulesWithAccess = await storage.getLmsModulesWithAccess(userId);
+      const progress = await storage.getUserLmsProgress(userId);
+      
+      // Transform modules with access control information
+      const transformedModules = modulesWithAccess.map(module => ({
         id: module.id,
         title: module.title,
+        slug: module.slug,
         description: module.description,
         order: module.order,
         requiredRole: module.requiredRole,
+        isAccessible: module.isAccessible,
+        unlockDate: module.unlockDate?.toISOString(),
+        unlockAfterDays: module.unlockAfterDays,
+        isLocked: module.isLocked,
+        completed: progress.some(p => p.moduleId === module.id && p.completed),
         architectContent: {
           videoUrl: module.architectVideoUrl,
           workbookUrl: module.architectWorkbookUrl,
@@ -1034,6 +1053,117 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
     ws.on('close', () => {
       console.log('WebSocket connection closed');
     });
+  });
+
+  // Initialize sample LMS modules if none exist
+  app.post("/api/admin/init-sample-modules", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.user.uid;
+      const user = await storage.getUser(userId);
+      
+      if (!user || user.role !== "admin") {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const existingModules = await storage.getLmsModules();
+      if (existingModules.length > 0) {
+        return res.json({ message: "Modules already exist", count: existingModules.length });
+      }
+
+      // Create sample modules with progressive unlock timing
+      const sampleModules = [
+        {
+          title: "Foundation: Brand Architecture",
+          slug: "foundation-brand-architecture",
+          description: "Build the structural foundation of your brand identity and core messaging framework.",
+          order: 1,
+          requiredRole: "buyer",
+          isLocked: false,
+          unlockAfterDays: 0, // Available immediately
+          architectVideoUrl: "https://example.com/architect-foundation.mp4",
+          architectWorkbookUrl: "https://example.com/architect-foundation-workbook.pdf",
+          architectSummary: "Systematic approach to brand foundation using frameworks and structured methodology.",
+          alchemistVideoUrl: "https://example.com/alchemist-foundation.mp4",
+          alchemistWorkbookUrl: "https://example.com/alchemist-foundation-workbook.pdf",
+          alchemistSummary: "Intuitive brand foundation focusing on emotional connection and brand story development.",
+        },
+        {
+          title: "Module 1: Market Positioning",
+          slug: "market-positioning",
+          description: "Define your unique market position and competitive differentiation strategy.",
+          order: 2,
+          requiredRole: "buyer",
+          isLocked: true,
+          unlockAfterDays: 30, // Unlocks after 30 days
+          architectVideoUrl: "https://example.com/architect-positioning.mp4",
+          architectWorkbookUrl: "https://example.com/architect-positioning-workbook.pdf",
+          architectSummary: "Data-driven positioning using market analysis and competitive frameworks.",
+          alchemistVideoUrl: "https://example.com/alchemist-positioning.mp4",
+          alchemistWorkbookUrl: "https://example.com/alchemist-positioning-workbook.pdf",
+          alchemistSummary: "Emotional positioning through brand personality and customer connection.",
+        },
+        {
+          title: "Module 2: Content Strategy",
+          slug: "content-strategy",
+          description: "Develop a comprehensive content strategy that resonates with your target audience.",
+          order: 3,
+          requiredRole: "buyer",
+          isLocked: true,
+          unlockAfterDays: 60, // Unlocks after 60 days
+          architectVideoUrl: "https://example.com/architect-content.mp4",
+          architectWorkbookUrl: "https://example.com/architect-content-workbook.pdf",
+          architectSummary: "Systematic content planning using editorial calendars and strategic frameworks.",
+          alchemistVideoUrl: "https://example.com/alchemist-content.mp4",
+          alchemistWorkbookUrl: "https://example.com/alchemist-content-workbook.pdf",
+          alchemistSummary: "Creative content development through storytelling and emotional engagement.",
+        },
+        {
+          title: "Module 3: Scaling Systems",
+          slug: "scaling-systems",
+          description: "Build scalable systems and processes for sustainable business growth.",
+          order: 4,
+          requiredRole: "buyer",
+          isLocked: true,
+          unlockAfterDays: 90, // Unlocks after 90 days
+          architectVideoUrl: "https://example.com/architect-scaling.mp4",
+          architectWorkbookUrl: "https://example.com/architect-scaling-workbook.pdf",
+          architectSummary: "Process optimization and systematic scaling using proven methodologies.",
+          alchemistVideoUrl: "https://example.com/alchemist-scaling.mp4",
+          alchemistWorkbookUrl: "https://example.com/alchemist-scaling-workbook.pdf",
+          alchemistSummary: "Organic growth through community building and authentic engagement.",
+        },
+        {
+          title: "Advanced: Mastermind Strategies",
+          slug: "mastermind-strategies",
+          description: "Advanced strategies and exclusive insights for premium growth.",
+          order: 5,
+          requiredRole: "mastermind",
+          isLocked: false,
+          unlockAfterDays: 0, // Available immediately for mastermind users
+          architectVideoUrl: "https://example.com/architect-mastermind.mp4",
+          architectWorkbookUrl: "https://example.com/architect-mastermind-workbook.pdf",
+          architectSummary: "Advanced systematic approaches for enterprise-level scaling.",
+          alchemistVideoUrl: "https://example.com/alchemist-mastermind.mp4",
+          alchemistWorkbookUrl: "https://example.com/alchemist-mastermind-workbook.pdf",
+          alchemistSummary: "Visionary leadership and transformational business practices.",
+        }
+      ];
+
+      let createdCount = 0;
+      for (const moduleData of sampleModules) {
+        await storage.createLmsModule(moduleData);
+        createdCount++;
+      }
+
+      res.json({ 
+        message: "Sample modules created successfully", 
+        count: createdCount,
+        accessControl: "Role-based access control implemented - Mastermind users get full access, Buyer users unlock 1 module every 30 days"
+      });
+    } catch (error: any) {
+      console.error("Error creating sample modules:", error);
+      res.status(500).json({ message: "Failed to create sample modules" });
+    }
   });
 
   return httpServer;
