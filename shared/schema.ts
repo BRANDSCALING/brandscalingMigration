@@ -41,6 +41,16 @@ export const users = pgTable("users", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Payment transactions
+export const payments = pgTable("payments", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  product: varchar("product").notNull(), // taster-day, mastermind, subscription, etc.
+  stripeId: varchar("stripe_id").notNull(), // Stripe session/payment ID
+  amount: integer("amount").notNull(), // Amount in pence
+  paidAt: timestamp("paid_at").notNull().defaultNow(),
+});
+
 // Course categories and tracks
 export const courses = pgTable("courses", {
   id: serial("id").primaryKey(),
@@ -357,3 +367,6 @@ export type EventAttendee = typeof eventAttendees.$inferSelect;
 
 export type BlogPost = typeof blogPosts.$inferSelect;
 export type InsertBlogPost = z.infer<typeof insertBlogPostSchema>;
+
+export type Payment = typeof payments.$inferSelect;
+export type InsertPayment = typeof payments.$inferInsert;
