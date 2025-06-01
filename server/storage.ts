@@ -276,8 +276,12 @@ export class DatabaseStorage implements IStorage {
       .select()
       .from(posts)
       .innerJoin(users, eq(posts.userId, users.id))
-      .where(eq(posts.isPublished, true))
-      .orderBy(desc(posts.createdAt))
+      .where(eq(posts.isDeleted, false))
+      .orderBy(
+        desc(posts.featuredAt),
+        desc(posts.pinnedAt),
+        desc(posts.createdAt)
+      )
       .limit(limit);
 
     const result = [];
@@ -502,6 +506,100 @@ export class DatabaseStorage implements IStorage {
       .where(eq(users.id, userId))
       .returning();
     return user;
+  }
+
+  async adminDeletePost(postId: string, adminId: string, reason: string): Promise<void> {
+    await db
+      .update(posts)
+      .set({ 
+        isDeleted: true,
+        updatedAt: new Date()
+      })
+      .where(eq(posts.id, postId));
+
+    await db.insert(postActivityLogs).values({
+      id: crypto.randomUUID(),
+      postId,
+      userId: adminId,
+      action: `admin_delete: ${reason}`,
+      timestamp: new Date()
+    });
+  }
+
+  async pinPost(postId: string, adminId: string): Promise<void> {
+    await db
+      .update(posts)
+      .set({ 
+        isPinned: true,
+        pinnedAt: new Date(),
+        pinnedBy: adminId
+      })
+      .where(eq(posts.id, postId));
+
+    await db.insert(postActivityLogs).values({
+      id: crypto.randomUUID(),
+      postId,
+      userId: adminId,
+      action: 'admin_pin',
+      timestamp: new Date()
+    });
+  }
+
+  async unpinPost(postId: string, adminId: string): Promise<void> {
+    await db
+      .update(posts)
+      .set({ 
+        isPinned: false,
+        pinnedAt: null,
+        pinnedBy: null
+      })
+      .where(eq(posts.id, postId));
+
+    await db.insert(postActivityLogs).values({
+      id: crypto.randomUUID(),
+      postId,
+      userId: adminId,
+      action: 'admin_unpin',
+      timestamp: new Date()
+    });
+  }
+
+  async setFeatured(postId: string, adminId: string, featuredType: string): Promise<void> {
+    await db
+      .update(posts)
+      .set({ 
+        featuredType,
+        featuredAt: new Date(),
+        featuredBy: adminId
+      })
+      .where(eq(posts.id, postId));
+
+    await db.insert(postActivityLogs).values({
+      id: crypto.randomUUID(),
+      postId,
+      userId: adminId,
+      action: `admin_feature_${featuredType}`,
+      timestamp: new Date()
+    });
+  }
+
+  async removeFeatured(postId: string, adminId: string): Promise<void> {
+    await db
+      .update(posts)
+      .set({ 
+        featuredType: null,
+        featuredAt: null,
+        featuredBy: null
+      })
+      .where(eq(posts.id, postId));
+
+    await db.insert(postActivityLogs).values({
+      id: crypto.randomUUID(),
+      postId,
+      userId: adminId,
+      action: 'admin_unfeature',
+      timestamp: new Date()
+    });
   }
 
   // Blog operations

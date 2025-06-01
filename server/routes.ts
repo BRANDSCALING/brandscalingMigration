@@ -407,15 +407,74 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const adminUserId = req.user.uid;
       const { reason } = req.body;
       
-      const success = await storage.adminDeletePost(postId, adminUserId, reason);
-      if (!success) {
-        return res.status(404).json({ message: "Post not found" });
-      }
-      
+      await storage.adminDeletePost(postId, adminUserId, reason);
       res.json({ success: true });
     } catch (error) {
       console.error("Error admin deleting post:", error);
       res.status(500).json({ message: "Failed to delete post" });
+    }
+  });
+
+  // Pin post
+  app.post("/api/community/posts/:id/pin", requireRole(['admin', 'staff']), async (req: any, res) => {
+    try {
+      const postId = req.params.id;
+      const adminId = req.user.uid;
+      
+      await storage.pinPost(postId, adminId);
+      res.json({ message: "Post pinned successfully" });
+    } catch (error) {
+      console.error("Error pinning post:", error);
+      res.status(500).json({ message: "Failed to pin post" });
+    }
+  });
+
+  // Unpin post
+  app.delete("/api/community/posts/:id/pin", requireRole(['admin', 'staff']), async (req: any, res) => {
+    try {
+      const postId = req.params.id;
+      const adminId = req.user.uid;
+      
+      await storage.unpinPost(postId, adminId);
+      res.json({ message: "Post unpinned successfully" });
+    } catch (error) {
+      console.error("Error unpinning post:", error);
+      res.status(500).json({ message: "Failed to unpin post" });
+    }
+  });
+
+  // Set featured
+  app.post("/api/community/posts/:id/featured", requireRole(['admin', 'staff']), async (req: any, res) => {
+    try {
+      const postId = req.params.id;
+      const adminId = req.user.uid;
+      const { featuredType } = req.body;
+
+      const featuredSchema = z.object({
+        featuredType: z.enum(['launch', 'update', 'tip', 'warning', 'direction']),
+      });
+
+      const validatedData = featuredSchema.parse({ featuredType });
+      
+      await storage.setFeatured(postId, adminId, validatedData.featuredType);
+      res.json({ message: "Post featured successfully" });
+    } catch (error) {
+      console.error("Error featuring post:", error);
+      res.status(500).json({ message: "Failed to feature post" });
+    }
+  });
+
+  // Remove featured
+  app.delete("/api/community/posts/:id/featured", requireRole(['admin', 'staff']), async (req: any, res) => {
+    try {
+      const postId = req.params.id;
+      const adminId = req.user.uid;
+      
+      await storage.removeFeatured(postId, adminId);
+      res.json({ message: "Post unfeatured successfully" });
+    } catch (error) {
+      console.error("Error unfeaturing post:", error);
+      res.status(500).json({ message: "Failed to unfeature post" });
     }
   });
 

@@ -141,6 +141,12 @@ export const posts = pgTable("posts", {
   body: text("body").notNull(),
   tags: text("tags").array(),
   uploadUrls: text("upload_urls").array(),
+  isPinned: boolean("is_pinned").default(false),
+  pinnedAt: timestamp("pinned_at"),
+  pinnedBy: varchar("pinned_by").references(() => users.id),
+  featuredType: varchar("featured_type"), // launch, update, tip, warning, direction
+  featuredAt: timestamp("featured_at"),
+  featuredBy: varchar("featured_by").references(() => users.id),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
   isDeleted: boolean("is_deleted").default(false),
