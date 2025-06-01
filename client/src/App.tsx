@@ -56,8 +56,41 @@ function Router() {
     );
   }
 
-  // Helper component for public pages
+  // Helper component for public pages with access control
   const PublicPage = ({ children }: { children: React.ReactNode }) => {
+    // Redirect authenticated users to their dashboards from public pages
+    if (isAuthenticated && userProfile) {
+      if (userProfile.role === 'student') {
+        setLocation('/student');
+        return null;
+      }
+      if (userProfile.role === 'admin') {
+        setLocation('/admin');
+        return null;
+      }
+    }
+    
+    return (
+      <Layout>
+        {children}
+      </Layout>
+    );
+  };
+
+  // Helper component for visitor-only pages (community/collab)
+  const VisitorOnlyPage = ({ children }: { children: React.ReactNode }) => {
+    // Redirect authenticated users to their dashboards
+    if (isAuthenticated && userProfile) {
+      if (userProfile.role === 'student') {
+        setLocation('/student');
+        return null;
+      }
+      if (userProfile.role === 'admin') {
+        setLocation('/admin');
+        return null;
+      }
+    }
+    
     return (
       <Layout>
         {children}
@@ -67,51 +100,43 @@ function Router() {
 
   return (
     <Switch>
-      {/* Public Routes - Always accessible to visitors */}
+      {/* Auth Route - Always accessible */}
       <Route path="/auth" component={Auth} />
-      <Route path="/community" component={() => <PublicPage><CommunityComingSoon /></PublicPage>} />
-      <Route path="/collab" component={() => <PublicPage><CollabComingSoon /></PublicPage>} />
 
-      {/* Unauthenticated Routes - Public website (only for visitors) */}
-      {!isAuthenticated && (
+      {/* Visitor-Only Routes - Block authenticated users */}
+      <Route path="/community" component={() => <VisitorOnlyPage><CommunityComingSoon /></VisitorOnlyPage>} />
+      <Route path="/collab" component={() => <VisitorOnlyPage><CollabComingSoon /></VisitorOnlyPage>} />
+
+      {/* Public Marketing Routes - Redirect authenticated users to dashboards */}
+      <Route path="/" component={() => <PublicPage><Landing /></PublicPage>} />
+      <Route path="/about" component={() => <PublicPage><About /></PublicPage>} />
+      <Route path="/courses" component={() => <PublicPage><Courses /></PublicPage>} />
+      <Route path="/contact" component={() => <PublicPage><Contact /></PublicPage>} />
+      <Route path="/blog" component={() => <PublicPage><Blog /></PublicPage>} />
+      <Route path="/quiz" component={() => <PublicPage><Quiz /></PublicPage>} />
+      <Route path="/quiz-result" component={() => <PublicPage><QuizResult /></PublicPage>} />
+      <Route path="/deep-quiz" component={() => <PublicPage><DeepQuiz /></PublicPage>} />
+      <Route path="/checkout" component={() => <PublicPage><Checkout /></PublicPage>} />
+      <Route path="/thank-you" component={() => <PublicPage><ThankYou /></PublicPage>} />
+
+      {/* SANDBOXED AUTHENTICATED ROUTES */}
+      {/* Student Module - ONLY accessible to students */}
+      {isAuthenticated && userProfile?.role === 'student' && (
         <>
-          <Route path="/" component={() => <PublicPage><Landing /></PublicPage>} />
-          <Route path="/about" component={() => <PublicPage><About /></PublicPage>} />
-          <Route path="/courses" component={() => <PublicPage><Courses /></PublicPage>} />
-          <Route path="/contact" component={() => <PublicPage><Contact /></PublicPage>} />
-          <Route path="/blog" component={() => <PublicPage><Blog /></PublicPage>} />
-          <Route path="/quiz" component={() => <PublicPage><Quiz /></PublicPage>} />
-          <Route path="/quiz-result" component={() => <PublicPage><QuizResult /></PublicPage>} />
-          <Route path="/deep-quiz" component={() => <PublicPage><DeepQuiz /></PublicPage>} />
-          <Route path="/checkout" component={() => <PublicPage><Checkout /></PublicPage>} />
-          <Route path="/thank-you" component={() => <PublicPage><ThankYou /></PublicPage>} />
+          <Route path="/student" component={StudentDashboard} />
+          <Route path="/student/:path*" component={StudentDashboard} />
         </>
       )}
 
-      {/* Authenticated Routes - Sandboxed by Role */}
-      {isAuthenticated && userProfile && (
+      {/* Admin Module - ONLY accessible to admins */}
+      {isAuthenticated && userProfile?.role === 'admin' && (
         <>
-          {/* Student Module - Sandboxed LMS */}
-          {userProfile.role === 'student' && (
-            <>
-              <Route path="/student" component={StudentDashboard} />
-              <Route path="/student/:path*" component={StudentDashboard} />
-              <Route path="/" component={StudentDashboard} />
-            </>
-          )}
-
-          {/* Admin Module - Sandboxed Admin Panel */}
-          {userProfile.role === 'admin' && (
-            <>
-              <Route path="/admin" component={AdminDashboard} />
-              <Route path="/admin/:path*" component={AdminDashboard} />
-              <Route path="/" component={AdminDashboard} />
-            </>
-          )}
+          <Route path="/admin" component={AdminDashboard} />
+          <Route path="/admin/:path*" component={AdminDashboard} />
         </>
       )}
 
-      {/* 404 Route */}
+      {/* Block cross-role access with 404 */}
       <Route component={NotFound} />
     </Switch>
   );

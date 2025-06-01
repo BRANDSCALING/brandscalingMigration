@@ -1,104 +1,126 @@
+import { useState } from 'react';
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { useFirebaseAuth } from "@/hooks/useFirebaseAuth";
-import { LogOut, User, BookOpen, FileText } from "lucide-react";
+import { BookOpen, FileText, Bell, GraduationCap } from "lucide-react";
+import brandscalingLogo from "@assets/FullLogo.png";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import LogoutConfirmation from "@/components/LogoutConfirmation";
 
 export default function StudentHeader() {
-  const { logout, userProfile } = useFirebaseAuth();
-  const [location, setLocation] = useLocation();
+  const { userProfile } = useFirebaseAuth();
+  const [location] = useLocation();
+  const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false);
 
-  const handleLogoClick = () => {
-    // Students can return to homepage but with logout confirmation
-    if (confirm("Return to homepage? This will log you out of your student portal.")) {
-      logout();
-      setLocation('/');
-    }
-  };
+  const navItems = [
+    { href: "/student", label: "Dashboard", icon: GraduationCap },
+    { href: "/student/courses", label: "My Courses", icon: BookOpen },
+    { href: "/student/workbooks", label: "Workbooks", icon: FileText },
+  ];
 
-  const handleSignOut = async () => {
-    await logout();
-    setLocation('/');
+  const handleLogoClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setShowLogoutConfirmation(true);
   };
 
   return (
-    <header className="bg-white border-b border-gray-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <div className="flex items-center">
-            <button 
-              onClick={handleLogoClick}
-              className="text-2xl font-bold bg-gradient-to-r from-orange-500 to-purple-600 bg-clip-text text-transparent hover:opacity-80 transition-opacity"
-            >
-              Brandscaling
-            </button>
-          </div>
+    <>
+      <nav className="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            {/* Logo & Brand */}
+            <div className="flex items-center space-x-4">
+              <button onClick={handleLogoClick} className="flex items-center">
+                <img 
+                  src={brandscalingLogo} 
+                  alt="Brandscaling" 
+                  className="h-12 w-auto hover:opacity-80 transition-opacity cursor-pointer"
+                />
+              </button>
+              <div className="hidden md:block">
+                <span className="text-sm text-slate-500 bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
+                  Student Portal
+                </span>
+              </div>
+            </div>
 
-          {/* Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            <Link href="/student">
-              <a className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                location === '/student' 
-                  ? 'bg-purple-100 text-purple-700' 
-                  : 'text-gray-700 hover:text-purple-700 hover:bg-gray-50'
-              }`}>
-                <BookOpen className="h-4 w-4" />
-                <span>Dashboard</span>
-              </a>
-            </Link>
-            
-            <Link href="/student/courses">
-              <a className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                location === '/student/courses' 
-                  ? 'bg-purple-100 text-purple-700' 
-                  : 'text-gray-700 hover:text-purple-700 hover:bg-gray-50'
-              }`}>
-                <BookOpen className="h-4 w-4" />
-                <span>My Courses</span>
-              </a>
-            </Link>
+            {/* Main Navigation */}
+            <div className="hidden md:flex items-center space-x-1">
+              {navItems.map((item) => {
+                const IconComponent = item.icon;
+                return (
+                  <Link key={item.href} href={item.href}>
+                    <Button
+                      variant={location === item.href ? "default" : "ghost"}
+                      className={
+                        location === item.href
+                          ? "bg-blue-50 text-blue-700 hover:bg-blue-100"
+                          : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                      }
+                    >
+                      <IconComponent className="w-4 h-4 mr-2" />
+                      {item.label}
+                    </Button>
+                  </Link>
+                );
+              })}
+            </div>
 
-            <Link href="/student/workbooks">
-              <a className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                location === '/student/workbooks' 
-                  ? 'bg-purple-100 text-purple-700' 
-                  : 'text-gray-700 hover:text-purple-700 hover:bg-gray-50'
-              }`}>
-                <FileText className="h-4 w-4" />
-                <span>Workbooks</span>
-              </a>
-            </Link>
-          </nav>
-
-          {/* User Menu */}
-          <div className="flex items-center space-x-4">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="flex items-center space-x-2">
-                  <User className="h-4 w-4" />
-                  <span className="hidden md:inline">{userProfile?.firstName || 'Student'}</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem>
-                  <User className="mr-2 h-4 w-4" />
-                  Profile Settings
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleSignOut}>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Sign Out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {/* User Menu */}
+            <div className="flex items-center space-x-4">
+              <Button variant="ghost" size="icon" className="text-slate-400 hover:text-slate-600">
+                <Bell className="w-4 h-4" />
+              </Button>
+              
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="flex items-center space-x-3 h-auto p-2">
+                    <Avatar className="w-8 h-8">
+                      <AvatarImage src={userProfile?.profileImageUrl || ""} alt="Student avatar" />
+                      <AvatarFallback>
+                        {userProfile?.firstName?.[0] || userProfile?.email?.[0] || "S"}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="hidden sm:block text-left">
+                      <p className="text-sm font-medium text-slate-900">
+                        {userProfile?.firstName || userProfile?.email?.split("@")[0] || "Student"}
+                      </p>
+                      <p className="text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-700">
+                        Student
+                      </p>
+                    </div>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuItem asChild>
+                    <Link href="/student/profile">Profile Settings</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/student/progress">My Progress</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => setShowLogoutConfirmation(true)}
+                    className="text-red-600"
+                  >
+                    Log Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
         </div>
-      </div>
-    </header>
+      </nav>
+
+      <LogoutConfirmation 
+        isOpen={showLogoutConfirmation}
+        onClose={() => setShowLogoutConfirmation(false)}
+      />
+    </>
   );
 }

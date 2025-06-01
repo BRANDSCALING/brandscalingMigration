@@ -1,0 +1,39 @@
+Please fully rebuild the Brandscaling platform architecture to meet the following QA and security requirements:
+
+1. 🔒 STRICT ROLE-BASED ACCESS:
+   - Block logged-in Students and Admins from accessing all public marketing pages: "/", "/about", "/courses", "/contact", "/blog", "/quiz", "/community", "/collab".
+   - If a logged-in user tries to access those pages, redirect them to their dashboard (Student = /student, Admin = /admin).
+   - These routes should only be accessible to visitors (not logged in).
+
+2. 🧱 CREATE MISSING COMPONENTS:
+   - Create `AdminHeader.tsx` with clear admin-specific navigation and a Brandscaling logo that triggers a logout confirmation popup.
+   - Update `StudentHeader.tsx` to include a logout confirmation popup when logo is clicked.
+   - Create `LogoutConfirmation.tsx` as a reusable popup component with "Log Out" and "Cancel" buttons.
+
+3. 🧭 SANDBOXED HEADERS:
+   - Public site uses `Header.tsx` for visitors only (with links to /community and /collab).
+   - Student routes use `StudentHeader.tsx`, only visible to students.
+   - Admin routes use `AdminHeader.tsx`, only visible to admins.
+   - No role should see another role's header or menu.
+
+4. 🧠 LOGO CLICK BEHAVIOR:
+   - If user is not logged in: logo = homepage redirect.
+   - If user is logged in (Student/Admin): logo = open `LogoutConfirmation.tsx` popup asking if they want to log out or cancel.
+
+5. 🔐 ROUTE GUARDS AND ROLE ENFORCEMENT:
+   - Ensure route-level protection: students can't access admin pages, admins can't access student pages, and neither can access public pages.
+   - Add a proper 404 or "Access Denied" page if a role tries to access unauthorized content.
+
+6. ✅ AUTH FLOW:
+   - On login, users must be detected by role and redirected correctly.
+     - Student ➝ `/student`
+     - Admin ➝ `/admin`
+   - If logged out, return to `/auth` and allow access to public pages again.
+   - All user data (e.g., role, name) must be securely stored in Firebase Auth or state.
+
+7. 🧪 QA CHECK:
+   - After updates, confirm role-based sandboxing works and no UI/data/header leaks occur.
+   - Confirm each route only shows the correct layout and navigation.
+   - Confirm all role protection and redirections work perfectly.
+
+Final note: Clean and refactor any messy or duplicate code. Maintain the modular structure with folders: `pages/public`, `pages/student`, `pages/admin`. Make sure all components are reused cleanly and everything scales for future user roles (like community or collab club).
