@@ -793,6 +793,99 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Stripe webhook endpoint
+  app.post("/api/stripe/webhook", async (req, res) => {
+    try {
+      if (!process.env.STRIPE_SECRET_KEY) {
+        throw new Error('Stripe secret key not configured');
+      }
+
+      const Stripe = require('stripe');
+      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+      
+      const sig = req.headers['stripe-signature'];
+      let event;
+
+      try {
+        // Verify webhook signature
+        event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+      } catch (err) {
+        console.error('Webhook signature verification failed:', err.message);
+        return res.status(400).send(`Webhook Error: ${err.message}`);
+      }
+
+      // Handle the event
+      switch (event.type) {
+        case 'checkout.session.completed':
+          const session = event.data.object;
+          console.log('Payment succeeded for session:', session.id);
+          
+          // Handle successful payment
+          if (session.metadata?.product) {
+            const product = session.metadata.product;
+            console.log('Product purchased:', product);
+            
+            // Here you can update user access, send confirmation emails, etc.
+            // For example:
+            // await storage.updateUserAccess(session.customer_email, product);
+          }
+          break;
+
+        case 'payment_intent.succeeded':
+          const paymentIntent = event.data.object;
+          console.log('PaymentIntent succeeded:', paymentIntent.id);
+          
+          // Handle successful payment intent
+          if (paymentIntent.metadata?.courseId && paymentIntent.metadata?.userId) {
+            const { courseId, userId } = paymentIntent.metadata;
+            console.log(`User ${userId} purchased course ${courseId}`);
+            
+            // Update user access to the course
+            // await storage.grantCourseAccess(userId, courseId);
+          }
+          break;
+
+        case 'invoice.payment_succeeded':
+          const invoice = event.data.object;
+          console.log('Subscription payment succeeded:', invoice.id);
+          
+          // Handle successful subscription payment
+          if (invoice.subscription) {
+            console.log('Subscription payment for:', invoice.subscription);
+            
+            // Update subscription status
+            // await storage.updateSubscriptionStatus(invoice.customer, 'active');
+          }
+          break;
+
+        case 'customer.subscription.created':
+        case 'customer.subscription.updated':
+          const subscription = event.data.object;
+          console.log('Subscription event:', event.type, subscription.id);
+          
+          // Update subscription in database
+          // await storage.updateSubscription(subscription);
+          break;
+
+        case 'customer.subscription.deleted':
+          const deletedSubscription = event.data.object;
+          console.log('Subscription cancelled:', deletedSubscription.id);
+          
+          // Handle subscription cancellation
+          // await storage.cancelSubscription(deletedSubscription.customer);
+          break;
+
+        default:
+          console.log(`Unhandled event type ${event.type}`);
+      }
+
+      res.json({ received: true });
+    } catch (error: any) {
+      console.error('Webhook error:', error);
+      res.status(500).json({ message: "Webhook error: " + error.message });
+    }
+  });
+
   app.post("/api/admin/ai-agents", requireAuth, async (req: any, res) => {
     try {
       const userRole = req.user.claims.role || "buyer";
