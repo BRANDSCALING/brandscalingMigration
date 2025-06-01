@@ -148,7 +148,7 @@ export default function LMS() {
         <div className="w-80 bg-white shadow-lg border-r border-gray-200 min-h-screen">
           <div className="p-6 border-b border-gray-200">
             <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-orange-500 bg-clip-text text-transparent">
-              LMS Dashboard
+              Learning Management
             </h1>
             <div className="mt-4 flex items-center gap-2">
               <User className="h-4 w-4 text-gray-600" />
