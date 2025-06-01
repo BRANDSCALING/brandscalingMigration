@@ -4,29 +4,29 @@ import "./index.css";
 
 if (import.meta.env.DEV) {
   const OriginalWebSocket = window.WebSocket;
+  class DummyWebSocket {
+    onopen = null;
+    onmessage = null;
+    onerror = null;
+    onclose = null;
+    close() {}
+    send() {}
+    addEventListener() {}
+    removeEventListener() {}
+    dispatchEvent() { return false; }
+    readyState = 3;
+  }
 
-  const DummyWebSocket = function() {
-    return {
-      close: () => {},
-      send: () => {},
-      addEventListener: () => {},
-      removeEventListener: () => {},
-    } as unknown as WebSocket;
-  };
-
-  window.WebSocket = function (url, ...args) {
-    try {
-      if (typeof url === 'string' && (url.includes("localhost:undefined") || url.includes(":undefined"))) {
-        // Optional: comment this line to suppress message
-        // console.warn("Intercepted invalid WebSocket URL:", url);
-        return new DummyWebSocket();
-      }
-      return new OriginalWebSocket(url, ...args);
-    } catch (err) {
-      console.warn('Suppressed WebSocket error:', err);
+  window.WebSocket = function (url: string, protocols?: string | string[]) {
+    if (typeof url === 'string' && (url.includes('localhost:undefined') || url.includes(':undefined'))) {
       return new DummyWebSocket();
     }
-  } as unknown as typeof WebSocket;
+    try {
+      return new OriginalWebSocket(url, protocols);
+    } catch (err) {
+      return new DummyWebSocket();
+    }
+  } as any;
 }
 
 createRoot(document.getElementById("root")!).render(<App />);
