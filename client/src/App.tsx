@@ -22,7 +22,7 @@ import ThankYou from "@/pages/ThankYou";
 import Admin from "@/pages/Admin";
 import AdminDashboard from "@/pages/AdminDashboard";
 import DebugAuth from "@/pages/DebugAuth";
-import LMS from "@/pages/LMS";
+import LMS from "@/pages/LMSNew";
 import Layout from "@/components/Layout";
 
 function Router() {

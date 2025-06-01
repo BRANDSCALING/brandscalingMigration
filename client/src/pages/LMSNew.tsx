@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from '@/hooks/useAuth';
+import { useFirebaseAuth } from '@/hooks/useFirebaseAuth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -8,7 +8,6 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
-import { isUnauthorizedError } from '@/lib/authUtils';
 import { 
   BookOpen, 
   Download, 
@@ -48,7 +47,7 @@ interface Module {
 }
 
 export default function LMS() {
-  const { user, isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, loading, userProfile } = useFirebaseAuth();
   const [selectedMode, setSelectedMode] = useState<'architect' | 'alchemist'>('architect');
   const [selectedModule, setSelectedModule] = useState<number | null>(null);
   const { toast } = useToast();
@@ -65,18 +64,11 @@ export default function LMS() {
 
   // Redirect if not authenticated
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      toast({
-        title: "Unauthorized",
-        description: "You need to log in to access the LMS. Redirecting...",
-        variant: "destructive",
-      });
-      setTimeout(() => {
-        window.location.href = "/api/login";
-      }, 500);
+    if (!loading && !isAuthenticated) {
+      window.location.href = "/login";
       return;
     }
-  }, [isAuthenticated, isLoading, toast]);
+  }, [isAuthenticated, loading]);
 
   // Fetch modules with access control
   const { data: modules = [], isLoading: modulesLoading } = useQuery({
@@ -98,17 +90,6 @@ export default function LMS() {
       });
     },
     onError: (error: Error) => {
-      if (isUnauthorizedError(error)) {
-        toast({
-          title: "Unauthorized",
-          description: "You are logged out. Logging in again...",
-          variant: "destructive",
-        });
-        setTimeout(() => {
-          window.location.href = "/api/login";
-        }, 500);
-        return;
-      }
       toast({
         title: "Error",
         description: "Failed to update progress",
@@ -117,7 +98,7 @@ export default function LMS() {
     },
   });
 
-  if (isLoading || !isAuthenticated || modulesLoading) {
+  if (loading || !isAuthenticated || modulesLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-orange-50">
         <div className="animate-spin w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full" />
@@ -167,17 +148,17 @@ export default function LMS() {
             </h1>
             <div className="mt-4 flex items-center gap-2">
               <User className="h-4 w-4 text-gray-600" />
-              <span className="text-sm text-gray-700">{(user as any)?.firstName || (user as any)?.email}</span>
+              <span className="text-sm text-gray-700">{userProfile?.firstName || userProfile?.email}</span>
               <Badge 
                 variant="secondary" 
                 className={`text-xs ${
-                  (user as any)?.role === 'mastermind' 
+                  userProfile?.role === 'mastermind' 
                     ? 'bg-purple-100 text-purple-800' 
                     : 'bg-orange-100 text-orange-800'
                 }`}
               >
-                {(user as any)?.role === 'mastermind' && <Crown className="h-3 w-3 mr-1" />}
-                {(user as any)?.role}
+                {userProfile?.role === 'mastermind' && <Crown className="h-3 w-3 mr-1" />}
+                {userProfile?.role}
               </Badge>
             </div>
             
