@@ -4,6 +4,15 @@ import "./index.css";
 
 // Global error handlers for cleaner console
 window.addEventListener('unhandledrejection', (event) => {
+  // Suppress WebSocket connection errors from Vite HMR
+  if (event.reason?.name === 'DOMException' && 
+      (event.reason?.message?.includes('WebSocket') ||
+       event.reason?.message?.includes('wss://localhost:undefined') ||
+       event.reason?.message?.includes('Failed to construct'))) {
+    event.preventDefault();
+    return;
+  }
+  
   // Suppress navigation-related DOMExceptions
   if (event.reason?.name === 'DOMException' || 
       event.reason?.message?.includes('navigate') ||
