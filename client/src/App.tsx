@@ -69,26 +69,36 @@ function Router() {
 
   // Helper component for public pages with safe navigation
   const PublicPage = ({ children }: { children: React.ReactNode }) => {
+    const [hasMounted, setHasMounted] = useState(false);
     const [shouldRedirect, setShouldRedirect] = useState(false);
 
+    // Set mounted state after initial render
     useEffect(() => {
-      if (isAuthenticated && userProfile) {
+      setHasMounted(true);
+    }, []);
+
+    // Check for redirect conditions only after mount
+    useEffect(() => {
+      if (hasMounted && isAuthenticated && userProfile) {
         setShouldRedirect(true);
       }
-    }, [isAuthenticated, userProfile]);
+    }, [hasMounted, isAuthenticated, userProfile]);
 
+    // Perform navigation only after mount and when redirect is needed
     useEffect(() => {
-      if (shouldRedirect) {
-        if (userProfile?.role === 'student') {
+      if (hasMounted && shouldRedirect && userProfile) {
+        if (userProfile.role === 'student') {
           setLocation('/student');
-        } else if (userProfile?.role === 'admin') {
+        } else if (userProfile.role === 'admin') {
           setLocation('/admin');
         }
       }
-    }, [shouldRedirect, userProfile, setLocation]);
+    }, [hasMounted, shouldRedirect, userProfile, setLocation]);
 
-    // Prevent rendering children if a redirect is pending
-    if (shouldRedirect) return null;
+    // Return null before mount or during redirect to prevent render side effects
+    if (!hasMounted || shouldRedirect) {
+      return null;
+    }
 
     return (
       <Layout>
