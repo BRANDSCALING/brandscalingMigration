@@ -1,31 +1,14 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { BookOpen, Trophy, Clock, ChevronRight } from "lucide-react";
+import { BookOpen, Trophy, Clock, Plus } from "lucide-react";
 import { useFirebaseAuth } from "@/hooks/useFirebaseAuth";
 import StudentHeader from "./StudentHeader";
 
 export default function StudentDashboard() {
   const { userProfile } = useFirebaseAuth();
 
-  const courses = [
-    {
-      id: 1,
-      title: "Brand Foundation Mastery",
-      progress: 75,
-      totalLessons: 12,
-      completedLessons: 9,
-      tier: "foundation"
-    },
-    {
-      id: 2,
-      title: "Digital Marketing Scale",
-      progress: 30,
-      totalLessons: 15,
-      completedLessons: 4,
-      tier: "growth"
-    }
-  ];
+  // No dummy data - will be replaced with real data when courses are added
+  const courses: any[] = [];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -50,7 +33,7 @@ export default function StudentDashboard() {
               <BookOpen className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">2</div>
+              <div className="text-2xl font-bold">{courses.length}</div>
               <p className="text-xs text-muted-foreground">
                 Active learning paths
               </p>
@@ -63,9 +46,9 @@ export default function StudentDashboard() {
               <Trophy className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">52%</div>
+              <div className="text-2xl font-bold">-</div>
               <p className="text-xs text-muted-foreground">
-                Average progress
+                No courses yet
               </p>
             </CardContent>
           </Card>
@@ -76,9 +59,9 @@ export default function StudentDashboard() {
               <Clock className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">24h</div>
+              <div className="text-2xl font-bold">-</div>
               <p className="text-xs text-muted-foreground">
-                This month
+                No data yet
               </p>
             </CardContent>
           </Card>
@@ -87,35 +70,29 @@ export default function StudentDashboard() {
         {/* Current Courses */}
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Your Courses</h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {courses.map((course) => (
-              <Card key={course.id} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
-                    {course.title}
-                    <ChevronRight className="h-5 w-5 text-gray-400" />
-                  </CardTitle>
-                  <CardDescription>
-                    {course.completedLessons} of {course.totalLessons} lessons completed
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div>
-                      <div className="flex justify-between text-sm mb-2">
-                        <span>Progress</span>
-                        <span>{course.progress}%</span>
-                      </div>
-                      <Progress value={course.progress} className="h-2" />
-                    </div>
-                    <Button className="w-full">
-                      Continue Learning
+          {courses.length === 0 ? (
+            <Card className="text-center py-12">
+              <CardContent>
+                <div className="flex flex-col items-center space-y-4">
+                  <BookOpen className="h-12 w-12 text-gray-400" />
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No courses yet</h3>
+                    <p className="text-gray-600 mb-4">
+                      You haven't enrolled in any courses yet. Explore our course catalog to get started.
+                    </p>
+                    <Button>
+                      <Plus className="h-4 w-4 mr-2" />
+                      Browse Courses
                     </Button>
                   </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Real courses will be displayed here when added */}
+            </div>
+          )}
         </div>
 
         {/* Quick Actions */}

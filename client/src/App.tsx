@@ -21,6 +21,8 @@ import Layout from "@/components/Layout";
 
 // Sandboxed Modules
 import StudentDashboard from "@/pages/student/StudentDashboard";
+import StudentCourses from "@/pages/student/StudentCourses";
+import StudentWorkbooks from "@/pages/student/StudentWorkbooks";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import CommunityComingSoon from "@/pages/community/CommunityComingSoon";
 import CollabComingSoon from "@/pages/collab/CollabComingSoon";
@@ -124,6 +126,8 @@ function Router() {
       {isAuthenticated && userProfile?.role === 'student' && (
         <>
           <Route path="/student" component={StudentDashboard} />
+          <Route path="/student/courses" component={StudentCourses} />
+          <Route path="/student/workbooks" component={StudentWorkbooks} />
           <Route path="/student/:path*" component={StudentDashboard} />
         </>
       )}
