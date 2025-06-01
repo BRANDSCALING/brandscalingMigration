@@ -28,28 +28,33 @@ export function useFirebaseAuth() {
   // Listen for auth state changes
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        setUser(firebaseUser);
-        // Get user profile from Firestore
-        const profile = await getUserProfile(firebaseUser.uid);
-        setUserProfile(profile);
-      } else {
+      try {
+        if (firebaseUser) {
+          setUser(firebaseUser);
+          // Get user profile from backend
+          const profile = await getUserProfile(firebaseUser);
+          setUserProfile(profile);
+        } else {
+          setUser(null);
+          setUserProfile(null);
+        }
+      } catch (error) {
+        console.error('Error in auth state change:', error);
         setUser(null);
         setUserProfile(null);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     });
 
-    // No need for redirect result checking since we're using popup authentication
     return () => unsubscribe();
   }, []);
 
   // Get user profile from PostgreSQL database via API
-  const getUserProfile = async (uid: string): Promise<UserProfile | null> => {
+  const getUserProfile = async (firebaseUser: User): Promise<UserProfile | null> => {
     try {
-      if (!user) return null;
-      
-      const token = await user.getIdToken();
+      // Always get fresh token
+      const token = await firebaseUser.getIdToken(true);
       const response = await fetch('/api/auth/user', {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -63,7 +68,7 @@ export function useFirebaseAuth() {
           uid: userData.id,
           email: userData.email,
           displayName: userData.firstName || userData.email || '',
-          role: userData.role, // This comes from PostgreSQL now
+          role: userData.role,
           createdAt: new Date(userData.createdAt || Date.now())
         };
       }

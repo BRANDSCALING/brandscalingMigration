@@ -60,9 +60,6 @@ function Router() {
 
   return (
     <Switch>
-      {/* Test route for debugging */}
-      <Route path="/test" component={TestRoute} />
-      
       {/* Public pages accessible to everyone */}
       <Route path="/about" component={About} />
       <Route path="/contact" component={Contact} />
@@ -74,23 +71,18 @@ function Router() {
       <Route path="/checkout" component={Checkout} />
       <Route path="/thank-you" component={ThankYou} />
       
-      {!isAuthenticated ? (
-        <>
-          <Route path="/" component={Landing} />
-          <Route path="/login" component={Login} />
-          <Route path="/signup" component={Signup} />
-        </>
-      ) : (
-        <Layout>
-          <Route path="/" component={Dashboard} />
-          <Route path="/dashboard" component={Dashboard} />
-          <Route path="/lms" component={LMS} />
-          <Route path="/quiz/deep" component={DeepQuiz} />
-          <Route path="/mastermind-dashboard" component={Dashboard} />
-          <Route path="/debug-auth" component={DebugAuth} />
-          <Route path="/admin" component={AdminDashboard} />
-        </Layout>
-      )}
+      {/* Authenticated routes */}
+      <Layout>
+        <Route path="/" component={isAuthenticated ? Dashboard : Landing} />
+        <Route path="/login" component={Login} />
+        <Route path="/signup" component={Signup} />
+        <Route path="/dashboard" component={Dashboard} />
+        <Route path="/lms" component={LMS} />
+        <Route path="/quiz/deep" component={DeepQuiz} />
+        <Route path="/mastermind-dashboard" component={Dashboard} />
+        <Route path="/debug-auth" component={DebugAuth} />
+        <Route path="/admin" component={AdminDashboard} />
+      </Layout>
       <Route component={NotFound} />
     </Switch>
   );

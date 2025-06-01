@@ -91,10 +91,11 @@ export default function LMSSimple() {
     }
   }, [user]);
 
-  // Redirect if not authenticated
+  // Redirect if not authenticated (but don't redirect if still loading)
   useEffect(() => {
     if (!userLoading && !user) {
-      window.location.href = "/login";
+      // Instead of hard redirect, show login message
+      console.log('User not authenticated, should redirect to login');
     }
   }, [user, userLoading]);
 

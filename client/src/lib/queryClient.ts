@@ -18,7 +18,8 @@ export async function apiRequest(
   // Add Firebase auth token if user is logged in
   if (auth.currentUser) {
     try {
-      const token = await auth.currentUser.getIdToken();
+      // Force refresh to get a fresh token
+      const token = await auth.currentUser.getIdToken(true);
       headers.Authorization = `Bearer ${token}`;
     } catch (error) {
       console.warn('Failed to get auth token:', error);
@@ -47,7 +48,8 @@ export const getQueryFn: <T>(options: {
     // Add Firebase auth token if user is logged in
     if (auth.currentUser) {
       try {
-        const token = await auth.currentUser.getIdToken();
+        // Force refresh to get a fresh token
+        const token = await auth.currentUser.getIdToken(true);
         headers.Authorization = `Bearer ${token}`;
       } catch (error) {
         console.warn('Failed to get auth token:', error);
