@@ -793,93 +793,61 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Stripe webhook endpoint
-  app.post("/api/stripe/webhook", async (req, res) => {
+  // Stripe webhook endpoint - raw body parsing for signature verification
+  app.post("/api/stripe/webhook", express.raw({ type: 'application/json' }), async (req, res) => {
     try {
-      if (!process.env.STRIPE_SECRET_KEY) {
-        throw new Error('Stripe secret key not configured');
+      if (!process.env.STRIPE_SECRET_KEY || !process.env.STRIPE_WEBHOOK_SECRET) {
+        throw new Error('Stripe keys not configured');
       }
 
       const Stripe = require('stripe');
-      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: "2023-10-16" });
       
       const sig = req.headers['stripe-signature'];
       let event;
 
       try {
-        // Verify webhook signature
+        // Verify webhook signature using raw body
         event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
-      } catch (err) {
+      } catch (err: any) {
         console.error('Webhook signature verification failed:', err.message);
         return res.status(400).send(`Webhook Error: ${err.message}`);
       }
 
       // Handle the event
-      switch (event.type) {
-        case 'checkout.session.completed':
-          const session = event.data.object;
-          console.log('Payment succeeded for session:', session.id);
-          
-          // Handle successful payment
-          if (session.metadata?.product) {
-            const product = session.metadata.product;
-            console.log('Product purchased:', product);
-            
-            // Here you can update user access, send confirmation emails, etc.
-            // For example:
-            // await storage.updateUserAccess(session.customer_email, product);
+      if (event.type === "checkout.session.completed") {
+        const session = event.data.object;
+        
+        const email = session.customer_details?.email;
+        const product = session.metadata?.product;
+        const stripeId = session.id;
+
+        console.log('Payment completed:', { email, product, stripeId });
+
+        if (email && product) {
+          try {
+            // Update user access based on product purchased
+            switch (product) {
+              case 'taster-day':
+                console.log(`Granting taster day access to ${email}`);
+                // Add logic to grant taster day access
+                break;
+              
+              case 'mastermind':
+                console.log(`Granting mastermind access to ${email}`);
+                // Add logic to grant mastermind access
+                break;
+              
+              default:
+                console.log(`Unknown product: ${product}`);
+            }
+          } catch (updateError: any) {
+            console.error('Error updating user after purchase:', updateError);
           }
-          break;
-
-        case 'payment_intent.succeeded':
-          const paymentIntent = event.data.object;
-          console.log('PaymentIntent succeeded:', paymentIntent.id);
-          
-          // Handle successful payment intent
-          if (paymentIntent.metadata?.courseId && paymentIntent.metadata?.userId) {
-            const { courseId, userId } = paymentIntent.metadata;
-            console.log(`User ${userId} purchased course ${courseId}`);
-            
-            // Update user access to the course
-            // await storage.grantCourseAccess(userId, courseId);
-          }
-          break;
-
-        case 'invoice.payment_succeeded':
-          const invoice = event.data.object;
-          console.log('Subscription payment succeeded:', invoice.id);
-          
-          // Handle successful subscription payment
-          if (invoice.subscription) {
-            console.log('Subscription payment for:', invoice.subscription);
-            
-            // Update subscription status
-            // await storage.updateSubscriptionStatus(invoice.customer, 'active');
-          }
-          break;
-
-        case 'customer.subscription.created':
-        case 'customer.subscription.updated':
-          const subscription = event.data.object;
-          console.log('Subscription event:', event.type, subscription.id);
-          
-          // Update subscription in database
-          // await storage.updateSubscription(subscription);
-          break;
-
-        case 'customer.subscription.deleted':
-          const deletedSubscription = event.data.object;
-          console.log('Subscription cancelled:', deletedSubscription.id);
-          
-          // Handle subscription cancellation
-          // await storage.cancelSubscription(deletedSubscription.customer);
-          break;
-
-        default:
-          console.log(`Unhandled event type ${event.type}`);
+        }
       }
 
-      res.json({ received: true });
+      res.status(200).json({ received: true });
     } catch (error: any) {
       console.error('Webhook error:', error);
       res.status(500).json({ message: "Webhook error: " + error.message });
