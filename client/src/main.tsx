@@ -5,26 +5,26 @@ import "./index.css";
 if (import.meta.env.DEV) {
   const OriginalWebSocket = window.WebSocket;
 
+  const DummyWebSocket = function() {
+    return {
+      close: () => {},
+      send: () => {},
+      addEventListener: () => {},
+      removeEventListener: () => {},
+    } as unknown as WebSocket;
+  };
+
   window.WebSocket = function (url, ...args) {
     try {
-      if (typeof url === 'string' && url.includes('localhost:undefined')) {
-        console.warn('Intercepted invalid WebSocket URL:', url);
-        return {
-          close: () => {},
-          send: () => {},
-          addEventListener: () => {},
-          removeEventListener: () => {},
-        } as unknown as WebSocket;
+      if (typeof url === 'string' && (url.includes("localhost:undefined") || url.includes(":undefined"))) {
+        // Optional: comment this line to suppress message
+        // console.warn("Intercepted invalid WebSocket URL:", url);
+        return new DummyWebSocket();
       }
       return new OriginalWebSocket(url, ...args);
     } catch (err) {
       console.warn('Suppressed WebSocket error:', err);
-      return {
-        close: () => {},
-        send: () => {},
-        addEventListener: () => {},
-        removeEventListener: () => {},
-      } as unknown as WebSocket;
+      return new DummyWebSocket();
     }
   } as unknown as typeof WebSocket;
 }
