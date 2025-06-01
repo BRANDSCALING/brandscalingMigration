@@ -405,42 +405,6 @@ export default function LMS() {
     </div>
   );
 }
-                    
-                    return (
-                      <Button
-                        key={module.id}
-                        variant={selectedModule === module.id ? "default" : "ghost"}
-                        className={`w-full justify-start text-left h-auto p-3 ${
-                          !isAccessible ? 'opacity-50 cursor-not-allowed' : ''
-                        }`}
-                        onClick={() => isAccessible && setSelectedModule(module.id)}
-                        disabled={!isAccessible}
-                      >
-                        <div className="flex items-center gap-3 w-full">
-                          {isAccessible ? (
-                            isCompleted ? (
-                              <CheckCircle className="h-5 w-5 text-green-500" />
-                            ) : (
-                              <BookOpen className="h-5 w-5" />
-                            )
-                          ) : (
-                            <Lock className="h-5 w-5" />
-                          )}
-                          <div className="flex-1 min-w-0">
-                            <div className="font-medium text-sm">Module {module.order}</div>
-                            <div className="text-xs text-gray-500 truncate">{module.title}</div>
-                          </div>
-                        </div>
-                      </Button>
-                    );
-                  })
-                )}
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Main Content */}
-          <div className="lg:col-span-3">
             {currentModule ? (
               <div className="space-y-6">
                 {/* Module Header */}
