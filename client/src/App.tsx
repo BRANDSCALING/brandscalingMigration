@@ -26,42 +26,47 @@ import DebugAuth from "@/pages/DebugAuth";
 import LMS from "@/pages/LMSSimple";
 import TestRoute from "@/pages/TestRoute";
 import Layout from "@/components/Layout";
+import Header from "@/components/Header";
 
 function Router() {
   const { isAuthenticated, loading, userProfile } = useFirebaseAuth();
   const [location, setLocation] = useLocation();
 
-  // Role-based redirects
+  // Role-based redirects and access control
   useEffect(() => {
     if (!loading && isAuthenticated && userProfile) {
       // Redirect from auth page after successful login
       if (location === '/auth') {
         switch (userProfile.role) {
           case 'admin':
-            setLocation('/admin');
+            setLocation('/dashboard');
             break;
           case 'student':
+          case 'buyer':
             setLocation('/lms');
             break;
           default:
-            setLocation('/dashboard');
+            setLocation('/lms');
         }
       }
-      // Redirect from dashboard to appropriate role-based page
-      else if (location === '/dashboard') {
-        switch (userProfile.role) {
-          case 'admin':
-            setLocation('/admin');
-            break;
-          case 'student':
-            // Redirect students to LMS based on their access tier
-            if (userProfile.accessTier === 'mastermind') {
-              setLocation('/mastermind-dashboard');
-            } else {
-              setLocation('/lms');
-            }
-            break;
+      // Redirect students away from admin dashboard and public pages
+      else if (userProfile.role === 'student' || userProfile.role === 'buyer') {
+        if (location === '/dashboard' || location === '/admin' || 
+            location === '/about' || location === '/courses' || 
+            location === '/community' || location === '/contact' || location === '/blog') {
+          setLocation('/lms');
         }
+      }
+      // Redirect non-admin users away from admin dashboard
+      else if (userProfile.role !== 'admin' && 
+               (location === '/dashboard' || location === '/admin')) {
+        setLocation('/lms');
+      }
+      // Redirect admin users away from public pages to admin dashboard
+      else if (userProfile.role === 'admin' && 
+               (location === '/about' || location === '/courses' || 
+                location === '/community' || location === '/contact' || location === '/blog')) {
+        setLocation('/dashboard');
       }
     }
     // Redirect unauthenticated users trying to access protected routes
@@ -81,32 +86,44 @@ function Router() {
 
   return (
     <Switch>
-      {/* Public routes with standard header */}
-      <Route path="/" component={isAuthenticated ? Dashboard : Landing} />
-      <Route path="/auth" component={Auth} />
-      <Route path="/about" component={About} />
-      <Route path="/contact" component={Contact} />
-      <Route path="/blog" component={Blog} />
-      <Route path="/courses" component={Courses} />
-      <Route path="/community" component={Community} />
-      <Route path="/quiz" component={Quiz} />
-      <Route path="/quiz/result" component={QuizResult} />
-      <Route path="/checkout" component={Checkout} />
-      <Route path="/thank-you" component={ThankYou} />
-      
-      {/* Legacy auth routes for compatibility */}
-      <Route path="/login" component={Login} />
-      <Route path="/signup" component={Signup} />
-      
-      {/* Dashboard routes with Layout wrapper */}
-      <Layout>
-        <Route path="/dashboard" component={Dashboard} />
-        <Route path="/lms" component={LMS} />
-        <Route path="/quiz/deep" component={DeepQuiz} />
-        <Route path="/mastermind-dashboard" component={Dashboard} />
-        <Route path="/debug-auth" component={DebugAuth} />
-        <Route path="/admin" component={AdminDashboard} />
-      </Layout>
+      {/* Public routes - only for unauthenticated users */}
+      {!isAuthenticated && (
+        <>
+          <Route path="/" component={Landing} />
+          <Route path="/auth" component={Auth} />
+          <Route path="/about" component={About} />
+          <Route path="/contact" component={Contact} />
+          <Route path="/blog" component={Blog} />
+          <Route path="/courses" component={Courses} />
+          <Route path="/community" component={Community} />
+          <Route path="/quiz" component={Quiz} />
+          <Route path="/quiz/result" component={QuizResult} />
+          <Route path="/checkout" component={Checkout} />
+          <Route path="/thank-you" component={ThankYou} />
+          <Route path="/login" component={Login} />
+          <Route path="/signup" component={Signup} />
+        </>
+      )}
+
+      {/* Admin routes - only for admin users */}
+      {isAuthenticated && userProfile?.role === 'admin' && (
+        <Layout>
+          <Route path="/dashboard" component={AdminDashboard} />
+          <Route path="/admin" component={AdminDashboard} />
+          <Route path="/debug-auth" component={DebugAuth} />
+          <Route path="/" component={AdminDashboard} />
+        </Layout>
+      )}
+
+      {/* Student routes - only for student/buyer users */}
+      {isAuthenticated && (userProfile?.role === 'student' || userProfile?.role === 'buyer') && (
+        <Layout>
+          <Route path="/lms" component={LMS} />
+          <Route path="/quiz/deep" component={DeepQuiz} />
+          <Route path="/mastermind-dashboard" component={Dashboard} />
+          <Route path="/" component={LMS} />
+        </Layout>
+      )}
       
       <Route component={NotFound} />
     </Switch>

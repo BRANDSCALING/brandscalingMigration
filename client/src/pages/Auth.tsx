@@ -87,7 +87,7 @@ export default function Auth() {
         title: "Account Created!",
         description: "Welcome to Brandscaling. Redirecting to your dashboard..."
       });
-      setLocation('/dashboard');
+      setLocation('/lms');
     } catch (error: any) {
       toast({
         title: "Sign Up Failed",

@@ -15,14 +15,23 @@ export default function Navigation() {
   const [location] = useLocation();
   const { userProfile, isAuthenticated, logout } = useFirebaseAuth();
 
-  const navItems = [
-    { href: "/", label: "Dashboard" },
-    { href: "/lms", label: "LMS" },
-    { href: "/courses", label: "Courses" },
-    { href: "/community", label: "Community" },
-    { href: "/quiz", label: "Assessment" },
-    { href: "/about", label: "About" },
-  ];
+  const getNavItems = () => {
+    if (userProfile?.role === 'admin') {
+      return [
+        { href: "/dashboard", label: "Admin Dashboard" },
+        { href: "/admin", label: "User Management" },
+        { href: "/debug-auth", label: "Debug" },
+      ];
+    } else {
+      return [
+        { href: "/lms", label: "LMS Dashboard" },
+        { href: "/quiz/deep", label: "Assessment" },
+        { href: "/mastermind-dashboard", label: "Mastermind" },
+      ];
+    }
+  };
+
+  const navItems = getNavItems();
 
   const getRoleDisplay = (role: string) => {
     switch (role) {
@@ -60,13 +69,13 @@ export default function Navigation() {
         <div className="flex justify-between items-center h-16">
           {/* Logo & Brand */}
           <div className="flex items-center space-x-4">
-            <Link href="/" className="flex items-center">
+            <a href="/" className="flex items-center">
               <img 
                 src={brandscalingLogo} 
                 alt="Brandscaling" 
                 className="h-12 w-auto hover:opacity-80 transition-opacity cursor-pointer"
               />
-            </Link>
+            </a>
           </div>
 
           {/* Main Navigation */}
