@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Users, BookOpen, MessageSquare, Settings, Calendar, TrendingUp } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import AdminHeader from './admin/AdminHeader';
 
 export default function AdminDashboard() {
   const { userProfile, logout } = useFirebaseAuth();
@@ -81,25 +82,8 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-              <p className="text-gray-600">Brandscaling Platform Management</p>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
-                Administrator
-              </Badge>
-              <Button variant="outline" onClick={logout}>
-                Sign Out
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
+      {/* Sandboxed Admin Header */}
+      <AdminHeader />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
