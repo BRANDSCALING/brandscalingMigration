@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from '@/hooks/useAuth';
+import { useFirebaseAuth } from '@/hooks/useFirebaseAuth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -47,7 +47,7 @@ interface Module {
 }
 
 export default function LMS() {
-  const { user, isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, loading, userProfile } = useFirebaseAuth();
   const [selectedMode, setSelectedMode] = useState<'architect' | 'alchemist'>('architect');
   const [selectedModule, setSelectedModule] = useState<number | null>(null);
   const { toast } = useToast();
@@ -92,13 +92,13 @@ export default function LMS() {
 
   // Redirect if not authenticated
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      window.location.href = "/api/login";
+    if (!loading && !isAuthenticated) {
+      window.location.href = "/login";
       return;
     }
-  }, [isAuthenticated, isLoading]);
+  }, [isAuthenticated, loading]);
 
-  if (isLoading || !isAuthenticated || modulesLoading) {
+  if (loading || !isAuthenticated || modulesLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-orange-50">
         <div className="animate-spin w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full" />
