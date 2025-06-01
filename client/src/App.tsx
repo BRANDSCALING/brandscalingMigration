@@ -25,7 +25,7 @@ import StudentDashboard from "@/pages/student/StudentDashboard";
 import StudentCourses from "@/pages/student/StudentCourses";
 import StudentWorkbooks from "@/pages/student/StudentWorkbooks";
 import StudentCommunity from "@/pages/student/StudentCommunity";
-import AdminDashboard from "@/pages/admin/AdminDashboard";
+import AdminPanel from "@/pages/admin";
 import CommunityComingSoon from "@/pages/community/CommunityComingSoon";
 import CollabComingSoon from "@/pages/collab/CollabComingSoon";
 
@@ -152,8 +152,8 @@ function Router() {
       {/* Admin Module - ONLY accessible to admins */}
       {isAuthenticated && userProfile?.role === 'admin' && (
         <>
-          <Route path="/admin" component={AdminDashboard} />
-          <Route path="/admin/:path*" component={AdminDashboard} />
+          <Route path="/admin" component={AdminPanel} />
+          <Route path="/admin/:path*" component={AdminPanel} />
         </>
       )}
 
