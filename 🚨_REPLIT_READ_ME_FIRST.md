@@ -1,0 +1,1 @@
+This project strictly follows Brandscaling's no-dummy-content policy. DO NOT add, generate, assume, or fabricate ANY data, text, or UI unless I have explicitly provided it. This includes fake numbers, placeholder images, auto-suggested text, hardcoded examples, or assumed logic. Only implement exactly what I say. If something seems missing, pause and ask before continuing.
