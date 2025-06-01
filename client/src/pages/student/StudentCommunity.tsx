@@ -9,9 +9,10 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Plus, MessageCircle, Search, Filter } from "lucide-react";
+import { Plus, MessageCircle, Search, Filter, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { auth } from "@/lib/firebase";
+import { Link } from "wouter";
 import type { Post, User } from "@shared/schema";
 
 type CommunityPost = Post & { user: User };
@@ -147,7 +148,7 @@ export default function StudentCommunity() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold">AWAITING USER CONTENT</h1>
+          <h1 className="text-3xl font-bold">Brandscaling Community</h1>
           <p className="text-gray-600">AWAITING USER CONTENT</p>
         </div>
         
@@ -155,7 +156,7 @@ export default function StudentCommunity() {
           <DialogTrigger asChild>
             <Button className="flex items-center gap-2">
               <Plus className="h-4 w-4" />
-              AWAITING USER CONTENT
+              Create New Post
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl">
@@ -232,7 +233,7 @@ export default function StudentCommunity() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
           <Input
-            placeholder="AWAITING USER CONTENT"
+            placeholder="Search posts..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10"
@@ -246,7 +247,7 @@ export default function StudentCommunity() {
             onChange={(e) => setSelectedTag(e.target.value)}
             className="px-3 py-2 border rounded-md bg-white"
           >
-            <option value="">AWAITING USER CONTENT</option>
+            <option value="">Filter by tag</option>
             {allTags.map((tag) => (
               <option key={tag} value={tag}>{tag}</option>
             ))}
@@ -260,7 +261,7 @@ export default function StudentCommunity() {
           <Card>
             <CardContent className="p-8 text-center">
               <MessageCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">AWAITING USER CONTENT</h3>
+              <h3 className="text-lg font-semibold mb-2">No posts yet — start the conversation!</h3>
               <p className="text-gray-600">AWAITING USER CONTENT</p>
             </CardContent>
           </Card>
