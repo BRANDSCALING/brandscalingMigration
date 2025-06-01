@@ -229,8 +229,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Community Hub routes - STUDENT ROLE ONLY
-  app.get("/api/community/posts", requireRole(['student']), async (req, res) => {
+  // Community Hub routes - STUDENT, ADMIN, STAFF ROLES
+  app.get("/api/community/posts", requireRole(['student', 'admin', 'staff']), async (req, res) => {
     try {
       const tag = req.query.tag as string | undefined;
       const posts = await storage.getCommunityPosts(tag);
@@ -241,7 +241,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/community/posts", requireRole(['student']), async (req: any, res) => {
+  app.post("/api/community/posts", requireRole(['student', 'admin', 'staff']), async (req: any, res) => {
     try {
       const userId = req.user.uid;
       const { title, body, tags, uploadUrls } = req.body;
@@ -400,8 +400,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin delete any post permanently
+  app.delete("/api/community/posts/:id/admin-delete", requireRole(['admin', 'staff']), async (req: any, res) => {
+    try {
+      const postId = req.params.id;
+      const adminUserId = req.user.uid;
+      const { reason } = req.body;
+      
+      const success = await storage.adminDeletePost(postId, adminUserId, reason);
+      if (!success) {
+        return res.status(404).json({ message: "Post not found" });
+      }
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error admin deleting post:", error);
+      res.status(500).json({ message: "Failed to delete post" });
+    }
+  });
+
   // Undo post within 60 seconds
-  app.delete("/api/community/posts/:id/undo", requireRole(['student']), async (req: any, res) => {
+  app.delete("/api/community/posts/:id/undo", requireRole(['student', 'admin', 'staff']), async (req: any, res) => {
     try {
       const postId = req.params.id;
       const userId = req.user.uid;

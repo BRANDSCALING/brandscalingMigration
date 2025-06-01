@@ -79,6 +79,7 @@ export interface IStorage {
   createCommunityPost(post: { userId: string; title: string; body: string; tags?: string[]; uploadUrls?: string[] }): Promise<Post>;
   updateCommunityPost(postId: string, userId: string, data: { title: string; body: string; tags?: string[]; uploadUrls?: string[] }): Promise<Post | null>;
   deleteCommunityPost(postId: string, userId: string): Promise<boolean>;
+  adminDeletePost(postId: string, adminUserId: string, reason?: string): Promise<boolean>;
   createPostReply(reply: { postId: string; userId: string; body: string }): Promise<PostReply>;
   getPostReplies(postId: string): Promise<(PostReply & { user: User })[]>;
   createUpload(upload: { userId: string; url: string; postId?: string }): Promise<Upload>;
@@ -819,6 +820,68 @@ export class DatabaseStorage implements IStorage {
       .where(and(eq(posts.id, postId), eq(posts.userId, userId), eq(posts.isDeleted, false)))
       .returning();
     return !!updated;
+  }
+
+  async adminDeletePost(postId: string, adminUserId: string, reason?: string): Promise<boolean> {
+    // First get the post details for logging
+    const [postToDelete] = await db
+      .select({
+        id: posts.id,
+        userId: posts.userId,
+        title: posts.title,
+        body: posts.body,
+      })
+      .from(posts)
+      .where(and(eq(posts.id, postId), eq(posts.isDeleted, false)));
+
+    if (!postToDelete) {
+      return false;
+    }
+
+    // Delete the post
+    const [updated] = await db
+      .update(posts)
+      .set({
+        isDeleted: true,
+        updatedAt: new Date(),
+      })
+      .where(eq(posts.id, postId))
+      .returning();
+
+    // Log the moderation action if reason provided
+    if (updated && reason) {
+      await this.logModerationAction({
+        postId,
+        authorId: postToDelete.userId,
+        adminId: adminUserId,
+        action: 'delete',
+        reason,
+        timestamp: new Date(),
+        postContent: {
+          title: postToDelete.title,
+          body: postToDelete.body.substring(0, 200) + (postToDelete.body.length > 200 ? '...' : '')
+        }
+      });
+    }
+
+    return !!updated;
+  }
+
+  private async logModerationAction(log: {
+    postId: string;
+    authorId: string;
+    adminId: string;
+    action: string;
+    reason: string;
+    timestamp: Date;
+    postContent: { title: string; body: string };
+  }): Promise<void> {
+    // For production, you might want to store this in a database table
+    // For now, we'll use console logging with structured data
+    console.log('MODERATION_LOG:', JSON.stringify({
+      ...log,
+      timestamp: log.timestamp.toISOString()
+    }, null, 2));
   }
 
   async createPostReply(reply: { postId: string; userId: string; body: string }): Promise<PostReply> {

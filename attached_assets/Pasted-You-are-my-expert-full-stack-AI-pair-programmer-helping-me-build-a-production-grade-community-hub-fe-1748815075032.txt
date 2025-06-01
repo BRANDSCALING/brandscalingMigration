@@ -1,0 +1,72 @@
+You are my expert full-stack AI pair-programmer helping me build a production-grade community hub feature inside a React + Node.js (Express) web app with Firebase Auth. My current folder structure separates client and server logic. I want you to update both front-end and back-end to introduce complete **admin moderation controls for the community post system**.
+
+🔐 User Roles:
+- student
+- admin
+- staff (same privileges as admin)
+
+🧩 Community Features Already Live:
+- Create post, undo within 60s, edit post, real-time feed
+- Role-based UI for authors to edit/undo their own posts
+
+🎯 New Feature: Admin Moderation System
+I want you to implement the following production-ready admin controls:
+
+---
+
+### ✅ Admin Features to Implement
+
+1. **Post Deletion by Admin**
+   - Admin and staff roles can delete **any community post**
+   - Confirmation dialog must appear:
+     - "Are you sure you want to delete this post from the community feed? This action cannot be undone."
+     - Include a preview of the post content
+     - Button text: **Delete post permanently**
+   - Add an **optional "Reason for deletion" text area** (not required, but if filled, log it in admin-only logs)
+
+2. **Post Author Controls (No Change)**
+   - Authors can still undo or edit their own posts
+
+3. **Admin Badge on Posts**
+   - For any post created by an admin or staff, add a badge near their name:
+     - Text: **🛡️ Admin**
+     - Display only to frontend users
+
+4. **Moderation Logs**
+   - On post delete, if admin includes a reason, log the following to a server-side JSON file or Firebase collection:
+     - Post ID
+     - Author ID
+     - Admin who deleted it
+     - Timestamp
+     - Optional reason
+
+5. **UI Cleanup**
+   - Make sure the Edit and Undo buttons only show to authors
+   - Add **Delete** button to every post **if the logged-in user is admin/staff**
+   - Toast message on deletion:
+     - `"🚫 Post permanently removed by admin."`
+
+---
+
+### ⚠️ MASTER PROMPT RULES — Always Enforce These:
+
+- ❌ **Never generate or inject dummy data** (e.g., fake posts, test content, placeholder names). Always assume real authenticated data.
+- ✅ Work only with the **authenticated user context (Firebase Auth)** for permissions and role validation.
+- ✅ Use real-time updates — posts must be removed from the frontend immediately after admin deletion.
+- ✅ Keep naming conventions consistent with existing project structure (e.g., `useAuth`, `apiRequest`, `/api/community/posts/:id`)
+- ✅ Ensure backend validates that only admin/staff roles can delete other users' posts.
+- ✅ All changes must be made using clean, production-grade code. No inline hacks or demo shortcuts.
+
+---
+
+📂 Folder References:
+- Frontend: `client/src/pages/student/StudentCommunity.tsx`
+- Backend routes: `server/routes/communityPosts.ts` or similar
+- Auth logic: `server/firebaseAuth.ts` (roles assigned here)
+
+🧪 Test case to verify:
+- Login as admin → delete any student’s post → post disappears → moderation log created (if reason filled) → toast shows
+
+---
+
+🛠️ Let me know before running destructive operations. Begin by reviewing the current `StudentCommunity.tsx` post component and implementing these admin features in order. You may restart the application as needed.

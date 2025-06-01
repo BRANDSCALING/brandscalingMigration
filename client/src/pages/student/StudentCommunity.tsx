@@ -23,7 +23,10 @@ export default function StudentCommunity() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isAdminDeleteDialogOpen, setIsAdminDeleteDialogOpen] = useState(false);
   const [editingPost, setEditingPost] = useState<CommunityPost | null>(null);
+  const [deletingPost, setDeletingPost] = useState<CommunityPost | null>(null);
+  const [deleteReason, setDeleteReason] = useState("");
   const [newPost, setNewPost] = useState({
     title: "",
     body: "",
