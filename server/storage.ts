@@ -120,7 +120,6 @@ export interface IStorage {
   getAllUsers(): Promise<User[]>;
   updateUserRole(userId: string, role: string): Promise<User>;
   updateUserAccessTier(userId: string, accessTier: string): Promise<User>;
-  updateUserRole(userId: string, role: string): Promise<User>;
   getSystemStats(): Promise<{
     totalUsers: number;
     totalCourses: number;
@@ -709,6 +708,30 @@ export class DatabaseStorage implements IStorage {
         .returning();
       return created;
     }
+  }
+
+  async updateUserAccessTier(userId: string, accessTier: string): Promise<User> {
+    const [updated] = await db
+      .update(users)
+      .set({ 
+        accessTier,
+        updatedAt: new Date()
+      })
+      .where(eq(users.id, userId))
+      .returning();
+    return updated;
+  }
+
+  async updateUserRole(userId: string, role: string): Promise<User> {
+    const [updated] = await db
+      .update(users)
+      .set({ 
+        role,
+        updatedAt: new Date()
+      })
+      .where(eq(users.id, userId))
+      .returning();
+    return updated;
   }
 
   async getSystemStats(): Promise<{
