@@ -58,7 +58,7 @@ export default function StudentCommunity() {
       return await response.json();
     },
     staleTime: 0, // Always fetch fresh data
-    cacheTime: 0, // Don't cache the response
+    gcTime: 0, // Don't cache the response
   });
 
   // Ensure posts is always an array

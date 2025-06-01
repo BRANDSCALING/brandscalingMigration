@@ -150,6 +150,22 @@ export class DatabaseStorage implements IStorage {
       ...post,
       tags: post.tags || [],
       uploadUrls: post.uploadUrls || [],
+      user: post.user || {
+        id: '',
+        email: null,
+        firstName: null,
+        lastName: null,
+        profileImageUrl: null,
+        role: 'student',
+        accessTier: null,
+        stripeCustomerId: null,
+        stripeSubscriptionId: null,
+        firebaseUid: null,
+        isEmailVerified: null,
+        lastLoginAt: null,
+        createdAt: null,
+        updatedAt: null
+      }
     }));
   }
 
@@ -190,6 +206,22 @@ export class DatabaseStorage implements IStorage {
       ...post,
       tags: post.tags || [],
       uploadUrls: post.uploadUrls || [],
+      user: post.user || {
+        id: '',
+        email: null,
+        firstName: null,
+        lastName: null,
+        profileImageUrl: null,
+        role: 'student',
+        accessTier: null,
+        stripeCustomerId: null,
+        stripeSubscriptionId: null,
+        firebaseUid: null,
+        isEmailVerified: null,
+        lastLoginAt: null,
+        createdAt: null,
+        updatedAt: null
+      }
     };
   }
 
@@ -397,9 +429,10 @@ export class DatabaseStorage implements IStorage {
   async saveQuizResult(resultData: Omit<QuizResult, 'id' | 'createdAt'>): Promise<QuizResult> {
     const [result] = await db.insert(quizResults).values({
       userId: resultData.userId,
-      quizData: resultData.quizData,
+      quizId: 1, // Default quiz ID
+      answers: resultData.answers || {},
       score: resultData.score,
-      recommendations: resultData.recommendations,
+      results: resultData.results || {},
     }).returning();
     return result;
   }
@@ -417,7 +450,7 @@ export class DatabaseStorage implements IStorage {
     const eventList = await db
       .select()
       .from(events)
-      .orderBy(asc(events.date));
+      .orderBy(asc(events.createdAt));
     return eventList;
   }
 
