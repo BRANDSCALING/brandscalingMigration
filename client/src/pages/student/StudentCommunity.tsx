@@ -44,20 +44,19 @@ export default function StudentCommunity() {
   const createPostMutation = useMutation({
     mutationFn: (postData: { title: string; body: string; tags?: string[] }) =>
       apiRequest("POST", "/api/community/posts", postData),
-    onSuccess: (newPost) => {
-      console.log("Mutation success, new post:", newPost);
-      console.log("Current cache data:", queryClient.getQueryData(["/api/community/posts"]));
+    onSuccess: async (newPost) => {
+      // Clear the existing cache and force a fresh fetch
+      queryClient.removeQueries({ queryKey: ["/api/community/posts"] });
       
-      // Force invalidate and refetch immediately
-      queryClient.invalidateQueries({ queryKey: ["/api/community/posts"] });
-      queryClient.refetchQueries({ queryKey: ["/api/community/posts"] });
+      // Immediately fetch fresh data
+      await queryClient.refetchQueries({ queryKey: ["/api/community/posts"] });
       
       setIsCreateDialogOpen(false);
       setNewPost({ title: "", body: "", tags: [] });
       setTagInput("");
       toast({
-        title: "Success",
-        description: "Your post has been created successfully!",
+        title: "✅ Post Shared",
+        description: "Your post has been shared with the community!",
       });
     },
     onError: (error) => {
