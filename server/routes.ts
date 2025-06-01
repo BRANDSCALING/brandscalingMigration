@@ -423,7 +423,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       await storage.pinPost(postId, adminId);
       res.json({ message: "Post pinned successfully" });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error pinning post:", error);
       res.status(500).json({ message: "Failed to pin post" });
     }
@@ -437,7 +437,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       await storage.unpinPost(postId, adminId);
       res.json({ message: "Post unpinned successfully" });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error unpinning post:", error);
       res.status(500).json({ message: "Failed to unpin post" });
     }
@@ -458,7 +458,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       await storage.setFeatured(postId, adminId, validatedData.featuredType);
       res.json({ message: "Post featured successfully" });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error featuring post:", error);
       res.status(500).json({ message: "Failed to feature post" });
     }
@@ -472,7 +472,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       await storage.removeFeatured(postId, adminId);
       res.json({ message: "Post unfeatured successfully" });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error unfeaturing post:", error);
       res.status(500).json({ message: "Failed to unfeature post" });
     }
@@ -486,7 +486,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const undonePost = await storage.undoPost(postId, userId);
       res.json(undonePost);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error undoing post:", error);
       if (error.message === 'Post not found or user not authorized') {
         res.status(404).json({ message: error.message });
