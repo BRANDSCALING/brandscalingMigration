@@ -35,35 +35,11 @@ export default function CollabComingSoon() {
           <Card className="text-center">
             <CardHeader>
               <Network className="h-12 w-12 text-purple-600 mx-auto mb-4" />
-              <CardTitle>Professional Network</CardTitle>
+              <CardTitle>Collaboration Features</CardTitle>
             </CardHeader>
             <CardContent>
               <CardDescription>
-                Build your professional network within the Brandscaling ecosystem
-              </CardDescription>
-            </CardContent>
-          </Card>
-
-          <Card className="text-center">
-            <CardHeader>
-              <Briefcase className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-              <CardTitle>Project Collaboration</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription>
-                Work together on joint ventures and collaborative projects
-              </CardDescription>
-            </CardContent>
-          </Card>
-
-          <Card className="text-center">
-            <CardHeader>
-              <Target className="h-12 w-12 text-green-600 mx-auto mb-4" />
-              <CardTitle>Business Opportunities</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription>
-                Discover new business opportunities and partnership deals
+                Collaboration tools and features are in development
               </CardDescription>
             </CardContent>
           </Card>

@@ -51,10 +51,10 @@ export default function Quiz() {
         <div className="text-center mb-12">
           <Brain className="h-16 w-16 text-purple-600 mx-auto mb-6" />
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Business Type Assessment
+            Assessment Coming Soon
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Discover whether you're an Architect or Alchemist entrepreneur.
+            Our business assessment tool is being developed.
           </p>
         </div>
       </div>
