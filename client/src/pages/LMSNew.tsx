@@ -84,15 +84,17 @@ export default function LMS() {
 
   // Effects - always call these unconditionally
   useEffect(() => {
-    try {
-      const quizResult = localStorage.getItem('quiz-result');
+    import('@/lib/storage').then(({ safeStorage }) => {
+      const quizResult = safeStorage.getItem('quiz-result');
       if (quizResult) {
-        const result = JSON.parse(quizResult);
-        setSelectedMode(result.type?.toLowerCase() === 'alchemist' ? 'alchemist' : 'architect');
+        try {
+          const result = JSON.parse(quizResult);
+          setSelectedMode(result.type?.toLowerCase() === 'alchemist' ? 'alchemist' : 'architect');
+        } catch (e) {
+          console.warn("Failed to parse quiz result", e);
+        }
       }
-    } catch (e) {
-      console.warn("LocalStorage not available", e);
-    }
+    });
   }, []);
 
   useEffect(() => {
