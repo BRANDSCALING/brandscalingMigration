@@ -62,6 +62,8 @@ export default function StudentCommunity() {
   });
 
   const handleCreatePost = () => {
+    console.log("Form data:", { title: newPost.title, body: newPost.body });
+    
     if (!newPost.title.trim() || !newPost.body.trim()) {
       toast({
         title: "Error",
