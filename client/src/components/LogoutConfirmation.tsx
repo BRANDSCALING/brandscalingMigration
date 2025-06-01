@@ -22,6 +22,15 @@ export default function LogoutConfirmation({ isOpen, onClose }: LogoutConfirmati
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [navigationTarget, setNavigationTarget] = useState<string | null>(null);
+
+  // Safe navigation using useEffect
+  useEffect(() => {
+    if (navigationTarget) {
+      setLocation(navigationTarget);
+      setNavigationTarget(null);
+    }
+  }, [navigationTarget, setLocation]);
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
@@ -33,13 +42,8 @@ export default function LogoutConfirmation({ isOpen, onClose }: LogoutConfirmati
       });
       onClose();
       
-      // Safe navigation with error handling
-      try {
-        setTimeout(() => setLocation('/'), 100);
-      } catch (error) {
-        console.warn('Navigation failed:', error);
-        window.location.href = '/';
-      }
+      // Trigger safe navigation
+      setNavigationTarget('/');
     } catch (error: any) {
       toast({
         title: "Logout failed",
