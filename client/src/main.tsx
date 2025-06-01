@@ -29,8 +29,13 @@ window.addEventListener('unhandledrejection', (event) => {
     return;
   }
   
-  // Log remaining unhandled rejections
-  console.warn('Unhandled promise rejection:', event.reason);
+  // Log remaining unhandled rejections with full details
+  console.warn('Unhandled promise rejection:', {
+    type: event.reason?.constructor?.name,
+    message: event.reason?.message,
+    stack: event.reason?.stack,
+    full: event.reason
+  });
 });
 
 window.addEventListener('error', (event) => {
