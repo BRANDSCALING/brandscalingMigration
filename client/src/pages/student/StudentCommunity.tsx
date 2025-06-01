@@ -33,8 +33,8 @@ export default function StudentCommunity() {
 
   // Fetch community posts
   const { data: postsData, isLoading } = useQuery<CommunityPost[]>({
-    queryKey: ["/api/community/posts", selectedTag],
-    queryFn: () => apiRequest("GET", `/api/community/posts${selectedTag ? `?tag=${selectedTag}` : ""}`),
+    queryKey: ["/api/community/posts"],
+    queryFn: () => apiRequest("GET", "/api/community/posts"),
   });
 
   // Ensure posts is always an array
@@ -44,8 +44,16 @@ export default function StudentCommunity() {
   const createPostMutation = useMutation({
     mutationFn: (postData: { title: string; body: string; tags?: string[] }) =>
       apiRequest("POST", "/api/community/posts", postData),
-    onSuccess: () => {
+    onSuccess: (newPost) => {
+      // Optimistically update the cache with the new post
+      queryClient.setQueryData(["/api/community/posts"], (oldData: CommunityPost[]) => {
+        if (!oldData) return [newPost];
+        return [newPost, ...oldData];
+      });
+      
+      // Also invalidate to ensure fresh data
       queryClient.invalidateQueries({ queryKey: ["/api/community/posts"] });
+      
       setIsCreateDialogOpen(false);
       setNewPost({ title: "", body: "", tags: [] });
       setTagInput("");
