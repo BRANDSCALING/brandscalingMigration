@@ -183,7 +183,7 @@ function BlogPostForm({
           id="title"
           value={formData.title}
           onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-          placeholder="Enter blog post title"
+          placeholder=""
           required
         />
         <p className="text-sm text-gray-500 mt-1">
@@ -200,7 +200,7 @@ function BlogPostForm({
           id="summary"
           value={formData.summary}
           onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
-          placeholder="Brief summary of the blog post"
+          placeholder=""
           rows={3}
         />
       </div>
@@ -211,7 +211,7 @@ function BlogPostForm({
           id="content"
           value={formData.content}
           onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-          placeholder="Write your blog post content here..."
+          placeholder=""
           rows={8}
         />
       </div>
@@ -222,7 +222,7 @@ function BlogPostForm({
           id="tags"
           value={formData.tags}
           onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
-          placeholder="startup, scaleup, architect, alchemist"
+          placeholder=""
         />
         <p className="text-sm text-gray-500 mt-1">
           Comma-separated tags for categorization and color coding

@@ -124,7 +124,7 @@ function Router() {
       <Route path="/contact" component={() => <PublicPage><Contact /></PublicPage>} />
       <Route path="/blog" component={() => <PublicPage><Blog /></PublicPage>} />
       <Route path="/quiz" component={() => <PublicPage><Quiz /></PublicPage>} />
-      <Route path="/quiz-result" component={() => <PublicPage><QuizResult /></PublicPage>} />
+
       <Route path="/deep-quiz" component={() => <PublicPage><DeepQuiz /></PublicPage>} />
       <Route path="/checkout" component={() => <PublicPage><Checkout /></PublicPage>} />
       <Route path="/thank-you" component={() => <PublicPage><ThankYou /></PublicPage>} />
