@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, User } from "lucide-react";
 import { Link } from "wouter";
 import { useState } from "react";
 import brandscalingLogo from "@assets/FullLogo.png";
@@ -31,16 +31,11 @@ export default function Header() {
             <Link href="/contact" className="text-slate-600 hover:text-primary">Contact</Link>
           </nav>
           
-          {/* Desktop Auth Buttons */}
-          <div className="hidden md:flex space-x-2">
+          {/* Desktop User Icon */}
+          <div className="hidden md:flex">
             <Link href="/login">
-              <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white">
-                Sign In
-              </Button>
-            </Link>
-            <Link href="/signup">
-              <Button className="bg-primary hover:bg-blue-600">
-                Sign Up
+              <Button variant="ghost" size="icon" className="text-slate-600 hover:text-primary hover:bg-slate-100">
+                <User className="w-5 h-5" />
               </Button>
             </Link>
           </div>
@@ -66,15 +61,10 @@ export default function Header() {
               <Link href="/blog" className="text-slate-600 hover:text-primary">Blog</Link>
               <Link href="/community" className="text-slate-600 hover:text-primary">Community</Link>
               <Link href="/contact" className="text-slate-600 hover:text-primary">Contact</Link>
-              <div className="flex flex-col space-y-2 pt-4 border-t border-slate-200">
+              <div className="flex justify-center pt-4 border-t border-slate-200">
                 <Link href="/login">
-                  <Button variant="outline" className="w-full border-primary text-primary hover:bg-primary hover:text-white">
-                    Sign In
-                  </Button>
-                </Link>
-                <Link href="/signup">
-                  <Button className="w-full bg-primary hover:bg-blue-600">
-                    Sign Up
+                  <Button variant="ghost" size="icon" className="text-slate-600 hover:text-primary hover:bg-slate-100">
+                    <User className="w-5 h-5" />
                   </Button>
                 </Link>
               </div>
