@@ -12,6 +12,8 @@ import {
   eventAttendees,
   workflows,
   blogPosts,
+  lmsModules,
+  lmsProgress,
   type User,
   type UpsertUser,
   type Course,
@@ -32,6 +34,10 @@ import {
   type Workflow,
   type BlogPost,
   type InsertBlogPost,
+  type LmsModule,
+  type InsertLmsModule,
+  type LmsProgress,
+  type InsertLmsProgress,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, or, sql } from "drizzle-orm";
@@ -91,6 +97,14 @@ export interface IStorage {
   createBlogPost(post: InsertBlogPost): Promise<BlogPost>;
   updateBlogPost(id: number, post: Partial<InsertBlogPost>): Promise<BlogPost>;
   deleteBlogPost(id: number): Promise<void>;
+
+  // LMS operations
+  getLmsModules(): Promise<LmsModule[]>;
+  getLmsModule(id: number): Promise<LmsModule | undefined>;
+  createLmsModule(module: InsertLmsModule): Promise<LmsModule>;
+  updateLmsModule(id: number, module: Partial<InsertLmsModule>): Promise<LmsModule>;
+  getUserLmsProgress(userId: string): Promise<LmsProgress[]>;
+  updateUserLmsProgress(userId: string, moduleId: number, completed: boolean): Promise<LmsProgress>;
 
   // Admin operations
   getAllUsers(): Promise<User[]>;

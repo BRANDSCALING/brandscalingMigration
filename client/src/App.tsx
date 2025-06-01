@@ -21,6 +21,7 @@ import ThankYou from "@/pages/ThankYou";
 import Admin from "@/pages/Admin";
 import AdminDashboard from "@/pages/AdminDashboard";
 import DebugAuth from "@/pages/DebugAuth";
+import LMS from "@/pages/LMS";
 import Layout from "@/components/Layout";
 
 function Router() {
@@ -78,6 +79,7 @@ function Router() {
         <Layout>
           <Route path="/" component={Dashboard} />
           <Route path="/dashboard" component={Dashboard} />
+          <Route path="/lms" component={LMS} />
           <Route path="/mastermind-dashboard" component={Dashboard} />
           <Route path="/debug-auth" component={DebugAuth} />
           <Route path="/admin" component={AdminDashboard} />

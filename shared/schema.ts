@@ -51,6 +51,44 @@ export const payments = pgTable("payments", {
   paidAt: timestamp("paid_at").notNull().defaultNow(),
 });
 
+// LMS Modules table
+export const lmsModules = pgTable("lms_modules", {
+  id: serial("id").primaryKey(),
+  title: varchar("title").notNull(),
+  description: text("description"),
+  order: integer("order").notNull(),
+  requiredRole: varchar("required_role").notNull().default("buyer"), // buyer, mastermind, admin
+  
+  // Architect content
+  architectVideoUrl: varchar("architect_video_url"),
+  architectWorkbookUrl: varchar("architect_workbook_url"),
+  architectSummary: text("architect_summary"),
+  
+  // Alchemist content
+  alchemistVideoUrl: varchar("alchemist_video_url"),
+  alchemistWorkbookUrl: varchar("alchemist_workbook_url"),
+  alchemistSummary: text("alchemist_summary"),
+  
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// User module progress table
+export const lmsProgress = pgTable("lms_progress", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  moduleId: integer("module_id").notNull().references(() => lmsModules.id),
+  completed: boolean("completed").default(false),
+  completedAt: timestamp("completed_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+}, (table) => {
+  return {
+    userModuleIdx: index("user_module_idx").on(table.userId, table.moduleId),
+  };
+});
+
 // Course categories and tracks
 export const courses = pgTable("courses", {
   id: serial("id").primaryKey(),
@@ -370,3 +408,9 @@ export type InsertBlogPost = z.infer<typeof insertBlogPostSchema>;
 
 export type Payment = typeof payments.$inferSelect;
 export type InsertPayment = typeof payments.$inferInsert;
+
+export type LmsModule = typeof lmsModules.$inferSelect;
+export type InsertLmsModule = typeof lmsModules.$inferInsert;
+
+export type LmsProgress = typeof lmsProgress.$inferSelect;
+export type InsertLmsProgress = typeof lmsProgress.$inferInsert;
