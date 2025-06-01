@@ -71,7 +71,12 @@ export default function Navigation() {
           <div className="flex items-center space-x-4">
             <a href="/" className="flex items-center" onClick={(e) => {
               e.preventDefault();
-              window.location.href = '/';
+              try {
+                window.location.href = '/';
+              } catch (error) {
+                console.warn('Navigation failed:', error);
+                window.location.assign('/');
+              }
             }}>
               <img 
                 src={brandscalingLogo} 

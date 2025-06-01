@@ -115,7 +115,14 @@ export default function LMSSimple() {
           <h2 className="text-xl font-semibold mb-2">Authentication Required</h2>
           <p className="text-gray-600 mb-4">Please log in to access the LMS dashboard.</p>
           <button 
-            onClick={() => window.location.href = "/login"}
+            onClick={() => {
+              try {
+                window.location.href = "/login";
+              } catch (error) {
+                console.warn('Navigation failed:', error);
+                window.location.assign('/login');
+              }
+            }}
             className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700"
           >
             Go to Login
