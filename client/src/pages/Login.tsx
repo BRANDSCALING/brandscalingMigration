@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -23,6 +23,15 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [resetEmail, setResetEmail] = useState('');
+  const [navigationTarget, setNavigationTarget] = useState<string | null>(null);
+
+  // Safe navigation using useEffect
+  useEffect(() => {
+    if (navigationTarget) {
+      setLocation(navigationTarget);
+      setNavigationTarget(null);
+    }
+  }, [navigationTarget, setLocation]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({
@@ -42,13 +51,8 @@ export default function Login() {
         description: "You've been successfully logged in.",
       });
       
-      // Safe navigation with error handling
-      try {
-        setTimeout(() => setLocation('/dashboard'), 100);
-      } catch (error) {
-        console.warn('Navigation failed:', error);
-        window.location.href = '/dashboard';
-      }
+      // Trigger navigation via state change
+      setNavigationTarget('/dashboard');
     } catch (error: any) {
       toast({
         title: "Login failed",

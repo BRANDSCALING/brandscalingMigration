@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -24,6 +24,15 @@ export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [navigationTarget, setNavigationTarget] = useState<string | null>(null);
+
+  // Safe navigation using useEffect
+  useEffect(() => {
+    if (navigationTarget) {
+      setLocation(navigationTarget);
+      setNavigationTarget(null);
+    }
+  }, [navigationTarget, setLocation]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({
@@ -71,28 +80,22 @@ export default function Signup() {
         description: "Welcome to the brandscaling platform.",
       });
       
-      // Redirect based on role
-      // Safe navigation with error handling
-      try {
-        let targetLocation = '/courses';
-        switch (formData.role) {
-          case 'admin':
-            targetLocation = '/admin';
-            break;
-          case 'mastermind':
-            targetLocation = '/mastermind-dashboard';
-            break;
-          case 'buyer':
-            targetLocation = '/dashboard';
-            break;
-          default:
-            targetLocation = '/courses';
-        }
-        setTimeout(() => setLocation(targetLocation), 100);
-      } catch (error) {
-        console.warn('Navigation failed:', error);
-        window.location.href = '/courses';
+      // Redirect based on role using safe navigation
+      let targetLocation = '/courses';
+      switch (formData.role) {
+        case 'admin':
+          targetLocation = '/admin';
+          break;
+        case 'mastermind':
+          targetLocation = '/mastermind-dashboard';
+          break;
+        case 'buyer':
+          targetLocation = '/dashboard';
+          break;
+        default:
+          targetLocation = '/courses';
       }
+      setNavigationTarget(targetLocation);
     } catch (error: any) {
       toast({
         title: "Signup failed",
