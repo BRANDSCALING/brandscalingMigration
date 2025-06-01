@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Label } from "@/components/ui/label";
 import { Plus, MessageCircle, Search, Filter, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import { auth } from "@/lib/firebase";
 import { Link } from "wouter";
 import type { Post, User } from "@shared/schema";
