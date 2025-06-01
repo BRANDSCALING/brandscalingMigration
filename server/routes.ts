@@ -844,6 +844,73 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // LMS API endpoints
+  app.get("/api/lms/modules", isAuthenticated, async (req: any, res) => {
+    try {
+      const modules = await storage.getLmsModules();
+      
+      // Transform modules to include separated content for architect/alchemist
+      const transformedModules = modules.map(module => ({
+        id: module.id,
+        title: module.title,
+        description: module.description,
+        order: module.order,
+        requiredRole: module.requiredRole,
+        architectContent: {
+          videoUrl: module.architectVideoUrl,
+          workbookUrl: module.architectWorkbookUrl,
+          summary: module.architectSummary,
+        },
+        alchemistContent: {
+          videoUrl: module.alchemistVideoUrl,
+          workbookUrl: module.alchemistWorkbookUrl,
+          summary: module.alchemistSummary,
+        },
+      }));
+      
+      res.json(transformedModules);
+    } catch (error: any) {
+      console.error("Error fetching LMS modules:", error);
+      res.status(500).json({ message: "Failed to fetch modules" });
+    }
+  });
+
+  app.get("/api/lms/progress", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const progress = await storage.getUserLmsProgress(userId);
+      
+      // Transform progress to match frontend interface
+      const transformedProgress = progress.map(p => ({
+        moduleId: p.moduleId,
+        completed: p.completed,
+        completedAt: p.completedAt?.toISOString(),
+      }));
+      
+      res.json(transformedProgress);
+    } catch (error: any) {
+      console.error("Error fetching user progress:", error);
+      res.status(500).json({ message: "Failed to fetch progress" });
+    }
+  });
+
+  app.post("/api/lms/progress", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { moduleId } = req.body;
+      
+      if (!moduleId) {
+        return res.status(400).json({ message: "Module ID is required" });
+      }
+      
+      const progress = await storage.updateUserLmsProgress(userId, moduleId, true);
+      res.json(progress);
+    } catch (error: any) {
+      console.error("Error updating progress:", error);
+      res.status(500).json({ message: "Failed to update progress" });
+    }
+  });
+
   app.post("/api/admin/ai-agents", requireAuth, async (req: any, res) => {
     try {
       const userRole = req.user.claims.role || "buyer";

@@ -569,6 +569,71 @@ export class DatabaseStorage implements IStorage {
     await db.delete(blogPosts).where(eq(blogPosts.id, id));
   }
 
+  // LMS operations
+  async getLmsModules(): Promise<LmsModule[]> {
+    return await db.select().from(lmsModules).where(eq(lmsModules.isActive, true)).orderBy(lmsModules.order);
+  }
+
+  async getLmsModule(id: number): Promise<LmsModule | undefined> {
+    const [module] = await db.select().from(lmsModules).where(eq(lmsModules.id, id));
+    return module;
+  }
+
+  async createLmsModule(moduleData: InsertLmsModule): Promise<LmsModule> {
+    const [module] = await db.insert(lmsModules).values(moduleData).returning();
+    return module;
+  }
+
+  async updateLmsModule(id: number, moduleData: Partial<InsertLmsModule>): Promise<LmsModule> {
+    const [module] = await db
+      .update(lmsModules)
+      .set({
+        ...moduleData,
+        updatedAt: new Date(),
+      })
+      .where(eq(lmsModules.id, id))
+      .returning();
+    return module;
+  }
+
+  async getUserLmsProgress(userId: string): Promise<LmsProgress[]> {
+    return await db.select().from(lmsProgress).where(eq(lmsProgress.userId, userId));
+  }
+
+  async updateUserLmsProgress(userId: string, moduleId: number, completed: boolean): Promise<LmsProgress> {
+    // Check if progress record exists
+    const [existingProgress] = await db
+      .select()
+      .from(lmsProgress)
+      .where(and(eq(lmsProgress.userId, userId), eq(lmsProgress.moduleId, moduleId)));
+
+    if (existingProgress) {
+      // Update existing progress
+      const [updated] = await db
+        .update(lmsProgress)
+        .set({
+          completed,
+          completedAt: completed ? new Date() : null,
+          updatedAt: new Date(),
+        })
+        .where(and(eq(lmsProgress.userId, userId), eq(lmsProgress.moduleId, moduleId)))
+        .returning();
+      return updated;
+    } else {
+      // Create new progress record
+      const [created] = await db
+        .insert(lmsProgress)
+        .values({
+          userId,
+          moduleId,
+          completed,
+          completedAt: completed ? new Date() : null,
+        })
+        .returning();
+      return created;
+    }
+  }
+
   async getSystemStats(): Promise<{
     totalUsers: number;
     totalCourses: number;
