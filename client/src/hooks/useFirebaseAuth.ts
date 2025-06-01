@@ -15,6 +15,8 @@ export interface UserProfile {
   uid: string;
   email: string;
   displayName?: string;
+  firstName?: string;
+  lastName?: string;
   role: 'admin' | 'student';
   accessTier: 'beginner' | 'intermediate' | 'advanced' | 'mastermind';
   createdAt: Date;

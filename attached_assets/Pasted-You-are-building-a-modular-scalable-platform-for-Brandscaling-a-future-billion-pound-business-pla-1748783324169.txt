@@ -1,0 +1,76 @@
+You are building a modular, scalable platform for Brandscaling — a future billion-pound business platform that blends public-facing content, course delivery, community engagement, admin control, and future sandboxed modules like a Collaboration Club.
+
+🧠 STRATEGIC GOALS:
+• Support modular growth into LMS, community, AI agents, and more.
+• Follow proper sandboxing rules — each major section (student, admin, community, collab club) must be isolated in its own UI and logic system.
+• Enable role-based access to each part of the platform.
+• Integrate Stripe for payments. Do NOT use GHL or any 3rd party funnel tools.
+
+🛠️ BUILD STRUCTURE TO FIX & UPGRADE:
+
+1. ✅ FIX CURRENT ERRORS:
+• Remove duplicate “Sign Up” buttons — keep only a clean single Login/Signup path.
+• Fix top menu: clicking the Brandscaling logo must return to homepage (only if the user role allows it — see logic below).
+• Fix login flow: only switch menus and redirect after login is completed.
+• Prevent logged-in users (students, admins) from seeing public site or each other’s UI.
+• Add “Collaboration Club” button to website top menu — links to `/collab` page with a Coming Soon message.
+
+2. 🔒 SANDBOXED STRUCTURE & HEADERS:
+Each of these routes must be sandboxed and have their own UI, logic, and top headers:
+• `/student` = LMS + course dashboard
+• `/admin` = full admin panel
+• `/community` = future forum/discussion portal (not yet live)
+• `/collab` = future LinkedIn-style partner work zone (not yet live)
+
+Each must:
+• Live in separate route folders (e.g., frontend/pages/student/, /admin/, etc.)
+• Use their own `Header` component and routing logic
+• Never leak other headers into another section
+• Be built as modules so they can scale independently
+
+3. 🔐 ROLE-BASED ACCESS (Updated Logic):
+
+ROLE MATRIX:
+Role            | See Public Site | Click Brand Logo to Homepage | Notes
+----------------|------------------|-------------------------------|------
+Visitor         | ✅              | ✅                             | Standard
+Student         | ❌              | ✅ if logged out               | Use logout confirmation popup
+Admin           | ❌              | ⚠️ Optional                    | Only for QA/testing
+Community       | ❌              | ⚠️ Optional sandbox-only       | Future
+Collab Club     | ❌              | ⚠️ Optional sandbox-only       | Future
+
+• All routing and header rendering must obey this matrix.
+• Brandscaling logo should trigger redirect to homepage ONLY if public access is allowed for that role.
+• Otherwise, redirect to their dashboard or logout popup.
+
+4. 📚 STUDENT PORTAL FEATURES:
+• Access to purchased courses and modules
+• Access to digitized workbooks: users can fill answers, store responses, and get AI prompts for feedback
+• Auto-detect incomplete answers → suggest filling gaps before expecting accurate feedback
+• Instant guidance for areas like brand story, hooks, etc.
+• Button to upgrade or purchase new programs
+
+5. 💼 ADMIN PORTAL FEATURES:
+• See/edit all content from website and LMS (blog, courses, lead magnets)
+• Manage users, view quiz results, track payments (via Stripe)
+• Control CRM flows and quiz logic (E-DNA)
+• Only available to assigned Admin roles
+
+6. 🧩 COMING SOON PAGES (LIVE NOW):
+• Create `/collab` and `/community` pages with "Coming Soon" layout
+• Accessible from public site via top menu link (Collab Club only)
+• Must NOT link into student or admin systems
+
+🛠️ TECH STACK:
+• React frontend (modular folder structure)
+• Node.js backend (Express)
+• Firebase or PostgreSQL for auth/data
+• Stripe integration for payments
+• Use Role-Based Routing and Component Rendering
+• Use React Context or Redux for auth/role state if needed
+
+🎯 REMINDER:
+You are not building a website.
+You are building the infrastructure for the OS of the future entrepreneur — scalable, intentional, and never dependent on external platforms.
+
+Now generate clean, bug-free code and folder structures that follow everything above, and run a full test on all routing, login, and header behaviors.
