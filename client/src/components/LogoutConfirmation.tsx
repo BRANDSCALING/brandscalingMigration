@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -19,6 +20,7 @@ interface LogoutConfirmationProps {
 export default function LogoutConfirmation({ isOpen, onClose }: LogoutConfirmationProps) {
   const { logout } = useFirebaseAuth();
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleLogout = async () => {
@@ -30,6 +32,8 @@ export default function LogoutConfirmation({ isOpen, onClose }: LogoutConfirmati
         description: "You have been logged out of your account.",
       });
       onClose();
+      // Redirect to home page after successful logout
+      setLocation('/');
     } catch (error: any) {
       toast({
         title: "Logout failed",
