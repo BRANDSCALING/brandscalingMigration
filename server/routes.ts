@@ -966,8 +966,7 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
       });
 
       // Store detailed quiz results
-      await storage.createQuizResult(userId, 'deep-assessment', {
-        answers,
+      await storage.saveQuizResult(userId, 999, answers, readinessScore, {
         architectScore,
         alchemistScore,
         readinessScore,
