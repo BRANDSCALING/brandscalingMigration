@@ -2,11 +2,74 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
 
-// Development-only WebSocket error suppression
+// Development-only WebSocket error suppression for Vite HMR
 if (typeof window !== 'undefined' && import.meta.env.DEV) {
-  // Override console methods to suppress Vite connection messages
-  const originalLog = console.log;
-  const originalError = console.error;
+  const OriginalWebSocket = window.WebSocket;
+  
+  window.WebSocket = function(url: string | URL, protocols?: string | string[]) {
+    try {
+      const urlString = url.toString();
+      
+      // Check for invalid URLs with undefined ports
+      if (urlString.includes('localhost:undefined') || 
+          urlString.includes(':undefined') ||
+          urlString.includes('wss://localhost:undefined')) {
+        
+        // Return a dummy WebSocket object that does nothing
+        return {
+          close: () => {},
+          send: () => {},
+          addEventListener: () => {},
+          removeEventListener: () => {},
+          dispatchEvent: () => false,
+          readyState: 3, // CLOSED
+          url: urlString,
+          protocol: '',
+          extensions: '',
+          bufferedAmount: 0,
+          binaryType: 'blob' as BinaryType,
+          onopen: null,
+          onclose: null,
+          onerror: null,
+          onmessage: null,
+          CONNECTING: 0,
+          OPEN: 1,
+          CLOSING: 2,
+          CLOSED: 3
+        } as WebSocket;
+      }
+      
+      // For valid URLs, create normal WebSocket
+      return new OriginalWebSocket(url, protocols);
+    } catch (error) {
+      // If any error occurs during construction, return dummy object
+      return {
+        close: () => {},
+        send: () => {},
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        dispatchEvent: () => false,
+        readyState: 3, // CLOSED
+        url: url.toString(),
+        protocol: '',
+        extensions: '',
+        bufferedAmount: 0,
+        binaryType: 'blob' as BinaryType,
+        onopen: null,
+        onclose: null,
+        onerror: null,
+        onmessage: null,
+        CONNECTING: 0,
+        OPEN: 1,
+        CLOSING: 2,
+        CLOSED: 3
+      } as WebSocket;
+    }
+  } as any;
+
+  // Suppress console messages from Vite
+  const originalConsoleLog = console.log;
+  const originalConsoleError = console.error;
 
   console.log = (...args) => {
     const message = args.join(' ');
@@ -14,7 +77,7 @@ if (typeof window !== 'undefined' && import.meta.env.DEV) {
         message.includes('[vite] connected')) {
       return;
     }
-    originalLog.apply(console, args);
+    originalConsoleLog.apply(console, args);
   };
 
   console.error = (...args) => {
@@ -25,10 +88,10 @@ if (typeof window !== 'undefined' && import.meta.env.DEV) {
         message.includes('DOMException')) {
       return;
     }
-    originalError.apply(console, args);
+    originalConsoleError.apply(console, args);
   };
 
-  // Suppress WebSocket errors at the global level
+  // Global error suppression
   window.addEventListener('unhandledrejection', (event) => {
     try {
       const reason = event.reason;
@@ -38,25 +101,6 @@ if (typeof window !== 'undefined' && import.meta.env.DEV) {
           (message.includes('WebSocket') ||
            message.includes('localhost:undefined') ||
            message.includes('Failed to construct'))) {
-        event.preventDefault();
-        return;
-      }
-
-      // Suppress navigation-related errors
-      if (reason?.name === 'DOMException' && 
-          (message.includes('navigate') || message.includes('location'))) {
-        event.preventDefault();
-        return;
-      }
-    } catch (suppressionError) {
-      // Silently handle any errors in error suppression
-    }
-  });
-
-  window.addEventListener('error', (event) => {
-    try {
-      if (event.message?.includes('WebSocket') ||
-          event.message?.includes('Non-Error promise rejection')) {
         event.preventDefault();
         return;
       }
