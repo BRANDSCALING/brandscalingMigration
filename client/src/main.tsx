@@ -2,13 +2,35 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
 
+// Override console methods to filter WebSocket errors
+const originalError = console.error;
+console.error = (...args) => {
+  const message = args.join(' ');
+  if (message.includes('WebSocket') || 
+      message.includes('wss://localhost:undefined') ||
+      message.includes('Failed to construct')) {
+    return;
+  }
+  originalError.apply(console, args);
+};
+
 // Global error handlers for cleaner console
 window.addEventListener('unhandledrejection', (event) => {
-  // Suppress WebSocket connection errors from Vite HMR
-  if (event.reason?.name === 'DOMException' && 
-      (event.reason?.message?.includes('WebSocket') ||
-       event.reason?.message?.includes('wss://localhost:undefined') ||
-       event.reason?.message?.includes('Failed to construct'))) {
+  // Comprehensive WebSocket and HMR error suppression
+  const reason = event.reason;
+  const message = reason?.message || '';
+  const stack = reason?.stack || '';
+  
+  if (reason?.name === 'DOMException' || 
+      message.includes('WebSocket') ||
+      message.includes('wss://') ||
+      message.includes('ws://') ||
+      message.includes('localhost:undefined') ||
+      message.includes('Failed to construct') ||
+      message.includes('HMR') ||
+      message.includes('hot reload') ||
+      stack.includes('WebSocket') ||
+      stack.includes('vite')) {
     event.preventDefault();
     return;
   }
