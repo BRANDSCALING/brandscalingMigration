@@ -32,7 +32,8 @@ export const users = pgTable("users", {
   firstName: varchar("first_name"),
   lastName: varchar("last_name"),
   profileImageUrl: varchar("profile_image_url"),
-  role: varchar("role").notNull().default("buyer"), // guest, buyer, mastermind, admin
+  role: varchar("role").notNull().default("student"), // admin, student
+  accessTier: varchar("access_tier").default("beginner"), // beginner, intermediate, advanced, mastermind
   stripeCustomerId: varchar("stripe_customer_id"),
   stripeSubscriptionId: varchar("stripe_subscription_id"),
   stripeId: varchar("stripe_id"), // Stripe session/payment ID
@@ -68,7 +69,7 @@ export const lmsModules = pgTable("lms_modules", {
   slug: varchar("slug").notNull().unique(),
   description: text("description"),
   order: integer("order").notNull(),
-  requiredRole: varchar("required_role").notNull().default("buyer"), // buyer, mastermind, admin
+  requiredTier: varchar("required_tier").notNull().default("beginner"), // beginner, intermediate, advanced, mastermind
   
   // Access control
   isLocked: boolean("is_locked").default(true),
@@ -115,7 +116,7 @@ export const courses = pgTable("courses", {
   imageUrl: varchar("image_url"),
   content: jsonb("content"), // course modules and lessons
   isPublished: boolean("is_published").default(false),
-  requiredRole: varchar("required_role").default("buyer"),
+  requiredTier: varchar("required_tier").default("beginner"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -161,7 +162,7 @@ export const quizzes = pgTable("quizzes", {
   title: varchar("title").notNull(),
   description: text("description"),
   questions: jsonb("questions").notNull(), // array of questions with options
-  requiredRole: varchar("required_role").default("buyer"),
+  requiredTier: varchar("required_tier").default("beginner"),
   isPublished: boolean("is_published").default(false),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -186,7 +187,7 @@ export const aiAgents = pgTable("ai_agents", {
   systemPrompt: text("system_prompt").notNull(),
   model: varchar("model").default("gpt-4o"),
   isActive: boolean("is_active").default(true),
-  requiredRole: varchar("required_role").default("buyer"),
+  requiredTier: varchar("required_tier").default("beginner"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -222,7 +223,7 @@ export const events = pgTable("events", {
   scheduledAt: timestamp("scheduled_at").notNull(),
   duration: integer("duration"), // minutes
   meetingUrl: varchar("meeting_url"),
-  requiredRole: varchar("required_role").default("buyer"),
+  requiredTier: varchar("required_tier").default("beginner"),
   maxAttendees: integer("max_attendees"),
   createdAt: timestamp("created_at").defaultNow(),
 });
