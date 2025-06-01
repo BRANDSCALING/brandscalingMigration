@@ -1,7 +1,3 @@
-import { createRoot } from "react-dom/client";
-import App from "./App";
-import "./index.css";
-
 if (import.meta.env.DEV) {
   const OriginalWebSocket = window.WebSocket;
   class DummyWebSocket {
@@ -27,6 +23,30 @@ if (import.meta.env.DEV) {
       return new DummyWebSocket();
     }
   } as any;
+
+  // Additional console filtering
+  const originalConsoleLog = console.log;
+  console.log = (...args) => {
+    const message = args.join(' ');
+    if (message.includes('[vite] connecting') || message.includes('[vite] connected')) {
+      return;
+    }
+    originalConsoleLog.apply(console, args);
+  };
+
+  // Suppress unhandled rejection events related to WebSocket
+  window.addEventListener('unhandledrejection', (event) => {
+    const reason = event.reason;
+    if (reason?.message?.includes('WebSocket') || 
+        reason?.message?.includes('localhost:undefined') ||
+        reason?.name === 'DOMException') {
+      event.preventDefault();
+    }
+  });
 }
+
+import { createRoot } from "react-dom/client";
+import App from "./App";
+import "./index.css";
 
 createRoot(document.getElementById("root")!).render(<App />);
