@@ -15,7 +15,8 @@ export interface UserProfile {
   uid: string;
   email: string;
   displayName?: string;
-  role: 'guest' | 'buyer' | 'mastermind' | 'admin';
+  role: 'admin' | 'student';
+  accessTier: 'beginner' | 'intermediate' | 'advanced' | 'mastermind';
   createdAt: Date;
 }
 
@@ -69,6 +70,7 @@ export function useFirebaseAuth() {
           email: userData.email,
           displayName: userData.firstName || userData.email || '',
           role: userData.role,
+          accessTier: userData.accessTier || 'beginner',
           createdAt: new Date(userData.createdAt || Date.now())
         };
       }
@@ -80,7 +82,7 @@ export function useFirebaseAuth() {
   };
 
   // Create user profile in Firestore and backend
-  const createUserProfile = async (user: User, role: UserProfile['role'] = 'guest') => {
+  const createUserProfile = async (user: User, role: UserProfile['role'] = 'student') => {
     try {
       const userProfile: UserProfile = {
         uid: user.uid,
