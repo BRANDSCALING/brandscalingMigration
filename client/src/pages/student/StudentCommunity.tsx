@@ -44,9 +44,6 @@ export default function StudentCommunity() {
 
   // Ensure posts is always an array
   const posts = Array.isArray(postsData) ? postsData : [];
-  
-  console.log("Posts data:", postsData);
-  console.log("Filtered posts:", posts);
 
   // Create post mutation
   const createPostMutation = useMutation({
