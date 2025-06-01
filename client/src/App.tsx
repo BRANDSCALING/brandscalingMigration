@@ -75,7 +75,7 @@ function Router() {
       {/* Unauthenticated Routes - Public website (only for visitors) */}
       {!isAuthenticated && (
         <>
-          <Route path="/" component={Landing} />
+          <Route path="/" component={() => <PublicPage><Landing /></PublicPage>} />
           <Route path="/about" component={() => <PublicPage><About /></PublicPage>} />
           <Route path="/courses" component={() => <PublicPage><Courses /></PublicPage>} />
           <Route path="/contact" component={() => <PublicPage><Contact /></PublicPage>} />

@@ -1,4 +1,4 @@
-import Navigation from "./Navigation";
+import Header from "./Header";
 import Footer from "./Footer";
 
 interface LayoutProps {
@@ -8,7 +8,7 @@ interface LayoutProps {
 export default function Layout({ children }: LayoutProps) {
   return (
     <div className="min-h-screen bg-slate-50">
-      <Navigation />
+      <Header />
       <main>{children}</main>
       <Footer />
     </div>
