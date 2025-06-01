@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Search, Calendar, TrendingUp, X } from "lucide-react";
-import Header from "@/components/Header";
+
 import Footer from "@/components/Footer";
 
 // Tag color mapping for consistency
@@ -111,7 +111,6 @@ export default function Blog() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-white">
-        <Header />
         <main className="font-poppins">
           <div className="px-6 py-16 max-w-6xl mx-auto">
             <h1 className="text-4xl font-bold text-[#42047D] mb-2">📚 Brandscaling Blog</h1>
