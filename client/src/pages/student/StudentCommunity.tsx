@@ -110,11 +110,15 @@ export default function StudentCommunity() {
     }));
   };
 
-  // Filter posts based on search term
-  const filteredPosts = posts.filter(post =>
-    post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    post.body.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Filter posts based on search term and selected tag
+  const filteredPosts = posts.filter(post => {
+    const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         post.body.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesTag = selectedTag === "" || (post.tags && post.tags.includes(selectedTag));
+    
+    return matchesSearch && matchesTag;
+  });
 
   // Get unique tags from all posts
   const allTags = Array.from(
