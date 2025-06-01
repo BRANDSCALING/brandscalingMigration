@@ -1,4 +1,3 @@
-import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Hero from "@/components/Hero";
 import BrandPhilosophy from "@/components/BrandPhilosophy";
@@ -14,7 +13,6 @@ import BrandscalingAgents from "@/components/BrandscalingAgents";
 export default function Landing() {
   return (
     <div className="min-h-screen bg-white">
-      <Header />
       
       <main className="font-poppins text-brand-gray">
         <Hero 
