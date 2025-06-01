@@ -69,8 +69,8 @@ function Router() {
     <Switch>
       {/* Public Routes - Always accessible to visitors */}
       <Route path="/auth" component={Auth} />
-      <Route path="/community" component={CommunityComingSoon} />
-      <Route path="/collab" component={CollabComingSoon} />
+      <Route path="/community" component={() => <PublicPage><CommunityComingSoon /></PublicPage>} />
+      <Route path="/collab" component={() => <PublicPage><CollabComingSoon /></PublicPage>} />
 
       {/* Unauthenticated Routes - Public website (only for visitors) */}
       {!isAuthenticated && (
