@@ -10,7 +10,7 @@ import Landing from "@/pages/Landing";
 import Auth from "@/pages/Auth";
 import Courses from "@/pages/Courses";
 import Community from "@/pages/Community";
-import Quiz, { QuizResult } from "@/pages/Quiz";
+import Quiz from "@/pages/Quiz";
 import DeepQuiz from "@/pages/DeepQuiz";
 import About from "@/pages/About";
 import Contact from "@/pages/Contact";

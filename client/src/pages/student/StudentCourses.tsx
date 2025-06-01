@@ -7,7 +7,6 @@ import StudentHeader from "./StudentHeader";
 export default function StudentCourses() {
   const { userProfile } = useFirebaseAuth();
 
-  // No dummy data - will be replaced with real data when courses are added
   const enrolledCourses: any[] = [];
 
   return (
