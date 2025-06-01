@@ -715,6 +715,84 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Taster Day checkout session
+  app.post("/api/checkout/taster-day", async (req, res) => {
+    try {
+      if (!process.env.STRIPE_SECRET_KEY) {
+        throw new Error('Stripe secret key not configured');
+      }
+
+      const Stripe = require('stripe');
+      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ["card"],
+        mode: "payment",
+        line_items: [
+          {
+            price_data: {
+              currency: "gbp",
+              unit_amount: 29700, // £297 in pence
+              product_data: {
+                name: "Taster Day Ticket",
+              },
+            },
+            quantity: 1,
+          },
+        ],
+        success_url: `${req.protocol}://${req.get('host')}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${req.protocol}://${req.get('host')}/checkout/cancelled`,
+        metadata: {
+          product: "taster-day",
+        },
+      });
+
+      res.status(200).json({ url: session.url });
+    } catch (error: any) {
+      console.error("Error creating taster day checkout session:", error);
+      res.status(500).json({ message: "Error creating checkout session: " + error.message });
+    }
+  });
+
+  // Mastermind checkout session
+  app.post("/api/checkout/mastermind", async (req, res) => {
+    try {
+      if (!process.env.STRIPE_SECRET_KEY) {
+        throw new Error('Stripe secret key not configured');
+      }
+
+      const Stripe = require('stripe');
+      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ["card"],
+        mode: "payment",
+        line_items: [
+          {
+            price_data: {
+              currency: "gbp",
+              unit_amount: 2400000, // £24,000 in pence
+              product_data: {
+                name: "Mastermind Access",
+              },
+            },
+            quantity: 1,
+          },
+        ],
+        success_url: `${req.protocol}://${req.get('host')}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${req.protocol}://${req.get('host')}/checkout/cancelled`,
+        metadata: {
+          product: "mastermind",
+        },
+      });
+
+      res.status(200).json({ url: session.url });
+    } catch (error: any) {
+      console.error("Error creating mastermind checkout session:", error);
+      res.status(500).json({ message: "Error creating checkout session: " + error.message });
+    }
+  });
+
   app.post("/api/admin/ai-agents", requireAuth, async (req: any, res) => {
     try {
       const userRole = req.user.claims.role || "buyer";
