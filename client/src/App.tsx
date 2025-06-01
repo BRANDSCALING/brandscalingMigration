@@ -84,25 +84,32 @@ function Router() {
     );
   }
 
+  // Wrapper component for public pages with Header
+  const PublicPage = ({ component: Component }: { component: any }) => (
+    <>
+      <Header />
+      <Component />
+    </>
+  );
+
   return (
     <Switch>
       {/* Public routes - only for unauthenticated users */}
       {!isAuthenticated && (
         <>
-          <Header />
-          <Route path="/" component={Landing} />
-          <Route path="/auth" component={Auth} />
-          <Route path="/about" component={About} />
-          <Route path="/contact" component={Contact} />
-          <Route path="/blog" component={Blog} />
-          <Route path="/courses" component={Courses} />
-          <Route path="/community" component={Community} />
-          <Route path="/quiz" component={Quiz} />
-          <Route path="/quiz/result" component={QuizResult} />
-          <Route path="/checkout" component={Checkout} />
-          <Route path="/thank-you" component={ThankYou} />
-          <Route path="/login" component={Login} />
-          <Route path="/signup" component={Signup} />
+          <Route path="/" component={() => <PublicPage component={Landing} />} />
+          <Route path="/auth" component={() => <PublicPage component={Auth} />} />
+          <Route path="/about" component={() => <PublicPage component={About} />} />
+          <Route path="/contact" component={() => <PublicPage component={Contact} />} />
+          <Route path="/blog" component={() => <PublicPage component={Blog} />} />
+          <Route path="/courses" component={() => <PublicPage component={Courses} />} />
+          <Route path="/community" component={() => <PublicPage component={Community} />} />
+          <Route path="/quiz" component={() => <PublicPage component={Quiz} />} />
+          <Route path="/quiz/result" component={() => <PublicPage component={QuizResult} />} />
+          <Route path="/checkout" component={() => <PublicPage component={Checkout} />} />
+          <Route path="/thank-you" component={() => <PublicPage component={ThankYou} />} />
+          <Route path="/login" component={() => <PublicPage component={Login} />} />
+          <Route path="/signup" component={() => <PublicPage component={Signup} />} />
         </>
       )}
 
