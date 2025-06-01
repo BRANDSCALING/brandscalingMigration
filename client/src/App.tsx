@@ -67,18 +67,8 @@ function Router() {
     );
   }
 
-  // Helper component for public pages with access control
+  // Helper component for public pages - no redirects, just layout
   const PublicPage = ({ children }: { children: React.ReactNode }) => {
-    useEffect(() => {
-      if (isAuthenticated && userProfile) {
-        if (userProfile.role === 'student') {
-          setLocation('/student');
-        } else if (userProfile.role === 'admin') {
-          setLocation('/admin');
-        }
-      }
-    }, [isAuthenticated, userProfile, setLocation]);
-    
     return (
       <Layout>
         {children}
@@ -114,18 +104,35 @@ function Router() {
       <Route path="/community" component={() => <VisitorOnlyPage><CommunityComingSoon /></VisitorOnlyPage>} />
       <Route path="/collab" component={() => <VisitorOnlyPage><CollabComingSoon /></VisitorOnlyPage>} />
 
-      {/* Public Marketing Routes - Redirect authenticated users to dashboards */}
-      <Route path="/" component={() => <PublicPage><Landing /></PublicPage>} />
-      <Route path="/about" component={() => <PublicPage><About /></PublicPage>} />
-      <Route path="/courses" component={() => <PublicPage><Courses /></PublicPage>} />
-      <Route path="/contact" component={() => <PublicPage><Contact /></PublicPage>} />
-      <Route path="/blog" component={() => <PublicPage><Blog /></PublicPage>} />
-      <Route path="/quiz" component={() => <PublicPage><Quiz /></PublicPage>} />
-
-      <Route path="/deep-quiz" component={() => <PublicPage><DeepQuiz /></PublicPage>} />
-      <Route path="/checkout" component={() => <PublicPage><Checkout /></PublicPage>} />
-      <Route path="/thank-you" component={() => <PublicPage><ThankYou /></PublicPage>} />
-      <Route path="/affiliates" component={() => <PublicPage><Affiliates /></PublicPage>} />
+      {/* Public Marketing Routes - Show different content based on auth status */}
+      {!isAuthenticated ? (
+        <>
+          <Route path="/" component={() => <PublicPage><Landing /></PublicPage>} />
+          <Route path="/about" component={() => <PublicPage><About /></PublicPage>} />
+          <Route path="/courses" component={() => <PublicPage><Courses /></PublicPage>} />
+          <Route path="/contact" component={() => <PublicPage><Contact /></PublicPage>} />
+          <Route path="/blog" component={() => <PublicPage><Blog /></PublicPage>} />
+          <Route path="/quiz" component={() => <PublicPage><Quiz /></PublicPage>} />
+          <Route path="/deep-quiz" component={() => <PublicPage><DeepQuiz /></PublicPage>} />
+          <Route path="/checkout" component={() => <PublicPage><Checkout /></PublicPage>} />
+          <Route path="/thank-you" component={() => <PublicPage><ThankYou /></PublicPage>} />
+          <Route path="/affiliates" component={() => <PublicPage><Affiliates /></PublicPage>} />
+        </>
+      ) : (
+        // Authenticated users accessing public routes get redirected to their dashboard
+        <>
+          <Route path="/" component={() => userProfile?.role === 'student' ? <StudentDashboard /> : <AdminDashboard />} />
+          <Route path="/about" component={() => userProfile?.role === 'student' ? <StudentDashboard /> : <AdminDashboard />} />
+          <Route path="/courses" component={() => userProfile?.role === 'student' ? <StudentDashboard /> : <AdminDashboard />} />
+          <Route path="/contact" component={() => userProfile?.role === 'student' ? <StudentDashboard /> : <AdminDashboard />} />
+          <Route path="/blog" component={() => userProfile?.role === 'student' ? <StudentDashboard /> : <AdminDashboard />} />
+          <Route path="/quiz" component={() => userProfile?.role === 'student' ? <StudentDashboard /> : <AdminDashboard />} />
+          <Route path="/deep-quiz" component={() => userProfile?.role === 'student' ? <StudentDashboard /> : <AdminDashboard />} />
+          <Route path="/checkout" component={() => userProfile?.role === 'student' ? <StudentDashboard /> : <AdminDashboard />} />
+          <Route path="/thank-you" component={() => userProfile?.role === 'student' ? <StudentDashboard /> : <AdminDashboard />} />
+          <Route path="/affiliates" component={() => userProfile?.role === 'student' ? <StudentDashboard /> : <AdminDashboard />} />
+        </>
+      )}
 
       {/* SANDBOXED AUTHENTICATED ROUTES */}
       {/* Student Module - ONLY accessible to students */}
