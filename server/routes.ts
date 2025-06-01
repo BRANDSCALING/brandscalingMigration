@@ -845,7 +845,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // LMS API endpoints
-  app.get("/api/lms/modules", isAuthenticated, async (req: any, res) => {
+  app.get("/api/lms/modules", requireAuth, async (req: any, res) => {
     try {
       const modules = await storage.getLmsModules();
       
@@ -875,7 +875,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/lms/progress", isAuthenticated, async (req: any, res) => {
+  app.get("/api/lms/progress", requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const progress = await storage.getUserLmsProgress(userId);
@@ -894,7 +894,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/lms/progress", isAuthenticated, async (req: any, res) => {
+  app.post("/api/lms/progress", requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const { moduleId } = req.body;
@@ -908,6 +908,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.error("Error updating progress:", error);
       res.status(500).json({ message: "Failed to update progress" });
+    }
+  });
+
+  // AI Assistant endpoint for LMS
+  app.post("/api/lms/ai-assistant", requireAuth, async (req: any, res) => {
+    try {
+      const { moduleId, moduleTitle, userMode, message, conversationHistory } = req.body;
+      
+      if (!message) {
+        return res.status(400).json({ message: "Message is required" });
+      }
+
+      // Get AI agent prompts for personalized responses
+      const agents = await storage.getAiAgents();
+      let systemPrompt = agents.find(agent => agent.name === 'lms_assistant')?.systemPrompt || '';
+      
+      // Default system prompt if none configured
+      if (!systemPrompt) {
+        systemPrompt = `You are an expert ${userMode === 'architect' ? 'Architect' : 'Alchemist'} AI assistant for the Brandscaling Platform. You're helping users with "${moduleTitle}".
+
+${userMode === 'architect' ? 
+  'As an Architect assistant, you focus on structured, systematic approaches. Provide step-by-step guidance, frameworks, and logical implementation strategies. Be precise, organized, and methodical in your responses.' : 
+  'As an Alchemist assistant, you focus on creative, intuitive approaches. Provide inspiring insights, emotional connections, and innovative strategies. Be creative, empathetic, and visionary in your responses.'
+}
+
+Keep responses helpful, concise, and actionable. Always relate advice back to the current module content.`;
+      }
+
+      const response = await chatWithAgent(
+        { systemPrompt, name: 'lms_assistant' },
+        message,
+        conversationHistory || []
+      );
+
+      res.json({ response });
+    } catch (error: any) {
+      console.error("Error with AI assistant:", error);
+      res.status(500).json({ message: "Failed to get AI response" });
     }
   });
 

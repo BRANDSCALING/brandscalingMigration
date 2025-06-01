@@ -10,6 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { isUnauthorizedError } from '@/lib/authUtils';
+import LmsAiAssistant from '@/components/LmsAiAssistant';
 import { 
   BookOpen, 
   Download, 
@@ -19,7 +20,8 @@ import {
   User,
   Brain,
   Calendar,
-  TrendingUp
+  TrendingUp,
+  MessageCircle
 } from 'lucide-react';
 
 interface Module {
@@ -50,6 +52,7 @@ export default function LMS() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const [selectedMode, setSelectedMode] = useState<'architect' | 'alchemist'>('architect');
   const [selectedModule, setSelectedModule] = useState<number>(1);
+  const [aiAssistantOpen, setAiAssistantOpen] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -431,6 +434,17 @@ export default function LMS() {
           </div>
         </div>
       </div>
+
+      {/* AI Assistant */}
+      {currentModule && (
+        <LmsAiAssistant
+          moduleId={currentModule.id}
+          moduleTitle={currentModule.title}
+          userMode={selectedMode}
+          isOpen={aiAssistantOpen}
+          onToggle={() => setAiAssistantOpen(!aiAssistantOpen)}
+        />
+      )}
     </div>
   );
 }
