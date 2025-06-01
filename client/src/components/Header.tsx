@@ -29,6 +29,9 @@ export default function Header() {
             <Link href="/community" className="text-gray-700 hover:text-gray-900 font-medium">
               Community
             </Link>
+            <Link href="/collab" className="text-gray-700 hover:text-gray-900 font-medium">
+              Collaboration Club
+            </Link>
             <Link href="/contact" className="text-gray-700 hover:text-gray-900 font-medium">
               Contact Us
             </Link>

@@ -7,10 +7,7 @@ import { useFirebaseAuth } from "@/hooks/useFirebaseAuth";
 import { useEffect } from "react";
 import NotFound from "@/pages/not-found";
 import Landing from "@/pages/Landing";
-import Login from "@/pages/Login";
-import Signup from "@/pages/Signup";
 import Auth from "@/pages/Auth";
-import Dashboard from "@/pages/Dashboard";
 import Courses from "@/pages/Courses";
 import Community from "@/pages/Community";
 import Quiz, { QuizResult } from "@/pages/Quiz";
@@ -20,13 +17,13 @@ import Contact from "@/pages/Contact";
 import Blog from "@/pages/Blog";
 import Checkout from "@/pages/Checkout";
 import ThankYou from "@/pages/ThankYou";
-import Admin from "@/pages/Admin";
-import AdminDashboard from "@/pages/AdminDashboard";
-import DebugAuth from "@/pages/DebugAuth";
-import LMS from "@/pages/LMSSimple";
-import TestRoute from "@/pages/TestRoute";
 import Layout from "@/components/Layout";
-import Header from "@/components/Header";
+
+// Sandboxed Modules
+import StudentDashboard from "@/pages/student/StudentDashboard";
+import AdminDashboard from "@/pages/admin/AdminDashboard";
+import CommunityComingSoon from "@/pages/community/CommunityComingSoon";
+import CollabComingSoon from "@/pages/collab/CollabComingSoon";
 
 function Router() {
   const { isAuthenticated, loading, userProfile } = useFirebaseAuth();
@@ -39,111 +36,94 @@ function Router() {
       if (location === '/auth') {
         switch (userProfile.role) {
           case 'admin':
-            setLocation('/dashboard');
+            setLocation('/admin');
             break;
           case 'student':
-            setLocation('/lms');
+            setLocation('/student');
             break;
           default:
-            setLocation('/lms');
-        }
-      }
-      // Redirect students away from admin dashboard and public pages
-      else if (userProfile.role === 'student') {
-        if (location === '/dashboard' || location === '/admin' || 
-            location === '/about' || location === '/courses' || 
-            location === '/community' || location === '/contact' || 
-            location === '/blog' || location === '/quiz') {
-          setLocation('/lms');
-        }
-      }
-      // Redirect admin users away from public pages and student areas
-      else if (userProfile.role === 'admin') {
-        if (location === '/about' || location === '/courses' || 
-            location === '/community' || location === '/contact' || 
-            location === '/blog' || location === '/quiz' || location === '/lms') {
-          setLocation('/dashboard');
+            setLocation('/student');
         }
       }
     }
-    // Redirect unauthenticated users trying to access protected routes
-    else if (!loading && !isAuthenticated && 
-             (location.startsWith('/dashboard') || location.startsWith('/admin') || location.startsWith('/lms'))) {
-      setLocation('/auth');
-    }
-  }, [loading, isAuthenticated, userProfile, location, setLocation]);
+  }, [isAuthenticated, loading, userProfile, location, setLocation]);
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
+      <div className="h-screen flex items-center justify-center">
+        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" aria-label="Loading"/>
       </div>
     );
   }
 
-  // Wrapper component for public pages with Header
-  const PublicPage = ({ component: Component }: { component: any }) => (
-    <>
-      <Header />
-      <Component />
-    </>
-  );
+  // Helper component for public pages
+  const PublicPage = ({ children }: { children: React.ReactNode }) => {
+    return (
+      <Layout>
+        {children}
+      </Layout>
+    );
+  };
 
   return (
     <Switch>
-      {/* Public routes - only for unauthenticated users */}
+      {/* Public Routes - Always accessible to visitors */}
+      <Route path="/auth" component={Auth} />
+      <Route path="/community" component={CommunityComingSoon} />
+      <Route path="/collab" component={CollabComingSoon} />
+
+      {/* Unauthenticated Routes - Public website (only for visitors) */}
       {!isAuthenticated && (
         <>
-          <Route path="/" component={() => <PublicPage component={Landing} />} />
-          <Route path="/auth" component={() => <PublicPage component={Auth} />} />
-          <Route path="/about" component={() => <PublicPage component={About} />} />
-          <Route path="/contact" component={() => <PublicPage component={Contact} />} />
-          <Route path="/blog" component={() => <PublicPage component={Blog} />} />
-          <Route path="/courses" component={() => <PublicPage component={Courses} />} />
-          <Route path="/community" component={() => <PublicPage component={Community} />} />
-          <Route path="/quiz" component={() => <PublicPage component={Quiz} />} />
-          <Route path="/quiz/result" component={() => <PublicPage component={QuizResult} />} />
-          <Route path="/checkout" component={() => <PublicPage component={Checkout} />} />
-          <Route path="/thank-you" component={() => <PublicPage component={ThankYou} />} />
-          <Route path="/login" component={() => <PublicPage component={Login} />} />
-          <Route path="/signup" component={() => <PublicPage component={Signup} />} />
+          <Route path="/" component={Landing} />
+          <Route path="/about" component={() => <PublicPage><About /></PublicPage>} />
+          <Route path="/courses" component={() => <PublicPage><Courses /></PublicPage>} />
+          <Route path="/contact" component={() => <PublicPage><Contact /></PublicPage>} />
+          <Route path="/blog" component={() => <PublicPage><Blog /></PublicPage>} />
+          <Route path="/quiz" component={() => <PublicPage><Quiz /></PublicPage>} />
+          <Route path="/quiz-result" component={() => <PublicPage><QuizResult /></PublicPage>} />
+          <Route path="/deep-quiz" component={() => <PublicPage><DeepQuiz /></PublicPage>} />
+          <Route path="/checkout" component={() => <PublicPage><Checkout /></PublicPage>} />
+          <Route path="/thank-you" component={() => <PublicPage><ThankYou /></PublicPage>} />
         </>
       )}
 
-      {/* Admin routes - only for admin users */}
-      {isAuthenticated && userProfile?.role === 'admin' && (
-        <Layout>
-          <Route path="/dashboard" component={AdminDashboard} />
-          <Route path="/admin" component={AdminDashboard} />
-          <Route path="/debug-auth" component={DebugAuth} />
-          <Route path="/" component={AdminDashboard} />
-        </Layout>
+      {/* Authenticated Routes - Sandboxed by Role */}
+      {isAuthenticated && userProfile && (
+        <>
+          {/* Student Module - Sandboxed LMS */}
+          {userProfile.role === 'student' && (
+            <>
+              <Route path="/student" component={StudentDashboard} />
+              <Route path="/student/:path*" component={StudentDashboard} />
+              <Route path="/" component={StudentDashboard} />
+            </>
+          )}
+
+          {/* Admin Module - Sandboxed Admin Panel */}
+          {userProfile.role === 'admin' && (
+            <>
+              <Route path="/admin" component={AdminDashboard} />
+              <Route path="/admin/:path*" component={AdminDashboard} />
+              <Route path="/" component={AdminDashboard} />
+            </>
+          )}
+        </>
       )}
 
-      {/* Student routes - only for student users */}
-      {isAuthenticated && userProfile?.role === 'student' && (
-        <Layout>
-          <Route path="/lms" component={LMS} />
-          <Route path="/quiz/deep" component={DeepQuiz} />
-          <Route path="/mastermind-dashboard" component={Dashboard} />
-          <Route path="/" component={LMS} />
-        </Layout>
-      )}
-      
+      {/* 404 Route */}
       <Route component={NotFound} />
     </Switch>
   );
 }
 
-function App() {
+export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <Toaster />
         <Router />
+        <Toaster />
       </TooltipProvider>
     </QueryClientProvider>
   );
 }
-
-export default App;
