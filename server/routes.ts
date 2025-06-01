@@ -626,8 +626,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
       const paymentIntent = await stripe.paymentIntents.create({
-        amount: Math.round(amount * 100), // Convert to cents
-        currency,
+        amount: Math.round(amount * 100), // Convert to pence for GBP
+        currency: currency || "gbp",
         metadata: {
           courseId: courseId || '',
           userId: req.user.uid,
@@ -682,17 +682,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         await storage.updateUserStripeInfo(userId, customerId);
       }
 
-      // Create subscription with a default price (you'll need to create this in Stripe)
+      // Create subscription with GBP pricing
       const subscription = await stripe.subscriptions.create({
         customer: customerId,
         items: [{
           price_data: {
-            currency: 'usd',
+            currency: 'gbp',
             product_data: {
               name: 'Brandscaling Platform Access',
               description: 'Monthly access to all Brandscaling courses and resources',
             },
-            unit_amount: 9700, // $97.00
+            unit_amount: 9700, // £97.00 in pence
             recurring: {
               interval: 'month',
             },

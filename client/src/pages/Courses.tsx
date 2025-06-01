@@ -50,7 +50,7 @@ export default function Courses() {
                 Get unlimited access to all courses, live Q&A sessions, community forum, and exclusive resources for one monthly price.
               </p>
               <div className="flex items-center justify-center space-x-4 mb-6">
-                <span className="text-4xl font-bold text-purple-600">$97</span>
+                <span className="text-4xl font-bold text-purple-600">£97</span>
                 <span className="text-gray-500">/month</span>
               </div>
               <Button
@@ -90,7 +90,7 @@ export default function Courses() {
                 <div className="bg-gradient-to-r from-orange-100 to-red-100 rounded-lg h-48 mb-4 flex items-center justify-center">
                   <ArrowRight className="h-16 w-16 text-orange-600" />
                 </div>
-                <Badge className="mb-2 bg-orange-100 text-orange-800">$497</Badge>
+                <Badge className="mb-2 bg-orange-100 text-orange-800">£497</Badge>
                 <h3 className="text-2xl font-semibold text-orange-600 mb-2">90-Day Scaling Course</h3>
                 <p className="text-gray-700 mb-4">Weekly modules, live Q&A, and our full scaling OS. Ideal if you're doing 5–30k/month and want to break your next revenue ceiling.</p>
                 <Button 
@@ -109,7 +109,7 @@ export default function Courses() {
                 <div className="bg-gradient-to-r from-purple-100 to-indigo-100 rounded-lg h-48 mb-4 flex items-center justify-center">
                   <DraftingCompass className="h-16 w-16 text-purple-600" />
                 </div>
-                <Badge className="mb-2 bg-purple-100 text-purple-800">$297</Badge>
+                <Badge className="mb-2 bg-purple-100 text-purple-800">£297</Badge>
                 <h3 className="text-2xl font-semibold text-purple-600 mb-2">Architect Track</h3>
                 <p className="text-gray-700 mb-4">Systems-focused approach to scaling. Perfect for logical, process-driven founders who love frameworks and measurable outcomes.</p>
                 <Button 
@@ -128,7 +128,7 @@ export default function Courses() {
                 <div className="bg-gradient-to-r from-orange-100 to-yellow-100 rounded-lg h-48 mb-4 flex items-center justify-center">
                   <Wand2 className="h-16 w-16 text-orange-600" />
                 </div>
-                <Badge className="mb-2 bg-orange-100 text-orange-800">$297</Badge>
+                <Badge className="mb-2 bg-orange-100 text-orange-800">£297</Badge>
                 <h3 className="text-2xl font-semibold text-orange-600 mb-2">Alchemist Track</h3>
                 <p className="text-gray-700 mb-4">Intuition-based scaling approach. Ideal for creative, relationship-driven founders who excel at transformation and connection.</p>
                 <Button 
@@ -147,11 +147,11 @@ export default function Courses() {
                 <div className="bg-gradient-to-r from-purple-200 to-pink-200 rounded-lg h-48 mb-4 flex items-center justify-center">
                   <Star className="h-16 w-16 text-purple-700" />
                 </div>
-                <Badge className="mb-2 bg-purple-200 text-purple-900">$997</Badge>
+                <Badge className="mb-2 bg-purple-200 text-purple-900">£24,000</Badge>
                 <h3 className="text-2xl font-semibold text-purple-700 mb-2">VIP Scaling Intensive</h3>
                 <p className="text-gray-700 mb-4">1-on-1 strategy sessions, personalized scaling plan, and direct access to our core team for 30 days.</p>
                 <Button 
-                  onClick={() => handlePurchase('vip', '997', 'VIP Scaling Intensive')}
+                  onClick={() => handlePurchase('vip', '24000', 'VIP Scaling Intensive')}
                   className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
                 >
                   <CreditCard className="mr-2 h-4 w-4" />
