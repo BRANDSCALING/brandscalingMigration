@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Plus, MessageCircle, Search, Filter, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -171,41 +171,42 @@ export default function StudentCommunity() {
           </DialogTrigger>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>AWAITING USER CONTENT</DialogTitle>
+              <DialogTitle>Create New Post</DialogTitle>
+              <DialogDescription>Share your insights, questions, or updates with the community.</DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               <div>
-                <Label htmlFor="title">AWAITING USER CONTENT</Label>
+                <Label htmlFor="title">Post Title</Label>
                 <Input
                   id="title"
                   value={newPost.title}
                   onChange={(e) => setNewPost(prev => ({ ...prev, title: e.target.value }))}
-                  placeholder="AWAITING USER CONTENT"
+                  placeholder="e.g. Struggling to hire my first VA…"
                 />
               </div>
               
               <div>
-                <Label htmlFor="body">AWAITING USER CONTENT</Label>
+                <Label htmlFor="body">What would you like to share or ask?</Label>
                 <Textarea
                   id="body"
                   value={newPost.body}
                   onChange={(e) => setNewPost(prev => ({ ...prev, body: e.target.value }))}
-                  placeholder="AWAITING USER CONTENT"
+                  placeholder="Explain your insight, question, or update…"
                   rows={6}
                 />
               </div>
 
               <div>
-                <Label>AWAITING USER CONTENT</Label>
+                <Label>Select Tags</Label>
                 <div className="flex gap-2 mb-2">
                   <Input
                     value={tagInput}
                     onChange={(e) => setTagInput(e.target.value)}
-                    placeholder="AWAITING USER CONTENT"
+                    placeholder="e.g. win, feedback, stuck, automation"
                     onKeyPress={(e) => e.key === 'Enter' && handleAddTag()}
                   />
                   <Button type="button" onClick={handleAddTag}>
-                    AWAITING USER CONTENT
+                    Add Tag
                   </Button>
                 </div>
                 <div className="flex flex-wrap gap-2">
@@ -224,13 +225,13 @@ export default function StudentCommunity() {
 
               <div className="flex justify-end gap-2 pt-4">
                 <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
-                  AWAITING USER CONTENT
+                  Cancel
                 </Button>
                 <Button 
                   onClick={handleCreatePost}
                   disabled={createPostMutation.isPending}
                 >
-                  {createPostMutation.isPending ? "AWAITING USER CONTENT" : "AWAITING USER CONTENT"}
+                  {createPostMutation.isPending ? "Sharing..." : "Share to Community"}
                 </Button>
               </div>
             </div>
