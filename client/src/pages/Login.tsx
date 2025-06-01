@@ -41,7 +41,14 @@ export default function Login() {
         title: "Welcome back!",
         description: "You've been successfully logged in.",
       });
-      setLocation('/dashboard');
+      
+      // Safe navigation with error handling
+      try {
+        setTimeout(() => setLocation('/dashboard'), 100);
+      } catch (error) {
+        console.warn('Navigation failed:', error);
+        window.location.href = '/dashboard';
+      }
     } catch (error: any) {
       toast({
         title: "Login failed",

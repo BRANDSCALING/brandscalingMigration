@@ -72,18 +72,26 @@ export default function Signup() {
       });
       
       // Redirect based on role
-      switch (formData.role) {
-        case 'admin':
-          setLocation('/admin');
-          break;
-        case 'mastermind':
-          setLocation('/mastermind-dashboard');
-          break;
-        case 'buyer':
-          setLocation('/dashboard');
-          break;
-        default:
-          setLocation('/courses');
+      // Safe navigation with error handling
+      try {
+        let targetLocation = '/courses';
+        switch (formData.role) {
+          case 'admin':
+            targetLocation = '/admin';
+            break;
+          case 'mastermind':
+            targetLocation = '/mastermind-dashboard';
+            break;
+          case 'buyer':
+            targetLocation = '/dashboard';
+            break;
+          default:
+            targetLocation = '/courses';
+        }
+        setTimeout(() => setLocation(targetLocation), 100);
+      } catch (error) {
+        console.warn('Navigation failed:', error);
+        window.location.href = '/courses';
       }
     } catch (error: any) {
       toast({

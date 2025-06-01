@@ -32,8 +32,14 @@ export default function LogoutConfirmation({ isOpen, onClose }: LogoutConfirmati
         description: "You have been logged out of your account.",
       });
       onClose();
-      // Redirect to home page after successful logout
-      setLocation('/');
+      
+      // Safe navigation with error handling
+      try {
+        setTimeout(() => setLocation('/'), 100);
+      } catch (error) {
+        console.warn('Navigation failed:', error);
+        window.location.href = '/';
+      }
     } catch (error: any) {
       toast({
         title: "Logout failed",

@@ -4,14 +4,13 @@ import "./index.css";
 
 // Global error handlers for cleaner console
 window.addEventListener('unhandledrejection', (event) => {
-  // First, log the actual error to identify its source
-  console.error('UNHANDLED PROMISE REJECTION:', {
-    reason: event.reason,
-    stack: event.reason?.stack,
-    message: event.reason?.message,
-    name: event.reason?.name,
-    type: typeof event.reason
-  });
+  // Suppress navigation-related DOMExceptions
+  if (event.reason?.name === 'DOMException' || 
+      event.reason?.message?.includes('navigate') ||
+      event.reason?.message?.includes('location')) {
+    event.preventDefault();
+    return;
+  }
   
   // Suppress media play() interruption errors from browser/extensions
   if (event.reason?.name === 'DOMException' && 
@@ -29,6 +28,9 @@ window.addEventListener('unhandledrejection', (event) => {
     event.preventDefault();
     return;
   }
+  
+  // Log remaining unhandled rejections
+  console.warn('Unhandled promise rejection:', event.reason);
 });
 
 window.addEventListener('error', (event) => {
