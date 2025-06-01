@@ -9,6 +9,7 @@ import NotFound from "@/pages/not-found";
 import Landing from "@/pages/Landing";
 import Login from "@/pages/Login";
 import Signup from "@/pages/Signup";
+import Auth from "@/pages/Auth";
 import Dashboard from "@/pages/Dashboard";
 import Courses from "@/pages/Courses";
 import Community from "@/pages/Community";
@@ -32,20 +33,41 @@ function Router() {
 
   // Role-based redirects
   useEffect(() => {
-    if (!loading && isAuthenticated && userProfile && location === '/dashboard') {
-      switch (userProfile.role) {
-        case 'admin':
-          setLocation('/admin');
-          break;
-        case 'student':
-          // Redirect students to LMS based on their access tier
-          if (userProfile.accessTier === 'mastermind') {
-            setLocation('/mastermind-dashboard');
-          } else {
+    if (!loading && isAuthenticated && userProfile) {
+      // Redirect from auth page after successful login
+      if (location === '/auth') {
+        switch (userProfile.role) {
+          case 'admin':
+            setLocation('/admin');
+            break;
+          case 'student':
             setLocation('/lms');
-          }
-          break;
+            break;
+          default:
+            setLocation('/dashboard');
+        }
       }
+      // Redirect from dashboard to appropriate role-based page
+      else if (location === '/dashboard') {
+        switch (userProfile.role) {
+          case 'admin':
+            setLocation('/admin');
+            break;
+          case 'student':
+            // Redirect students to LMS based on their access tier
+            if (userProfile.accessTier === 'mastermind') {
+              setLocation('/mastermind-dashboard');
+            } else {
+              setLocation('/lms');
+            }
+            break;
+        }
+      }
+    }
+    // Redirect unauthenticated users trying to access protected routes
+    else if (!loading && !isAuthenticated && 
+             (location.startsWith('/dashboard') || location.startsWith('/admin') || location.startsWith('/lms'))) {
+      setLocation('/auth');
     }
   }, [loading, isAuthenticated, userProfile, location, setLocation]);
 
@@ -59,7 +81,9 @@ function Router() {
 
   return (
     <Switch>
-      {/* Public pages accessible to everyone */}
+      {/* Public routes with standard header */}
+      <Route path="/" component={isAuthenticated ? Dashboard : Landing} />
+      <Route path="/auth" component={Auth} />
       <Route path="/about" component={About} />
       <Route path="/contact" component={Contact} />
       <Route path="/blog" component={Blog} />
@@ -70,11 +94,12 @@ function Router() {
       <Route path="/checkout" component={Checkout} />
       <Route path="/thank-you" component={ThankYou} />
       
-      {/* Authenticated routes */}
+      {/* Legacy auth routes for compatibility */}
+      <Route path="/login" component={Login} />
+      <Route path="/signup" component={Signup} />
+      
+      {/* Dashboard routes with Layout wrapper */}
       <Layout>
-        <Route path="/" component={isAuthenticated ? Dashboard : Landing} />
-        <Route path="/login" component={Login} />
-        <Route path="/signup" component={Signup} />
         <Route path="/dashboard" component={Dashboard} />
         <Route path="/lms" component={LMS} />
         <Route path="/quiz/deep" component={DeepQuiz} />
@@ -82,6 +107,7 @@ function Router() {
         <Route path="/debug-auth" component={DebugAuth} />
         <Route path="/admin" component={AdminDashboard} />
       </Layout>
+      
       <Route component={NotFound} />
     </Switch>
   );

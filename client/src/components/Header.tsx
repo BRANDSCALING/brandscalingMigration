@@ -33,7 +33,7 @@ export default function Header() {
           
           {/* Desktop User Icon */}
           <div className="hidden md:flex">
-            <Link href="/login">
+            <Link href="/auth">
               <Button variant="ghost" size="icon" className="text-slate-600 hover:text-primary hover:bg-slate-100">
                 <User className="w-5 h-5" />
               </Button>
@@ -62,7 +62,7 @@ export default function Header() {
               <Link href="/community" className="text-slate-600 hover:text-primary">Community</Link>
               <Link href="/contact" className="text-slate-600 hover:text-primary">Contact</Link>
               <div className="flex justify-center pt-4 border-t border-slate-200">
-                <Link href="/login">
+                <Link href="/auth">
                   <Button variant="ghost" size="icon" className="text-slate-600 hover:text-primary hover:bg-slate-100">
                     <User className="w-5 h-5" />
                   </Button>
