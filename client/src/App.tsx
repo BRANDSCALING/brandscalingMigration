@@ -33,18 +33,25 @@ function Router() {
 
   // Role-based redirects and access control
   useEffect(() => {
-    if (!loading && isAuthenticated && userProfile) {
-      // Redirect from auth page after successful login
-      if (location === '/auth') {
-        switch (userProfile.role) {
-          case 'admin':
-            setLocation('/admin');
-            break;
-          case 'student':
-            setLocation('/student');
-            break;
-          default:
-            setLocation('/student');
+    if (!loading) {
+      if (isAuthenticated && userProfile) {
+        // Redirect from auth page after successful login
+        if (location === '/auth') {
+          switch (userProfile.role) {
+            case 'admin':
+              setLocation('/admin');
+              break;
+            case 'student':
+              setLocation('/student');
+              break;
+            default:
+              setLocation('/student');
+          }
+        }
+      } else {
+        // Redirect logged-out users from protected routes to home
+        if (location.startsWith('/student') || location.startsWith('/admin')) {
+          setLocation('/');
         }
       }
     }
