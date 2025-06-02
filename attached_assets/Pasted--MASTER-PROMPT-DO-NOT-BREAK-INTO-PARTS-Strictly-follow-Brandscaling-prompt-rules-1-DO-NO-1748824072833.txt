@@ -1,0 +1,50 @@
+// MASTER PROMPT — DO NOT BREAK INTO PARTS
+// Strictly follow Brandscaling prompt rules:
+// 1. DO NOT create any dummy content or placeholder data
+// 2. DO NOT generate any fake analytics, sample users, or fabricated stats
+// 3. All features must rely on real authenticated user state and database content
+// 4. Do NOT hardcode email addresses, roles, names, or chart data
+// 5. Keep everything fully mobile- and app-friendly
+// 6. Build only what is explicitly asked
+// 7. All labels/buttons must be user-facing and human-readable — no developer language
+// 8. The logo must follow the logic described below
+// 9. Use only clean production-ready code
+
+// OBJECTIVE:
+// Fix the Admin Header UI in the Brandscaling platform with the following exact behavior and visual layout:
+
+// ✅ 1. Logo (top center):
+// - When clicked, PROMPT the user to confirm logout
+// - If confirmed, log the user out and redirect them to the public home page (/)
+// - This must match the previous working logic before the header was modified
+// - Do not route to /admin — that’s the sidebar’s job
+
+// ✅ 2. Sidebar menu button (three-line icon):
+// - Keep this in the TOP-LEFT corner
+// - This toggles the sidebar open/closed as it currently does — no change
+
+// ✅ 3. Title "Brandscaling Admin":
+// - Move this to the center **only on smaller screens** (mobile view)
+// - On desktop/tablet, it should not appear in the center (to avoid visual duplication with logo)
+
+// ✅ 4. Admin identity section (TOP-RIGHT):
+// - Keep displaying authenticated user's email and role (e.g., "Administrator")
+// - Optional: Show avatar icon if userProfile.profileImageUrl exists
+// - This must remain right-aligned and not clash with the logo or title
+
+// ✅ 5. Responsive Layout Fixes:
+// - Fix spacing, alignment, and overflow issues on mobile and tablet
+// - Ensure logo, menu, and profile sections never overlap
+// - Header must remain sticky and consistent across admin routes
+
+// IMPLEMENTATION:
+// - File: client/src/pages/admin/components/AdminHeader.tsx
+// - Use only TailwindCSS or existing utility styles — no custom CSS files
+// - Do not remove any existing role validation logic
+
+// FINAL CHECK:
+// - Once implemented, restart the app and verify:
+//   • Logo prompts logout and redirects to "/"
+//   • Menu icon works
+//   • Layout renders correctly on mobile and desktop
+//   • No console errors or layout shifts

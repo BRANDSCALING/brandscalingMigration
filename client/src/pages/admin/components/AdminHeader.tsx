@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { Link } from 'wouter';
 import { Button } from '@/components/ui/button';
-import { Bell, LogOut } from 'lucide-react';
+import { Menu, Bell, LogOut } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -22,7 +21,11 @@ import {
 import { useFirebaseAuth } from '@/hooks/useFirebaseAuth';
 import brandscalingLogo from '@assets/FullLogo.png';
 
-export default function AdminHeader() {
+interface AdminHeaderProps {
+  onToggleSidebar?: () => void;
+}
+
+export default function AdminHeader({ onToggleSidebar }: AdminHeaderProps) {
   const { userProfile, logout } = useFirebaseAuth();
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
 
@@ -31,46 +34,66 @@ export default function AdminHeader() {
     window.location.href = '/';
   };
 
+  const handleLogoClick = () => {
+    setShowLogoutDialog(true);
+  };
+
   return (
     <>
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            {/* Left side - Admin label */}
-            <div className="hidden md:block">
-              <span className="text-sm font-medium text-purple-700 bg-purple-100 px-3 py-1 rounded-full">
-                Brandscaling Admin
-              </span>
+          <div className="flex items-center justify-between h-16">
+            {/* Left - Sidebar Menu Button */}
+            <div className="flex items-center">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onToggleSidebar}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <Menu className="h-6 w-6" />
+              </Button>
             </div>
 
-            {/* Center - Logo */}
-            <div className="flex items-center">
-              <Link href="/admin">
+            {/* Center - Logo and Title */}
+            <div className="flex items-center justify-center flex-1">
+              {/* Logo - always centered */}
+              <button
+                onClick={handleLogoClick}
+                className="cursor-pointer hover:opacity-80 transition-opacity"
+              >
                 <img 
                   src={brandscalingLogo} 
                   alt="Brandscaling" 
-                  className="h-10 w-auto cursor-pointer hover:opacity-80 transition-opacity"
+                  className="h-10 w-auto"
                 />
-              </Link>
+              </button>
+              
+              {/* Title - only on mobile */}
+              <div className="md:hidden ml-3">
+                <span className="text-sm font-medium text-purple-700 bg-purple-100 px-3 py-1 rounded-full">
+                  Brandscaling Admin
+                </span>
+              </div>
             </div>
 
-            {/* Right side - User Menu */}
-            <div className="flex items-center space-x-4">
+            {/* Right - User Menu */}
+            <div className="flex items-center space-x-2 sm:space-x-4">
               <Button variant="ghost" size="icon" className="text-gray-400 hover:text-gray-600">
                 <Bell className="h-5 w-5" />
               </Button>
               
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="flex items-center space-x-3 h-auto p-2">
+                  <Button variant="ghost" className="flex items-center space-x-2 h-auto p-2">
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src={userProfile?.displayName || ""} alt="Admin avatar" />
+                      <AvatarImage src={userProfile?.profileImageUrl || ""} alt="Admin avatar" />
                       <AvatarFallback className="bg-purple-100 text-purple-700">
                         {userProfile?.displayName?.[0] || userProfile?.email?.[0] || "A"}
                       </AvatarFallback>
                     </Avatar>
                     <div className="hidden sm:block text-left">
-                      <p className="text-sm font-medium text-gray-900">
+                      <p className="text-sm font-medium text-gray-900 truncate max-w-24">
                         {userProfile?.displayName || userProfile?.email?.split("@")[0] || "Admin"}
                       </p>
                       <p className="text-xs text-purple-600 font-medium">

@@ -14,10 +14,11 @@ import { useState } from 'react';
 
 interface AdminSidebarProps {
   currentPage: string;
+  isOpen?: boolean;
+  onClose?: () => void;
 }
 
-export default function AdminSidebar({ currentPage }: AdminSidebarProps) {
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
+export default function AdminSidebar({ currentPage, isOpen = false, onClose }: AdminSidebarProps) {
 
   const navItems = [
     { 

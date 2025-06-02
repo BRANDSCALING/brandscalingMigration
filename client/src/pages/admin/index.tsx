@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useFirebaseAuth } from '@/hooks/useFirebaseAuth';
 import { useLocation } from 'wouter';
 import AdminSidebar from './components/AdminSidebar';
@@ -13,6 +13,7 @@ import Insights from './pages/Insights';
 export default function AdminPanel() {
   const { userProfile, loading, isAuthenticated } = useFirebaseAuth();
   const [location] = useLocation();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Redirect non-admins before rendering any admin content
   useEffect(() => {
@@ -64,9 +65,9 @@ export default function AdminPanel() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <AdminHeader />
+      <AdminHeader onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
       <div className="flex">
-        <AdminSidebar currentPage={getCurrentPage()} />
+        <AdminSidebar currentPage={getCurrentPage()} isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
         <main className="flex-1 lg:ml-64">
           <div className="p-6">
             {renderPage()}
