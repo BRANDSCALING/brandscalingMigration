@@ -66,9 +66,9 @@ export default function AdminPanel() {
   return (
     <div className="h-screen flex overflow-hidden">
       <AdminSidebar currentPage={getCurrentPage()} isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-      <div className="flex flex-col flex-1 overflow-hidden">
+      <div className="flex flex-col flex-1 min-h-0">
         <AdminHeader onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
-        <main className="flex-1 overflow-y-auto p-4 bg-gray-50">
+        <main className="flex-1 overflow-auto p-4 bg-gray-50">
           {renderPage()}
         </main>
       </div>
