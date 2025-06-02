@@ -94,9 +94,8 @@ export default function AdminSidebar({ currentPage, isOpen = false, onClose }: A
 
       {/* Sidebar */}
       <aside className={`
-        ${isOpen ? 'fixed' : 'hidden'} lg:relative lg:block
-        w-64 bg-white border-r border-gray-200 flex-shrink-0 overflow-y-auto h-full z-50
-        lg:z-auto
+        w-64 bg-white border-r border-gray-200 flex-shrink-0 overflow-y-auto h-full
+        ${isOpen ? 'block' : 'hidden'} lg:block
       `}>
         <div className="p-6">
           <SidebarContent />
