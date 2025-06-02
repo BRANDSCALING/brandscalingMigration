@@ -64,14 +64,12 @@ export default function AdminPanel() {
   };
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden bg-gray-50">
-      <AdminHeader onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
-      <div className="flex flex-1 overflow-hidden">
-        <AdminSidebar currentPage={getCurrentPage()} isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-        <main className="flex-1 lg:ml-64 overflow-auto">
-          <div className="p-4">
-            {renderPage()}
-          </div>
+    <div className="h-screen flex overflow-hidden">
+      <AdminSidebar currentPage={getCurrentPage()} isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <div className="flex flex-col flex-1 overflow-hidden">
+        <AdminHeader onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+        <main className="flex-1 overflow-y-auto p-4 bg-gray-50">
+          {renderPage()}
         </main>
       </div>
     </div>
