@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useFirebaseAuth } from '@/hooks/useFirebaseAuth';
-import { useLocation } from 'wouter';
 import AdminLayout from './layout';
 import Dashboard from './pages/Dashboard';
 import Users from './pages/Users';
@@ -9,16 +8,13 @@ import Insights from './pages/Insights';
 
 export default function AdminPanel() {
   const { userProfile, loading, isAuthenticated } = useFirebaseAuth();
-  const [location] = useLocation();
 
-  // Redirect non-admins before rendering any admin content
   useEffect(() => {
     if (!loading && (!isAuthenticated || userProfile?.role !== 'admin')) {
       window.location.href = '/';
     }
   }, [loading, isAuthenticated, userProfile]);
 
-  // Show loading while auth check is in progress
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -27,37 +23,28 @@ export default function AdminPanel() {
     );
   }
 
-  // Don't render anything if not admin (redirect will handle this)
   if (!isAuthenticated || userProfile?.role !== 'admin') {
     return null;
   }
 
-  const getCurrentPage = () => {
-    if (location === '/admin' || location === '/admin/') return 'dashboard';
-    if (location.startsWith('/admin/users')) return 'users';
-    if (location.startsWith('/admin/posts')) return 'posts';
-    if (location.startsWith('/admin/insights')) return 'insights';
-    return 'dashboard';
-  };
-
   const renderPage = () => {
-    switch (location) {
-      case '/admin':
-      case '/admin/':
-        return <Dashboard />;
-      case '/admin/users':
-        return <Users />;
-      case '/admin/posts':
-        return <Posts />;
-      case '/admin/insights':
-        return <Insights />;
-      default:
-        return <Dashboard />;
+    const pathname = window.location.pathname;
+    
+    if (pathname === '/admin') {
+      return <Dashboard />;
+    } else if (pathname === '/admin/users') {
+      return <Users />;
+    } else if (pathname === '/admin/posts') {
+      return <Posts />;
+    } else if (pathname === '/admin/insights') {
+      return <Insights />;
     }
+    
+    return <Dashboard />;
   };
 
   return (
-    <AdminLayout currentPage={getCurrentPage()}>
+    <AdminLayout>
       {renderPage()}
     </AdminLayout>
   );

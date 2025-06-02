@@ -8,12 +8,19 @@ import {
 } from 'lucide-react';
 
 interface AdminSidebarProps {
-  currentPage: string;
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
 }
 
-export default function AdminSidebar({ currentPage, sidebarOpen, setSidebarOpen }: AdminSidebarProps) {
+export default function AdminSidebar({ sidebarOpen, setSidebarOpen }: AdminSidebarProps) {
+  const getCurrentPage = () => {
+    const pathname = window.location.pathname;
+    if (pathname === '/admin') return 'dashboard';
+    if (pathname === '/admin/users') return 'users';
+    if (pathname === '/admin/posts') return 'posts';
+    if (pathname === '/admin/insights') return 'insights';
+    return 'dashboard';
+  };
 
   const navItems = [
     { 
@@ -46,7 +53,7 @@ export default function AdminSidebar({ currentPage, sidebarOpen, setSidebarOpen 
     <nav className="space-y-2">
       {navItems.map((item) => {
         const IconComponent = item.icon;
-        const isActive = currentPage === item.id;
+        const isActive = getCurrentPage() === item.id;
         
         return (
           <Link key={item.id} href={item.href}>
@@ -70,14 +77,12 @@ export default function AdminSidebar({ currentPage, sidebarOpen, setSidebarOpen 
 
   return (
     <>
-      {/* Desktop Sidebar */}
       <div className="hidden lg:flex lg:flex-col w-64 bg-white border-r border-gray-200">
         <div className="p-6">
           <SidebarContent />
         </div>
       </div>
 
-      {/* Mobile Sidebar */}
       {sidebarOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div className="fixed inset-0 bg-black bg-opacity-50" onClick={() => setSidebarOpen(false)} />

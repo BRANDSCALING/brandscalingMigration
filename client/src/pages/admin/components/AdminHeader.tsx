@@ -43,7 +43,6 @@ export default function AdminHeader({ setSidebarOpen }: AdminHeaderProps) {
       <header className="bg-white border-b border-gray-200 flex-shrink-0">
         <div className="px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            {/* Left - Sidebar Menu Button */}
             <div className="flex items-center">
               <Button
                 variant="ghost"
@@ -55,7 +54,6 @@ export default function AdminHeader({ setSidebarOpen }: AdminHeaderProps) {
               </Button>
             </div>
 
-            {/* Center - Logo and Title */}
             <div className="flex items-center justify-center flex-1">
               <button
                 onClick={handleLogoClick}
@@ -75,7 +73,6 @@ export default function AdminHeader({ setSidebarOpen }: AdminHeaderProps) {
               </div>
             </div>
 
-            {/* Right - User Menu */}
             <div className="flex items-center space-x-2 sm:space-x-4">
               <Button variant="ghost" size="icon" className="text-gray-400 hover:text-gray-600">
                 <Bell className="h-5 w-5" />
@@ -85,7 +82,7 @@ export default function AdminHeader({ setSidebarOpen }: AdminHeaderProps) {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="flex items-center space-x-2 h-auto p-2">
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src={userProfile?.photoURL || ""} alt="Admin avatar" />
+                      <AvatarImage src={userProfile?.profileImageUrl || ""} alt="Admin avatar" />
                       <AvatarFallback className="bg-purple-100 text-purple-700">
                         {userProfile?.displayName?.[0] || userProfile?.email?.[0] || "A"}
                       </AvatarFallback>
