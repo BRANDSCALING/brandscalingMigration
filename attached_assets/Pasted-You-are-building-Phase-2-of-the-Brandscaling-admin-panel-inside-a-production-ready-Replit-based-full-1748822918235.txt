@@ -1,0 +1,35 @@
+You are building Phase 2 of the Brandscaling admin panel inside a production-ready Replit-based full-stack app (React, Node.js, Firebase/PostgreSQL). Follow the Master Prompt Rules:
+
+RULES:
+- No dummy data, no mock APIs, no fake charts
+- Integrate only with real data from the existing Firebase/Firestore backend (or PostgreSQL if used)
+- All code must be production-safe, responsive, and type-safe (TypeScript)
+- Use Chart.js only if `Filler` plugin is correctly registered and configured (no errors)
+- Never invent placeholder stats — fetch real values from backend collections
+- Use Firebase Firestore queries to pull daily active users (DAU), posts created over time, number of bans, moderation stats, and user growth
+- Build modular, clean components with reuse in mind
+- Export button must download real CSV data based on admin dashboard queries
+- Use React context or secure props to restrict access to verified admin users only
+
+Build the Admin Insights Dashboard with:
+1. A dashboard wrapper component with a sidebar and header (already built in Phase 1)
+2. A new `<InsightsDashboard />` component inside `client/src/pages/admin/pages/Insights.tsx`
+3. Pull real metrics:
+   - Daily Active Users (past 30 days)
+   - Total post volume (trend graph)
+   - Total users banned
+   - Moderation % (e.g., flagged vs approved)
+   - User sign-up growth (curve)
+4. Use Chart.js with correct registration (register `Filler` plugin if using `fill`)
+5. Add an `Export CSV` button that pulls current stats and exports real values to a `.csv` file using a reusable utility
+6. All charts must use real-time Firebase queries and update on mount
+7. Ensure all components are responsive and use Tailwind CSS
+8. Assume authenticated admin context is passed via Firebase Auth hook (`useFirebaseAuth.ts`)
+
+DO NOT:
+- Invent fake numbers
+- Use placeholder components
+- Output mock chart config
+- Hardcode datasets
+
+Your job is to write real, clean, functional code for the dashboard — fully wired up and ready to display real admin insights for a live production app. Follow all Master Prompt rules strictly.
