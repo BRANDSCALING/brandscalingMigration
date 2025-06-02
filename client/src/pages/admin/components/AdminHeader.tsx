@@ -82,7 +82,7 @@ export default function AdminHeader({ setSidebarOpen }: AdminHeaderProps) {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="flex items-center space-x-2 h-auto p-2">
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src={userProfile?.profileImageUrl || ""} alt="Admin avatar" />
+                      <AvatarImage src={userProfile?.photoURL || ""} alt="Admin avatar" />
                       <AvatarFallback className="bg-purple-100 text-purple-700">
                         {userProfile?.displayName?.[0] || userProfile?.email?.[0] || "A"}
                       </AvatarFallback>
