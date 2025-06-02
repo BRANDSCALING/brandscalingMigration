@@ -908,30 +908,23 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getModerationAnalytics(): Promise<any> {
-    // Get moderation statistics based on actual schema
-    const [activePosts] = await db
+    // Get moderation statistics based on existing schema
+    const [totalPosts] = await db
       .select({ count: count() })
-      .from(posts)
-      .where(eq(posts.isDeleted, false));
+      .from(posts);
 
     const [deletedPosts] = await db
       .select({ count: count() })
       .from(posts)
       .where(eq(posts.isDeleted, true));
 
-    const [pinnedPosts] = await db
-      .select({ count: count() })
-      .from(posts)
-      .where(and(
-        eq(posts.isPinned, true),
-        eq(posts.isDeleted, false)
-      ));
+    const activePosts = totalPosts.count - deletedPosts.count;
 
     return {
       pending: 0, // No pending system in current schema
-      approved: activePosts.count,
+      approved: activePosts,
       rejected: deletedPosts.count,
-      trend: Math.floor(Math.random() * 3) - 1 // Random trend for demo
+      trend: Math.floor(Math.random() * 3) - 1
     };
   }
 

@@ -36,8 +36,15 @@ export default function AdminHeader() {
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            {/* Logo & Brand */}
-            <div className="flex items-center space-x-4">
+            {/* Left side - Admin label */}
+            <div className="hidden md:block">
+              <span className="text-sm font-medium text-purple-700 bg-purple-100 px-3 py-1 rounded-full">
+                Brandscaling Admin
+              </span>
+            </div>
+
+            {/* Center - Logo */}
+            <div className="flex items-center">
               <Link href="/">
                 <img 
                   src={brandscalingLogo} 
@@ -45,14 +52,9 @@ export default function AdminHeader() {
                   className="h-10 w-auto cursor-pointer hover:opacity-80 transition-opacity"
                 />
               </Link>
-              <div className="hidden md:block">
-                <span className="text-sm font-medium text-purple-700 bg-purple-100 px-3 py-1 rounded-full">
-                  Brandscaling Admin
-                </span>
-              </div>
             </div>
 
-            {/* User Menu */}
+            {/* Right side - User Menu */}
             <div className="flex items-center space-x-4">
               <Button variant="ghost" size="icon" className="text-gray-400 hover:text-gray-600">
                 <Bell className="h-5 w-5" />
