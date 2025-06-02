@@ -86,21 +86,10 @@ export default function Users() {
   const filteredUsers = users || [];
 
   return (
-    <div className="space-y-6 min-h-full">
+    <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-gray-900">User Management</h1>
         <p className="text-gray-600 mt-2">Manage user accounts and permissions</p>
-      </div>
-      
-      {/* Test content for scroll verification */}
-      <div className="space-y-4">
-        {Array.from({length: 20}, (_, i) => (
-          <Card key={i}>
-            <CardContent className="p-4">
-              <p>Test content row {i + 1} - This is to verify scroll functionality works properly</p>
-            </CardContent>
-          </Card>
-        ))}
       </div>
 
       {/* Filters */}
