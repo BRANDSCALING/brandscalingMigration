@@ -1614,6 +1614,129 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
     }
   });
 
+  // Send campaign to multiple leads (Firebase authenticated admins only)
+  app.post("/api/email/send-campaign", requireRole("admin"), async (req, res) => {
+    try {
+      const { templateId, leadIds } = req.body;
+
+      if (!templateId || !leadIds || !Array.isArray(leadIds) || leadIds.length === 0) {
+        return res.status(400).json({ error: 'Template ID and lead IDs are required' });
+      }
+
+      const adminUid = req.user?.uid;
+      if (!adminUid) {
+        return res.status(401).json({ error: 'Admin authentication required' });
+      }
+
+      // Get template
+      const { rows: templateRows } = await pool.query(
+        'SELECT * FROM email_templates WHERE id = $1',
+        [templateId]
+      );
+
+      if (templateRows.length === 0) {
+        return res.status(404).json({ error: 'Template not found' });
+      }
+
+      const template = templateRows[0];
+
+      // Get leads
+      const { rows: leadsRows } = await pool.query(
+        'SELECT * FROM leads WHERE id = ANY($1) AND email IS NOT NULL AND email != \'\'',
+        [leadIds]
+      );
+
+      if (leadsRows.length === 0) {
+        return res.status(400).json({ error: 'No valid leads found' });
+      }
+
+      let successful = 0;
+      let failed = 0;
+
+      // Send emails to each lead
+      for (const lead of leadsRows) {
+        try {
+          // Replace merge tags
+          const personalizedSubject = template.subject
+            .replace(/\{\{name\}\}/g, lead.name || '')
+            .replace(/\{\{email\}\}/g, lead.email || '');
+          
+          const personalizedBody = template.body
+            .replace(/\{\{name\}\}/g, lead.name || '')
+            .replace(/\{\{email\}\}/g, lead.email || '');
+
+          // Send email using Resend
+          const { data: emailData, error: emailError } = await resendClient.emails.send({
+            from: 'campaigns@resend.dev',
+            to: [lead.email],
+            subject: personalizedSubject,
+            html: personalizedBody,
+          });
+
+          if (emailError) {
+            throw emailError;
+          }
+
+          // Log successful send
+          await pool.query(
+            'INSERT INTO email_campaign_logs (template_id, sent_by_admin_uid, recipient_email, recipient_name, status) VALUES ($1, $2, $3, $4, $5)',
+            [template.id, adminUid, lead.email, lead.name, 'sent']
+          );
+
+          successful++;
+        } catch (emailError) {
+          console.error(`Failed to send email to ${lead.email}:`, emailError);
+          
+          // Log failed send
+          await pool.query(
+            'INSERT INTO email_campaign_logs (template_id, sent_by_admin_uid, recipient_email, recipient_name, status) VALUES ($1, $2, $3, $4, $5)',
+            [template.id, adminUid, lead.email, lead.name, 'failed']
+          );
+
+          failed++;
+        }
+      }
+
+      res.json({
+        successful,
+        failed,
+        total: leadsRows.length
+      });
+    } catch (error: any) {
+      console.error('Error sending campaign:', error);
+      res.status(500).json({ 
+        error: 'Failed to send campaign',
+        details: error.message 
+      });
+    }
+  });
+
+  // Get email campaign logs (Firebase authenticated admins only)
+  app.get('/api/email-campaign-logs', requireRole('admin'), async (req, res) => {
+    try {
+      const { rows } = await pool.query(`
+        SELECT 
+          ecl.id,
+          ecl.template_id,
+          ecl.sent_by_admin_uid,
+          ecl.recipient_email,
+          ecl.recipient_name,
+          ecl.status,
+          ecl.sent_at,
+          et.name as template_name
+        FROM email_campaign_logs ecl
+        LEFT JOIN email_templates et ON ecl.template_id = et.id
+        ORDER BY ecl.sent_at DESC
+        LIMIT 100
+      `);
+      
+      res.json(rows);
+    } catch (error) {
+      console.error('Error fetching email logs:', error);
+      res.status(500).json({ error: 'Failed to fetch email logs' });
+    }
+  });
+
   // Stripe webhook handler for checkout.session.completed
   app.post("/webhook/stripe", express.raw({ type: 'application/json' }), async (req, res) => {
     const sig = req.headers['stripe-signature'];
@@ -1664,59 +1787,68 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
           referredByAdmin: null, // Could be enhanced to track referrals
         });
 
-        // Extract first name for personalization
-        const firstName = customerName.split(' ')[0];
+        // Find welcome template for new customers
+        let emailSent = false;
+        let emailError = null;
+        
+        try {
+          const { rows: welcomeTemplates } = await pool.query(
+            'SELECT * FROM email_templates WHERE name ILIKE \'%welcome%\' OR name ILIKE \'%purchase%\' OR name ILIKE \'%onboard%\' ORDER BY created_at DESC LIMIT 1'
+          );
 
-        // Send welcome email
-        const welcomeEmailBody = `
-          <html>
-            <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto;">
-              <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; color: white;">
-                <h1 style="margin: 0; font-size: 28px;">You're In! 🎉</h1>
-                <h2 style="margin: 10px 0 0 0; font-weight: normal; font-size: 18px;">Welcome to Brandscaling</h2>
-              </div>
-              
-              <div style="padding: 30px; background: #f9f9f9;">
-                <p style="font-size: 18px; margin-bottom: 20px;">Hi ${firstName},</p>
-                
-                <p>Congratulations! Your purchase of <strong>${productName}</strong> has been confirmed.</p>
-                
-                <p>We're thrilled to have you join our community of entrepreneurs who are serious about scaling their brands. Your journey to building a powerful, profitable brand starts now.</p>
-                
-                <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #667eea;">
-                  <h3 style="margin-top: 0; color: #333;">What's Next?</h3>
-                  <p style="margin-bottom: 0;">You'll receive your access details shortly. Get ready to transform your business!</p>
-                </div>
-                
-                <p>Best regards,<br><strong>The Brandscaling Team</strong></p>
-              </div>
-              
-              <div style="background: #333; color: #999; padding: 20px; text-align: center; font-size: 14px;">
-                <p style="margin: 0;">Thank you for choosing Brandscaling</p>
-              </div>
-            </body>
-          </html>
-        `;
+          if (welcomeTemplates.length > 0) {
+            const template = welcomeTemplates[0];
+            
+            // Replace merge tags
+            const personalizedSubject = template.subject
+              .replace(/\{\{name\}\}/g, customerName)
+              .replace(/\{\{email\}\}/g, customerEmail);
+            
+            const personalizedBody = template.body
+              .replace(/\{\{name\}\}/g, customerName)
+              .replace(/\{\{email\}\}/g, customerEmail);
 
-        const { data: emailData, error: emailError } = await resendClient.emails.send({
-          from: 'onboarding@resend.dev',
-          to: [customerEmail],
-          subject: 'You\'re In! 🎉 Welcome to Brandscaling',
-          html: welcomeEmailBody,
-        });
+            // Send automated welcome email using template
+            const { data: emailData, error: sendError } = await resendClient.emails.send({
+              from: 'onboarding@resend.dev',
+              to: [customerEmail],
+              subject: personalizedSubject,
+              html: personalizedBody,
+            });
 
-        if (emailError) {
-          console.error('Failed to send welcome email:', emailError);
+            if (!sendError) {
+              // Log successful automated send
+              await pool.query(
+                'INSERT INTO email_campaign_logs (template_id, sent_by_admin_uid, recipient_email, recipient_name, status) VALUES ($1, $2, $3, $4, $5)',
+                [template.id, 'system', customerEmail, customerName, 'sent']
+              );
+              console.log('Automated welcome email sent to:', customerEmail);
+              emailSent = true;
+              await storage.updatePurchaseEmailStatus(session.id, true);
+            } else {
+              // Log failed automated send
+              await pool.query(
+                'INSERT INTO email_campaign_logs (template_id, sent_by_admin_uid, recipient_email, recipient_name, status) VALUES ($1, $2, $3, $4, $5)',
+                [template.id, 'system', customerEmail, customerName, 'failed']
+              );
+              emailError = sendError;
+              console.error('Failed to send automated welcome email:', sendError);
+              await storage.updatePurchaseEmailStatus(session.id, false);
+            }
+          } else {
+            console.log('No welcome email template found - skipping automated email');
+            await storage.updatePurchaseEmailStatus(session.id, false);
+          }
+        } catch (error) {
+          console.error('Error sending automated welcome email:', error);
+          emailError = error;
           await storage.updatePurchaseEmailStatus(session.id, false);
-        } else {
-          console.log('Welcome email sent successfully:', emailData?.id);
-          await storage.updatePurchaseEmailStatus(session.id, true);
         }
 
         res.json({ 
           success: true, 
           purchase: purchase.id,
-          emailSent: !emailError,
+          emailSent: emailSent,
           message: 'Purchase processed and email sent'
         });
 
@@ -1730,6 +1862,102 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
     } else {
       // Handle other event types if needed
       res.json({ received: true });
+    }
+  });
+
+  // Webinar registration with automated email confirmation (Firebase authenticated users)
+  app.post("/api/webinar/register", requireAuth, async (req, res) => {
+    try {
+      const { webinarId, name, email } = req.body;
+      const userId = req.user?.uid;
+
+      if (!webinarId || !name || !email) {
+        return res.status(400).json({ error: 'Webinar ID, name, and email are required' });
+      }
+
+      // Register for webinar (you may have existing webinar logic)
+      const registration = {
+        id: Date.now(), // Simple ID generation
+        webinarId,
+        userId,
+        name,
+        email,
+        registeredAt: new Date().toISOString()
+      };
+
+      // Find webinar confirmation template
+      try {
+        const { rows: confirmationTemplates } = await pool.query(
+          'SELECT * FROM email_templates WHERE name ILIKE \'%webinar%\' OR name ILIKE \'%confirmation%\' OR name ILIKE \'%event%\' ORDER BY created_at DESC LIMIT 1'
+        );
+
+        if (confirmationTemplates.length > 0) {
+          const template = confirmationTemplates[0];
+          
+          // Replace merge tags
+          const personalizedSubject = template.subject
+            .replace(/\{\{name\}\}/g, name)
+            .replace(/\{\{email\}\}/g, email);
+          
+          const personalizedBody = template.body
+            .replace(/\{\{name\}\}/g, name)
+            .replace(/\{\{email\}\}/g, email);
+
+          // Send automated confirmation email
+          const { data: emailData, error: emailError } = await resendClient.emails.send({
+            from: 'events@resend.dev',
+            to: [email],
+            subject: personalizedSubject,
+            html: personalizedBody,
+          });
+
+          if (!emailError) {
+            // Log successful automated send
+            await pool.query(
+              'INSERT INTO email_campaign_logs (template_id, sent_by_admin_uid, recipient_email, recipient_name, status) VALUES ($1, $2, $3, $4, $5)',
+              [template.id, 'system', email, name, 'sent']
+            );
+            console.log('Webinar confirmation email sent to:', email);
+          } else {
+            // Log failed automated send
+            await pool.query(
+              'INSERT INTO email_campaign_logs (template_id, sent_by_admin_uid, recipient_email, recipient_name, status) VALUES ($1, $2, $3, $4, $5)',
+              [template.id, 'system', email, name, 'failed']
+            );
+            console.error('Failed to send webinar confirmation email:', emailError);
+          }
+
+          res.json({
+            success: true,
+            registration,
+            emailSent: !emailError,
+            message: 'Webinar registration confirmed and email sent'
+          });
+        } else {
+          console.log('No webinar confirmation template found - skipping automated email');
+          res.json({
+            success: true,
+            registration,
+            emailSent: false,
+            message: 'Webinar registration confirmed (no email template found)'
+          });
+        }
+      } catch (emailError) {
+        console.error('Error sending webinar confirmation email:', emailError);
+        res.json({
+          success: true,
+          registration,
+          emailSent: false,
+          message: 'Webinar registration confirmed (email failed to send)'
+        });
+      }
+
+    } catch (error: any) {
+      console.error('Error processing webinar registration:', error);
+      res.status(500).json({ 
+        error: 'Failed to process webinar registration',
+        details: error.message 
+      });
     }
   });
 

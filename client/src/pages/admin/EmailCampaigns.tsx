@@ -1,26 +1,18 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogTrigger 
-} from "@/components/ui/dialog";
-import { 
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { 
+import {
   Table,
   TableBody,
   TableCell,
@@ -28,336 +20,358 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useToast } from "@/hooks/use-toast";
-import { Mail, Calendar, User, Send } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Mail, Send, Eye, Users, Clock } from "lucide-react";
 import { format } from "date-fns";
+
+interface EmailTemplate {
+  id: number;
+  name: string;
+  subject: string;
+  body: string;
+  created_by_admin_uid: string;
+  created_at: string;
+}
 
 interface Lead {
   id: number;
   name: string;
   email: string;
-  addedByAdmin: string;
-  createdAt: Date | null;
-  lastEmailSent?: Date;
-  lastEmailSentBy?: string;
+  created_at: string;
 }
 
-const emailTemplates = {
-  "taster_reminder": {
-    subject: "Don't Miss Out - Your Brandscaling Opportunity Awaits",
-    body: `
-      <html>
-        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto;">
-          <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; color: white;">
-            <h1 style="margin: 0; font-size: 28px;">Ready to Scale Your Brand?</h1>
-            <h2 style="margin: 10px 0 0 0; font-weight: normal; font-size: 18px;">Limited Time Opportunity</h2>
-          </div>
-          
-          <div style="padding: 30px; background: #f9f9f9;">
-            <p style="font-size: 18px; margin-bottom: 20px;">Hi there,</p>
-            
-            <p>You've shown interest in scaling your brand, and we don't want you to miss this opportunity.</p>
-            
-            <p>Our proven Brandscaling method has helped countless entrepreneurs build profitable, scalable businesses. The strategies we share are battle-tested and results-driven.</p>
-            
-            <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #667eea;">
-              <h3 style="margin-top: 0; color: #333;">What You'll Get:</h3>
-              <ul style="margin-bottom: 0;">
-                <li>Proven scaling strategies</li>
-                <li>Access to our exclusive community</li>
-                <li>Direct mentorship opportunities</li>
-                <li>Real-world case studies</li>
-              </ul>
-            </div>
-            
-            <p>Don't let this opportunity pass you by. Your competitors are already scaling - make sure you stay ahead.</p>
-            
-            <p>Ready to take action?</p>
-            
-            <p>Best regards,<br><strong>The Brandscaling Team</strong></p>
-          </div>
-          
-          <div style="background: #333; color: #999; padding: 20px; text-align: center; font-size: 14px;">
-            <p style="margin: 0;">Limited time opportunity - Act now</p>
-          </div>
-        </body>
-      </html>
-    `
-  },
-  "mastermind_invite": {
-    subject: "Exclusive Invitation: Join Our Elite Brandscaling Mastermind",
-    body: `
-      <html>
-        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto;">
-          <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; color: white;">
-            <h1 style="margin: 0; font-size: 28px;">You're Invited! 🎯</h1>
-            <h2 style="margin: 10px 0 0 0; font-weight: normal; font-size: 18px;">Elite Brandscaling Mastermind</h2>
-          </div>
-          
-          <div style="padding: 30px; background: #f9f9f9;">
-            <p style="font-size: 18px; margin-bottom: 20px;">Congratulations,</p>
-            
-            <p>You've been personally selected to join our exclusive Brandscaling Mastermind - a private group of ambitious entrepreneurs who are serious about building million-pound businesses.</p>
-            
-            <p>This isn't for everyone. We only invite those who demonstrate real commitment to growth and have the potential to implement our advanced strategies.</p>
-            
-            <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #667eea;">
-              <h3 style="margin-top: 0; color: #333;">Inside the Mastermind:</h3>
-              <ul style="margin-bottom: 0;">
-                <li>Weekly strategy sessions with our founders</li>
-                <li>Direct access to million-pound business blueprints</li>
-                <li>Peer connections with other high-level entrepreneurs</li>
-                <li>Monthly live Q&A and hot seat coaching</li>
-                <li>Exclusive case studies and advanced training</li>
-              </ul>
-            </div>
-            
-            <p>This is your opportunity to accelerate your business growth and connect with like-minded entrepreneurs who are playing at the highest level.</p>
-            
-            <p>Spaces are extremely limited and by invitation only.</p>
-            
-            <p>Are you ready to join the elite?</p>
-            
-            <p>Best regards,<br><strong>The Brandscaling Team</strong></p>
-          </div>
-          
-          <div style="background: #333; color: #999; padding: 20px; text-align: center; font-size: 14px;">
-            <p style="margin: 0;">Exclusive invitation - Limited spaces available</p>
-          </div>
-        </body>
-      </html>
-    `
-  }
-};
+interface EmailLog {
+  id: number;
+  template_id: number;
+  sent_by_admin_uid: string;
+  recipient_email: string;
+  recipient_name: string;
+  status: string;
+  sent_at: string;
+  template_name?: string;
+}
 
 export default function EmailCampaigns() {
-  const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [selectedTemplate, setSelectedTemplate] = useState<string>("");
-  const [subject, setSubject] = useState("");
-  const [body, setBody] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedLeads, setSelectedLeads] = useState<number[]>([]);
+  const [previewMode, setPreviewMode] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: leads = [], isLoading } = useQuery({
-    queryKey: ["/api/leads/campaigns"],
+  // Fetch email templates
+  const { data: templates = [], isLoading: templatesLoading } = useQuery({
+    queryKey: ["/api/email-templates"],
+    queryFn: async () => {
+      const response = await apiRequest("GET", "/api/email-templates");
+      return response.json();
+    },
   });
 
-  const sendEmailMutation = useMutation({
-    mutationFn: async (emailData: { leadId: number; subject: string; body: string; template: string }) => {
-      return apiRequest("POST", "/api/email/campaign", emailData);
+  // Fetch leads
+  const { data: leads = [], isLoading: leadsLoading } = useQuery({
+    queryKey: ["/api/leads/campaigns"],
+    queryFn: async () => {
+      const response = await apiRequest("GET", "/api/leads/campaigns");
+      return response.json();
     },
-    onSuccess: () => {
-      toast({
-        title: "Email Sent",
-        description: "Campaign email sent successfully and logged.",
-      });
-      setIsModalOpen(false);
-      setSelectedLead(null);
-      setSubject("");
-      setBody("");
+  });
+
+  // Fetch email campaign logs
+  const { data: emailLogs = [], isLoading: logsLoading } = useQuery({
+    queryKey: ["/api/email-campaign-logs"],
+    queryFn: async () => {
+      const response = await apiRequest("GET", "/api/email-campaign-logs");
+      return response.json();
+    },
+  });
+
+  // Send campaign mutation
+  const sendCampaignMutation = useMutation({
+    mutationFn: async (data: { templateId: string; leadIds: number[] }) => {
+      const response = await apiRequest("POST", "/api/email/send-campaign", data);
+      return response.json();
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/email-campaign-logs"] });
       setSelectedTemplate("");
-      queryClient.invalidateQueries({ queryKey: ["/api/leads/campaigns"] });
+      setSelectedLeads([]);
+      toast({
+        title: "Campaign Sent",
+        description: `Successfully sent ${data.successful} emails. ${data.failed || 0} failed.`,
+      });
     },
     onError: (error: any) => {
       toast({
-        title: "Failed to Send Email",
-        description: error.message || "An error occurred while sending the email.",
+        title: "Campaign Failed",
+        description: error.message || "Failed to send campaign",
         variant: "destructive",
       });
     },
   });
 
-  const handleSendEmail = (lead: Lead) => {
-    setSelectedLead(lead);
-    setIsModalOpen(true);
-  };
-
-  const handleTemplateChange = (template: string) => {
-    setSelectedTemplate(template);
-    if (template && emailTemplates[template as keyof typeof emailTemplates]) {
-      const templateData = emailTemplates[template as keyof typeof emailTemplates];
-      setSubject(templateData.subject);
-      setBody(templateData.body);
+  const handleLeadSelection = (leadId: number, checked: boolean) => {
+    if (checked) {
+      setSelectedLeads([...selectedLeads, leadId]);
+    } else {
+      setSelectedLeads(selectedLeads.filter(id => id !== leadId));
     }
   };
 
-  const handleSubmitEmail = () => {
-    if (!selectedLead || !subject || !body) {
+  const handleSelectAllLeads = (checked: boolean) => {
+    if (checked) {
+      setSelectedLeads(leads.map((lead: Lead) => lead.id));
+    } else {
+      setSelectedLeads([]);
+    }
+  };
+
+  const handleSendCampaign = () => {
+    if (!selectedTemplate) {
       toast({
-        title: "Missing Information",
-        description: "Please fill in all required fields.",
+        title: "Error",
+        description: "Please select an email template",
         variant: "destructive",
       });
       return;
     }
 
-    sendEmailMutation.mutate({
-      leadId: selectedLead.id,
-      subject,
-      body,
-      template: selectedTemplate
-    });
+    if (selectedLeads.length === 0) {
+      toast({
+        title: "Error",
+        description: "Please select at least one recipient",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (confirm(`Send campaign to ${selectedLeads.length} recipient(s)?`)) {
+      sendCampaignMutation.mutate({
+        templateId: selectedTemplate,
+        leadIds: selectedLeads,
+      });
+    }
   };
 
-  if (isLoading) {
+  const getSelectedTemplate = () => {
+    return templates.find((t: EmailTemplate) => t.id.toString() === selectedTemplate);
+  };
+
+  const renderPreview = () => {
+    const template = getSelectedTemplate();
+    if (!template) return <p className="text-gray-500">Select a template to see preview</p>;
+
+    const sampleLead = selectedLeads.length > 0 
+      ? leads.find((l: Lead) => l.id === selectedLeads[0])
+      : { name: "Sample Name", email: "sample@example.com" };
+
+    const previewSubject = template.subject
+      .replace(/\{\{name\}\}/g, sampleLead?.name || "Sample Name")
+      .replace(/\{\{email\}\}/g, sampleLead?.email || "sample@example.com");
+    
+    const previewBody = template.body
+      .replace(/\{\{name\}\}/g, sampleLead?.name || "Sample Name")
+      .replace(/\{\{email\}\}/g, sampleLead?.email || "sample@example.com");
+
     return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold">Email Campaigns</h1>
+      <div className="space-y-4">
+        <div>
+          <Label className="text-sm font-medium">Subject Preview:</Label>
+          <p className="p-2 bg-gray-50 rounded border">{previewSubject}</p>
         </div>
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
+        <div>
+          <Label className="text-sm font-medium">Body Preview:</Label>
+          <div 
+            className="p-4 bg-white border rounded min-h-[200px] max-h-[400px] overflow-y-auto"
+            dangerouslySetInnerHTML={{ __html: previewBody }}
+          />
         </div>
+      </div>
+    );
+  };
+
+  if (templatesLoading || leadsLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Email Campaigns</h1>
-          <p className="text-muted-foreground">Send targeted emails to your leads</p>
-        </div>
-        <Badge variant="secondary" className="text-sm">
-          {leads.length} Total Leads
-        </Badge>
+      {/* Header */}
+      <div>
+        <h1 className="text-2xl font-bold text-gray-900">Email Campaigns</h1>
+        <p className="text-gray-600 mt-1">Send manual campaigns and track email automation</p>
       </div>
 
+      {/* Campaign Composer */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Left Column - Campaign Setup */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <Mail className="mr-2 h-5 w-5" />
+              Compose Campaign
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* Template Selection */}
+            <div>
+              <Label htmlFor="template">Select Email Template</Label>
+              <Select value={selectedTemplate} onValueChange={setSelectedTemplate}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Choose a template..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {templates.map((template: EmailTemplate) => (
+                    <SelectItem key={template.id} value={template.id.toString()}>
+                      {template.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Lead Selection */}
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <Label>Select Recipients ({selectedLeads.length} selected)</Label>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setPreviewMode(!previewMode)}
+                >
+                  <Eye className="mr-2 h-4 w-4" />
+                  {previewMode ? "Hide Preview" : "Show Preview"}
+                </Button>
+              </div>
+              
+              {leads.length === 0 ? (
+                <div className="text-center py-4 text-gray-500">
+                  No leads available. Add leads first to send campaigns.
+                </div>
+              ) : (
+                <div className="max-h-60 overflow-y-auto border rounded">
+                  <div className="p-3 border-b bg-gray-50">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        checked={selectedLeads.length === leads.length}
+                        onCheckedChange={handleSelectAllLeads}
+                      />
+                      <Label className="text-sm font-medium">Select All ({leads.length})</Label>
+                    </div>
+                  </div>
+                  {leads.map((lead: Lead) => (
+                    <div key={lead.id} className="p-3 border-b flex items-center space-x-2">
+                      <Checkbox
+                        checked={selectedLeads.includes(lead.id)}
+                        onCheckedChange={(checked) => handleLeadSelection(lead.id, !!checked)}
+                      />
+                      <div className="flex-1">
+                        <p className="font-medium">{lead.name}</p>
+                        <p className="text-sm text-gray-500">{lead.email}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Send Button */}
+            <Button
+              onClick={handleSendCampaign}
+              disabled={!selectedTemplate || selectedLeads.length === 0 || sendCampaignMutation.isPending}
+              className="w-full"
+            >
+              <Send className="mr-2 h-4 w-4" />
+              {sendCampaignMutation.isPending 
+                ? `Sending to ${selectedLeads.length} recipient(s)...` 
+                : `Send Campaign to ${selectedLeads.length} recipient(s)`
+              }
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* Right Column - Preview */}
+        {previewMode && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Eye className="mr-2 h-5 w-5" />
+                Email Preview
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {renderPreview()}
+            </CardContent>
+          </Card>
+        )}
+      </div>
+
+      {/* Email Campaign Logs */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Mail className="w-5 h-5" />
-            Lead Management
+          <CardTitle className="flex items-center">
+            <Clock className="mr-2 h-5 w-5" />
+            Recent Email Activity
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="rounded-md border">
+          {logsLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="animate-spin w-6 h-6 border-2 border-primary border-t-transparent rounded-full" />
+            </div>
+          ) : emailLogs.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+              No email activity yet. Send your first campaign to see logs here.
+            </div>
+          ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Added</TableHead>
-                  <TableHead>Last Email</TableHead>
+                  <TableHead>Recipient</TableHead>
+                  <TableHead>Template</TableHead>
+                  <TableHead>Status</TableHead>
                   <TableHead>Sent By</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                  <TableHead>Date</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {leads.map((lead: Lead) => (
-                  <TableRow key={lead.id}>
-                    <TableCell className="font-medium">{lead.name}</TableCell>
-                    <TableCell>{lead.email}</TableCell>
+                {emailLogs.map((log: EmailLog) => (
+                  <TableRow key={log.id}>
                     <TableCell>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Calendar className="w-4 h-4" />
-                        {lead.createdAt ? format(new Date(lead.createdAt), "MMM d, yyyy") : "N/A"}
+                      <div>
+                        <p className="font-medium">{log.recipient_name}</p>
+                        <p className="text-sm text-gray-500">{log.recipient_email}</p>
                       </div>
                     </TableCell>
                     <TableCell>
-                      {lead.lastEmailSent ? (
-                        <div className="text-sm text-muted-foreground">
-                          {format(new Date(lead.lastEmailSent), "MMM d, yyyy")}
-                        </div>
+                      {log.template_name || `Template #${log.template_id}`}
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={log.status === 'sent' ? 'default' : 'destructive'}>
+                        {log.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      {log.sent_by_admin_uid === 'system' ? (
+                        <Badge variant="secondary">Automated</Badge>
                       ) : (
-                        <Badge variant="outline">No emails sent</Badge>
+                        <Badge variant="outline">Manual</Badge>
                       )}
                     </TableCell>
                     <TableCell>
-                      {lead.lastEmailSentBy ? (
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <User className="w-4 h-4" />
-                          {lead.lastEmailSentBy.substring(0, 8)}...
-                        </div>
-                      ) : (
-                        "-"
-                      )}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <Button
-                        size="sm"
-                        onClick={() => handleSendEmail(lead)}
-                        className="flex items-center gap-2"
-                      >
-                        <Send className="w-4 h-4" />
-                        Send Email
-                      </Button>
+                      {format(new Date(log.sent_at), 'MMM d, yyyy HH:mm')}
                     </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
-          </div>
+          )}
         </CardContent>
       </Card>
-
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>
-              Send Email to {selectedLead?.name}
-            </DialogTitle>
-          </DialogHeader>
-          
-          <div className="space-y-4">
-            <div>
-              <label className="text-sm font-medium">Template</label>
-              <Select value={selectedTemplate} onValueChange={handleTemplateChange}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Choose a template (optional)" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="taster_reminder">Taster Reminder</SelectItem>
-                  <SelectItem value="mastermind_invite">Mastermind Invite</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <label className="text-sm font-medium">Subject</label>
-              <Input
-                value={subject}
-                onChange={(e) => setSubject(e.target.value)}
-                placeholder="Enter email subject"
-                className="mt-1"
-              />
-            </div>
-
-            <div>
-              <label className="text-sm font-medium">Email Body (HTML)</label>
-              <Textarea
-                value={body}
-                onChange={(e) => setBody(e.target.value)}
-                placeholder="Enter email body (HTML supported)"
-                className="mt-1 min-h-[300px] font-mono text-sm"
-              />
-            </div>
-
-            <div className="flex justify-end gap-2 pt-4">
-              <Button
-                variant="outline"
-                onClick={() => setIsModalOpen(false)}
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={handleSubmitEmail}
-                disabled={sendEmailMutation.isPending || !subject || !body}
-                className="flex items-center gap-2"
-              >
-                {sendEmailMutation.isPending ? (
-                  <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
-                ) : (
-                  <Send className="w-4 h-4" />
-                )}
-                Send Email
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
