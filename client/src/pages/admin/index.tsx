@@ -48,6 +48,9 @@ export default function AdminPanel() {
 
   const renderPage = () => {
     switch (location) {
+      case '/admin':
+      case '/admin/':
+        return <Dashboard />;
       case '/admin/users':
         return <Users />;
       case '/admin/posts':
