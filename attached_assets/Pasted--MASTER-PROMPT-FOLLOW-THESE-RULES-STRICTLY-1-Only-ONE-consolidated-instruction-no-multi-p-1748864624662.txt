@@ -1,0 +1,46 @@
+// MASTER PROMPT — FOLLOW THESE RULES STRICTLY:
+// 1. Only ONE consolidated instruction – no multi-part prompts
+// 2. No assumptions – inspect actual DOM structure before changes
+// 3. Do not rewrite structure unless explicitly asked
+// 4. Ensure compatibility with Replit agent logic and current React/TS layout
+// 5. Always preserve existing routing, state, and authentication
+// 6. Always test mobile + desktop behavior after applying
+// 7. Reuse existing component structure, only enhance where broken
+// 8. Do not introduce new bugs by over-refactoring
+
+// OBJECTIVE: Fix scrolling and sidebar toggle across all admin pages. The current layout uses a fixed height (h-screen) and overflow-hidden improperly, breaking scroll behavior. Mobile sidebar also fails to close. You must ensure:
+
+// ✅ HEADER STAYS FIXED
+// ✅ SIDEBAR WORKS (mobile and desktop)
+// ✅ ADMIN PAGES (Users, Posts, Tags, Moderation, Insights) ALL SCROLL TO BOTTOM
+// ✅ SIDEBAR CAN CLOSE ON MOBILE
+// ✅ NO Z-INDEX OR OVERFLOW CONFLICTS
+
+// ⚠️ DO NOT ALTER THE ROUTING STRUCTURE OR CONVERT TO CHILDREN-BASED LAYOUT
+// ⚠️ DO NOT REMOVE JSX ELEMENTS WITHOUT REASON
+// ⚠️ SCROLLING MUST WORK ON EVERY ADMIN PAGE INCLUDING USER TABLES
+
+// 1. Fix <client/src/pages/admin/index.tsx>
+- Set outermost container to h-screen w-screen flex flex-col overflow-hidden
+- Inside that, wrap sidebar + main area in a flex-1 flex layout
+- For content area: use flex-1 overflow-y-auto NOT overflow-hidden
+- Ensure p-6 and bg-gray-50 remain in scrollable div
+
+// 2. Fix Sidebar Toggle in <client/src/pages/admin/components/AdminSidebar.tsx>
+- Ensure mobile sidebar has correct z-50
+- Add sidebarOpen toggle to close on background overlay click
+- Prevent mobile overlay from breaking scroll
+- Confirm lg:flex always shows on desktop
+- Close button (X icon) optional but can improve UX
+
+// 3. Fix AdminHeader.tsx (No changes unless sidebar toggle is broken)
+- Menu button should ONLY trigger setSidebarOpen(true)
+- Do not change z-index unless it's below sidebar (needs to stay z-50)
+
+// FINAL STEP: 
+- TEST every admin page
+- Ensure full scroll length on Users, Posts, Tags, Moderation, Insights
+- Ensure sidebar toggles properly on mobile and closes when clicking outside
+- Ensure header stays fixed while page scrolls
+
+// If needed: Take screenshot and confirm scroll works in Replit preview

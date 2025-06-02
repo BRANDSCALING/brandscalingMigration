@@ -95,7 +95,7 @@ export default function AdminSidebar({ currentPage, sidebarOpen, setSidebarOpen 
       {sidebarOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div className="fixed inset-0 bg-black bg-opacity-50" onClick={() => setSidebarOpen(false)} />
-          <div className="relative w-64 bg-white border-r border-gray-200 h-full">
+          <div className="relative w-64 bg-white border-r border-gray-200 h-full overflow-y-auto">
             <div className="p-6">
               <SidebarContent />
             </div>
