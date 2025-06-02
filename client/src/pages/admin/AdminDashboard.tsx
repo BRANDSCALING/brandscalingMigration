@@ -158,6 +158,15 @@ export default function AdminDashboard() {
     );
   }
 
+  // Show Email Templates if we're on that route
+  if (location === '/admin/email-templates') {
+    return (
+      <AdminLayout>
+        <EmailTemplates />
+      </AdminLayout>
+    );
+  }
+
   // Default dashboard view
   return (
     <AdminLayout>
@@ -229,6 +238,12 @@ export default function AdminDashboard() {
                 <Button className="w-full justify-start" variant="outline">
                   <Mail className="mr-2 h-4 w-4" />
                   Manage Email Campaigns
+                </Button>
+              </Link>
+              <Link href="/admin/email-templates">
+                <Button className="w-full justify-start" variant="outline">
+                  <Mail className="mr-2 h-4 w-4" />
+                  Email Templates
                 </Button>
               </Link>
               <Button className="w-full justify-start" variant="outline" disabled>

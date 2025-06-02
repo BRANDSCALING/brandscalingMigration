@@ -59,7 +59,10 @@ export default function EmailTemplates() {
   // Fetch email templates
   const { data: templates = [], isLoading } = useQuery({
     queryKey: ["/api/email-templates"],
-    queryFn: () => apiRequest("GET", "/api/email-templates"),
+    queryFn: async () => {
+      const response = await apiRequest("GET", "/api/email-templates");
+      return response.json();
+    },
   });
 
   // Create template mutation
