@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import EmailCampaigns from "./EmailCampaigns";
 import EmailTemplates from "./EmailTemplates";
+import Leads from "./Leads";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -38,6 +39,7 @@ function AdminLayout({ children }: AdminLayoutProps) {
 
   const navigation = [
     { name: 'Dashboard', href: '/admin', icon: LayoutDashboard, current: location === '/admin' },
+    { name: 'Leads', href: '/admin/leads', icon: Users, current: location === '/admin/leads' },
     { name: 'Email Campaigns', href: '/admin/email-campaigns', icon: Mail, current: location === '/admin/email-campaigns' },
     { name: 'Email Templates', href: '/admin/email-templates', icon: Mail, current: location === '/admin/email-templates' },
     { name: 'User Management', href: '/admin/users', icon: Users, current: location === '/admin/users' },
@@ -167,6 +169,15 @@ export default function AdminDashboard() {
     );
   }
 
+  // Show Leads if we're on that route
+  if (location === '/admin/leads') {
+    return (
+      <AdminLayout>
+        <Leads />
+      </AdminLayout>
+    );
+  }
+
   // Default dashboard view
   return (
     <AdminLayout>
@@ -234,6 +245,12 @@ export default function AdminDashboard() {
               <CardTitle>Quick Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
+              <Link href="/admin/leads">
+                <Button className="w-full justify-start" variant="outline">
+                  <Users className="mr-2 h-4 w-4" />
+                  Manage Leads
+                </Button>
+              </Link>
               <Link href="/admin/email-campaigns">
                 <Button className="w-full justify-start" variant="outline">
                   <Mail className="mr-2 h-4 w-4" />

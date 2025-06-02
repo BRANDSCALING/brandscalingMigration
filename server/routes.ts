@@ -1459,6 +1459,20 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
     }
   });
 
+  // Get all leads (Firebase authenticated admins only)
+  app.get("/api/leads", requireRole("admin"), async (req, res) => {
+    try {
+      const leads = await storage.getLeads();
+      res.json(leads);
+    } catch (error: any) {
+      console.error('Error fetching leads:', error);
+      res.status(500).json({ 
+        error: 'Failed to fetch leads',
+        details: error.message 
+      });
+    }
+  });
+
   // Get leads with last email info (Firebase authenticated admins only)
   app.get("/api/leads/campaigns", requireRole("admin"), async (req, res) => {
     try {
@@ -1468,6 +1482,88 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
       console.error('Error fetching leads for campaigns:', error);
       res.status(500).json({ 
         error: 'Failed to fetch leads',
+        details: error.message 
+      });
+    }
+  });
+
+  // Add new lead (Firebase authenticated admins only)
+  app.post("/api/leads/add", requireRole("admin"), async (req, res) => {
+    try {
+      const { name, email } = req.body;
+      const adminUid = req.user?.uid;
+
+      if (!name || !email) {
+        return res.status(400).json({ error: 'Name and email are required' });
+      }
+
+      if (!adminUid) {
+        return res.status(401).json({ error: 'Admin authentication required' });
+      }
+
+      // Add lead to database
+      const { rows } = await pool.query(
+        'INSERT INTO leads (name, email, created_by_admin_uid, created_at) VALUES ($1, $2, $3, NOW()) RETURNING *',
+        [name, email, adminUid]
+      );
+
+      const newLead = rows[0];
+
+      // Send welcome email using existing Resend integration
+      try {
+        // Find welcome template
+        const { rows: welcomeTemplates } = await pool.query(
+          'SELECT * FROM email_templates WHERE name ILIKE \'%welcome%\' OR name ILIKE \'%new%\' ORDER BY created_at DESC LIMIT 1'
+        );
+
+        if (welcomeTemplates.length > 0) {
+          const template = welcomeTemplates[0];
+          
+          // Replace merge tags
+          const personalizedSubject = template.subject
+            .replace(/\{\{name\}\}/g, name)
+            .replace(/\{\{email\}\}/g, email);
+          
+          const personalizedBody = template.body
+            .replace(/\{\{name\}\}/g, name)
+            .replace(/\{\{email\}\}/g, email);
+
+          // Send welcome email
+          const { data: emailData, error: emailError } = await resendClient.emails.send({
+            from: 'welcome@resend.dev',
+            to: [email],
+            subject: personalizedSubject,
+            html: personalizedBody,
+          });
+
+          if (!emailError) {
+            // Log successful send
+            await pool.query(
+              'INSERT INTO email_campaign_logs (template_id, sent_by_admin_uid, recipient_email, recipient_name, status) VALUES ($1, $2, $3, $4, $5)',
+              [template.id, 'system', email, name, 'sent']
+            );
+          } else {
+            // Log failed send
+            await pool.query(
+              'INSERT INTO email_campaign_logs (template_id, sent_by_admin_uid, recipient_email, recipient_name, status) VALUES ($1, $2, $3, $4, $5)',
+              [template.id, 'system', email, name, 'failed']
+            );
+          }
+        }
+      } catch (emailError) {
+        console.error('Error sending welcome email:', emailError);
+      }
+
+      res.json({
+        success: true,
+        lead: newLead,
+        message: 'Lead added successfully'
+      });
+
+    } catch (error: any) {
+      console.error('Error adding lead:', error);
+      res.status(500).json({ 
+        error: 'Failed to add lead',
         details: error.message 
       });
     }
