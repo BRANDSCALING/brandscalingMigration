@@ -6,7 +6,7 @@ import { storage } from "./storage";
 import { verifyFirebaseToken, requireAuth, requireRole, createUserProfile, getUserProfile, updateUserRole } from "./firebaseAuth";
 import { chatWithAgent } from "./openai";
 import { updateUserAfterPurchase } from "./updateUserAfterPurchase";
-import { resend } from "@shared/emailClient";
+import { resendClient } from "@shared/resendClient";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -1360,7 +1360,7 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
         });
       }
 
-      const { data, error } = await resend.emails.send({
+      const { data, error } = await resendClient.emails.send({
         from: 'onboarding@resend.dev',
         to: [email],
         subject: subject,
