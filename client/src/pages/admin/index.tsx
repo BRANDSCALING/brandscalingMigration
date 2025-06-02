@@ -64,7 +64,7 @@ export default function AdminPanel() {
   };
 
   return (
-    <div className="flex h-screen w-screen">
+    <div className="flex h-screen w-screen overflow-hidden">
       {/* Sidebar */}
       <AdminSidebar 
         currentPage={getCurrentPage()} 
@@ -72,15 +72,15 @@ export default function AdminPanel() {
         setSidebarOpen={setSidebarOpen} 
       />
 
-      {/* Main content area */}
+      {/* Main Area */}
       <div className="flex flex-col flex-1 min-h-0">
-        {/* Sticky header */}
-        <div className="flex-shrink-0 sticky top-0 z-50">
+        {/* Header */}
+        <div className="sticky top-0 z-50 bg-white flex-shrink-0">
           <AdminHeader setSidebarOpen={setSidebarOpen} />
         </div>
 
-        {/* Scrollable content */}
-        <main className="flex-1 min-h-0 overflow-y-auto bg-gray-50 p-6">
+        {/* Scrollable Content */}
+        <main className="flex-1 overflow-y-auto min-h-0 p-6 bg-gray-50">
           {renderPage()}
         </main>
       </div>
