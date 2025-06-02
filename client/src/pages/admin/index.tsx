@@ -64,17 +64,16 @@ export default function AdminPanel() {
   };
 
   return (
-    <div className="h-screen bg-gray-50 flex flex-col overflow-hidden">
+    <div className="min-h-screen bg-gray-50">
       <AdminHeader onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex">
         <AdminSidebar currentPage={getCurrentPage()} isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-        <main className="flex-1 overflow-auto">
+        <main className="flex-1 lg:ml-64 min-h-[calc(100vh-4rem)] overflow-y-auto">
           <div className="p-6">
             {renderPage()}
           </div>
         </main>
       </div>
     </div>
-    // ✅ Admin layout scroll fix applied
   );
 }

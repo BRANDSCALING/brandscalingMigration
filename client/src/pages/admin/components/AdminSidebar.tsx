@@ -94,8 +94,9 @@ export default function AdminSidebar({ currentPage, isOpen = false, onClose }: A
 
       {/* Sidebar */}
       <aside className={`
-        lg:relative lg:translate-x-0 fixed top-0 left-0 z-40 w-64 h-full bg-white border-r border-gray-200 transition-transform overflow-y-auto
+        fixed top-16 left-0 z-40 w-64 h-[calc(100vh-4rem)] bg-white border-r border-gray-200 transition-transform overflow-y-auto
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+        lg:translate-x-0
       `}>
         <div className="p-6">
           <SidebarContent />
