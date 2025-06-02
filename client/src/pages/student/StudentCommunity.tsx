@@ -272,8 +272,7 @@ export default function StudentCommunity() {
   };
 
   const handleCreatePost = async () => {
-    console.log("Form data:", { title: newPost.title, body: newPost.body });
-    console.log("Firebase user:", auth.currentUser);
+
     
     if (!newPost.title.trim() || !newPost.body.trim()) {
       toast({
