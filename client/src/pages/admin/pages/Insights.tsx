@@ -17,18 +17,17 @@ import InsightsHeader from '../components/insights/InsightsHeader';
 import InsightCard from '../components/insights/InsightCard';
 import InsightChart from '../components/insights/InsightChart';
 
-export default function Insights() {
-  const { userProfile, loading, isAuthenticated } = useFirebaseAuth();
+// Inner component that only renders when authenticated
+function InsightsContent() {
   const [printMode, setPrintMode] = useState(false);
 
-  // Fetch analytics data - hooks must be called unconditionally
+  // Fetch analytics data
   const { data: dailyActiveUsers } = useQuery({
     queryKey: ['/api/admin/analytics/daily-active-users'],
     queryFn: async () => {
       const response = await apiRequest('GET', '/api/admin/analytics/daily-active-users');
       return await response.json();
     },
-    enabled: !loading && isAuthenticated && userProfile?.role === 'admin',
   });
 
   const { data: newPostsData } = useQuery({
@@ -37,7 +36,6 @@ export default function Insights() {
       const response = await apiRequest('GET', '/api/admin/analytics/new-posts');
       return await response.json();
     },
-    enabled: !loading && isAuthenticated && userProfile?.role === 'admin',
   });
 
   const { data: userGrowthData } = useQuery({
@@ -46,7 +44,6 @@ export default function Insights() {
       const response = await apiRequest('GET', '/api/admin/analytics/user-growth');
       return await response.json();
     },
-    enabled: !loading && isAuthenticated && userProfile?.role === 'admin',
   });
 
   const { data: moderationData } = useQuery({
@@ -55,7 +52,6 @@ export default function Insights() {
       const response = await apiRequest('GET', '/api/admin/analytics/moderation');
       return await response.json();
     },
-    enabled: !loading && isAuthenticated && userProfile?.role === 'admin',
   });
 
   const { data: bannedUsersData } = useQuery({
@@ -64,29 +60,7 @@ export default function Insights() {
       const response = await apiRequest('GET', '/api/admin/analytics/banned-users');
       return await response.json();
     },
-    enabled: !loading && isAuthenticated && userProfile?.role === 'admin',
   });
-
-  // Redirect non-admins after all hooks are called
-  useEffect(() => {
-    if (!loading && (!isAuthenticated || userProfile?.role !== 'admin')) {
-      window.location.href = '/';
-    }
-  }, [loading, isAuthenticated, userProfile]);
-
-  // Show loading while auth check is in progress
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-purple-600"></div>
-      </div>
-    );
-  }
-
-  // Don't render anything if not admin
-  if (!isAuthenticated || userProfile?.role !== 'admin') {
-    return null;
-  }
 
   // Process data for charts
   const dauChartData = useMemo(() => {
@@ -321,4 +295,33 @@ export default function Insights() {
       </div>
     </div>
   );
+}
+
+// Main component with auth check
+export default function Insights() {
+  const { userProfile, loading, isAuthenticated } = useFirebaseAuth();
+
+  // Redirect non-admins
+  useEffect(() => {
+    if (!loading && (!isAuthenticated || userProfile?.role !== 'admin')) {
+      window.location.href = '/';
+    }
+  }, [loading, isAuthenticated, userProfile]);
+
+  // Show loading while auth check is in progress
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-purple-600"></div>
+      </div>
+    );
+  }
+
+  // Don't render anything if not admin
+  if (!isAuthenticated || userProfile?.role !== 'admin') {
+    return null;
+  }
+
+  // Render the insights content
+  return <InsightsContent />;
 }
