@@ -908,33 +908,30 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getModerationAnalytics(): Promise<any> {
-    // Get moderation statistics
-    const [pendingPosts] = await db
+    // Get moderation statistics based on actual schema
+    const [activePosts] = await db
       .select({ count: count() })
       .from(posts)
-      .where(and(
-        eq(posts.status, 'pending'),
-        eq(posts.isDeleted, false)
-      ));
+      .where(eq(posts.isDeleted, false));
 
-    const [approvedPosts] = await db
-      .select({ count: count() })
-      .from(posts)
-      .where(and(
-        eq(posts.status, 'approved'),
-        eq(posts.isDeleted, false)
-      ));
-
-    const [rejectedPosts] = await db
+    const [deletedPosts] = await db
       .select({ count: count() })
       .from(posts)
       .where(eq(posts.isDeleted, true));
 
+    const [pinnedPosts] = await db
+      .select({ count: count() })
+      .from(posts)
+      .where(and(
+        eq(posts.isPinned, true),
+        eq(posts.isDeleted, false)
+      ));
+
     return {
-      pending: pendingPosts.count,
-      approved: approvedPosts.count,
-      rejected: rejectedPosts.count,
-      trend: Math.floor(Math.random() * 5) - 2 // Random trend for demo
+      pending: 0, // No pending system in current schema
+      approved: activePosts.count,
+      rejected: deletedPosts.count,
+      trend: Math.floor(Math.random() * 3) - 1 // Random trend for demo
     };
   }
 

@@ -21,7 +21,53 @@ export default function Insights() {
   const { userProfile, loading, isAuthenticated } = useFirebaseAuth();
   const [printMode, setPrintMode] = useState(false);
 
-  // Redirect non-admins before rendering any admin content
+  // Fetch analytics data - hooks must be called unconditionally
+  const { data: dailyActiveUsers } = useQuery({
+    queryKey: ['/api/admin/analytics/daily-active-users'],
+    queryFn: async () => {
+      const response = await apiRequest('GET', '/api/admin/analytics/daily-active-users');
+      return await response.json();
+    },
+    enabled: !loading && isAuthenticated && userProfile?.role === 'admin',
+  });
+
+  const { data: newPostsData } = useQuery({
+    queryKey: ['/api/admin/analytics/new-posts'],
+    queryFn: async () => {
+      const response = await apiRequest('GET', '/api/admin/analytics/new-posts');
+      return await response.json();
+    },
+    enabled: !loading && isAuthenticated && userProfile?.role === 'admin',
+  });
+
+  const { data: userGrowthData } = useQuery({
+    queryKey: ['/api/admin/analytics/user-growth'],
+    queryFn: async () => {
+      const response = await apiRequest('GET', '/api/admin/analytics/user-growth');
+      return await response.json();
+    },
+    enabled: !loading && isAuthenticated && userProfile?.role === 'admin',
+  });
+
+  const { data: moderationData } = useQuery({
+    queryKey: ['/api/admin/analytics/moderation'],
+    queryFn: async () => {
+      const response = await apiRequest('GET', '/api/admin/analytics/moderation');
+      return await response.json();
+    },
+    enabled: !loading && isAuthenticated && userProfile?.role === 'admin',
+  });
+
+  const { data: bannedUsersData } = useQuery({
+    queryKey: ['/api/admin/analytics/banned-users'],
+    queryFn: async () => {
+      const response = await apiRequest('GET', '/api/admin/analytics/banned-users');
+      return await response.json();
+    },
+    enabled: !loading && isAuthenticated && userProfile?.role === 'admin',
+  });
+
+  // Redirect non-admins after all hooks are called
   useEffect(() => {
     if (!loading && (!isAuthenticated || userProfile?.role !== 'admin')) {
       window.location.href = '/';
@@ -41,47 +87,6 @@ export default function Insights() {
   if (!isAuthenticated || userProfile?.role !== 'admin') {
     return null;
   }
-
-  // Fetch analytics data
-  const { data: dailyActiveUsers } = useQuery({
-    queryKey: ['/api/admin/analytics/daily-active-users'],
-    queryFn: async () => {
-      const response = await apiRequest('GET', '/api/admin/analytics/daily-active-users');
-      return await response.json();
-    },
-  });
-
-  const { data: newPostsData } = useQuery({
-    queryKey: ['/api/admin/analytics/new-posts'],
-    queryFn: async () => {
-      const response = await apiRequest('GET', '/api/admin/analytics/new-posts');
-      return await response.json();
-    },
-  });
-
-  const { data: userGrowthData } = useQuery({
-    queryKey: ['/api/admin/analytics/user-growth'],
-    queryFn: async () => {
-      const response = await apiRequest('GET', '/api/admin/analytics/user-growth');
-      return await response.json();
-    },
-  });
-
-  const { data: moderationData } = useQuery({
-    queryKey: ['/api/admin/analytics/moderation'],
-    queryFn: async () => {
-      const response = await apiRequest('GET', '/api/admin/analytics/moderation');
-      return await response.json();
-    },
-  });
-
-  const { data: bannedUsersData } = useQuery({
-    queryKey: ['/api/admin/analytics/banned-users'],
-    queryFn: async () => {
-      const response = await apiRequest('GET', '/api/admin/analytics/banned-users');
-      return await response.json();
-    },
-  });
 
   // Process data for charts
   const dauChartData = useMemo(() => {
@@ -200,7 +205,7 @@ export default function Insights() {
 
   return (
     <div className={`space-y-6 ${printMode ? 'print-mode' : ''}`}>
-      <style jsx global>{`
+      <style>{`
         @media print {
           .no-print { display: none !important; }
           .chart-container { break-inside: avoid; }
