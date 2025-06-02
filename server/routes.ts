@@ -8,6 +8,12 @@ import { chatWithAgent } from "./openai";
 import { updateUserAfterPurchase } from "./updateUserAfterPurchase";
 import { resendClient } from "@shared/resendClient";
 import { z } from "zod";
+import Stripe from "stripe";
+
+// Initialize Stripe
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: "2023-10-16",
+});
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Health check route (public)
@@ -1449,6 +1455,125 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
         error: 'Failed to add lead',
         details: error.message 
       });
+    }
+  });
+
+  // Stripe webhook handler for checkout.session.completed
+  app.post("/webhook/stripe", express.raw({ type: 'application/json' }), async (req, res) => {
+    const sig = req.headers['stripe-signature'];
+    
+    if (!sig) {
+      return res.status(400).send('Missing Stripe signature');
+    }
+
+    let event;
+    try {
+      event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET!);
+    } catch (err: any) {
+      console.error('Webhook signature verification failed:', err.message);
+      return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+
+    if (event.type === 'checkout.session.completed') {
+      try {
+        const session = event.data.object as Stripe.Checkout.Session;
+        
+        // Retrieve full session details with line items
+        const fullSession = await stripe.checkout.sessions.retrieve(session.id, {
+          expand: ['line_items']
+        });
+
+        const customerName = fullSession.customer_details?.name || 'Customer';
+        const customerEmail = fullSession.customer_details?.email;
+        const amountPaid = fullSession.amount_total || 0;
+        
+        // Get product name from line items
+        let productName = 'Purchase';
+        if (fullSession.line_items?.data.length) {
+          productName = fullSession.line_items.data[0].description || 'Purchase';
+        }
+
+        if (!customerEmail) {
+          console.error('No customer email found in Stripe session');
+          return res.status(400).json({ error: 'No customer email found' });
+        }
+
+        // Save purchase to database
+        const purchase = await storage.createStripePurchase({
+          stripeSessionId: session.id,
+          customerName,
+          customerEmail,
+          productName,
+          amountPaid,
+          referredByAdmin: null, // Could be enhanced to track referrals
+        });
+
+        // Extract first name for personalization
+        const firstName = customerName.split(' ')[0];
+
+        // Send welcome email
+        const welcomeEmailBody = `
+          <html>
+            <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto;">
+              <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; color: white;">
+                <h1 style="margin: 0; font-size: 28px;">You're In! 🎉</h1>
+                <h2 style="margin: 10px 0 0 0; font-weight: normal; font-size: 18px;">Welcome to Brandscaling</h2>
+              </div>
+              
+              <div style="padding: 30px; background: #f9f9f9;">
+                <p style="font-size: 18px; margin-bottom: 20px;">Hi ${firstName},</p>
+                
+                <p>Congratulations! Your purchase of <strong>${productName}</strong> has been confirmed.</p>
+                
+                <p>We're thrilled to have you join our community of entrepreneurs who are serious about scaling their brands. Your journey to building a powerful, profitable brand starts now.</p>
+                
+                <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #667eea;">
+                  <h3 style="margin-top: 0; color: #333;">What's Next?</h3>
+                  <p style="margin-bottom: 0;">You'll receive your access details shortly. Get ready to transform your business!</p>
+                </div>
+                
+                <p>Best regards,<br><strong>The Brandscaling Team</strong></p>
+              </div>
+              
+              <div style="background: #333; color: #999; padding: 20px; text-align: center; font-size: 14px;">
+                <p style="margin: 0;">Thank you for choosing Brandscaling</p>
+              </div>
+            </body>
+          </html>
+        `;
+
+        const { data: emailData, error: emailError } = await resendClient.emails.send({
+          from: 'onboarding@resend.dev',
+          to: [customerEmail],
+          subject: 'You\'re In! 🎉 Welcome to Brandscaling',
+          html: welcomeEmailBody,
+        });
+
+        if (emailError) {
+          console.error('Failed to send welcome email:', emailError);
+          await storage.updatePurchaseEmailStatus(session.id, false);
+        } else {
+          console.log('Welcome email sent successfully:', emailData?.id);
+          await storage.updatePurchaseEmailStatus(session.id, true);
+        }
+
+        res.json({ 
+          success: true, 
+          purchase: purchase.id,
+          emailSent: !emailError,
+          message: 'Purchase processed and email sent'
+        });
+
+      } catch (error: any) {
+        console.error('Error processing Stripe webhook:', error);
+        res.status(500).json({ 
+          error: 'Failed to process purchase',
+          details: error.message 
+        });
+      }
+    } else {
+      // Handle other event types if needed
+      res.json({ received: true });
     }
   });
 

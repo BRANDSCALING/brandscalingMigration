@@ -13,6 +13,7 @@ import {
   courses,
   userProgress,
   leads,
+  stripePurchases,
   type User,
   type Post,
   type PostReply,
@@ -23,7 +24,9 @@ import {
   type BlogPost,
   type AiAgent,
   type Lead,
-  type InsertLead
+  type InsertLead,
+  type StripePurchase,
+  type InsertStripePurchase
 } from "@shared/schema";
 
 // Simple ID generator
@@ -129,6 +132,10 @@ export interface IStorage {
   // Lead operations
   createLead(leadData: InsertLead): Promise<Lead>;
   getLeads(): Promise<Lead[]>;
+  
+  // Stripe purchase operations
+  createStripePurchase(purchaseData: InsertStripePurchase): Promise<StripePurchase>;
+  updatePurchaseEmailStatus(sessionId: string, emailSent: boolean): Promise<void>;
   
   // System operations
   getSystemStats(): Promise<any>;
@@ -800,6 +807,22 @@ export class DatabaseStorage implements IStorage {
   async getLeads(): Promise<Lead[]> {
     const allLeads = await db.select().from(leads).orderBy(desc(leads.createdAt));
     return allLeads;
+  }
+
+  // Stripe purchase operations
+  async createStripePurchase(purchaseData: InsertStripePurchase): Promise<StripePurchase> {
+    const [purchase] = await db.insert(stripePurchases).values(purchaseData).returning();
+    return purchase;
+  }
+
+  async updatePurchaseEmailStatus(sessionId: string, emailSent: boolean): Promise<void> {
+    await db
+      .update(stripePurchases)
+      .set({ 
+        emailSent,
+        emailSentAt: emailSent ? new Date() : null
+      })
+      .where(eq(stripePurchases.stripeSessionId, sessionId));
   }
 
   // System operations

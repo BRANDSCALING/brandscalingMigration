@@ -295,6 +295,20 @@ export const leads = pgTable("leads", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Stripe purchases table for webhook tracking
+export const stripePurchases = pgTable("stripe_purchases", {
+  id: serial("id").primaryKey(),
+  stripeSessionId: varchar("stripe_session_id").notNull().unique(),
+  customerName: varchar("customer_name").notNull(),
+  customerEmail: varchar("customer_email").notNull(),
+  productName: varchar("product_name").notNull(),
+  amountPaid: integer("amount_paid").notNull(), // Amount in cents
+  referredByAdmin: varchar("referred_by_admin"), // Firebase UID if available
+  emailSent: boolean("email_sent").default(false),
+  emailSentAt: timestamp("email_sent_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   progress: many(userProgress),
@@ -503,6 +517,9 @@ export type InsertBlogPost = z.infer<typeof insertBlogPostSchema>;
 
 export type Lead = typeof leads.$inferSelect;
 export type InsertLead = z.infer<typeof insertLeadSchema>;
+
+export type StripePurchase = typeof stripePurchases.$inferSelect;
+export type InsertStripePurchase = typeof stripePurchases.$inferInsert;
 
 export type Payment = typeof payments.$inferSelect;
 export type InsertPayment = typeof payments.$inferInsert;
