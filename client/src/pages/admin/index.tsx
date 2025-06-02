@@ -47,16 +47,16 @@ export default function AdminPanel() {
   };
 
   const renderPage = () => {
-    switch (getCurrentPage()) {
-      case 'users':
+    switch (location) {
+      case '/admin/users':
         return <Users />;
-      case 'posts':
+      case '/admin/posts':
         return <Posts />;
-      case 'tags':
+      case '/admin/tags':
         return <Tags />;
-      case 'moderation':
+      case '/admin/moderation':
         return <Moderation />;
-      case 'insights':
+      case '/admin/insights':
         return <Insights />;
       default:
         return <Dashboard />;
@@ -65,28 +65,22 @@ export default function AdminPanel() {
 
   return (
     <div className="h-screen w-screen flex overflow-hidden">
-      {/* Mobile overlay */}
-      {sidebarOpen && (
-        <div 
-          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
+      {/* Sidebar */}
+      <AdminSidebar 
+        currentPage={getCurrentPage()} 
+        sidebarOpen={sidebarOpen} 
+        setSidebarOpen={setSidebarOpen} 
+      />
 
-      {/* Sidebar - fixed left */}
-      <div className={`w-64 shrink-0 ${sidebarOpen ? 'block' : 'hidden'} lg:block`}>
-        <AdminSidebar currentPage={getCurrentPage()} isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-      </div>
-
-      {/* Right Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      {/* Main content */}
+      <div className="flex-1 flex flex-col h-screen overflow-hidden">
         {/* Sticky Header */}
-        <div className="shrink-0 sticky top-0 z-50">
-          <AdminHeader onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+        <div className="sticky top-0 z-50">
+          <AdminHeader setSidebarOpen={setSidebarOpen} />
         </div>
 
-        {/* Scrollable Content */}
-        <div className="flex-1 overflow-auto bg-gray-50 p-6">
+        {/* Scrollable content */}
+        <div className="flex-1 overflow-y-auto p-6 bg-gray-50">
           {renderPage()}
         </div>
       </div>

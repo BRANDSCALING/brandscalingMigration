@@ -11,11 +11,11 @@ import {
 
 interface AdminSidebarProps {
   currentPage: string;
-  isOpen?: boolean;
-  onClose?: () => void;
+  sidebarOpen: boolean;
+  setSidebarOpen: (open: boolean) => void;
 }
 
-export default function AdminSidebar({ currentPage, isOpen = false, onClose }: AdminSidebarProps) {
+export default function AdminSidebar({ currentPage, sidebarOpen, setSidebarOpen }: AdminSidebarProps) {
 
   const navItems = [
     { 
@@ -71,7 +71,7 @@ export default function AdminSidebar({ currentPage, isOpen = false, onClose }: A
                   ? "bg-purple-600 text-white hover:bg-purple-700" 
                   : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
               }`}
-              onClick={() => onClose?.()}
+              onClick={() => setSidebarOpen(false)}
             >
               <IconComponent className="h-5 w-5 mr-3" />
               {item.label}
@@ -83,10 +83,24 @@ export default function AdminSidebar({ currentPage, isOpen = false, onClose }: A
   );
 
   return (
-    <aside className="w-full h-full bg-white border-r border-gray-200 overflow-y-auto">
-      <div className="p-6">
-        <SidebarContent />
-      </div>
-    </aside>
+    <>
+      {/* Mobile overlay */}
+      {sidebarOpen && (
+        <div 
+          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside className={`
+        w-64 bg-white border-r border-gray-200 overflow-y-auto h-full
+        ${sidebarOpen ? 'fixed left-0 top-0 z-50' : 'hidden'} lg:relative lg:block lg:z-auto
+      `}>
+        <div className="p-6">
+          <SidebarContent />
+        </div>
+      </aside>
+    </>
   );
 }

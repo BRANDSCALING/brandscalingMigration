@@ -22,10 +22,10 @@ import { useFirebaseAuth } from '@/hooks/useFirebaseAuth';
 import brandscalingLogo from '@assets/FullLogo.png';
 
 interface AdminHeaderProps {
-  onToggleSidebar?: () => void;
+  setSidebarOpen: (open: boolean) => void;
 }
 
-export default function AdminHeader({ onToggleSidebar }: AdminHeaderProps) {
+export default function AdminHeader({ setSidebarOpen }: AdminHeaderProps) {
   const { userProfile, logout } = useFirebaseAuth();
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
 
@@ -48,8 +48,8 @@ export default function AdminHeader({ onToggleSidebar }: AdminHeaderProps) {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={onToggleSidebar}
-                className="text-gray-500 hover:text-gray-700"
+                onClick={() => setSidebarOpen(true)}
+                className="text-gray-500 hover:text-gray-700 lg:hidden"
               >
                 <Menu className="h-6 w-6" />
               </Button>
@@ -87,7 +87,7 @@ export default function AdminHeader({ onToggleSidebar }: AdminHeaderProps) {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="flex items-center space-x-2 h-auto p-2">
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src={userProfile?.profileImageUrl || ""} alt="Admin avatar" />
+                      <AvatarImage src={userProfile?.photoURL || ""} alt="Admin avatar" />
                       <AvatarFallback className="bg-purple-100 text-purple-700">
                         {userProfile?.displayName?.[0] || userProfile?.email?.[0] || "A"}
                       </AvatarFallback>
