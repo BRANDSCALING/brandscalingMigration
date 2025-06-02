@@ -25,7 +25,7 @@ import StudentDashboard from "@/pages/student/StudentDashboard";
 import StudentCourses from "@/pages/student/StudentCourses";
 import StudentWorkbooks from "@/pages/student/StudentWorkbooks";
 import StudentCommunity from "@/pages/student/StudentCommunity";
-import AdminPanel from "@/pages/admin";
+
 import CommunityComingSoon from "@/pages/community/CommunityComingSoon";
 import CollabComingSoon from "@/pages/collab/CollabComingSoon";
 
@@ -40,9 +40,7 @@ function Router() {
         // Redirect from auth page after successful login
         if (location === '/auth') {
           switch (userProfile.role) {
-            case 'admin':
-              setLocation('/admin');
-              break;
+
             case 'student':
               setLocation('/student');
               break;
@@ -52,7 +50,7 @@ function Router() {
         }
       } else {
         // Redirect logged-out users from protected routes to home
-        if (location.startsWith('/student') || location.startsWith('/admin')) {
+        if (location.startsWith('/student')) {
           setLocation('/');
         }
       }
@@ -86,8 +84,6 @@ function Router() {
       if (shouldRedirect) {
         if (userProfile?.role === 'student') {
           setLocation('/student');
-        } else if (userProfile?.role === 'admin') {
-          setLocation('/admin');
         }
       }
     }, [shouldRedirect, userProfile, setLocation]);
@@ -103,8 +99,6 @@ function Router() {
       if (isAuthenticated && userProfile) {
         if (userProfile.role === 'student') {
           setLocation('/student');
-        } else if (userProfile.role === 'admin') {
-          setLocation('/admin');
         }
       }
     }, [isAuthenticated, userProfile, setLocation]);
@@ -149,13 +143,7 @@ function Router() {
         </>
       )}
 
-      {/* Admin Module - ONLY accessible to admins */}
-      {isAuthenticated && userProfile?.role === 'admin' && (
-        <>
-          <Route path="/admin" component={AdminPanel} />
-          <Route path="/admin/:path*" component={AdminPanel} />
-        </>
-      )}
+
 
       {/* Block cross-role access with 404 */}
       <Route component={NotFound} />
