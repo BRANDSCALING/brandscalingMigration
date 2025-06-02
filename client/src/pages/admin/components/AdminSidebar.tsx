@@ -6,11 +6,8 @@ import {
   FileText, 
   Tags, 
   Shield, 
-  TrendingUp,
-  Menu,
-  X
+  TrendingUp
 } from 'lucide-react';
-import { useState } from 'react';
 
 interface AdminSidebarProps {
   currentPage: string;
@@ -74,7 +71,7 @@ export default function AdminSidebar({ currentPage, isOpen = false, onClose }: A
                   ? "bg-purple-600 text-white hover:bg-purple-700" 
                   : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
               }`}
-              onClick={() => setIsMobileOpen(false)}
+              onClick={() => onClose?.()}
             >
               <IconComponent className="h-5 w-5 mr-3" />
               {item.label}
@@ -87,28 +84,18 @@ export default function AdminSidebar({ currentPage, isOpen = false, onClose }: A
 
   return (
     <>
-      {/* Mobile menu button */}
-      <Button
-        variant="ghost"
-        size="icon"
-        className="lg:hidden fixed top-4 left-52 z-50 bg-white shadow-md"
-        onClick={() => setIsMobileOpen(!isMobileOpen)}
-      >
-        {isMobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-      </Button>
-
       {/* Mobile overlay */}
-      {isMobileOpen && (
+      {isOpen && (
         <div 
           className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
-          onClick={() => setIsMobileOpen(false)}
+          onClick={onClose}
         />
       )}
 
       {/* Sidebar */}
       <aside className={`
         fixed top-16 left-0 z-40 w-64 h-[calc(100vh-4rem)] bg-white border-r border-gray-200 transition-transform
-        ${isMobileOpen ? 'translate-x-0' : '-translate-x-full'}
+        ${isOpen ? 'translate-x-0' : '-translate-x-full'}
         lg:translate-x-0
       `}>
         <div className="p-6">
