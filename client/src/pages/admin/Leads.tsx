@@ -170,7 +170,7 @@ export default function Leads() {
                     <TableCell className="font-medium">{lead.name}</TableCell>
                     <TableCell>{lead.email}</TableCell>
                     <TableCell>
-                      {format(new Date(lead.created_at), 'MMM d, yyyy HH:mm')}
+                      {lead.created_at ? format(new Date(lead.created_at), 'MMM d, yyyy HH:mm') : 'N/A'}
                     </TableCell>
                     <TableCell>
                       <span className="text-sm text-gray-500">

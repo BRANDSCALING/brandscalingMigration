@@ -1530,7 +1530,7 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
 
           // Send welcome email
           const { data: emailData, error: emailError } = await resendClient.emails.send({
-            from: 'welcome@resend.dev',
+            from: 'info@brandscaling.co.uk',
             to: [email],
             subject: personalizedSubject,
             html: personalizedBody,
