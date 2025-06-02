@@ -120,7 +120,7 @@ function Router() {
       <Route path="/collab" component={() => <VisitorOnlyPage><CollabComingSoon /></VisitorOnlyPage>} />
 
       {/* Public Marketing Routes - Handle authenticated users with safe navigation */}
-      <Route path="/" component={() => <PublicPage><Landing /></PublicPage>} />
+      <Route path="/" component={() => <Layout><Landing /></Layout>} />
       <Route path="/about" component={() => <PublicPage><About /></PublicPage>} />
       <Route path="/courses" component={() => <PublicPage><Courses /></PublicPage>} />
       <Route path="/contact" component={() => <PublicPage><Contact /></PublicPage>} />
