@@ -85,7 +85,7 @@ export default function AdminSidebar({ currentPage, sidebarOpen, setSidebarOpen 
   return (
     <>
       {/* Desktop Sidebar */}
-      <div className="hidden lg:flex lg:flex-col w-64 bg-white border-r border-gray-200 h-full">
+      <div className="hidden lg:flex lg:flex-col w-64 bg-white border-r border-gray-200">
         <div className="p-6">
           <SidebarContent />
         </div>
