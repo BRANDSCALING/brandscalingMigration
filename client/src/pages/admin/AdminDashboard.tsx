@@ -231,6 +231,14 @@ export default function AdminDashboard() {
                 <BarChart3 className="mr-2 h-4 w-4" />
                 View Analytics (Coming Soon)
               </Button>
+              <Button 
+                className="w-full justify-start" 
+                variant="outline"
+                onClick={handleSignOut}
+              >
+                <LogOut className="mr-2 h-4 w-4" />
+                Sign Out
+              </Button>
             </CardContent>
           </Card>
 
