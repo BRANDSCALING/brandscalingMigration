@@ -84,23 +84,24 @@ export default function AdminSidebar({ currentPage, sidebarOpen, setSidebarOpen 
 
   return (
     <>
-      {/* Mobile overlay */}
-      {sidebarOpen && (
-        <div 
-          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-
-      {/* Sidebar */}
-      <aside className={`
-        w-64 bg-white border-r border-gray-200 overflow-y-auto h-full
-        ${sidebarOpen ? 'fixed left-0 top-0 z-50' : 'hidden'} lg:relative lg:block lg:z-auto
-      `}>
+      {/* Desktop Sidebar */}
+      <div className="hidden lg:flex lg:flex-col w-64 bg-white border-r border-gray-200 h-full">
         <div className="p-6">
           <SidebarContent />
         </div>
-      </aside>
+      </div>
+
+      {/* Mobile Sidebar */}
+      {sidebarOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden">
+          <div className="fixed inset-0 bg-black bg-opacity-50" onClick={() => setSidebarOpen(false)} />
+          <div className="relative w-64 bg-white border-r border-gray-200 h-full">
+            <div className="p-6">
+              <SidebarContent />
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
