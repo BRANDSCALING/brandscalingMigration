@@ -68,7 +68,7 @@ export default function AdminPanel() {
       <AdminHeader onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
       <div className="flex flex-1 overflow-hidden">
         <AdminSidebar currentPage={getCurrentPage()} isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-        <main className="flex-1 lg:ml-64 overflow-auto">
+        <main className="flex-1 overflow-auto">
           <div className="p-6">
             {renderPage()}
           </div>
