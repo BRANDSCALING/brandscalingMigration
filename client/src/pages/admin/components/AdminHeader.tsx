@@ -57,7 +57,6 @@ export default function AdminHeader({ setSidebarOpen }: AdminHeaderProps) {
 
             {/* Center - Logo and Title */}
             <div className="flex items-center justify-center flex-1">
-              {/* Logo - always centered */}
               <button
                 onClick={handleLogoClick}
                 className="cursor-pointer hover:opacity-80 transition-opacity"
@@ -69,7 +68,6 @@ export default function AdminHeader({ setSidebarOpen }: AdminHeaderProps) {
                 />
               </button>
               
-              {/* Title - only on mobile */}
               <div className="md:hidden ml-3">
                 <span className="text-sm font-medium text-purple-700 bg-purple-100 px-3 py-1 rounded-full">
                   Brandscaling Admin

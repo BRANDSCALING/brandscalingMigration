@@ -4,8 +4,6 @@ import {
   BarChart3, 
   Users, 
   FileText, 
-  Tags, 
-  Shield, 
   TrendingUp
 } from 'lucide-react';
 
@@ -35,18 +33,6 @@ export default function AdminSidebar({ currentPage, sidebarOpen, setSidebarOpen 
       label: 'Posts', 
       icon: FileText, 
       href: '/admin/posts' 
-    },
-    { 
-      id: 'tags', 
-      label: 'Tags', 
-      icon: Tags, 
-      href: '/admin/tags' 
-    },
-    { 
-      id: 'moderation', 
-      label: 'Moderation', 
-      icon: Shield, 
-      href: '/admin/moderation' 
     },
     { 
       id: 'insights', 
