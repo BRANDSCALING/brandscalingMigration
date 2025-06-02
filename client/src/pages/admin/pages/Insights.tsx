@@ -22,10 +22,10 @@ function InsightsContent() {
   const [printMode, setPrintMode] = useState(false);
 
   // Fetch analytics data
-  const { data: dailyActiveUsers } = useQuery({
-    queryKey: ['/api/admin/analytics/daily-active-users'],
+  const { data: totalUsersData } = useQuery({
+    queryKey: ['/api/admin/analytics/total-users'],
     queryFn: async () => {
-      const response = await apiRequest('GET', '/api/admin/analytics/daily-active-users');
+      const response = await apiRequest('GET', '/api/admin/analytics/total-users');
       return await response.json();
     },
   });
@@ -63,27 +63,22 @@ function InsightsContent() {
   });
 
   // Process data for charts
-  const dauChartData = useMemo(() => {
-    if (!dailyActiveUsers) return { labels: [], datasets: [] };
+  const totalUsersChartData = useMemo(() => {
+    if (!totalUsersData) return { labels: [], datasets: [] };
     
-    const last7Days = Array.from({ length: 7 }, (_, i) => {
-      const date = subDays(new Date(), 6 - i);
-      return format(date, 'MMM dd');
-    });
-
     return {
-      labels: last7Days,
+      labels: ['Total Users', 'New (7 days)'],
       datasets: [
         {
-          label: 'Daily Active Users',
-          data: dailyActiveUsers.daily || Array(7).fill(0),
-          borderColor: 'rgb(59, 130, 246)',
-          backgroundColor: 'rgba(59, 130, 246, 0.1)',
-          tension: 0.4,
+          label: 'Users',
+          data: [totalUsersData.total || 0, totalUsersData.recent || 0],
+          backgroundColor: ['rgba(59, 130, 246, 0.6)', 'rgba(34, 197, 94, 0.6)'],
+          borderColor: ['rgb(59, 130, 246)', 'rgb(34, 197, 94)'],
+          borderWidth: 1,
         },
       ],
     };
-  }, [dailyActiveUsers]);
+  }, [totalUsersData]);
 
   const postsChartData = useMemo(() => {
     if (!newPostsData) return { labels: [], datasets: [] };
@@ -199,13 +194,13 @@ function InsightsContent() {
       {/* Key Metrics Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
         <InsightCard
-          title="Daily Active Users (7d avg)"
-          value={dailyActiveUsers?.average || 0}
-          change={`${dailyActiveUsers?.change > 0 ? '+' : ''}${dailyActiveUsers?.change || 0}% vs last week`}
-          changeType={dailyActiveUsers?.change > 0 ? 'positive' : dailyActiveUsers?.change < 0 ? 'negative' : 'neutral'}
+          title="Total Registered Users"
+          value={totalUsersData?.total || 0}
+          change={`${totalUsersData?.recent || 0} new this week`}
+          changeType="neutral"
           icon={Users}
           iconColor="text-blue-600 bg-blue-100"
-          description="Average daily active users over the last 7 days"
+          description="Total registered users on the platform"
         />
 
         <InsightCard

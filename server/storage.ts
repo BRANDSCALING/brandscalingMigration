@@ -127,7 +127,7 @@ export interface IStorage {
   getSystemStats(): Promise<any>;
   
   // Analytics operations
-  getDailyActiveUsers(): Promise<any>;
+  getTotalUsersAnalytics(): Promise<any>;
   getNewPostsAnalytics(): Promise<any>;
   getUserGrowthAnalytics(): Promise<any>;
   getModerationAnalytics(): Promise<any>;
@@ -800,38 +800,23 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Analytics operations
-  async getDailyActiveUsers(): Promise<any> {
-    // Get user creation data for the last 7 days
+  async getTotalUsersAnalytics(): Promise<any> {
+    // Get total registered users count
+    const [totalUsers] = await db.select({ count: count() }).from(users);
+    
+    // Get users registered in last 7 days
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-
-    const activeUsersData = await db
-      .select({
-        date: sql<string>`DATE(${users.createdAt})`,
-        count: count()
-      })
+    
+    const [recentUsers] = await db
+      .select({ count: count() })
       .from(users)
-      .where(sql`${users.createdAt} >= ${sevenDaysAgo}`)
-      .groupBy(sql`DATE(${users.createdAt})`)
-      .orderBy(sql`DATE(${users.createdAt})`);
-
-    // Generate daily data for last 7 days
-    const dailyData = Array.from({ length: 7 }, (_, i) => {
-      const date = new Date();
-      date.setDate(date.getDate() - (6 - i));
-      const dateStr = date.toISOString().split('T')[0];
-      const found = activeUsersData.find(d => d.date === dateStr);
-      return found ? found.count : 0;
-    });
-
-    const currentAverage = dailyData.reduce((a, b) => a + b, 0) / 7;
-    const previousAverage = Math.max(1, currentAverage * 0.8); // Simulate previous week
-    const change = Math.round(((currentAverage - previousAverage) / previousAverage) * 100);
+      .where(sql`${users.createdAt} >= ${sevenDaysAgo}`);
 
     return {
-      daily: dailyData,
-      average: Math.round(currentAverage),
-      change: change
+      total: totalUsers.count,
+      recent: recentUsers.count,
+      description: "Total registered users on the platform"
     };
   }
 
