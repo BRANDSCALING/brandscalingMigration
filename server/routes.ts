@@ -6,6 +6,7 @@ import { storage } from "./storage";
 import { verifyFirebaseToken, requireAuth, requireRole, createUserProfile, getUserProfile, updateUserRole } from "./firebaseAuth";
 import { chatWithAgent } from "./openai";
 import { updateUserAfterPurchase } from "./updateUserAfterPurchase";
+import { acClient } from "@shared/acClient";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -1345,6 +1346,88 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
     } catch (error) {
       console.error("Error creating AI agent:", error);
       res.status(500).json({ message: "Failed to create AI agent" });
+    }
+  });
+
+  // ActiveCampaign integration
+  app.post("/api/ac/add-contact", requireAuth, async (req: any, res) => {
+    try {
+      const { email, firstName, lastName } = req.body;
+
+      if (!email) {
+        return res.status(400).json({ error: 'Email is required' });
+      }
+
+      // Create or update contact in ActiveCampaign
+      const contactPayload = {
+        contact: {
+          email,
+          firstName: firstName || '',
+          lastName: lastName || ''
+        }
+      };
+
+      const response = await acClient.post('/api/3/contacts', contactPayload);
+
+      if (response.status === 201) {
+        // Contact created successfully
+        res.json({ 
+          success: true, 
+          contactId: response.data.contact.id,
+          message: 'Contact created successfully'
+        });
+      } else if (response.status === 200) {
+        // Contact updated successfully
+        res.json({ 
+          success: true, 
+          contactId: response.data.contact.id,
+          message: 'Contact updated successfully'
+        });
+      }
+
+    } catch (error: any) {
+      if (error.response?.status === 409) {
+        // Contact already exists, try to update instead
+        try {
+          const { email, firstName, lastName } = req.body;
+          
+          // First get the existing contact
+          const searchResponse = await acClient.get(`/api/3/contacts?email=${encodeURIComponent(email)}`);
+          
+          if (searchResponse.data.contacts && searchResponse.data.contacts.length > 0) {
+            const existingContact = searchResponse.data.contacts[0];
+            
+            // Update the existing contact
+            const updatePayload = {
+              contact: {
+                email,
+                firstName: firstName || existingContact.firstName || '',
+                lastName: lastName || existingContact.lastName || ''
+              }
+            };
+            
+            const updateResponse = await acClient.put(`/api/3/contacts/${existingContact.id}`, updatePayload);
+            
+            res.json({ 
+              success: true, 
+              contactId: existingContact.id,
+              message: 'Contact updated successfully'
+            });
+          } else {
+            res.status(500).json({ error: 'Contact conflict but unable to find existing contact' });
+          }
+        } catch (updateError: any) {
+          res.status(500).json({ 
+            error: 'Failed to update existing contact',
+            details: updateError.response?.data || updateError.message 
+          });
+        }
+      } else {
+        res.status(500).json({ 
+          error: 'Failed to create/update contact',
+          details: error.response?.data || error.message 
+        });
+      }
     }
   });
 
