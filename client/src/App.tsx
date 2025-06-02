@@ -26,6 +26,10 @@ import StudentCourses from "@/pages/student/StudentCourses";
 import StudentWorkbooks from "@/pages/student/StudentWorkbooks";
 import StudentCommunity from "@/pages/student/StudentCommunity";
 
+// Admin Modules
+import AdminDashboard from "@/pages/admin/AdminDashboard";
+import EmailCampaigns from "@/pages/admin/EmailCampaigns";
+
 import CommunityComingSoon from "@/pages/community/CommunityComingSoon";
 import CollabComingSoon from "@/pages/collab/CollabComingSoon";
 
@@ -40,7 +44,9 @@ function Router() {
         // Redirect from auth page after successful login
         if (location === '/auth') {
           switch (userProfile.role) {
-
+            case 'admin':
+              setLocation('/admin');
+              break;
             case 'student':
               setLocation('/student');
               break;
@@ -50,7 +56,7 @@ function Router() {
         }
       } else {
         // Redirect logged-out users from protected routes to home
-        if (location.startsWith('/student')) {
+        if (location.startsWith('/student') || location.startsWith('/admin')) {
           setLocation('/');
         }
       }
@@ -132,6 +138,15 @@ function Router() {
       <Route path="/affiliates" component={() => <PublicPage><Affiliates /></PublicPage>} />
 
       {/* SANDBOXED AUTHENTICATED ROUTES */}
+      {/* Admin Module - ONLY accessible to admins */}
+      {isAuthenticated && userProfile?.role === 'admin' && (
+        <>
+          <Route path="/admin" component={AdminDashboard} />
+          <Route path="/admin/email-campaigns" component={AdminDashboard} />
+          <Route path="/admin/:path*" component={AdminDashboard} />
+        </>
+      )}
+
       {/* Student Module - ONLY accessible to students */}
       {isAuthenticated && userProfile?.role === 'student' && (
         <>
