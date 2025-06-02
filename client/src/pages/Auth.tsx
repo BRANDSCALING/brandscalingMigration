@@ -12,7 +12,7 @@ import brandscalingLogo from "@assets/FullLogo.png";
 
 export default function Auth() {
   const [, setLocation] = useLocation();
-  const { signUp, signIn, signInWithGoogle, loading, error } = useFirebaseAuth();
+  const { signUp, signIn, signInWithGoogle, loading, error, userProfile, logout } = useFirebaseAuth();
   const { toast } = useToast();
   
   // Form states
@@ -110,6 +110,89 @@ export default function Auth() {
       });
     }
   };
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      toast({
+        title: "Signed Out",
+        description: "You have been signed out successfully."
+      });
+      window.location.reload();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "Failed to sign out",
+        variant: "destructive"
+      });
+    }
+  };
+
+  // If user is already logged in, show options
+  if (userProfile) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        {/* Header with Back Navigation */}
+        <header className="bg-white shadow-sm sticky top-0 z-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center h-16">
+              {/* Back to Website */}
+              <Link href="/" className="flex items-center space-x-2 text-gray-600 hover:text-gray-900">
+                <ArrowLeft className="h-4 w-4" />
+                <span>Back to Website</span>
+              </Link>
+              
+              {/* Logo */}
+              <Link href="/">
+                <img 
+                  src={brandscalingLogo} 
+                  alt="Brandscaling" 
+                  className="h-12 w-auto hover:opacity-80 transition-opacity cursor-pointer"
+                />
+              </Link>
+              
+              {/* Spacer */}
+              <div className="w-24"></div>
+            </div>
+          </div>
+        </header>
+        
+        {/* Main Content */}
+        <div className="flex items-center justify-center px-4 py-12">
+          <Card className="w-full max-w-md">
+            <CardHeader className="text-center">
+              <CardTitle className="text-2xl font-bold">Already Signed In</CardTitle>
+              <CardDescription>
+                You are currently signed in as: {userProfile.email}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Button 
+                onClick={() => {
+                  if (userProfile.role === 'admin') {
+                    setLocation('/admin');
+                  } else {
+                    setLocation('/student');
+                  }
+                }}
+                className="w-full"
+              >
+                Continue to Dashboard
+              </Button>
+              
+              <Button 
+                onClick={handleLogout}
+                variant="outline"
+                className="w-full"
+              >
+                Sign Out & Login as Different User
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
