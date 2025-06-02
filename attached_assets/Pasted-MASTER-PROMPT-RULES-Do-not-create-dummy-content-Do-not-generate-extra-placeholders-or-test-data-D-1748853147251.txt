@@ -1,0 +1,68 @@
+MASTER PROMPT RULES: Do not create dummy content. Do not generate extra placeholders or test data. Do not split the answer into multiple prompts. All output must be inside this single prompt. Follow existing routing logic. Do not change component structure. Do not break sidebar toggle or logo logout confirmation. Fix scrolling across all admin pages. Ensure responsive layout works on desktop and mobile. Make admin content area scrollable while keeping header and sidebar fixed. Respect existing working components and reuse them. Do not make assumptions about props like `children`.
+
+TASK: Fix the admin panel layout using correct structure, so that:
+1. The sidebar remains fixed and functional (collapsible, menu button works).
+2. The top header bar stays fixed/sticky on scroll.
+3. The main content area scrolls properly when it overflows the viewport.
+4. No part of the admin UI is cut off.
+5. Works with existing internal route-based rendering.
+
+🛠️ STEP 1: Edit `client/src/pages/admin/index.tsx`
+Replace the contents with:
+
+```tsx
+import React from "react";
+import AdminSidebar from "./components/AdminSidebar";
+import AdminHeader from "./components/AdminHeader";
+import { useLocation } from "wouter";
+import Dashboard from "./dashboard";
+import Users from "./users";
+import Posts from "./posts";
+import Tags from "./tags";
+import Moderation from "./moderation";
+import Insights from "./insights";
+
+export default function AdminPanel() {
+  const [location] = useLocation();
+
+  const renderPage = () => {
+    switch (location) {
+      case "/admin/dashboard":
+        return <Dashboard />;
+      case "/admin/users":
+        return <Users />;
+      case "/admin/posts":
+        return <Posts />;
+      case "/admin/tags":
+        return <Tags />;
+      case "/admin/moderation":
+        return <Moderation />;
+      case "/admin/insights":
+        return <Insights />;
+      default:
+        return <Dashboard />;
+    }
+  };
+
+  return (
+    <div className="h-screen w-screen flex overflow-hidden">
+      {/* Fixed Sidebar */}
+      <div className="w-64 shrink-0">
+        <AdminSidebar />
+      </div>
+
+      {/* Right Side - Header + Content */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Fixed Header */}
+        <div className="sticky top-0 z-50">
+          <AdminHeader />
+        </div>
+
+        {/* Scrollable Content */}
+        <div className="flex-1 overflow-auto bg-gray-50 p-6">
+          {renderPage()}
+        </div>
+      </div>
+    </div>
+  );
+}

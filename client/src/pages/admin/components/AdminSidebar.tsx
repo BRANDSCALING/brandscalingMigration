@@ -83,21 +83,10 @@ export default function AdminSidebar({ currentPage, isOpen = false, onClose }: A
   );
 
   return (
-    <>
-      {/* Mobile overlay */}
-      {isOpen && (
-        <div 
-          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
-          onClick={onClose}
-        />
-      )}
-
-      {/* Sidebar */}
-      <aside className="w-full h-full bg-white border-r border-gray-200 overflow-y-auto">
-        <div className="p-6">
-          <SidebarContent />
-        </div>
-      </aside>
-    </>
+    <aside className="w-full h-full bg-white border-r border-gray-200 overflow-y-auto">
+      <div className="p-6">
+        <SidebarContent />
+      </div>
+    </aside>
   );
 }

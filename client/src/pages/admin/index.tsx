@@ -65,8 +65,16 @@ export default function AdminPanel() {
 
   return (
     <div className="h-screen w-screen flex overflow-hidden">
+      {/* Mobile overlay */}
+      {sidebarOpen && (
+        <div 
+          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar - fixed left */}
-      <div className="w-64 shrink-0">
+      <div className={`w-64 shrink-0 ${sidebarOpen ? 'block' : 'hidden'} lg:block`}>
         <AdminSidebar currentPage={getCurrentPage()} isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       </div>
 
