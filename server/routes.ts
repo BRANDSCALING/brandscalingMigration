@@ -1458,6 +1458,82 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
     }
   });
 
+  // Get leads with last email info (Firebase authenticated admins only)
+  app.get("/api/leads/campaigns", requireRole("admin"), async (req, res) => {
+    try {
+      const leads = await storage.getLeadsWithLastEmail();
+      res.json(leads);
+    } catch (error: any) {
+      console.error('Error fetching leads for campaigns:', error);
+      res.status(500).json({ 
+        error: 'Failed to fetch leads',
+        details: error.message 
+      });
+    }
+  });
+
+  // Send campaign email to lead (Firebase authenticated admins only)
+  app.post("/api/email/campaign", requireRole("admin"), async (req, res) => {
+    try {
+      const { leadId, subject, body, template } = req.body;
+      
+      if (!leadId || !subject || !body) {
+        return res.status(400).json({ error: 'Lead ID, subject, and body are required' });
+      }
+
+      const adminUid = req.user?.uid;
+      if (!adminUid) {
+        return res.status(401).json({ error: 'Admin authentication required' });
+      }
+
+      // Get lead details
+      const leads = await storage.getLeads();
+      const lead = leads.find(l => l.id === parseInt(leadId));
+      
+      if (!lead) {
+        return res.status(404).json({ error: 'Lead not found' });
+      }
+
+      // Send email via Resend
+      const { data: emailData, error: emailError } = await resendClient.emails.send({
+        from: 'campaigns@resend.dev',
+        to: [lead.email],
+        subject,
+        html: body,
+      });
+
+      if (emailError) {
+        console.error('Failed to send campaign email:', emailError);
+        return res.status(500).json({ 
+          error: 'Failed to send email',
+          details: emailError.message 
+        });
+      }
+
+      // Log email in database
+      await storage.logEmailSent({
+        leadId: parseInt(leadId),
+        subject,
+        body,
+        sentBy: adminUid
+      });
+
+      console.log('Campaign email sent successfully:', emailData?.id);
+      res.json({ 
+        success: true, 
+        emailId: emailData?.id,
+        message: 'Email sent and logged successfully'
+      });
+
+    } catch (error: any) {
+      console.error('Error sending campaign email:', error);
+      res.status(500).json({ 
+        error: 'Failed to send campaign email',
+        details: error.message 
+      });
+    }
+  });
+
   // Stripe webhook handler for checkout.session.completed
   app.post("/webhook/stripe", express.raw({ type: 'application/json' }), async (req, res) => {
     const sig = req.headers['stripe-signature'];

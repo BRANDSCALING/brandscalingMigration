@@ -309,6 +309,16 @@ export const stripePurchases = pgTable("stripe_purchases", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Email campaign logs table
+export const emailLogs = pgTable("email_logs", {
+  id: serial("id").primaryKey(),
+  leadId: integer("lead_id").notNull().references(() => leads.id),
+  subject: varchar("subject").notNull(),
+  body: text("body").notNull(),
+  sentBy: varchar("sent_by").notNull(), // Firebase UID of admin
+  sentAt: timestamp("sent_at").defaultNow(),
+});
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   progress: many(userProgress),
@@ -520,6 +530,9 @@ export type InsertLead = z.infer<typeof insertLeadSchema>;
 
 export type StripePurchase = typeof stripePurchases.$inferSelect;
 export type InsertStripePurchase = typeof stripePurchases.$inferInsert;
+
+export type EmailLog = typeof emailLogs.$inferSelect;
+export type InsertEmailLog = typeof emailLogs.$inferInsert;
 
 export type Payment = typeof payments.$inferSelect;
 export type InsertPayment = typeof payments.$inferInsert;

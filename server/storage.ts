@@ -14,6 +14,7 @@ import {
   userProgress,
   leads,
   stripePurchases,
+  emailLogs,
   type User,
   type Post,
   type PostReply,
@@ -26,7 +27,9 @@ import {
   type Lead,
   type InsertLead,
   type StripePurchase,
-  type InsertStripePurchase
+  type InsertStripePurchase,
+  type EmailLog,
+  type InsertEmailLog
 } from "@shared/schema";
 
 // Simple ID generator
@@ -136,6 +139,10 @@ export interface IStorage {
   // Stripe purchase operations
   createStripePurchase(purchaseData: InsertStripePurchase): Promise<StripePurchase>;
   updatePurchaseEmailStatus(sessionId: string, emailSent: boolean): Promise<void>;
+  
+  // Email campaign operations
+  getLeadsWithLastEmail(): Promise<(Lead & { lastEmailSent?: Date; lastEmailSentBy?: string })[]>;
+  logEmailSent(emailData: InsertEmailLog): Promise<EmailLog>;
   
   // System operations
   getSystemStats(): Promise<any>;
@@ -823,6 +830,49 @@ export class DatabaseStorage implements IStorage {
         emailSentAt: emailSent ? new Date() : null
       })
       .where(eq(stripePurchases.stripeSessionId, sessionId));
+  }
+
+  // Email campaign operations
+  async getLeadsWithLastEmail(): Promise<(Lead & { lastEmailSent?: Date; lastEmailSentBy?: string })[]> {
+    const leadsWithEmails = await db
+      .select({
+        id: leads.id,
+        name: leads.name,
+        email: leads.email,
+        addedByAdmin: leads.addedByAdmin,
+        createdAt: leads.createdAt,
+        lastEmailSent: emailLogs.sentAt,
+        lastEmailSentBy: emailLogs.sentBy,
+      })
+      .from(leads)
+      .leftJoin(
+        emailLogs,
+        eq(leads.id, emailLogs.leadId)
+      )
+      .orderBy(desc(leads.createdAt), desc(emailLogs.sentAt));
+
+    // Group by lead to get the most recent email per lead
+    const groupedLeads = leadsWithEmails.reduce((acc, row) => {
+      if (!acc[row.id]) {
+        acc[row.id] = {
+          id: row.id,
+          name: row.name,
+          email: row.email,
+          addedByAdmin: row.addedByAdmin,
+          createdAt: row.createdAt,
+          lastEmailSent: row.lastEmailSent,
+          lastEmailSentBy: row.lastEmailSentBy,
+        };
+      }
+      return acc;
+    }, {} as Record<number, Lead & { lastEmailSent?: Date; lastEmailSentBy?: string }>);
+
+    return Object.values(groupedLeads);
+  }
+
+  async logEmailSent(emailData: InsertEmailLog): Promise<EmailLog> {
+    const [log] = await db.insert(emailLogs).values(emailData).returning();
+    return log;
   }
 
   // System operations
