@@ -15,6 +15,7 @@ import {
   X
 } from "lucide-react";
 import EmailCampaigns from "./EmailCampaigns";
+import EmailTemplates from "./EmailTemplates";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -38,6 +39,7 @@ function AdminLayout({ children }: AdminLayoutProps) {
   const navigation = [
     { name: 'Dashboard', href: '/admin', icon: LayoutDashboard, current: location === '/admin' },
     { name: 'Email Campaigns', href: '/admin/email-campaigns', icon: Mail, current: location === '/admin/email-campaigns' },
+    { name: 'Email Templates', href: '/admin/email-templates', icon: Mail, current: location === '/admin/email-templates' },
     { name: 'User Management', href: '/admin/users', icon: Users, current: location === '/admin/users' },
     { name: 'Analytics', href: '/admin/analytics', icon: BarChart3, current: location === '/admin/analytics' },
     { name: 'Settings', href: '/admin/settings', icon: Settings, current: location === '/admin/settings' },

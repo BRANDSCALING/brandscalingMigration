@@ -3,6 +3,7 @@ import express from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
+import { pool } from "./db";
 import { verifyFirebaseToken, requireAuth, requireRole, createUserProfile, getUserProfile, updateUserRole } from "./firebaseAuth";
 import { chatWithAgent } from "./openai";
 import { updateUserAfterPurchase } from "./updateUserAfterPurchase";
@@ -1469,6 +1470,85 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
         error: 'Failed to fetch leads',
         details: error.message 
       });
+    }
+  });
+
+  // Email Templates Management (Firebase authenticated admins only)
+  app.get('/api/email-templates', requireRole('admin'), async (req, res) => {
+    try {
+      const { rows } = await pool.query(
+        'SELECT * FROM email_templates ORDER BY created_at DESC'
+      );
+      res.json(rows);
+    } catch (error) {
+      console.error('Error fetching email templates:', error);
+      res.status(500).json({ message: 'Failed to fetch email templates' });
+    }
+  });
+
+  app.post('/api/email-templates', requireRole('admin'), async (req, res) => {
+    try {
+      const { name, subject, body } = req.body;
+      const adminUid = req.user?.uid;
+
+      if (!name || !subject || !body) {
+        return res.status(400).json({ message: 'Name, subject, and body are required' });
+      }
+
+      const { rows } = await pool.query(
+        'INSERT INTO email_templates (name, subject, body, created_by_admin_uid) VALUES ($1, $2, $3, $4) RETURNING *',
+        [name, subject, body, adminUid]
+      );
+
+      res.status(201).json(rows[0]);
+    } catch (error) {
+      console.error('Error creating email template:', error);
+      res.status(500).json({ message: 'Failed to create email template' });
+    }
+  });
+
+  app.put('/api/email-templates/:id', requireRole('admin'), async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { name, subject, body } = req.body;
+
+      if (!name || !subject || !body) {
+        return res.status(400).json({ message: 'Name, subject, and body are required' });
+      }
+
+      const { rows } = await pool.query(
+        'UPDATE email_templates SET name = $1, subject = $2, body = $3 WHERE id = $4 RETURNING *',
+        [name, subject, body, id]
+      );
+
+      if (rows.length === 0) {
+        return res.status(404).json({ message: 'Email template not found' });
+      }
+
+      res.json(rows[0]);
+    } catch (error) {
+      console.error('Error updating email template:', error);
+      res.status(500).json({ message: 'Failed to update email template' });
+    }
+  });
+
+  app.delete('/api/email-templates/:id', requireRole('admin'), async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      const { rows } = await pool.query(
+        'DELETE FROM email_templates WHERE id = $1 RETURNING *',
+        [id]
+      );
+
+      if (rows.length === 0) {
+        return res.status(404).json({ message: 'Email template not found' });
+      }
+
+      res.json({ message: 'Email template deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting email template:', error);
+      res.status(500).json({ message: 'Failed to delete email template' });
     }
   });
 
