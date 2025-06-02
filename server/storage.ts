@@ -12,6 +12,7 @@ import {
   aiAgents,
   courses,
   userProgress,
+  leads,
   type User,
   type Post,
   type PostReply,
@@ -20,7 +21,9 @@ import {
   type QuizResult,
   type Event,
   type BlogPost,
-  type AiAgent
+  type AiAgent,
+  type Lead,
+  type InsertLead
 } from "@shared/schema";
 
 // Simple ID generator
@@ -122,6 +125,10 @@ export interface IStorage {
   // Conversation operations
   getConversation(userId: string, agentId: number): Promise<any | undefined>;
   createOrUpdateConversation(conversationData: any): Promise<any>;
+  
+  // Lead operations
+  createLead(leadData: InsertLead): Promise<Lead>;
+  getLeads(): Promise<Lead[]>;
   
   // System operations
   getSystemStats(): Promise<any>;
