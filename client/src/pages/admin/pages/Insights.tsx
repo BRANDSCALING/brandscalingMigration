@@ -148,11 +148,8 @@ function InsightsContent() {
   const csvData = useMemo(() => {
     const data = [
       ['Metric', 'Value', 'Date'],
-      ...((dailyActiveUsers?.daily || []).map((value: number, index: number) => [
-        'Daily Active Users',
-        value,
-        format(subDays(new Date(), 6 - index), 'yyyy-MM-dd'),
-      ])),
+      ['Total Registered Users', totalUsersData?.total || 0, format(new Date(), 'yyyy-MM-dd')],
+      ['New Users (7 days)', totalUsersData?.recent || 0, format(new Date(), 'yyyy-MM-dd')],
       ...((newPostsData?.daily || []).map((value: number, index: number) => [
         'New Posts',
         value,
@@ -162,7 +159,7 @@ function InsightsContent() {
       ['Pending Moderation', moderationData?.pending || 0, format(new Date(), 'yyyy-MM-dd')],
     ];
     return data;
-  }, [dailyActiveUsers, newPostsData, bannedUsersData, moderationData]);
+  }, [totalUsersData, newPostsData, bannedUsersData, moderationData]);
 
   const handlePrint = () => {
     setPrintMode(true);
@@ -247,13 +244,13 @@ function InsightsContent() {
       {/* Charts Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <InsightCard
-          title="Daily Active Users"
-          value="Last 7 Days"
+          title="User Registration Overview"
+          value="Platform Statistics"
           icon={Activity}
           iconColor="text-blue-600 bg-blue-100"
-          description="Daily active user trend"
+          description="Total and recent user registrations"
         >
-          <InsightChart type="line" data={dauChartData} height={250} />
+          <InsightChart type="bar" data={totalUsersChartData} height={250} />
         </InsightCard>
 
         <InsightCard
