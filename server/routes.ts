@@ -6,7 +6,7 @@ import { storage } from "./storage";
 import { verifyFirebaseToken, requireAuth, requireRole, createUserProfile, getUserProfile, updateUserRole } from "./firebaseAuth";
 import { chatWithAgent } from "./openai";
 import { updateUserAfterPurchase } from "./updateUserAfterPurchase";
-
+import { resend } from "@shared/emailClient";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -1349,6 +1349,44 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
     }
   });
 
+  // Resend email integration
+  app.post("/api/email/send", requireAuth, async (req: any, res) => {
+    try {
+      const { email, subject, body } = req.body;
+
+      if (!email || !subject || !body) {
+        return res.status(400).json({ 
+          error: 'Email, subject, and body are required' 
+        });
+      }
+
+      const { data, error } = await resend.emails.send({
+        from: 'onboarding@resend.dev',
+        to: [email],
+        subject: subject,
+        html: body,
+      });
+
+      if (error) {
+        return res.status(500).json({ 
+          error: 'Failed to send email',
+          details: error.message 
+        });
+      }
+
+      res.json({ 
+        success: true, 
+        emailId: data?.id,
+        message: 'Email sent successfully'
+      });
+
+    } catch (error: any) {
+      res.status(500).json({ 
+        error: 'Failed to send email',
+        details: error.message 
+      });
+    }
+  });
 
   const httpServer = createServer(app);
 
