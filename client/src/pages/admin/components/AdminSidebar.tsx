@@ -4,24 +4,19 @@ import {
   BarChart3, 
   Users, 
   FileText, 
-  TrendingUp
+  Tag,
+  Shield,
+  TrendingUp,
+  X
 } from 'lucide-react';
 
 interface AdminSidebarProps {
+  currentPage: string;
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
 }
 
-export default function AdminSidebar({ sidebarOpen, setSidebarOpen }: AdminSidebarProps) {
-  const getCurrentPage = () => {
-    const pathname = window.location.pathname;
-    if (pathname === '/admin') return 'dashboard';
-    if (pathname === '/admin/users') return 'users';
-    if (pathname === '/admin/posts') return 'posts';
-    if (pathname === '/admin/insights') return 'insights';
-    return 'dashboard';
-  };
-
+export default function AdminSidebar({ currentPage, sidebarOpen, setSidebarOpen }: AdminSidebarProps) {
   const navItems = [
     { 
       id: 'dashboard', 
@@ -42,6 +37,18 @@ export default function AdminSidebar({ sidebarOpen, setSidebarOpen }: AdminSideb
       href: '/admin/posts' 
     },
     { 
+      id: 'tags', 
+      label: 'Tags', 
+      icon: Tag, 
+      href: '/admin/tags' 
+    },
+    { 
+      id: 'moderation', 
+      label: 'Moderation', 
+      icon: Shield, 
+      href: '/admin/moderation' 
+    },
+    { 
       id: 'insights', 
       label: 'Insights', 
       icon: TrendingUp, 
@@ -53,7 +60,7 @@ export default function AdminSidebar({ sidebarOpen, setSidebarOpen }: AdminSideb
     <nav className="space-y-2">
       {navItems.map((item) => {
         const IconComponent = item.icon;
-        const isActive = getCurrentPage() === item.id;
+        const isActive = currentPage === item.id;
         
         return (
           <Link key={item.id} href={item.href}>
@@ -88,6 +95,11 @@ export default function AdminSidebar({ sidebarOpen, setSidebarOpen }: AdminSideb
           <div className="fixed inset-0 bg-black bg-opacity-50" onClick={() => setSidebarOpen(false)} />
           <div className="relative w-64 bg-white border-r border-gray-200 h-full overflow-y-auto">
             <div className="p-6">
+              <div className="flex justify-end mb-4">
+                <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(false)}>
+                  <X className="h-6 w-6" />
+                </Button>
+              </div>
               <SidebarContent />
             </div>
           </div>

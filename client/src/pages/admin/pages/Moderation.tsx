@@ -1,4 +1,4 @@
-export default function Posts() {
+export default function Moderation() {
   return (
     <div className="space-y-6">
       
