@@ -1388,6 +1388,70 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
     }
   });
 
+  // Lead management with automated email
+  app.post("/api/leads/add", requireAuth, async (req: any, res) => {
+    try {
+      const { name, email } = req.body;
+
+      if (!name || !email) {
+        return res.status(422).json({ 
+          error: 'Name and email are required' 
+        });
+      }
+
+      // Create lead in database
+      const lead = await storage.createLead({
+        name,
+        email,
+        addedByAdmin: req.user.uid
+      });
+
+      // Send welcome email using Resend
+      const welcomeEmailBody = `
+        <html>
+          <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+            <h2>Welcome to Brandscaling</h2>
+            <p>Hi ${name},</p>
+            <p>Welcome to our community! We're excited to have you join us on your brandscaling journey.</p>
+            <p>Best regards,<br>The Brandscaling Team</p>
+          </body>
+        </html>
+      `;
+
+      const { data: emailData, error: emailError } = await resendClient.emails.send({
+        from: 'onboarding@resend.dev',
+        to: [email],
+        subject: 'Welcome to Brandscaling',
+        html: welcomeEmailBody,
+      });
+
+      if (emailError) {
+        console.error('Failed to send welcome email:', emailError);
+        // Return success for lead creation even if email fails
+        return res.json({ 
+          success: true, 
+          lead,
+          message: 'Lead added successfully, but welcome email failed to send',
+          emailError: emailError.message
+        });
+      }
+
+      res.json({ 
+        success: true, 
+        lead,
+        emailId: emailData?.id,
+        message: 'Lead added and welcome email sent successfully'
+      });
+
+    } catch (error: any) {
+      console.error('Error adding lead:', error);
+      res.status(500).json({ 
+        error: 'Failed to add lead',
+        details: error.message 
+      });
+    }
+  });
+
   const httpServer = createServer(app);
 
   // WebSocket setup for real-time chat

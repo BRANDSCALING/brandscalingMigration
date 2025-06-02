@@ -791,6 +791,17 @@ export class DatabaseStorage implements IStorage {
     return { id: generateId(), ...conversationData };
   }
 
+  // Lead operations
+  async createLead(leadData: InsertLead): Promise<Lead> {
+    const [lead] = await db.insert(leads).values(leadData).returning();
+    return lead;
+  }
+
+  async getLeads(): Promise<Lead[]> {
+    const allLeads = await db.select().from(leads).orderBy(desc(leads.createdAt));
+    return allLeads;
+  }
+
   // System operations
   async getSystemStats(): Promise<any> {
     const [userCount] = await db.select({ count: count() }).from(users);
