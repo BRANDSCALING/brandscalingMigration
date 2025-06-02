@@ -25,6 +25,16 @@ function AdminLayout({ children }: AdminLayoutProps) {
   const { userProfile, logout } = useFirebaseAuth();
   const [location] = useLocation();
 
+  const handleSignOut = async () => {
+    try {
+      await logout();
+      window.location.href = '/auth';
+    } catch (error) {
+      console.error('Sign out error:', error);
+      window.location.href = '/auth';
+    }
+  };
+
   const navigation = [
     { name: 'Dashboard', href: '/admin', icon: LayoutDashboard, current: location === '/admin' },
     { name: 'Email Campaigns', href: '/admin/email-campaigns', icon: Mail, current: location === '/admin/email-campaigns' },
@@ -33,111 +43,100 @@ function AdminLayout({ children }: AdminLayoutProps) {
     { name: 'Settings', href: '/admin/settings', icon: Settings, current: location === '/admin/settings' },
   ];
 
-  const handleSignOut = async () => {
-    try {
-      await logout();
-    } catch (error) {
-      console.error('Sign out error:', error);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
-        <div className="fixed inset-0 z-40 lg:hidden">
-          <div className="fixed inset-0 bg-gray-600 bg-opacity-75" onClick={() => setSidebarOpen(false)} />
+        <div className="fixed inset-0 z-50 lg:hidden">
+          <div className="fixed inset-0 bg-gray-900/80" onClick={() => setSidebarOpen(false)} />
         </div>
       )}
 
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 ${
-        sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-      }`}>
-        <div className="flex flex-col h-full">
-          {/* Header */}
-          <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
-            <h1 className="text-xl font-bold text-gray-900">Admin Panel</h1>
-            <button
-              className="lg:hidden"
-              onClick={() => setSidebarOpen(false)}
-            >
-              <X className="w-6 h-6" />
-            </button>
-          </div>
+      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-200 ease-in-out lg:translate-x-0 lg:static lg:inset-0`}>
+        <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
+          <h2 className="text-lg font-semibold text-gray-900">Admin Panel</h2>
+          <button
+            onClick={() => setSidebarOpen(false)}
+            className="lg:hidden p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100"
+          >
+            <X className="h-6 w-6" />
+          </button>
+        </div>
 
-          {/* User info */}
-          <div className="p-4 border-b border-gray-200">
-            <div className="flex items-center space-x-3">
-              <div className="flex-shrink-0">
-                <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                  <span className="text-sm font-medium text-purple-800">
-                    {userProfile?.firstName?.charAt(0) || userProfile?.email?.charAt(0) || 'A'}
-                  </span>
-                </div>
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 truncate">
-                  {userProfile?.firstName || 'Admin'}
-                </p>
-                <Badge variant="secondary" className="text-xs bg-purple-100 text-purple-800">
-                  Admin
-                </Badge>
+        <nav className="mt-6 px-3">
+          <div className="space-y-1">
+            {navigation.map((item) => {
+              const Icon = item.icon;
+              return (
+                <Link key={item.name} href={item.href}>
+                  <div className={`group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+                    item.current
+                      ? 'bg-gray-100 text-gray-900'
+                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                  }`}>
+                    <Icon className="mr-3 h-5 w-5 flex-shrink-0" />
+                    {item.name}
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </nav>
+
+        {/* Logout Button in Sidebar */}
+        <div className="absolute bottom-16 left-0 right-0 p-4">
+          <Button 
+            onClick={handleSignOut}
+            className="w-full justify-start"
+            variant="outline"
+          >
+            <LogOut className="mr-2 h-4 w-4" />
+            Sign Out
+          </Button>
+        </div>
+
+        {/* Admin Profile Section */}
+        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
+          <div className="flex items-center">
+            <div className="flex-shrink-0">
+              <div className="h-8 w-8 bg-gray-300 rounded-full flex items-center justify-center">
+                <span className="text-sm font-medium text-gray-700">
+                  {userProfile?.email?.[0]?.toUpperCase() || 'A'}
+                </span>
               </div>
             </div>
-          </div>
-
-          {/* Navigation */}
-          <nav className="flex-1 px-4 py-4 space-y-1">
-            {navigation.map((item) => (
-              <Link key={item.name} href={item.href}>
-                <a className={`group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
-                  item.current
-                    ? 'bg-purple-100 text-purple-900'
-                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                }`}>
-                  <item.icon className={`flex-shrink-0 mr-3 h-5 w-5 ${
-                    item.current ? 'text-purple-500' : 'text-gray-400 group-hover:text-gray-500'
-                  }`} />
-                  {item.name}
-                </a>
-              </Link>
-            ))}
-          </nav>
-
-          {/* Sign out */}
-          <div className="p-4 border-t border-gray-200">
-            <Button
-              variant="outline"
-              className="w-full flex items-center justify-center gap-2"
-              onClick={handleSignOut}
-            >
-              <LogOut className="w-4 h-4" />
-              Sign Out
-            </Button>
+            <div className="ml-3 flex-1 min-w-0">
+              <p className="text-sm font-medium text-gray-900 truncate">
+                Admin
+              </p>
+              <p className="text-xs text-gray-500 truncate">
+                {userProfile?.email || 'admin@brandscaling.com'}
+              </p>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Main content */}
-      <div className="lg:ml-64">
-        {/* Mobile header */}
-        <div className="lg:hidden bg-white shadow-sm border-b border-gray-200">
-          <div className="px-4 py-3 flex items-center justify-between">
+      <div className="lg:pl-64">
+        {/* Top navigation */}
+        <div className="sticky top-0 z-40 lg:mx-auto lg:max-w-7xl lg:px-8">
+          <div className="flex items-center justify-between h-16 px-4 bg-white border-b border-gray-200 sm:px-6 lg:px-0">
             <button
               onClick={() => setSidebarOpen(true)}
-              className="text-gray-500 hover:text-gray-700"
+              className="lg:hidden p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100"
             >
-              <Menu className="w-6 h-6" />
+              <Menu className="h-6 w-6" />
             </button>
-            <h2 className="text-lg font-semibold text-gray-900">Admin Panel</h2>
-            <div></div>
           </div>
         </div>
 
         {/* Page content */}
-        <main className="p-6">
-          {children}
+        <main className="py-10">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            {children}
+          </div>
         </main>
       </div>
     </div>
@@ -145,9 +144,10 @@ function AdminLayout({ children }: AdminLayoutProps) {
 }
 
 export default function AdminDashboard() {
+  const { userProfile } = useFirebaseAuth();
   const [location] = useLocation();
 
-  // Route to specific admin pages
+  // Show Email Campaigns if we're on that route
   if (location === '/admin/email-campaigns') {
     return (
       <AdminLayout>
@@ -156,15 +156,17 @@ export default function AdminDashboard() {
     );
   }
 
-  // Default dashboard content
+  // Default dashboard view
   return (
     <AdminLayout>
       <div className="space-y-6">
+        {/* Page Header */}
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-600">Welcome to your admin panel</p>
+          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+          <p className="text-gray-600 mt-1">Welcome to your admin panel</p>
         </div>
 
+        {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -172,7 +174,7 @@ export default function AdminDashboard() {
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">-</div>
+              <div className="text-2xl font-bold">—</div>
               <p className="text-xs text-muted-foreground">System users</p>
             </CardContent>
           </Card>
@@ -183,7 +185,7 @@ export default function AdminDashboard() {
               <Mail className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">-</div>
+              <div className="text-2xl font-bold">—</div>
               <p className="text-xs text-muted-foreground">Emails sent</p>
             </CardContent>
           </Card>
@@ -194,7 +196,7 @@ export default function AdminDashboard() {
               <BarChart3 className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">-</div>
+              <div className="text-2xl font-bold">—</div>
               <p className="text-xs text-muted-foreground">Data points</p>
             </CardContent>
           </Card>
@@ -205,7 +207,11 @@ export default function AdminDashboard() {
               <Settings className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-green-600">Online</div>
+              <div className="text-2xl font-bold">
+                <Badge variant="secondary" className="bg-green-100 text-green-800">
+                  Online
+                </Badge>
+              </div>
               <p className="text-xs text-muted-foreground">All systems operational</p>
             </CardContent>
           </Card>
@@ -231,14 +237,6 @@ export default function AdminDashboard() {
                 <BarChart3 className="mr-2 h-4 w-4" />
                 View Analytics (Coming Soon)
               </Button>
-              <Button 
-                className="w-full justify-start" 
-                variant="outline"
-                onClick={handleSignOut}
-              >
-                <LogOut className="mr-2 h-4 w-4" />
-                Sign Out
-              </Button>
             </CardContent>
           </Card>
 
@@ -247,9 +245,9 @@ export default function AdminDashboard() {
               <CardTitle>Recent Activity</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground">
-                Activity logs will appear here once the system is fully operational.
-              </p>
+              <div className="text-sm text-gray-500">
+                No recent activity to display
+              </div>
             </CardContent>
           </Card>
         </div>
