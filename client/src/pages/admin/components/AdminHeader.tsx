@@ -45,7 +45,7 @@ export default function AdminHeader() {
 
             {/* Center - Logo */}
             <div className="flex items-center">
-              <Link href="/">
+              <Link href="/admin">
                 <img 
                   src={brandscalingLogo} 
                   alt="Brandscaling" 
