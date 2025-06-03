@@ -120,18 +120,20 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
       {/* Main content */}
       <div className="lg:ml-64">
-        {/* Top header for mobile */}
-        <header className="lg:hidden bg-white shadow-sm border-b border-gray-200">
+        {/* Top header */}
+        <header className="bg-white shadow-sm border-b border-gray-200">
           <div className="flex items-center justify-between h-16 px-4">
             <Button
               variant="ghost"
               size="sm"
+              className="lg:hidden"
               onClick={() => setSidebarOpen(true)}
             >
               <Menu className="w-5 h-5" />
             </Button>
-            <h1 className="text-lg font-semibold text-gray-900">Admin Panel</h1>
-            <div className="w-10" /> {/* Spacer for centering */}
+            <h1 className="text-lg font-semibold text-gray-900 lg:hidden">Admin Panel</h1>
+            <div className="hidden lg:block"></div> {/* Empty space for desktop */}
+            <div className="lg:hidden w-10"></div> {/* Spacer for mobile centering */}
           </div>
         </header>
 
