@@ -5,7 +5,6 @@ import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
 import { pool } from "./db";
 import { verifyFirebaseToken, requireAuth, requireRole, createUserProfile, getUserProfile, updateUserRole } from "./firebaseAuth";
-import { setupAuth, isAuthenticated } from "./replitAuth";
 import { chatWithAgent } from "./openai";
 import { updateUserAfterPurchase } from "./updateUserAfterPurchase";
 import { resendClient } from "@shared/resendClient";
@@ -2438,11 +2437,8 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
     }
   });
 
-  // Import admin middleware
-  const { requireAdmin } = await import("./middleware/adminAuth.js");
-
-  // Admin course management routes
-  app.get("/api/admin/courses", isAuthenticated, requireAdmin, async (req, res) => {
+  // Admin course management routes (using Firebase auth)
+  app.get("/api/admin/courses", requireAuth, requireRole('admin'), async (req, res) => {
     try {
       const courses = await storage.getAllCourses();
       res.json(courses);
@@ -2452,7 +2448,7 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
     }
   });
 
-  app.post("/api/admin/courses", isAuthenticated, requireAdmin, async (req, res) => {
+  app.post("/api/admin/courses", requireAuth, requireRole('admin'), async (req, res) => {
     try {
       const courseData = req.body;
       const course = await storage.createCourse(courseData);
@@ -2463,7 +2459,7 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
     }
   });
 
-  app.put("/api/admin/courses/:id", isAuthenticated, requireAdmin, async (req, res) => {
+  app.put("/api/admin/courses/:id", requireAuth, requireRole('admin'), async (req, res) => {
     try {
       const courseId = parseInt(req.params.id);
       const courseData = req.body;
@@ -2475,7 +2471,7 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
     }
   });
 
-  app.delete("/api/admin/courses/:id", isAuthenticated, requireAdmin, async (req, res) => {
+  app.delete("/api/admin/courses/:id", requireAuth, requireRole('admin'), async (req, res) => {
     try {
       const courseId = parseInt(req.params.id);
       await storage.deleteCourse(courseId);
@@ -2487,7 +2483,7 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
   });
 
   // Admin lesson management routes
-  app.get("/api/admin/courses/:courseId/lessons", isAuthenticated, requireAdmin, async (req, res) => {
+  app.get("/api/admin/courses/:courseId/lessons", requireAuth, requireRole('admin'), async (req, res) => {
     try {
       const courseId = parseInt(req.params.courseId);
       const lessons = await storage.getLessons(courseId);
@@ -2498,7 +2494,7 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
     }
   });
 
-  app.post("/api/admin/courses/:courseId/lessons", isAuthenticated, requireAdmin, async (req, res) => {
+  app.post("/api/admin/courses/:courseId/lessons", requireAuth, requireRole('admin'), async (req, res) => {
     try {
       const courseId = parseInt(req.params.courseId);
       const lessonData = { ...req.body, courseId };
@@ -2510,7 +2506,7 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
     }
   });
 
-  app.put("/api/admin/lessons/:id", isAuthenticated, requireAdmin, async (req, res) => {
+  app.put("/api/admin/lessons/:id", requireAuth, requireRole('admin'), async (req, res) => {
     try {
       const lessonId = parseInt(req.params.id);
       const lessonData = req.body;
@@ -2522,7 +2518,7 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
     }
   });
 
-  app.delete("/api/admin/lessons/:id", isAuthenticated, requireAdmin, async (req, res) => {
+  app.delete("/api/admin/lessons/:id", requireAuth, requireRole('admin'), async (req, res) => {
     try {
       const lessonId = parseInt(req.params.id);
       await storage.deleteLesson(lessonId);
@@ -2533,7 +2529,7 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
     }
   });
 
-  app.put("/api/admin/courses/:courseId/lessons/reorder", isAuthenticated, requireAdmin, async (req, res) => {
+  app.put("/api/admin/courses/:courseId/lessons/reorder", requireAuth, requireRole('admin'), async (req, res) => {
     try {
       const courseId = parseInt(req.params.courseId);
       const { lessonIds } = req.body;
