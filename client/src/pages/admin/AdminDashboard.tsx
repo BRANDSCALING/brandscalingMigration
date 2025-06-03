@@ -30,9 +30,22 @@ function AdminLayout({ children }: AdminLayoutProps) {
   const handleSignOut = async () => {
     try {
       await logout();
+      // Clear all browser storage
+      localStorage.clear();
+      sessionStorage.clear();
+      // Clear cookies
+      document.cookie.split(";").forEach((c) => {
+        const eqPos = c.indexOf("=");
+        const name = eqPos > -1 ? c.substr(0, eqPos) : c;
+        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+      });
+      // Force redirect to login
       window.location.href = '/auth';
     } catch (error) {
       console.error('Sign out error:', error);
+      // Force clear everything and redirect
+      localStorage.clear();
+      sessionStorage.clear();
       window.location.href = '/auth';
     }
   };
