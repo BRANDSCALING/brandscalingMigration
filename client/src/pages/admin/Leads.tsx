@@ -207,6 +207,7 @@ export default function Leads() {
 
   return (
     <div className="space-y-6">
+      <h2>⚠️ Leads page loaded</h2>
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -348,7 +349,7 @@ export default function Leads() {
                   <SelectItem value="all">All Statuses</SelectItem>
                   {uniqueStatuses.map((status) => (
                     <SelectItem key={status} value={status}>
-                      {status.charAt(0).toUpperCase() + status.slice(1)}
+                      {status ? status.charAt(0).toUpperCase() + status.slice(1) : 'Unknown'}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -431,7 +432,7 @@ export default function Leads() {
                     </TableCell>
                     <TableCell>
                       <Badge className={getStatusColor(lead.status)}>
-                        {lead.status.charAt(0).toUpperCase() + lead.status.slice(1)}
+                        {lead.status ? lead.status.charAt(0).toUpperCase() + lead.status.slice(1) : 'Unknown'}
                       </Badge>
                     </TableCell>
                     <TableCell>
