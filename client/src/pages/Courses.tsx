@@ -69,6 +69,7 @@ const placeholderCourses: Course[] = [
 
 export default function Courses() {
   const [filter, setFilter] = useState<FilterType>('all');
+  const { userTier, allCourses, isLoading } = useAccess();
 
   const filterOptions = [
     { value: 'all', label: 'All Courses' },
@@ -79,7 +80,10 @@ export default function Courses() {
     { value: 'alchemist', label: 'Alchemist Track' }
   ];
 
-  const filteredCourses = placeholderCourses.filter(course => {
+  // Use real course data if available, otherwise fall back to placeholder structure
+  const coursesToDisplay = isLoading ? [] : (allCourses.length > 0 ? allCourses : placeholderCourses);
+  
+  const filteredCourses = coursesToDisplay.filter(course => {
     if (filter === 'all') return true;
     if (filter === 'architect' || filter === 'alchemist') {
       return course.track === filter || course.track === 'all';
@@ -174,23 +178,28 @@ export default function Courses() {
         </div>
       </section>
 
-      {/* Filter Bar */}
+      {/* User Progress Section */}
       <section className="py-8 px-6 bg-gray-50">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-wrap gap-3 justify-center">
-            {filterOptions.map((option) => (
-              <Button
-                key={option.value}
-                variant={filter === option.value ? "default" : "outline"}
-                onClick={() => setFilter(option.value as FilterType)}
-                className={filter === option.value 
-                  ? "bg-gradient-to-r from-purple-600 to-orange-500 text-white" 
-                  : "hover:bg-gray-100"
-                }
-              >
-                {option.label}
-              </Button>
-            ))}
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-4 gap-6">
+          <div className="lg:col-span-1">
+            <YouAreHere />
+          </div>
+          <div className="lg:col-span-3">
+            <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
+              {filterOptions.map((option) => (
+                <Button
+                  key={option.value}
+                  variant={filter === option.value ? "default" : "outline"}
+                  onClick={() => setFilter(option.value as FilterType)}
+                  className={filter === option.value 
+                    ? "bg-gradient-to-r from-purple-600 to-orange-500 text-white" 
+                    : "hover:bg-gray-100"
+                  }
+                >
+                  {option.label}
+                </Button>
+              ))}
+            </div>
           </div>
         </div>
       </section>

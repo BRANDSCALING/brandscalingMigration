@@ -78,31 +78,8 @@ function Router() {
     );
   }
 
-  // Helper component for public pages with safe navigation
+  // Helper component for public pages - allow both authenticated and unauthenticated access
   const PublicPage = ({ children }: { children: React.ReactNode }) => {
-    const [hasMounted, setHasMounted] = useState(false);
-    const [shouldRedirect, setShouldRedirect] = useState(false);
-
-    useEffect(() => {
-      setHasMounted(true);
-    }, []);
-
-    useEffect(() => {
-      if (hasMounted && isAuthenticated && userProfile) {
-        setShouldRedirect(true);
-      }
-    }, [hasMounted, isAuthenticated, userProfile]);
-
-    useEffect(() => {
-      if (shouldRedirect) {
-        if (userProfile?.role === 'student') {
-          setLocation('/student');
-        }
-      }
-    }, [shouldRedirect, userProfile, setLocation]);
-
-    if (!hasMounted || shouldRedirect) return null;
-
     return <Layout>{children}</Layout>;
   };
 
