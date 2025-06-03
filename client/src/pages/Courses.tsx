@@ -4,9 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Play, Users, Trophy, Target, Brain, Building } from 'lucide-react';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-
 // Types for database integration
 interface Course {
   id: string;
@@ -106,7 +103,6 @@ export default function Courses() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Header />
       
       {/* Hero Header */}
       <section className="bg-gradient-to-br from-purple-50 to-orange-50 py-20">
@@ -321,8 +317,6 @@ export default function Courses() {
           </div>
         </div>
       </section>
-
-      <Footer />
     </div>
   );
 }
