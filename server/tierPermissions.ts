@@ -34,46 +34,7 @@ const tierPermissions = {
 };
 
 const courseDatabase = {
-  'getting-started': { 
-    title: 'Getting Started with Brandscaling',
-    requiredTier: 'beginner',
-    track: 'all'
-  },
-  'business-idea-lab': { 
-    title: 'Business Idea Lab',
-    requiredTier: 'beginner',
-    track: 'all'
-  },
-  'frameworks-101': { 
-    title: 'Frameworks 101',
-    requiredTier: 'intermediate',
-    track: 'architect'
-  },
-  'foundations': { 
-    title: 'Brandscaling Foundations',
-    requiredTier: 'intermediate',
-    track: 'all'
-  },
-  'architect-mastery': { 
-    title: 'Architect Mastery Program',
-    requiredTier: 'advanced',
-    track: 'architect'
-  },
-  'alchemist-intuition': { 
-    title: 'Alchemist Intuition Training',
-    requiredTier: 'advanced',
-    track: 'alchemist'
-  },
-  'mastermind-mastery': { 
-    title: 'Mastermind Mastery',
-    requiredTier: 'advanced',
-    track: 'all'
-  },
-  '100k-club-exclusive': { 
-    title: '£100K Club Exclusive Strategies',
-    requiredTier: 'mastermind',
-    track: 'all'
-  }
+  // AWAITING USER CONTENT - Course data will be added when provided
 };
 
 function hasAccess(userTier, feature, courseId = null) {

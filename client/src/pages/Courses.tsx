@@ -102,9 +102,6 @@ export default function Courses() {
                 <CardTitle className="text-2xl font-bold text-purple-600 mb-4">
                   The Architect
                 </CardTitle>
-                <p className="text-gray-600 mb-6">
-                  Strategic, systematic, structure-driven. Build frameworks that scale with precision and clarity.
-                </p>
                 <Link href="/quiz">
                   <Button variant="outline" className="border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white">
                     Discover Your Track
@@ -122,9 +119,6 @@ export default function Courses() {
                 <CardTitle className="text-2xl font-bold text-orange-600 mb-4">
                   The Alchemist
                 </CardTitle>
-                <p className="text-gray-600 mb-6">
-                  Intuitive, adaptive, energy-driven. Transform vision into reality through authentic connection.
-                </p>
                 <Link href="/quiz">
                   <Button variant="outline" className="border-orange-600 text-orange-600 hover:bg-orange-600 hover:text-white">
                     Discover Your Track
@@ -136,28 +130,23 @@ export default function Courses() {
         </div>
       </section>
 
-      {/* User Progress Section */}
+      {/* Filter Bar */}
       <section className="py-8 px-6 bg-gray-50">
-        <div className="max-w-6xl mx-auto grid lg:grid-cols-4 gap-6">
-          <div className="lg:col-span-1">
-            <YouAreHere />
-          </div>
-          <div className="lg:col-span-3">
-            <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
-              {filterOptions.map((option) => (
-                <Button
-                  key={option.value}
-                  variant={filter === option.value ? "default" : "outline"}
-                  onClick={() => setFilter(option.value as FilterType)}
-                  className={filter === option.value 
-                    ? "bg-gradient-to-r from-purple-600 to-orange-500 text-white" 
-                    : "hover:bg-gray-100"
-                  }
-                >
-                  {option.label}
-                </Button>
-              ))}
-            </div>
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-wrap gap-3 justify-center">
+            {filterOptions.map((option) => (
+              <Button
+                key={option.value}
+                variant={filter === option.value ? "default" : "outline"}
+                onClick={() => setFilter(option.value as FilterType)}
+                className={filter === option.value 
+                  ? "bg-gradient-to-r from-purple-600 to-orange-500 text-white" 
+                  : "hover:bg-gray-100"
+                }
+              >
+                {option.label}
+              </Button>
+            ))}
           </div>
         </div>
       </section>

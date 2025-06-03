@@ -11,36 +11,28 @@ const tierData = {
     icon: <Zap className="h-5 w-5" />,
     color: 'text-green-600',
     bgColor: 'bg-green-100',
-    progress: 25,
-    next: 'intermediate',
-    description: 'Getting started with foundational courses'
+    next: 'intermediate'
   },
   intermediate: {
     name: 'Intermediate',
     icon: <ArrowUp className="h-5 w-5" />,
     color: 'text-blue-600',
     bgColor: 'bg-blue-100',
-    progress: 50,
-    next: 'advanced',
-    description: 'Building frameworks and deeper strategies'
+    next: 'advanced'
   },
   advanced: {
     name: 'Advanced',
     icon: <Crown className="h-5 w-5" />,
     color: 'text-purple-600',
     bgColor: 'bg-purple-100',
-    progress: 75,
-    next: 'mastermind',
-    description: 'Full access with live events and AI agents'
+    next: 'mastermind'
   },
   mastermind: {
     name: 'Mastermind',
     icon: <Crown className="h-5 w-5" />,
     color: 'text-purple-800',
     bgColor: 'bg-gradient-to-r from-purple-100 to-orange-100',
-    progress: 100,
-    next: null,
-    description: 'Elite tier with exclusive founder access'
+    next: null
   }
 };
 
@@ -82,17 +74,9 @@ export default function YouAreHere() {
       </CardHeader>
       
       <CardContent className="space-y-6">
-        <div className="space-y-2">
-          <div className="flex justify-between text-sm">
-            <span className="text-gray-600">Progress</span>
-            <span className="font-medium">{currentTierData?.progress}% Complete</span>
-          </div>
-          <Progress value={currentTierData?.progress || 0} className="h-2" />
+        <div className="text-center">
+          <span className="text-sm text-gray-600">Current Tier</span>
         </div>
-
-        <p className="text-gray-600 text-sm">
-          {currentTierData?.description}
-        </p>
 
         <div className="space-y-3">
           <h4 className="font-semibold text-sm text-gray-900">Your Journey</h4>
