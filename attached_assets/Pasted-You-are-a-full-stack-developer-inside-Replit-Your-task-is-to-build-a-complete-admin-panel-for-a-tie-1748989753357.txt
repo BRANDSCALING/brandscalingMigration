@@ -1,0 +1,70 @@
+You are a full-stack developer inside Replit. Your task is to build a complete admin panel for a tier-based LMS (Learning Management System) with secure Firebase authentication and real database integration.
+
+🔒 MASTER PROMPT RULES — Follow exactly:
+- ❌ Do NOT use any dummy data.
+- ✅ Use real form components, not mockups or placeholder-only code.
+- ✅ All routes, components, and logic must be wired end-to-end.
+- ✅ Build real, working database schema using Drizzle (or Prisma if already used).
+- ✅ Use Firebase for authentication (student + admin roles).
+- ✅ All frontend UI must be mobile-first, clean, production-ready, and connected to backend.
+- ✅ Stripe logic must be functional — connect `access_tier` to Stripe purchase state.
+- ✅ Always add real error handling, not placeholders.
+- ✅ Never skip schema-to-UI wiring. Every input must hit the backend and database.
+
+💡 CONTEXT:
+This LMS allows students to access courses by tier: `"beginner"`, `"intermediate"`, `"advanced"`, or `"mastermind"`. Admins must be able to:
+- Add/edit/delete courses and lessons
+- Set `access_tier` per course
+- Add lesson title, video URL, and workbook URL
+- Manage access by tier on the frontend
+- Track user tier via Stripe webhook (ready, just trigger not tested yet)
+
+🔥 REQUIRED BUILD:
+
+1. **Database Schema (shared/schema.ts):**
+   - Table: `courses` — fields: `id`, `title`, `description`, `access_tier`, `created_at`
+   - Table: `lessons` — fields: `id`, `course_id`, `title`, `video_url`, `workbook_url`, `position`, `created_at`
+   - Add foreign key from `lessons.course_id → courses.id`
+
+2. **Storage Layer (server/storage.ts):**
+   - Add methods:
+     - `createCourse`, `updateCourse`, `deleteCourse`, `listCourses`
+     - `createLesson`, `updateLesson`, `deleteLesson`, `listLessonsByCourseId`
+
+3. **Authentication Middleware (server/middleware/adminAuth.ts):**
+   - Use Firebase Admin SDK to verify ID token and check if user is an admin
+   - Restrict `/admin/*` routes to admin only
+
+4. **Backend Routes (server/routes.ts):**
+   - CRUD routes for `/admin/courses` and `/admin/lessons`
+   - Wire all methods to storage layer
+   - Protect with admin middleware
+
+5. **Admin Interface (client/src/pages/admin/AdminCourses.tsx):**
+   - Table view of all courses
+   - Form to create/edit courses with access_tier dropdown
+   - Nested lessons table per course
+   - Modal or subform to add/edit lessons (title, video URL, workbook URL)
+
+6. **Routing (client/src/App.tsx):**
+   - Add `/admin/courses` route behind auth check
+   - Use `useAuth()` or similar to gate access
+
+7. **Frontend GateComponent (for users):**
+   - If user has lower access tier than course requires, show “Upgrade to unlock”
+   - Stripe upgrade button should trigger Stripe checkout with tier metadata
+
+8. **Admin UX polish:**
+   - Use tailwind or clean layout
+   - Add error states, confirmation prompts, loading states
+
+9. **Next Steps (optional for later):**
+   - Student progress tracking (% completed)
+   - Quiz module
+   - Certificate on completion
+   - Community integration by tier
+
+🎯 GOAL:
+Build the full LMS admin interface with course + lesson creation, tier filtering, access gates, and Stripe wiring. Everything must be live-working, no fakes or placeholders.
+
+DO NOT SKIP ANY PIECE. Generate clean, reusable code per file with imports. State clearly when a file is added or edited. Begin now.
