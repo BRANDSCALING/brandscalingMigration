@@ -19,6 +19,7 @@ import Checkout from "@/pages/Checkout";
 import ThankYou from "@/pages/ThankYou";
 import Affiliates from "@/pages/Affiliates";
 import Layout from "@/components/Layout";
+import DevLogin from "@/pages/DevLogin";
 
 // Sandboxed Modules
 import StudentDashboard from "@/pages/student/StudentDashboard";
@@ -109,6 +110,17 @@ function Router() {
     <Switch>
       {/* Auth Route - Always accessible */}
       <Route path="/auth" component={Auth} />
+      
+      {/* Development Login - Always accessible */}
+      <Route path="/dev-login" component={DevLogin} />
+      
+      {/* Development Admin Routes - Always accessible for testing */}
+      <Route path="/dev-admin" component={() => <AdminLayout><AdminDashboard /></AdminLayout>} />
+      <Route path="/dev-admin/courses" component={() => <AdminLayout><AdminCourses /></AdminLayout>} />
+      <Route path="/dev-admin/community" component={() => <AdminLayout><AdminCommunity /></AdminLayout>} />
+      <Route path="/dev-admin/leads" component={() => <AdminLayout><Leads /></AdminLayout>} />
+      <Route path="/dev-admin/email-campaigns" component={() => <AdminLayout><EmailCampaigns /></AdminLayout>} />
+      <Route path="/dev-admin/email-templates" component={() => <AdminLayout><EmailTemplates /></AdminLayout>} />
 
       {/* Visitor-Only Routes - Block authenticated users */}
       <Route path="/community" component={() => <VisitorOnlyPage><CommunityComingSoon /></VisitorOnlyPage>} />
