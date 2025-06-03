@@ -10,7 +10,7 @@ import { updateUserAfterPurchase } from "./updateUserAfterPurchase";
 import { resendClient } from "@shared/resendClient";
 import { z } from "zod";
 import Stripe from "stripe";
-import { hasAccess, getAllowedCourses, courseDatabase, getUpgradeTarget } from './tierPermissions.js';
+import { hasAccess, getAllowedCourses, courseDatabase, getUpgradeTarget } from './tierPermissions';
 
 // Initialize Stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
