@@ -147,8 +147,8 @@ function Router() {
         </>
       )}
 
-      {/* Student Module - ONLY accessible to students */}
-      {isAuthenticated && userProfile?.role === 'student' && (
+      {/* Student Module - Accessible to students and admins */}
+      {isAuthenticated && (userProfile?.role === 'student' || userProfile?.role === 'admin') && (
         <>
           <Route path="/student" component={StudentDashboard} />
           <Route path="/student/courses" component={StudentCourses} />
