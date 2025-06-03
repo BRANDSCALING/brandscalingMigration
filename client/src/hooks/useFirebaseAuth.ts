@@ -195,8 +195,20 @@ export function useFirebaseAuth() {
   const logout = async () => {
     try {
       await signOut(auth);
+      // Clear all local state
+      setUser(null);
+      setUserProfile(null);
+      setError(null);
+      // Clear any cached data
+      localStorage.clear();
+      sessionStorage.clear();
     } catch (error: any) {
       setError(error.message);
+      // Force clear state even if signOut fails
+      setUser(null);
+      setUserProfile(null);
+      localStorage.clear();
+      sessionStorage.clear();
       throw error;
     }
   };
