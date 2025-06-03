@@ -15,16 +15,24 @@ export default function Auth() {
   const { signUp, signIn, signInWithGoogle, loading, error, userProfile, logout } = useFirebaseAuth();
   const { toast } = useToast();
 
-  // Redirect authenticated users to their dashboard
+  // Force logout when accessing auth page
   useEffect(() => {
-    if (userProfile && userProfile.role) {
-      if (userProfile.role === 'admin') {
-        setLocation('/admin');
-      } else if (userProfile.role === 'student') {
-        setLocation('/student');
+    const forceLogout = async () => {
+      try {
+        await logout();
+        localStorage.clear();
+        sessionStorage.clear();
+      } catch (error) {
+        console.log('Logout error:', error);
+        localStorage.clear();
+        sessionStorage.clear();
       }
+    };
+    
+    if (userProfile) {
+      forceLogout();
     }
-  }, [userProfile, setLocation]);
+  }, []);
   
   // Form states
   const [signInEmail, setSignInEmail] = useState('');
