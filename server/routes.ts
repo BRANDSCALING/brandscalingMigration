@@ -34,6 +34,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Development route to create test admin user (public - must be before auth middleware)
+  app.post("/api/dev/create-admin", async (req, res) => {
+    try {
+      const { createTestAdminUser } = await import("./createAdminUser");
+      const adminUser = await createTestAdminUser();
+      res.json({ success: true, user: adminUser });
+    } catch (error) {
+      console.error("Error creating admin user:", error);
+      res.status(500).json({ error: "Failed to create admin user" });
+    }
+  });
+
   // Apply Firebase auth middleware to all other API routes
   app.use('/api', verifyFirebaseToken);
 
@@ -2436,6 +2448,8 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
       });
     }
   });
+
+
 
   // Admin course management routes (using Firebase auth)
   app.get("/api/admin/courses", requireAuth, requireRole('admin'), async (req, res) => {
