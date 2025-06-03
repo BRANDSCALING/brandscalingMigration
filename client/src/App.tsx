@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import NotFound from "@/pages/not-found";
 import Landing from "@/pages/Landing";
 import Auth from "@/pages/Auth";
-import Courses from "@/pages/Courses";
+import CoursesPage from "@/pages/Courses";
 import Community from "@/pages/Community";
 import Quiz from "@/pages/Quiz";
 import DeepQuiz from "@/pages/DeepQuiz";
@@ -135,7 +135,7 @@ function Router() {
       {/* Public Marketing Routes - Handle authenticated users with safe navigation */}
       <Route path="/" component={() => <Layout><Landing /></Layout>} />
       <Route path="/about" component={() => <PublicPage><About /></PublicPage>} />
-      <Route path="/courses" component={() => <PublicPage><Courses /></PublicPage>} />
+      <Route path="/courses" component={() => <PublicPage><CoursesPage /></PublicPage>} />
       <Route path="/contact" component={() => <PublicPage><Contact /></PublicPage>} />
       <Route path="/blog" component={() => <PublicPage><Blog /></PublicPage>} />
       <Route path="/quiz" component={() => <PublicPage><Quiz /></PublicPage>} />
