@@ -570,7 +570,7 @@ export default function StudentCommunity() {
       {/* Pinned Posts */}
       {posts && posts.filter(post => post.isPinned && !post.featuredType).length > 0 && (
         <div className="space-y-3">
-          <h3 className="font-semibold text-lg text-gray-900">📌 Pinned Posts</h3>
+          <h3 className="font-semibold text-lg text-gray-900">Pinned Posts</h3>
           {posts
             .filter(post => post.isPinned && !post.featuredType)
             .map((post) => (
