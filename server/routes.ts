@@ -1490,7 +1490,7 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
   // Add new lead (Firebase authenticated admins only)
   app.post("/api/leads", requireRole("admin"), async (req, res) => {
     try {
-      const { name, email } = req.body;
+      const { name, email, tags, status } = req.body;
       const adminUid = req.user?.uid;
 
       if (!name || !email) {
@@ -1503,8 +1503,8 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
 
       // Add lead to database
       const { rows } = await pool.query(
-        'INSERT INTO leads (name, email, created_by_admin_uid, created_at) VALUES ($1, $2, $3, NOW()) RETURNING *',
-        [name, email, adminUid]
+        'INSERT INTO leads (name, email, tags, status, created_by_admin_uid, created_at) VALUES ($1, $2, $3, $4, $5, NOW()) RETURNING *',
+        [name, email, tags || null, status || 'new', adminUid]
       );
 
       const newLead = rows[0];
@@ -1564,6 +1564,76 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
       console.error('Error adding lead:', error);
       res.status(500).json({ 
         error: 'Failed to add lead',
+        details: error.message 
+      });
+    }
+  });
+
+  // Update lead (Firebase authenticated admins only)
+  app.put("/api/leads/:id", requireRole("admin"), async (req, res) => {
+    try {
+      const leadId = parseInt(req.params.id);
+      const { name, email, tags, status } = req.body;
+      const adminUid = req.user?.uid;
+
+      if (!name || !email) {
+        return res.status(400).json({ error: 'Name and email are required' });
+      }
+
+      if (!adminUid) {
+        return res.status(401).json({ error: 'Admin authentication required' });
+      }
+
+      const { rows } = await pool.query(
+        'UPDATE leads SET name = $1, email = $2, tags = $3, status = $4 WHERE id = $5 RETURNING *',
+        [name.trim(), email.trim(), tags || null, status || 'new', leadId]
+      );
+
+      if (rows.length === 0) {
+        return res.status(404).json({ error: 'Lead not found' });
+      }
+
+      res.json({
+        success: true,
+        lead: rows[0],
+        message: 'Lead updated successfully'
+      });
+    } catch (error: any) {
+      console.error('Error updating lead:', error);
+      res.status(500).json({ 
+        error: 'Failed to update lead',
+        details: error.message 
+      });
+    }
+  });
+
+  // Delete lead (Firebase authenticated admins only)
+  app.delete("/api/leads/:id", requireRole("admin"), async (req, res) => {
+    try {
+      const leadId = parseInt(req.params.id);
+      const adminUid = req.user?.uid;
+
+      if (!adminUid) {
+        return res.status(401).json({ error: 'Admin authentication required' });
+      }
+
+      const { rows } = await pool.query(
+        'DELETE FROM leads WHERE id = $1 RETURNING *',
+        [leadId]
+      );
+
+      if (rows.length === 0) {
+        return res.status(404).json({ error: 'Lead not found' });
+      }
+
+      res.json({ 
+        success: true, 
+        message: 'Lead deleted successfully' 
+      });
+    } catch (error: any) {
+      console.error('Error deleting lead:', error);
+      res.status(500).json({ 
+        error: 'Failed to delete lead',
         details: error.message 
       });
     }

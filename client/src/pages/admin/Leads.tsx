@@ -56,7 +56,7 @@ export default function Leads() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: leads = [], isLoading } = useQuery({
+  const { data: leads = [], isLoading } = useQuery<Lead[]>({
     queryKey: ["/api/leads"],
   });
 
@@ -68,10 +68,10 @@ export default function Leads() {
   });
 
   // Get unique statuses and tags for filters
-  const uniqueStatuses = [...new Set(leads.map((lead: Lead) => lead.status))];
-  const uniqueTags = [...new Set(leads.flatMap((lead: Lead) => 
+  const uniqueStatuses = Array.from(new Set(leads.map((lead: Lead) => lead.status)));
+  const uniqueTags = Array.from(new Set(leads.flatMap((lead: Lead) => 
     lead.tags ? lead.tags.split(',').map(tag => tag.trim()) : []
-  ))];
+  )));
 
   const addLeadMutation = useMutation({
     mutationFn: async (data: { name: string; email: string; tags?: string; status?: string }) => {
@@ -168,7 +168,10 @@ export default function Leads() {
       });
       return;
     }
-    updateLeadMutation.mutate(editingLead);
+    updateLeadMutation.mutate({
+      ...editingLead,
+      tags: editingLead.tags || undefined
+    });
   };
 
   const startEdit = (lead: Lead) => {
@@ -183,6 +186,7 @@ export default function Leads() {
   };
 
   const getStatusColor = (status: string) => {
+    if (!status) return "bg-gray-100 text-gray-800";
     switch (status) {
       case "new": return "bg-blue-100 text-blue-800";
       case "contacted": return "bg-yellow-100 text-yellow-800";
