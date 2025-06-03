@@ -2559,6 +2559,177 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
     }
   });
 
+  // Admin Community Management Routes
+  app.get("/api/admin/community/posts", requireAuth, requireRole('admin'), async (req, res) => {
+    try {
+      const { filterTier, filterStatus } = req.query;
+      const posts = await storage.getPostsForAdmin(filterTier as string, filterStatus as string);
+      res.json(posts);
+    } catch (error) {
+      console.error("Error fetching admin posts:", error);
+      res.status(500).json({ error: "Failed to fetch posts" });
+    }
+  });
+
+  app.post("/api/admin/community/posts", requireAuth, requireRole('admin'), async (req, res) => {
+    try {
+      const userId = req.user.uid;
+      const postData = { ...req.body, userId };
+      const post = await storage.createAdminPost(postData);
+      res.status(201).json(post);
+    } catch (error) {
+      console.error("Error creating admin post:", error);
+      res.status(500).json({ error: "Failed to create post" });
+    }
+  });
+
+  app.put("/api/admin/community/posts/:id/pin", requireAuth, requireRole('admin'), async (req, res) => {
+    try {
+      const postId = req.params.id;
+      const userId = req.user.uid;
+      const post = await storage.togglePostPin(postId, userId);
+      res.json(post);
+    } catch (error) {
+      console.error("Error toggling post pin:", error);
+      res.status(500).json({ error: "Failed to toggle pin" });
+    }
+  });
+
+  app.put("/api/admin/community/posts/:id/visibility", requireAuth, requireRole('admin'), async (req, res) => {
+    try {
+      const postId = req.params.id;
+      const post = await storage.togglePostVisibility(postId);
+      res.json(post);
+    } catch (error) {
+      console.error("Error toggling post visibility:", error);
+      res.status(500).json({ error: "Failed to toggle visibility" });
+    }
+  });
+
+  app.delete("/api/admin/community/posts/:id", requireAuth, requireRole('admin'), async (req, res) => {
+    try {
+      const postId = req.params.id;
+      await storage.deletePost(postId);
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting post:", error);
+      res.status(500).json({ error: "Failed to delete post" });
+    }
+  });
+
+  app.get("/api/admin/community/posts/:id/replies", requireAuth, requireRole('admin'), async (req, res) => {
+    try {
+      const postId = req.params.id;
+      const replies = await storage.getPostReplies(postId);
+      res.json(replies);
+    } catch (error) {
+      console.error("Error fetching post replies:", error);
+      res.status(500).json({ error: "Failed to fetch replies" });
+    }
+  });
+
+  app.put("/api/admin/community/replies/:id/visibility", requireAuth, requireRole('admin'), async (req, res) => {
+    try {
+      const replyId = req.params.id;
+      const reply = await storage.toggleReplyVisibility(replyId);
+      res.json(reply);
+    } catch (error) {
+      console.error("Error toggling reply visibility:", error);
+      res.status(500).json({ error: "Failed to toggle reply visibility" });
+    }
+  });
+
+  // Admin Lead Management Routes
+  app.get("/api/admin/leads", requireAuth, requireRole('admin'), async (req, res) => {
+    try {
+      const { filterStatus, filterSource } = req.query;
+      const leads = await storage.getLeadsForAdmin(filterStatus as string, filterSource as string);
+      res.json(leads);
+    } catch (error) {
+      console.error("Error fetching leads:", error);
+      res.status(500).json({ error: "Failed to fetch leads" });
+    }
+  });
+
+  app.delete("/api/admin/leads/:id", requireAuth, requireRole('admin'), async (req, res) => {
+    try {
+      const leadId = parseInt(req.params.id);
+      await storage.deleteLead(leadId);
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting lead:", error);
+      res.status(500).json({ error: "Failed to delete lead" });
+    }
+  });
+
+  app.get("/api/admin/leads/export", requireAuth, requireRole('admin'), async (req, res) => {
+    try {
+      const leads = await storage.getAllLeads();
+      const csv = storage.exportLeadsToCSV(leads);
+      
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', 'attachment; filename=leads.csv');
+      res.send(csv);
+    } catch (error) {
+      console.error("Error exporting leads:", error);
+      res.status(500).json({ error: "Failed to export leads" });
+    }
+  });
+
+  // Admin Email Template Management Routes
+  app.get("/api/admin/email-templates", requireAuth, requireRole('admin'), async (req, res) => {
+    try {
+      const templates = await storage.getEmailTemplates();
+      res.json(templates);
+    } catch (error) {
+      console.error("Error fetching email templates:", error);
+      res.status(500).json({ error: "Failed to fetch templates" });
+    }
+  });
+
+  app.post("/api/admin/email-templates", requireAuth, requireRole('admin'), async (req, res) => {
+    try {
+      const template = await storage.createEmailTemplate(req.body);
+      res.status(201).json(template);
+    } catch (error) {
+      console.error("Error creating email template:", error);
+      res.status(500).json({ error: "Failed to create template" });
+    }
+  });
+
+  app.put("/api/admin/email-templates/:id", requireAuth, requireRole('admin'), async (req, res) => {
+    try {
+      const templateId = parseInt(req.params.id);
+      const template = await storage.updateEmailTemplate(templateId, req.body);
+      res.json(template);
+    } catch (error) {
+      console.error("Error updating email template:", error);
+      res.status(500).json({ error: "Failed to update template" });
+    }
+  });
+
+  app.delete("/api/admin/email-templates/:id", requireAuth, requireRole('admin'), async (req, res) => {
+    try {
+      const templateId = parseInt(req.params.id);
+      await storage.deleteEmailTemplate(templateId);
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting email template:", error);
+      res.status(500).json({ error: "Failed to delete template" });
+    }
+  });
+
+  app.put("/api/admin/email-templates/:id/toggle", requireAuth, requireRole('admin'), async (req, res) => {
+    try {
+      const templateId = parseInt(req.params.id);
+      const template = await storage.toggleEmailTemplateStatus(templateId);
+      res.json(template);
+    } catch (error) {
+      console.error("Error toggling template status:", error);
+      res.status(500).json({ error: "Failed to toggle template status" });
+    }
+  });
+
   // File upload routes
   app.post("/api/admin/upload", requireAuth, requireRole('admin'), uploadFields, async (req, res) => {
     try {
