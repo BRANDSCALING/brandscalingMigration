@@ -1639,6 +1639,172 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
     }
   });
 
+  // Student Dashboard API (Firebase authenticated students only)
+  app.get("/api/student/dashboard", requireAuth, async (req, res) => {
+    try {
+      const userId = req.user?.uid;
+      
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      // Get user profile with assessment data
+      const { rows: userRows } = await pool.query(
+        'SELECT * FROM users WHERE id = $1',
+        [userId]
+      );
+
+      if (userRows.length === 0) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+
+      const user = userRows[0];
+
+      // Get user's courses based on their tier and track
+      const { rows: coursesRows } = await pool.query(`
+        SELECT 
+          c.*,
+          up.progress,
+          up.current_module,
+          up.completed_at
+        FROM courses c
+        LEFT JOIN user_progress up ON c.id = up.course_id AND up.user_id = $1
+        WHERE c.is_published = true 
+        AND (
+          c.required_tier = $2 
+          OR $2 IN ('intermediate', 'advanced', 'mastermind') AND c.required_tier = 'beginner'
+          OR $2 IN ('advanced', 'mastermind') AND c.required_tier = 'intermediate' 
+          OR $2 = 'mastermind' AND c.required_tier = 'advanced'
+        )
+        AND (c.track = $3 OR c.track IS NULL)
+        ORDER BY c.level ASC
+      `, [userId, user.access_tier || 'beginner', user.dominant_type || 'architect']);
+
+      // Get payment history from Stripe purchases
+      const { rows: paymentsRows } = await pool.query(`
+        SELECT 
+          id,
+          product_name as product,
+          amount_paid as amount,
+          created_at as "paidAt",
+          stripe_session_id
+        FROM stripe_purchases 
+        WHERE customer_email = $1 
+        ORDER BY created_at DESC
+        LIMIT 10
+      `, [user.email]);
+
+      // Get announcements from pinned posts
+      const { rows: announcementsRows } = await pool.query(`
+        SELECT 
+          id,
+          title,
+          body,
+          created_at as "createdAt",
+          featured_type
+        FROM posts 
+        WHERE is_pinned = true AND is_deleted = false
+        ORDER BY pinned_at DESC
+        LIMIT 5
+      `);
+
+      // Get upcoming events the user can attend
+      const { rows: eventsRows } = await pool.query(`
+        SELECT 
+          e.*,
+          ea.status as attendance_status
+        FROM events e
+        LEFT JOIN event_attendees ea ON e.id = ea.event_id AND ea.user_id = $1
+        WHERE e.scheduled_at > NOW()
+        AND (
+          e.required_tier = $2 
+          OR $2 IN ('intermediate', 'advanced', 'mastermind') AND e.required_tier = 'beginner'
+          OR $2 IN ('advanced', 'mastermind') AND e.required_tier = 'intermediate' 
+          OR $2 = 'mastermind' AND e.required_tier = 'advanced'
+        )
+        ORDER BY e.scheduled_at ASC
+        LIMIT 5
+      `, [userId, user.access_tier || 'beginner']);
+
+      // Get overall progress summary
+      const { rows: progressRows } = await pool.query(`
+        SELECT 
+          c.title as course_title,
+          up.progress,
+          up.completed_at
+        FROM user_progress up
+        JOIN courses c ON up.course_id = c.id
+        WHERE up.user_id = $1
+        ORDER BY up.updated_at DESC
+      `, [userId]);
+
+      res.json({
+        user: {
+          id: user.id,
+          firstName: user.first_name,
+          lastName: user.last_name,
+          email: user.email,
+          profileImageUrl: user.profile_image_url,
+          accessTier: user.access_tier,
+          dominantType: user.dominant_type,
+          readinessLevel: user.readiness_level,
+          assessmentComplete: user.assessment_complete,
+          architectScore: user.architect_score,
+          alchemistScore: user.alchemist_score,
+          readinessScore: user.readiness_score
+        },
+        courses: coursesRows.map(course => ({
+          id: course.id,
+          title: course.title,
+          description: course.description,
+          track: course.track,
+          level: course.level,
+          imageUrl: course.image_url,
+          progress: course.progress || 0,
+          currentModule: course.current_module || 0,
+          completedAt: course.completed_at,
+          requiredTier: course.required_tier
+        })),
+        payments: paymentsRows.map(payment => ({
+          id: payment.id,
+          product: payment.product,
+          amount: payment.amount,
+          paidAt: payment.paidAt,
+          stripeSessionId: payment.stripe_session_id
+        })),
+        announcements: announcementsRows.map(announcement => ({
+          id: announcement.id,
+          title: announcement.title,
+          body: announcement.body,
+          createdAt: announcement.createdAt,
+          featuredType: announcement.featured_type
+        })),
+        upcomingEvents: eventsRows.map(event => ({
+          id: event.id,
+          title: event.title,
+          description: event.description,
+          eventType: event.event_type,
+          scheduledAt: event.scheduled_at,
+          duration: event.duration,
+          meetingUrl: event.meeting_url,
+          attendanceStatus: event.attendance_status
+        })),
+        progress: progressRows.map(item => ({
+          courseTitle: item.course_title,
+          progress: item.progress || 0,
+          completedAt: item.completed_at
+        }))
+      });
+
+    } catch (error: any) {
+      console.error('Error fetching student dashboard:', error);
+      res.status(500).json({ 
+        error: 'Failed to fetch dashboard data',
+        details: error.message 
+      });
+    }
+  });
+
   // Email Templates Management (Firebase authenticated admins only)
   app.get('/api/email-templates', requireRole('admin'), async (req, res) => {
     try {
