@@ -1,8 +1,34 @@
 import { Link } from "wouter";
-import { User } from "lucide-react";
+import { User, LogOut, Settings } from "lucide-react";
 import brandscalingLogo from "@assets/FullLogo.png";
+import { useFirebaseAuth } from "@/hooks/useFirebaseAuth";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function Header() {
+  const { isAuthenticated, userProfile, logout } = useFirebaseAuth();
+
+  const handleSignOut = async () => {
+    try {
+      await logout();
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Sign out error:', error);
+      window.location.href = '/';
+    }
+  };
+
+  const getDashboardLink = () => {
+    if (userProfile?.role === 'admin') return '/admin';
+    if (userProfile?.role === 'student') return '/student';
+    return '/auth';
+  };
+
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -43,11 +69,49 @@ export default function Header() {
             </Link>
           </nav>
 
-          {/* Login Icon */}
+          {/* User Menu */}
           <div className="flex items-center">
-            <Link href="/auth" className="p-2 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors">
-              <User className="h-6 w-6" />
-            </Link>
+            {isAuthenticated && userProfile ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                    {userProfile.profileImageUrl ? (
+                      <img 
+                        src={userProfile.profileImageUrl} 
+                        alt={userProfile.firstName || 'User'} 
+                        className="h-8 w-8 rounded-full object-cover"
+                      />
+                    ) : (
+                      <User className="h-6 w-6" />
+                    )}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end" forceMount>
+                  <div className="flex flex-col space-y-1 p-2">
+                    <p className="text-sm font-medium leading-none">
+                      {userProfile.firstName} {userProfile.lastName}
+                    </p>
+                    <p className="text-xs leading-none text-muted-foreground">
+                      {userProfile.email}
+                    </p>
+                  </div>
+                  <DropdownMenuItem asChild>
+                    <Link href={getDashboardLink()} className="w-full cursor-pointer">
+                      <Settings className="mr-2 h-4 w-4" />
+                      Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Sign out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link href="/auth" className="p-2 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors">
+                <User className="h-6 w-6" />
+              </Link>
+            )}
           </div>
         </div>
 
