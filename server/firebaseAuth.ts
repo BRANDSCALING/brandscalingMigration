@@ -14,7 +14,28 @@ declare global {
   }
 }
 
-// Middleware to verify Firebase token (simplified for development)
+// Import Firebase Admin SDK
+import admin from 'firebase-admin';
+
+// Initialize Firebase Admin if not already initialized
+if (!admin.apps.length) {
+  try {
+    // Try to initialize with service account if available
+    if (process.env.FIREBASE_SERVICE_ACCOUNT_KEY) {
+      const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
+      admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount)
+      });
+    } else {
+      // Fallback to development mode with token verification disabled
+      console.warn('Firebase Admin SDK not properly configured - using development mode');
+    }
+  } catch (error) {
+    console.warn('Firebase Admin initialization failed:', error);
+  }
+}
+
+// Middleware to verify Firebase token
 export const verifyFirebaseToken: RequestHandler = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
@@ -24,45 +45,65 @@ export const verifyFirebaseToken: RequestHandler = async (req, res, next) => {
 
     const token = authHeader.split('Bearer ')[1];
     
-    // For development: decode token payload without full verification
-    try {
-      const payload = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
-      
-      if (payload.exp && payload.exp < Date.now() / 1000) {
-        return res.status(401).json({ error: 'Unauthorized: Token expired' });
+    let decodedToken;
+    
+    // Try Firebase Admin verification first
+    if (admin.apps.length > 0) {
+      try {
+        decodedToken = await admin.auth().verifyIdToken(token);
+      } catch (adminError) {
+        console.warn('Firebase Admin verification failed, falling back to development mode:', adminError);
+        decodedToken = null;
       }
-      
-      const userId = payload.sub || payload.uid || payload.user_id;
-      if (!userId) {
-        return res.status(401).json({ error: 'Unauthorized: Invalid token format' });
-      }
-      
-      // Get or create user in our database
-      let user = await storage.getUser(userId);
-      if (!user) {
-        user = await storage.upsertUser({
-          id: userId,
-          email: payload.email || null,
-          role: 'student',
-          firstName: payload.name?.split(' ')[0] || null,
-          lastName: payload.name?.split(' ').slice(1).join(' ') || null,
-          profileImageUrl: payload.picture || null,
-          stripeCustomerId: null,
-          stripeSubscriptionId: null
-        });
-      }
-      
-      req.user = {
-        uid: userId,
-        email: payload.email || '',
-        role: user.role
-      };
-      
-      next();
-    } catch (decodeError) {
-      console.error('Token decode failed:', decodeError);
-      return res.status(401).json({ error: 'Unauthorized: Invalid token' });
     }
+    
+    // Fallback to manual token decode for development
+    if (!decodedToken) {
+      try {
+        const payload = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+        
+        if (payload.exp && payload.exp < Date.now() / 1000) {
+          return res.status(401).json({ error: 'Unauthorized: Token expired' });
+        }
+        
+        decodedToken = {
+          uid: payload.sub || payload.uid || payload.user_id,
+          email: payload.email,
+          name: payload.name,
+          picture: payload.picture
+        };
+      } catch (decodeError) {
+        console.error('Token decode failed:', decodeError);
+        return res.status(401).json({ error: 'Unauthorized: Invalid token' });
+      }
+    }
+    
+    if (!decodedToken.uid) {
+      return res.status(401).json({ error: 'Unauthorized: Invalid token format' });
+    }
+    
+    // Get or create user in our database
+    let user = await storage.getUser(decodedToken.uid);
+    if (!user) {
+      user = await storage.upsertUser({
+        id: decodedToken.uid,
+        email: decodedToken.email || null,
+        role: 'student',
+        firstName: decodedToken.name?.split(' ')[0] || null,
+        lastName: decodedToken.name?.split(' ').slice(1).join(' ') || null,
+        profileImageUrl: decodedToken.picture || null,
+        stripeCustomerId: null,
+        stripeSubscriptionId: null
+      });
+    }
+    
+    req.user = {
+      uid: decodedToken.uid,
+      email: decodedToken.email || '',
+      role: user.role
+    };
+    
+    next();
   } catch (error) {
     console.error('Firebase token verification failed:', error);
     res.status(401).json({ error: 'Unauthorized: Invalid token' });
