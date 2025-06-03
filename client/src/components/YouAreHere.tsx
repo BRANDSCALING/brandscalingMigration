@@ -78,45 +78,7 @@ export default function YouAreHere() {
           <span className="text-sm text-gray-600">Current Tier</span>
         </div>
 
-        <div className="space-y-3">
-          <h4 className="font-semibold text-sm text-gray-900">Your Journey</h4>
-          <div className="space-y-2">
-            {allTiers.map((tier, index) => {
-              const tierInfo = tierData[tier as keyof typeof tierData];
-              const isCompleted = index < currentIndex;
-              const isCurrent = index === currentIndex;
-              const isUpcoming = index > currentIndex;
-              
-              return (
-                <div key={tier} className="flex items-center gap-3">
-                  <div className="flex-shrink-0">
-                    {isCompleted && (
-                      <CheckCircle className="h-5 w-5 text-green-500" />
-                    )}
-                    {isCurrent && (
-                      <div className={`p-1 rounded-full ${tierInfo.bgColor}`}>
-                        <span className={tierInfo.color}>
-                          {tierInfo.icon}
-                        </span>
-                      </div>
-                    )}
-                    {isUpcoming && (
-                      <Circle className="h-5 w-5 text-gray-300" />
-                    )}
-                  </div>
-                  <div className="flex-1">
-                    <div className={`text-sm font-medium ${
-                      isCurrent ? tierInfo.color : 
-                      isCompleted ? 'text-green-600' : 'text-gray-400'
-                    }`}>
-                      {tierInfo.name}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+
 
         <div className="bg-gray-50 rounded-lg p-4 space-y-3">
           <div className="flex justify-between items-center">
@@ -126,26 +88,7 @@ export default function YouAreHere() {
             </span>
           </div>
           
-          {currentTierData?.next && (
-            <div className="pt-2 border-t border-gray-200">
-              <p className="text-xs text-gray-600 mb-2">
-                Next milestone: Upgrade to {tierData[currentTierData.next as keyof typeof tierData]?.name}
-              </p>
-              <Link href={`/upgrade?target=${currentTierData.next}`}>
-                <Button size="sm" variant="outline" className="w-full text-xs">
-                  View Upgrade Options
-                </Button>
-              </Link>
-            </div>
-          )}
-          
-          {userTier === 'mastermind' && (
-            <div className="pt-2 border-t border-gray-200">
-              <p className="text-xs text-center text-purple-600 font-medium">
-                🎉 You've reached the highest tier!
-              </p>
-            </div>
-          )}
+
         </div>
       </CardContent>
     </Card>

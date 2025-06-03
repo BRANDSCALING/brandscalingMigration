@@ -1,6 +1,6 @@
 const tierPermissions = {
   beginner: {
-    courses: ['getting-started', 'business-idea-lab'],
+    courses: [],
     qna: true,
     strategyDay: false,
     events: false,
@@ -8,7 +8,7 @@ const tierPermissions = {
     boardAccess: false
   },
   intermediate: {
-    courses: ['getting-started', 'business-idea-lab', 'frameworks-101', 'foundations'],
+    courses: [],
     qna: true,
     strategyDay: false,
     events: false,
