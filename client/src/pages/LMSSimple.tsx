@@ -200,10 +200,10 @@ export default function LMSSimple() {
                   <Tabs value={selectedMode} onValueChange={(value) => setSelectedMode(value as 'architect' | 'alchemist')}>
                     <TabsList className="grid w-full grid-cols-2">
                       <TabsTrigger value="architect" className="text-xs">
-                        🏗️ Architect
+                        Architect
                       </TabsTrigger>
                       <TabsTrigger value="alchemist" className="text-xs">
-                        🧪 Alchemist
+                        Alchemist
                       </TabsTrigger>
                     </TabsList>
                   </Tabs>
@@ -290,7 +290,7 @@ export default function LMSSimple() {
                           variant="secondary"
                           className={selectedMode === 'architect' ? 'bg-purple-100 text-purple-800' : 'bg-orange-100 text-orange-800'}
                         >
-                          {selectedMode === 'architect' ? '🏗️ Architect' : '🧪 Alchemist'} Track
+                          {selectedMode === 'architect' ? 'Architect' : 'Alchemist'} Track
                         </Badge>
                       </div>
                       <h1 className="text-2xl font-bold text-gray-900">
@@ -340,7 +340,7 @@ export default function LMSSimple() {
                         <div>
                           <h3 className="text-lg font-semibold mb-3">Workbook & Resources</h3>
                           <Button variant="outline" className="w-full">
-                            📄 Download Workbook
+                            Download Workbook
                           </Button>
                         </div>
                       )}

@@ -7,7 +7,6 @@ export default function About() {
       <main className="font-poppins">
         <section className="py-16 px-6 max-w-6xl mx-auto text-slate-700">
           <div className="text-center mb-16">
-            <div className="text-4xl mb-4">🧬</div>
             <h1 className="text-5xl font-bold mb-4 text-brand-purple">Meet the Duo Behind the Brandscaling Method™</h1>
             <h2 className="text-2xl font-bold text-brand-orange mb-8">Alchemist Meets Architect. Emotion Meets Execution.</h2>
             <p className="text-lg max-w-4xl mx-auto">
