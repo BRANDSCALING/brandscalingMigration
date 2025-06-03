@@ -1,0 +1,85 @@
+ersion: Phase 1 | Scope: LMS + Community + CRM + Email + Auth
+
+⸻
+
+1. 🔐 Authentication & Role Access
+	•	Can an Admin successfully log in with secure credentials?
+	•	Are roles clearly separated (Admin vs Student vs Team)?
+	•	Are unauthorized users blocked from admin routes?
+	•	Is the logout button functional and clearing sessions?
+
+⸻
+
+2. 🧑‍🏫 Course Management System
+	•	Can you create a course with title, description, access tier, and avatar level?
+	•	Does each course save correctly in PostgreSQL?
+	•	Can you edit/update course info and save changes?
+	•	Can you delete a course and confirm deletion?
+	•	Are courses displayed in the admin panel with correct tier labels?
+
+⸻
+
+3. 🧱 Tier Logic (Access Control)
+	•	Are course tiers (Beginner / Intermediate / Advanced / Mastermind) enforced properly?
+	•	Can users be assigned to the correct tier manually via the database or admin panel?
+	•	Are users prevented from accessing tiers above their access level?
+	•	Do upgraded tiers unlock new course visibility?
+	•	Does the YouAreHere/GateComponent logic correctly gate content?
+
+⸻
+
+4. 🌐 Community Management
+	•	Are community posts visible in the admin panel?
+	•	Can admins approve, reject, or edit posts?
+	•	Are comments and reactions correctly stored?
+	•	Is tier-based or avatar-based feed filtering working?
+	•	Are banned/spam words or rules being enforced if implemented?
+
+⸻
+
+5. 🧲 Leads & Email Campaigns
+	•	Can you view all leads submitted via the funnel (email, tier, course interest)?
+	•	Are email templates editable in the admin panel?
+	•	Can emails be previewed, saved, and triggered to test users?
+	•	Is lead information stored properly in the backend (PostgreSQL)?
+	•	Are email campaigns organized by tag or funnel origin?
+
+⸻
+
+6. 💳 Stripe Tier Integration
+	•	Are payment tiers mapped correctly to course access?
+	•	Do Stripe webhooks (if connected) update user tier in the database?
+	•	Are manual tier overrides possible from admin panel?
+	•	Is Stripe product ID mapped to the correct access level?
+
+⸻
+
+7. 🧩 Settings Panel
+	•	Can global settings (e.g., default tier, welcome email, logo) be saved?
+	•	Do brand updates reflect across dashboard modules?
+	•	Are toggles (e.g., maintenance mode, feature flags) working?
+
+⸻
+
+8. 📊 Dashboard Overview
+	•	Are dashboard cards populating real-time data (user count, course count)?
+	•	Are system-wide analytics or logs viewable?
+	•	Do chart components update with backend changes?
+
+⸻
+
+9. 🧪 Edge Cases
+	•	What happens if a course is deleted while users are enrolled?
+	•	What happens if a post is submitted without content?
+	•	Can you submit a course with a missing tier or avatar type?
+	•	What happens when tier logic breaks (e.g., mismatched course + user)?
+
+⸻
+
+10. 📱 Mobile & UX QA
+	•	Is the mobile hamburger menu functioning?
+	•	Does the layout collapse properly on tablet + phone?
+	•	Are all admin actions usable on mobile?
+	•	Are fields and buttons spaced and readable?
+
+⸻
