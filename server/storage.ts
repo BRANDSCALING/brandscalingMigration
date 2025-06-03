@@ -1252,6 +1252,143 @@ export class DatabaseStorage implements IStorage {
         .where(and(eq(lessons.id, lessonIds[i]), eq(lessons.courseId, courseId)));
     }
   }
+
+  // Admin Community Management Methods
+  async getPostsForAdmin(filterTier?: string, filterStatus?: string): Promise<Post[]> {
+    let query = db.select().from(posts);
+    
+    if (filterTier) {
+      query = query.where(eq(posts.tierAccess, filterTier));
+    }
+    if (filterStatus === 'hidden') {
+      query = query.where(eq(posts.isVisible, false));
+    } else if (filterStatus === 'visible') {
+      query = query.where(eq(posts.isVisible, true));
+    }
+    
+    return await query.orderBy(desc(posts.createdAt));
+  }
+
+  async createAdminPost(postData: InsertPost): Promise<Post> {
+    const [post] = await db.insert(posts).values(postData).returning();
+    return post;
+  }
+
+  async togglePostPin(postId: string, adminId: string): Promise<Post> {
+    const [currentPost] = await db.select().from(posts).where(eq(posts.id, postId));
+    const [post] = await db
+      .update(posts)
+      .set({ 
+        isPinned: !currentPost.isPinned,
+        updatedAt: new Date()
+      })
+      .where(eq(posts.id, postId))
+      .returning();
+    return post;
+  }
+
+  async togglePostVisibility(postId: string): Promise<Post> {
+    const [currentPost] = await db.select().from(posts).where(eq(posts.id, postId));
+    const [post] = await db
+      .update(posts)
+      .set({ 
+        isVisible: !currentPost.isVisible,
+        updatedAt: new Date()
+      })
+      .where(eq(posts.id, postId))
+      .returning();
+    return post;
+  }
+
+  async toggleReplyVisibility(replyId: string): Promise<PostReply> {
+    const [currentReply] = await db.select().from(postReplies).where(eq(postReplies.id, replyId));
+    const [reply] = await db
+      .update(postReplies)
+      .set({ 
+        isVisible: !currentReply.isVisible,
+        updatedAt: new Date()
+      })
+      .where(eq(postReplies.id, replyId))
+      .returning();
+    return reply;
+  }
+
+  // Admin Lead Management Methods
+  async getLeadsForAdmin(filterStatus?: string, filterSource?: string): Promise<Lead[]> {
+    let query = db.select().from(leads);
+    
+    if (filterStatus) {
+      query = query.where(eq(leads.status, filterStatus));
+    }
+    if (filterSource) {
+      query = query.where(eq(leads.source, filterSource));
+    }
+    
+    return await query.orderBy(desc(leads.createdAt));
+  }
+
+  async getAllLeads(): Promise<Lead[]> {
+    return await db.select().from(leads).orderBy(desc(leads.createdAt));
+  }
+
+  async deleteLead(id: number): Promise<void> {
+    await db.delete(leads).where(eq(leads.id, id));
+  }
+
+  exportLeadsToCSV(leads: Lead[]): string {
+    const headers = ['ID', 'Name', 'Email', 'Phone', 'Company', 'Status', 'Source', 'Created At'];
+    const csvContent = [
+      headers.join(','),
+      ...leads.map(lead => [
+        lead.id,
+        `"${lead.name}"`,
+        `"${lead.email}"`,
+        `"${lead.phone || ''}"`,
+        `"${lead.company || ''}"`,
+        `"${lead.status}"`,
+        `"${lead.source}"`,
+        `"${lead.createdAt?.toISOString() || ''}"`
+      ].join(','))
+    ].join('\n');
+    
+    return csvContent;
+  }
+
+  // Admin Email Template Management Methods
+  async getEmailTemplates(): Promise<EmailTemplate[]> {
+    return await db.select().from(emailTemplates).orderBy(desc(emailTemplates.createdAt));
+  }
+
+  async createEmailTemplate(templateData: InsertEmailTemplate): Promise<EmailTemplate> {
+    const [template] = await db.insert(emailTemplates).values(templateData).returning();
+    return template;
+  }
+
+  async updateEmailTemplate(id: number, templateData: Partial<InsertEmailTemplate>): Promise<EmailTemplate> {
+    const [template] = await db
+      .update(emailTemplates)
+      .set({ ...templateData, updatedAt: new Date() })
+      .where(eq(emailTemplates.id, id))
+      .returning();
+    return template;
+  }
+
+  async deleteEmailTemplate(id: number): Promise<void> {
+    await db.delete(emailTemplates).where(eq(emailTemplates.id, id));
+  }
+
+  async toggleEmailTemplateStatus(id: number): Promise<EmailTemplate> {
+    const [currentTemplate] = await db.select().from(emailTemplates).where(eq(emailTemplates.id, id));
+    const [template] = await db
+      .update(emailTemplates)
+      .set({ 
+        isActive: !currentTemplate.isActive,
+        updatedAt: new Date()
+      })
+      .where(eq(emailTemplates.id, id))
+      .returning();
+    return template;
+  }
 }
 
 export const storage = new DatabaseStorage();
