@@ -168,10 +168,10 @@ export default function AIAssistant() {
                         I'm here to help you with brand strategy, positioning, marketing insights, and growth opportunities.
                       </p>
                       <div className="text-left space-y-2 text-xs text-slate-500">
-                        <p>💡 Ask me about your brand positioning</p>
-                        <p>📊 Get marketing strategy recommendations</p>
-                        <p>🎯 Discuss your target audience</p>
-                        <p>🚀 Explore growth opportunities</p>
+                        <p>Ask me about your brand positioning</p>
+                        <p>Get marketing strategy recommendations</p>
+                        <p>Discuss your target audience</p>
+                        <p>Explore growth opportunities</p>
                       </div>
                     </div>
                   ) : (

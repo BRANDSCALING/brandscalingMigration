@@ -80,7 +80,7 @@ export default function StudentCommunity() {
       
       // Show undo toast notification
       toast({
-        title: "✅ Post Shared",
+        title: "Post Shared",
         description: "Your post has been shared with the community!",
         action: (
           <button
@@ -504,12 +504,12 @@ export default function StudentCommunity() {
             .map((post) => {
               const getFeaturedIcon = (type: string) => {
                 switch (type) {
-                  case 'launch': return '🎉';
-                  case 'update': return '📢';
-                  case 'tip': return '🧠';
-                  case 'warning': return '⚠️';
-                  case 'direction': return '🧭';
-                  default: return '📌';
+                  case 'launch': return '';
+                  case 'update': return '';
+                  case 'tip': return '';
+                  case 'warning': return '';
+                  case 'direction': return '';
+                  default: return '';
                 }
               };
 

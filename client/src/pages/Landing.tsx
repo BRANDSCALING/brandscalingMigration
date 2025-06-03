@@ -42,7 +42,7 @@ export default function Landing() {
           <div className="grid md:grid-cols-2 gap-6 mb-8">
             <Card>
               <CardContent className="p-6">
-                <div className="text-2xl mb-3">💡</div>
+
                 <h3 className="text-xl font-semibold mb-2">Idea-Stuck Dreamer</h3>
                 <p className="font-medium mb-2">It's all in your head — but nowhere in motion.</p>
                 <p className="text-gray-600">You've stayed up at night with ideas that feel world-changing… but execution feels blocked.</p>
@@ -51,7 +51,7 @@ export default function Landing() {
 
             <Card>
               <CardContent className="p-6">
-                <div className="text-2xl mb-3">🔧</div>
+
                 <h3 className="text-xl font-semibold mb-2">Framework-Frustrated</h3>
                 <p className="font-medium mb-2">You followed the map. It didn't match your terrain.</p>
                 <p className="text-gray-600">You've tried the 'proven' methods. Burnout followed. Maybe the frameworks weren't built for your type.</p>
@@ -132,7 +132,7 @@ export default function Landing() {
 
             <Card>
               <CardContent className="p-6">
-                <div className="text-2xl mb-3">🧠</div>
+
                 <h3 className="text-xl font-semibold mb-2">Limiting Beliefs Reframe</h3>
                 <p className="text-gray-600 mb-4">Identify the mental weights hidden inside your systems.</p>
                 <Button variant="outline" size="sm">View</Button>

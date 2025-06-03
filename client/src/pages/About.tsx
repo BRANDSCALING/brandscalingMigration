@@ -73,7 +73,7 @@ export default function About() {
           <hr className="my-16 border-t-2 border-brand-purple" />
 
           <div className="mb-16">
-            <h2 className="text-3xl font-bold mb-8 text-brand-purple flex items-center"><span className="mr-3">🧠</span>Original Frameworks Created by Hanif & Fariza</h2>
+            <h2 className="text-3xl font-bold mb-8 text-brand-purple flex items-center">Original Frameworks Created by Hanif & Fariza</h2>
             <p className="mb-8 text-lg">
               Unlike typical business programs that recycle surface-level tactics, the Brandscaling system is entirely original—built from scratch, based on years of hands-on work with real founders scaling infinitely.
             </p>
