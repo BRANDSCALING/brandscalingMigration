@@ -23,49 +23,7 @@ interface Course {
 
 type FilterType = 'all' | 'free' | 'paid' | 'mastermind' | 'architect' | 'alchemist';
 
-// Placeholder structure for real database integration
-const placeholderCourses: Course[] = [
-  {
-    id: '1',
-    slug: 'foundations-of-scaling',
-    title: 'Foundations of Scaling',
-    description: 'Core principles for sustainable business growth',
-    track: 'all',
-    accessLevel: 'free',
-    duration: 45,
-    enrolled: 1200
-  },
-  {
-    id: '2', 
-    slug: 'architect-frameworks',
-    title: 'Architect Frameworks',
-    description: 'Strategic systems for structured scaling',
-    track: 'architect',
-    accessLevel: 'paid',
-    duration: 90,
-    enrolled: 850
-  },
-  {
-    id: '3',
-    slug: 'alchemist-intuition',
-    title: 'Alchemist Intuition',
-    description: 'Energy-driven growth methodologies',
-    track: 'alchemist',
-    accessLevel: 'paid',
-    duration: 75,
-    enrolled: 920
-  },
-  {
-    id: '4',
-    slug: 'mastermind-mastery',
-    title: 'Mastermind Mastery',
-    description: 'Advanced scaling strategies for high-performers',
-    track: 'all',
-    accessLevel: 'mastermind',
-    duration: 120,
-    enrolled: 350
-  }
-];
+// Real courses loaded from backend API only
 
 export default function Courses() {
   const [filter, setFilter] = useState<FilterType>('all');
@@ -80,8 +38,8 @@ export default function Courses() {
     { value: 'alchemist', label: 'Alchemist Track' }
   ];
 
-  // Use real course data if available, otherwise fall back to placeholder structure
-  const coursesToDisplay = isLoading ? [] : (allCourses.length > 0 ? allCourses : placeholderCourses);
+  // Only display real course data from backend API
+  const coursesToDisplay = isLoading ? [] : allCourses;
   
   const filteredCourses = coursesToDisplay.filter(course => {
     if (filter === 'all') return true;
@@ -210,125 +168,49 @@ export default function Courses() {
           <h2 className="text-3xl font-bold text-center mb-12 text-gray-900">
             Available Courses
           </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredCourses.map((course) => (
-              <Card key={course.id} className="hover:shadow-lg transition-shadow duration-300">
-                <CardHeader className="p-0">
-                  {/* Placeholder for course thumbnail */}
-                  <div className="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 rounded-t-lg flex items-center justify-center">
-                    <Play className="h-12 w-12 text-gray-400" />
-                  </div>
-                </CardHeader>
-                <CardContent className="p-6">
-                  <div className="flex gap-2 mb-3">
-                    <Badge className={getTrackColor(course.track)}>
-                      {course.track === 'all' ? 'All Tracks' : course.track}
-                    </Badge>
-                    <Badge className={getAccessColor(course.accessLevel)}>
-                      {course.accessLevel}
-                    </Badge>
-                  </div>
-                  <h3 className="text-xl font-semibold mb-2 text-gray-900">
-                    {course.title}
-                  </h3>
-                  <p className="text-gray-600 mb-4 line-clamp-2">
-                    {course.description}
-                  </p>
-                  <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
-                    <span>{course.duration} min</span>
-                    <span className="flex items-center gap-1">
-                      <Users className="h-4 w-4" />
-                      {course.enrolled}
-                    </span>
-                  </div>
-                  <Link href={`/courses/${course.slug}`}>
-                    <Button className="w-full bg-gradient-to-r from-purple-600 to-orange-500 hover:from-purple-700 hover:to-orange-600">
-                      View More
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          {isLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="animate-spin w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full" aria-label="Loading courses"/>
+            </div>
+          ) : filteredCourses.length > 0 ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredCourses.map((course: any) => (
+                <GateComponent key={course.id} courseSlug={course.slug}>
+                  <Card className="hover:shadow-lg transition-shadow duration-300">
+                    <CardContent className="p-6">
+                      <div className="flex gap-2 mb-3">
+                        <Badge className={getTrackColor(course.track)}>
+                          {course.track === 'all' ? 'All Tracks' : course.track}
+                        </Badge>
+                        <Badge className={getAccessColor(course.accessLevel)}>
+                          {course.accessLevel}
+                        </Badge>
+                      </div>
+                      <h3 className="text-xl font-semibold mb-2 text-gray-900">
+                        {course.title}
+                      </h3>
+                      <p className="text-gray-600 mb-4">
+                        {course.description}
+                      </p>
+                      <Button className="w-full bg-gradient-to-r from-purple-600 to-orange-500 hover:from-purple-700 hover:to-orange-600">
+                        Access Course
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </GateComponent>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-gray-600 text-lg">No courses available at this time.</p>
+            </div>
+          )}
         </div>
       </section>
 
-      {/* Course Teaser Video Block */}
-      <section className="py-16 px-6 bg-gray-50">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-8 text-gray-900">
-            Preview: How Brandscaling Works
-          </h2>
-          <div className="bg-white rounded-lg shadow-lg p-8">
-            {/* Placeholder for embedded video */}
-            <div className="aspect-video bg-gradient-to-br from-purple-100 to-orange-100 rounded-lg flex items-center justify-center mb-6">
-              <div className="text-center">
-                <Play className="h-16 w-16 text-purple-600 mx-auto mb-4" />
-                <p className="text-gray-600">Course Preview Video</p>
-              </div>
-            </div>
-            {/* Mock progress bar for future LMS integration */}
-            <div className="bg-gray-200 rounded-full h-2 mb-4">
-              <div className="bg-gradient-to-r from-purple-600 to-orange-500 h-2 rounded-full w-1/3"></div>
-            </div>
-            <p className="text-sm text-gray-600">33% Complete • 3 of 9 lessons</p>
-          </div>
-        </div>
-      </section>
 
-      {/* Student Outcomes Section */}
-      <section className="py-16 px-6">
-        <div className="max-w-6xl mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-12 text-gray-900">
-            Join Thousands of Scaling Entrepreneurs
-          </h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Target className="h-8 w-8 text-purple-600" />
-              </div>
-              <div className="text-3xl font-bold text-purple-600 mb-2">18,000+</div>
-              <p className="text-gray-600">Modules Completed</p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Users className="h-8 w-8 text-orange-600" />
-              </div>
-              <div className="text-3xl font-bold text-orange-600 mb-2">1,200+</div>
-              <p className="text-gray-600">Scaling Businesses</p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Trophy className="h-8 w-8 text-green-600" />
-              </div>
-              <div className="text-3xl font-bold text-green-600 mb-2">94%</div>
-              <p className="text-gray-600">Success Rate</p>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Join CTA Block */}
-      <section className="py-20 px-6 bg-gradient-to-br from-purple-600 to-orange-500 text-white">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-6">
-            Start Learning Today
-          </h2>
-          <p className="text-xl mb-8 opacity-90">
-            Join the community of entrepreneurs who've transformed chaos into clarity
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/quiz">
-              <Button size="lg" variant="secondary" className="bg-white text-purple-600 hover:bg-gray-100">
-                Take Free Quiz First
-              </Button>
-            </Link>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-purple-600">
-              View Pricing Plans
-            </Button>
-          </div>
-        </div>
-      </section>
+
     </div>
   );
 }
