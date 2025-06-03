@@ -69,49 +69,11 @@ export default function Header() {
             </Link>
           </nav>
 
-          {/* User Menu */}
+          {/* User Icon - Always goes to Auth */}
           <div className="flex items-center">
-            {isAuthenticated && userProfile ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                    {userProfile.profileImageUrl ? (
-                      <img 
-                        src={userProfile.profileImageUrl} 
-                        alt={userProfile.firstName || 'User'} 
-                        className="h-8 w-8 rounded-full object-cover"
-                      />
-                    ) : (
-                      <User className="h-6 w-6" />
-                    )}
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56" align="end" forceMount>
-                  <div className="flex flex-col space-y-1 p-2">
-                    <p className="text-sm font-medium leading-none">
-                      {userProfile.firstName} {userProfile.lastName}
-                    </p>
-                    <p className="text-xs leading-none text-muted-foreground">
-                      {userProfile.email}
-                    </p>
-                  </div>
-                  <DropdownMenuItem asChild>
-                    <Link href={getDashboardLink()} className="w-full cursor-pointer">
-                      <Settings className="mr-2 h-4 w-4" />
-                      Dashboard
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Sign out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <Link href="/auth" className="p-2 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors">
-                <User className="h-6 w-6" />
-              </Link>
-            )}
+            <Link href="/auth" className="p-2 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors">
+              <User className="h-6 w-6" />
+            </Link>
           </div>
         </div>
 
