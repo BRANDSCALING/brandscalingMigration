@@ -66,8 +66,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           </Button>
         </div>
 
-        <nav className="mt-6 flex-1 overflow-y-auto pb-24">
-          <div className="px-3 space-y-1">
+        <nav className="mt-6 flex-1 overflow-y-auto">
+          <div className="px-3 space-y-1 pb-32">
             {sidebarItems.map((item) => {
               const Icon = item.icon;
               const isActive = location === item.path || 
