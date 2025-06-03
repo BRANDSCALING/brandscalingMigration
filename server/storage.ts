@@ -1109,6 +1109,78 @@ export class DatabaseStorage implements IStorage {
       return [];
     }
   }
+
+  // Course management operations
+  async getAllCourses(): Promise<Course[]> {
+    return await db.select().from(courses).orderBy(asc(courses.title));
+  }
+
+  async getCourse(id: number): Promise<Course | undefined> {
+    const [course] = await db.select().from(courses).where(eq(courses.id, id));
+    return course;
+  }
+
+  async createCourse(courseData: InsertCourse): Promise<Course> {
+    const [course] = await db.insert(courses).values(courseData).returning();
+    return course;
+  }
+
+  async updateCourse(id: number, courseData: Partial<InsertCourse>): Promise<Course> {
+    const [course] = await db
+      .update(courses)
+      .set({ ...courseData, updatedAt: new Date() })
+      .where(eq(courses.id, id))
+      .returning();
+    return course;
+  }
+
+  async deleteCourse(id: number): Promise<void> {
+    // Delete all lessons first
+    await db.delete(lessons).where(eq(lessons.courseId, id));
+    // Delete the course
+    await db.delete(courses).where(eq(courses.id, id));
+  }
+
+  // Lesson management operations
+  async getLessons(courseId: number): Promise<Lesson[]> {
+    return await db
+      .select()
+      .from(lessons)
+      .where(eq(lessons.courseId, courseId))
+      .orderBy(asc(lessons.order));
+  }
+
+  async getLesson(id: number): Promise<Lesson | undefined> {
+    const [lesson] = await db.select().from(lessons).where(eq(lessons.id, id));
+    return lesson;
+  }
+
+  async createLesson(lessonData: InsertLesson): Promise<Lesson> {
+    const [lesson] = await db.insert(lessons).values(lessonData).returning();
+    return lesson;
+  }
+
+  async updateLesson(id: number, lessonData: Partial<InsertLesson>): Promise<Lesson> {
+    const [lesson] = await db
+      .update(lessons)
+      .set({ ...lessonData, updatedAt: new Date() })
+      .where(eq(lessons.id, id))
+      .returning();
+    return lesson;
+  }
+
+  async deleteLesson(id: number): Promise<void> {
+    await db.delete(lessons).where(eq(lessons.id, id));
+  }
+
+  async reorderLessons(courseId: number, lessonIds: number[]): Promise<void> {
+    for (let i = 0; i < lessonIds.length; i++) {
+      await db
+        .update(lessons)
+        .set({ order: i + 1, updatedAt: new Date() })
+        .where(and(eq(lessons.id, lessonIds[i]), eq(lessons.courseId, courseId)));
+    }
+  }
 }
 
 export const storage = new DatabaseStorage();

@@ -5,6 +5,7 @@ import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
 import { pool } from "./db";
 import { verifyFirebaseToken, requireAuth, requireRole, createUserProfile, getUserProfile, updateUserRole } from "./firebaseAuth";
+import { setupAuth, isAuthenticated } from "./replitAuth";
 import { chatWithAgent } from "./openai";
 import { updateUserAfterPurchase } from "./updateUserAfterPurchase";
 import { resendClient } from "@shared/resendClient";
@@ -2434,6 +2435,113 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
         error: 'Failed to process webinar registration',
         details: error.message 
       });
+    }
+  });
+
+  // Import admin middleware
+  const { requireAdmin } = await import("./middleware/adminAuth.js");
+
+  // Admin course management routes
+  app.get("/api/admin/courses", isAuthenticated, requireAdmin, async (req, res) => {
+    try {
+      const courses = await storage.getAllCourses();
+      res.json(courses);
+    } catch (error) {
+      console.error("Error fetching courses:", error);
+      res.status(500).json({ error: "Failed to fetch courses" });
+    }
+  });
+
+  app.post("/api/admin/courses", isAuthenticated, requireAdmin, async (req, res) => {
+    try {
+      const courseData = req.body;
+      const course = await storage.createCourse(courseData);
+      res.status(201).json(course);
+    } catch (error) {
+      console.error("Error creating course:", error);
+      res.status(500).json({ error: "Failed to create course" });
+    }
+  });
+
+  app.put("/api/admin/courses/:id", isAuthenticated, requireAdmin, async (req, res) => {
+    try {
+      const courseId = parseInt(req.params.id);
+      const courseData = req.body;
+      const course = await storage.updateCourse(courseId, courseData);
+      res.json(course);
+    } catch (error) {
+      console.error("Error updating course:", error);
+      res.status(500).json({ error: "Failed to update course" });
+    }
+  });
+
+  app.delete("/api/admin/courses/:id", isAuthenticated, requireAdmin, async (req, res) => {
+    try {
+      const courseId = parseInt(req.params.id);
+      await storage.deleteCourse(courseId);
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting course:", error);
+      res.status(500).json({ error: "Failed to delete course" });
+    }
+  });
+
+  // Admin lesson management routes
+  app.get("/api/admin/courses/:courseId/lessons", isAuthenticated, requireAdmin, async (req, res) => {
+    try {
+      const courseId = parseInt(req.params.courseId);
+      const lessons = await storage.getLessons(courseId);
+      res.json(lessons);
+    } catch (error) {
+      console.error("Error fetching lessons:", error);
+      res.status(500).json({ error: "Failed to fetch lessons" });
+    }
+  });
+
+  app.post("/api/admin/courses/:courseId/lessons", isAuthenticated, requireAdmin, async (req, res) => {
+    try {
+      const courseId = parseInt(req.params.courseId);
+      const lessonData = { ...req.body, courseId };
+      const lesson = await storage.createLesson(lessonData);
+      res.status(201).json(lesson);
+    } catch (error) {
+      console.error("Error creating lesson:", error);
+      res.status(500).json({ error: "Failed to create lesson" });
+    }
+  });
+
+  app.put("/api/admin/lessons/:id", isAuthenticated, requireAdmin, async (req, res) => {
+    try {
+      const lessonId = parseInt(req.params.id);
+      const lessonData = req.body;
+      const lesson = await storage.updateLesson(lessonId, lessonData);
+      res.json(lesson);
+    } catch (error) {
+      console.error("Error updating lesson:", error);
+      res.status(500).json({ error: "Failed to update lesson" });
+    }
+  });
+
+  app.delete("/api/admin/lessons/:id", isAuthenticated, requireAdmin, async (req, res) => {
+    try {
+      const lessonId = parseInt(req.params.id);
+      await storage.deleteLesson(lessonId);
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting lesson:", error);
+      res.status(500).json({ error: "Failed to delete lesson" });
+    }
+  });
+
+  app.put("/api/admin/courses/:courseId/lessons/reorder", isAuthenticated, requireAdmin, async (req, res) => {
+    try {
+      const courseId = parseInt(req.params.courseId);
+      const { lessonIds } = req.body;
+      await storage.reorderLessons(courseId, lessonIds);
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error reordering lessons:", error);
+      res.status(500).json({ error: "Failed to reorder lessons" });
     }
   });
 

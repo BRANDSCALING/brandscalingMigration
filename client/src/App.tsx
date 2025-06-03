@@ -29,6 +29,7 @@ import StudentCommunity from "@/pages/student/StudentCommunity";
 // Admin Modules
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import EmailCampaigns from "@/pages/admin/EmailCampaigns";
+import AdminCourses from "@/pages/admin/AdminCourses";
 
 import CommunityComingSoon from "@/pages/community/CommunityComingSoon";
 import CollabComingSoon from "@/pages/collab/CollabComingSoon";
@@ -127,6 +128,7 @@ function Router() {
         <>
           <Route path="/admin" component={AdminDashboard} />
           <Route path="/admin/email-campaigns" component={AdminDashboard} />
+          <Route path="/admin/courses" component={AdminCourses} />
           <Route path="/admin/:path*" component={AdminDashboard} />
         </>
       )}
