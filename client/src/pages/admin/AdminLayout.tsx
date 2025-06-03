@@ -20,13 +20,13 @@ interface AdminLayoutProps {
 }
 
 const sidebarItems = [
-  { path: "/admin", label: "Dashboard", icon: BarChart3 },
-  { path: "/admin/courses", label: "Courses", icon: BookOpen },
-  { path: "/admin/community", label: "Community", icon: MessageSquare },
-  { path: "/admin/leads", label: "Leads", icon: Users },
-  { path: "/admin/email-campaigns", label: "Email Campaigns", icon: Mail },
-  { path: "/admin/email-templates", label: "Templates", icon: FileText },
-  { path: "/admin/settings", label: "Settings", icon: Settings },
+  { path: "/dev-admin", label: "Dashboard", icon: BarChart3 },
+  { path: "/dev-admin/courses", label: "Courses", icon: BookOpen },
+  { path: "/dev-admin/community", label: "Community", icon: MessageSquare },
+  { path: "/dev-admin/leads", label: "Leads", icon: Users },
+  { path: "/dev-admin/email-campaigns", label: "Email Campaigns", icon: Mail },
+  { path: "/dev-admin/email-templates", label: "Templates", icon: FileText },
+  { path: "/dev-admin/settings", label: "Settings", icon: Settings },
 ];
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
@@ -35,7 +35,12 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const { user } = useAuth();
 
   const handleSignOut = () => {
-    window.location.href = "/api/logout";
+    // Clear any stored authentication data
+    localStorage.clear();
+    sessionStorage.clear();
+    
+    // Redirect to home page
+    window.location.href = "/";
   };
 
   return (
