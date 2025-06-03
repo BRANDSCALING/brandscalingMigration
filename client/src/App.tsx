@@ -34,8 +34,15 @@ import CommunityComingSoon from "@/pages/community/CommunityComingSoon";
 import CollabComingSoon from "@/pages/collab/CollabComingSoon";
 
 function Router() {
-  const { isAuthenticated, loading, userProfile } = useFirebaseAuth();
+  const { isAuthenticated, loading, userProfile, logout } = useFirebaseAuth();
   const [location, setLocation] = useLocation();
+
+  // Force logout on app start if needed
+  useEffect(() => {
+    if (!loading && location === '/force-logout') {
+      logout();
+    }
+  }, [loading, location, logout]);
 
   // Role-based redirects and access control
   useEffect(() => {

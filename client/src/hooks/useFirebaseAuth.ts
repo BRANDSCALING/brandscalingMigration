@@ -191,26 +191,24 @@ export function useFirebaseAuth() {
     }
   };
 
-  // Sign out
+  // Sign out - Force logout everywhere
   const logout = async () => {
     try {
+      // Force logout from Firebase
       await signOut(auth);
-      // Clear all local state
-      setUser(null);
-      setUserProfile(null);
-      setError(null);
-      // Clear any cached data
-      localStorage.clear();
-      sessionStorage.clear();
-    } catch (error: any) {
-      setError(error.message);
-      // Force clear state even if signOut fails
-      setUser(null);
-      setUserProfile(null);
-      localStorage.clear();
-      sessionStorage.clear();
-      throw error;
+    } catch (error) {
+      console.warn('Firebase signOut failed:', error);
     }
+    
+    // Always clear all state regardless of Firebase response
+    setUser(null);
+    setUserProfile(null);
+    setError(null);
+    localStorage.clear();
+    sessionStorage.clear();
+    
+    // Force page reload to ensure complete logout
+    window.location.href = '/';
   };
 
   // Update user role
