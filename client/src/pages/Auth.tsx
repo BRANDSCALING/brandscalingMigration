@@ -118,13 +118,19 @@ export default function Auth() {
         title: "Signed Out",
         description: "You have been signed out successfully."
       });
-      window.location.reload();
+      // Force a page reload to clear all state
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 1000);
     } catch (error: any) {
+      console.error('Logout error:', error);
       toast({
         title: "Error",
         description: "Failed to sign out",
         variant: "destructive"
       });
+      // Force logout even if there's an error
+      window.location.href = '/';
     }
   };
 
