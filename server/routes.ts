@@ -172,6 +172,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Student Dashboard endpoint
+  app.get('/api/student/dashboard', requireRole(['student', 'admin']), async (req, res) => {
+    try {
+      const userId = req.user!.uid;
+      
+      // Get user profile with assessment data
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Get user's payments from database
+      const payments = await storage.getUserPayments(userId);
+      
+      // Get user's unlocked courses based on access tier and payments
+      const courses = await storage.getUserCourses(userId, user.accessTier);
+      
+      // Get course progress
+      const progress = await storage.getUserProgress(userId);
+      
+      // Get recent announcements
+      const announcements = await storage.getAnnouncements(5); // Get last 5
+      
+      // Prepare dashboard data
+      const dashboardData = {
+        user: {
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          dominantType: user.dominantType,
+          readinessLevel: user.readinessLevel,
+          accessTier: user.accessTier,
+          assessmentComplete: user.assessmentComplete,
+          profileImageUrl: user.profileImageUrl
+        },
+        payments,
+        courses,
+        progress,
+        announcements,
+        stats: {
+          totalCourses: courses.length,
+          completedModules: progress.filter(p => p.completed).length,
+          totalSpent: payments.reduce((sum, payment) => sum + payment.amount, 0)
+        }
+      };
+      
+      res.json(dashboardData);
+    } catch (error) {
+      console.error("Error fetching student dashboard:", error);
+      res.status(500).json({ message: "Failed to fetch dashboard data" });
+    }
+  });
+
   // Course routes
   app.get("/api/courses", requireAuth, async (req, res) => {
     try {

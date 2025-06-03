@@ -144,6 +144,11 @@ export interface IStorage {
   getLeadsWithLastEmail(): Promise<(Lead & { lastEmailSent?: Date; lastEmailSentBy?: string })[]>;
   logEmailSent(emailData: InsertEmailLog): Promise<EmailLog>;
   
+  // Student Dashboard operations
+  getUserPayments(userId: string): Promise<any[]>;
+  getUserCourses(userId: string, accessTier?: string): Promise<any[]>;
+  getAnnouncements(limit?: number): Promise<any[]>;
+
   // System operations
   getSystemStats(): Promise<any>;
   
@@ -1026,6 +1031,62 @@ export class DatabaseStorage implements IStorage {
       total: bannedUsers.count,
       recent: recentBanned.count
     };
+  }
+
+  // Student Dashboard methods
+  async getUserPayments(userId: string): Promise<any[]> {
+    try {
+      const userPayments = await db
+        .select()
+        .from(payments)
+        .where(eq(payments.userId, userId))
+        .orderBy(desc(payments.paidAt));
+      
+      return userPayments;
+    } catch (error) {
+      console.error('Error fetching user payments:', error);
+      return [];
+    }
+  }
+
+  async getUserCourses(userId: string, accessTier?: string): Promise<any[]> {
+    try {
+      // Get user's courses based on their access tier and payments
+      const userCourses = await db
+        .select()
+        .from(lmsModules)
+        .where(
+          accessTier 
+            ? or(
+                eq(lmsModules.requiredTier, accessTier),
+                eq(lmsModules.requiredTier, 'beginner')
+              )
+            : eq(lmsModules.isActive, true)
+        )
+        .orderBy(asc(lmsModules.order));
+      
+      return userCourses;
+    } catch (error) {
+      console.error('Error fetching user courses:', error);
+      return [];
+    }
+  }
+
+  async getAnnouncements(limit: number = 5): Promise<any[]> {
+    try {
+      // Get recent blog posts as announcements
+      const announcements = await db
+        .select()
+        .from(blogPosts)
+        .where(eq(blogPosts.status, 'published'))
+        .orderBy(desc(blogPosts.createdAt))
+        .limit(limit);
+      
+      return announcements;
+    } catch (error) {
+      console.error('Error fetching announcements:', error);
+      return [];
+    }
   }
 }
 
