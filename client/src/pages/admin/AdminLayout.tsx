@@ -66,7 +66,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           </Button>
         </div>
 
-        <nav className="mt-6 flex-1 overflow-y-auto pb-20">
+        <nav className="mt-6 flex-1 overflow-y-auto pb-24">
           <div className="px-3 space-y-1">
             {sidebarItems.map((item) => {
               const Icon = item.icon;
@@ -91,48 +91,47 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           </div>
         </nav>
 
-
+        {/* User info and sign out at bottom left */}
+        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200 bg-white">
+          <div className="flex items-center mb-3">
+            <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+              <span className="text-white text-sm font-medium">
+                {user?.firstName?.charAt(0) || user?.email?.charAt(0) || 'A'}
+              </span>
+            </div>
+            <div className="ml-3 flex-1 min-w-0">
+              <p className="text-sm font-medium text-gray-900 truncate">
+                {user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : user?.email}
+              </p>
+              <p className="text-xs text-gray-500 truncate">{user?.email}</p>
+            </div>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            className="w-full"
+            onClick={handleSignOut}
+          >
+            <LogOut className="w-4 h-4 mr-2" />
+            Sign Out
+          </Button>
+        </div>
       </div>
 
       {/* Main content */}
       <div className="lg:ml-64">
-        {/* Top header */}
-        <header className="bg-white shadow-sm border-b border-gray-200">
+        {/* Top header for mobile */}
+        <header className="lg:hidden bg-white shadow-sm border-b border-gray-200">
           <div className="flex items-center justify-between h-16 px-4">
             <Button
               variant="ghost"
               size="sm"
-              className="lg:hidden"
               onClick={() => setSidebarOpen(true)}
             >
               <Menu className="w-5 h-5" />
             </Button>
-            <h1 className="text-lg font-semibold text-gray-900 lg:hidden">Admin Panel</h1>
-            
-            {/* User profile and sign out on the right */}
-            <div className="flex items-center space-x-4 ml-auto">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                  <span className="text-white text-sm font-medium">
-                    {user?.firstName?.charAt(0) || user?.email?.charAt(0) || 'A'}
-                  </span>
-                </div>
-                <div className="hidden md:block">
-                  <p className="text-sm font-medium text-gray-900">
-                    {user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : user?.email}
-                  </p>
-                  <p className="text-xs text-gray-500">{user?.email}</p>
-                </div>
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleSignOut}
-              >
-                <LogOut className="w-4 h-4 mr-2" />
-                Sign Out
-              </Button>
-            </div>
+            <h1 className="text-lg font-semibold text-gray-900">Admin Panel</h1>
+            <div className="w-10" /> {/* Spacer for centering */}
           </div>
         </header>
 
