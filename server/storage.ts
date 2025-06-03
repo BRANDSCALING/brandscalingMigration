@@ -730,6 +730,15 @@ export class DatabaseStorage implements IStorage {
     return lesson;
   }
 
+  async reorderLessons(courseId: number, lessonIds: number[]): Promise<void> {
+    for (let i = 0; i < lessonIds.length; i++) {
+      await db
+        .update(lessons)
+        .set({ order: i + 1 })
+        .where(eq(lessons.id, lessonIds[i]));
+    }
+  }
+
   // User Progress operations
   async getUserProgress(userId: string): Promise<any[]> {
     const progress = await db
