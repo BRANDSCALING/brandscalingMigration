@@ -14,6 +14,7 @@ import {
   userProgress,
   leads,
   stripePurchases,
+  payments,
   emailLogs,
   type User,
   type Post,
