@@ -3,7 +3,10 @@ import { Link } from 'wouter';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Play, Users, Trophy, Target, Brain, Building } from 'lucide-react';
+import { Play, Users, Trophy, Target, Brain, Building, Lock } from 'lucide-react';
+import { useAccess } from '@/hooks/useAccess';
+import GateComponent from '@/components/GateComponent';
+import YouAreHere from '@/components/YouAreHere';
 // Types for database integration
 interface Course {
   id: string;

@@ -126,7 +126,7 @@ function getUpgradeTarget(currentTier, desiredFeature, courseId = null) {
   return 'mastermind';
 }
 
-module.exports = {
+export {
   tierPermissions,
   courseDatabase,
   hasAccess,

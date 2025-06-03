@@ -10,6 +10,7 @@ import { updateUserAfterPurchase } from "./updateUserAfterPurchase";
 import { resendClient } from "@shared/resendClient";
 import { z } from "zod";
 import Stripe from "stripe";
+import { hasAccess, getAllowedCourses, courseDatabase, getUpgradeTarget } from './tierPermissions.js';
 
 // Initialize Stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -35,6 +36,96 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Apply Firebase auth middleware to all other API routes
   app.use('/api', verifyFirebaseToken);
+
+  // ===== TIER-BASED ACCESS CONTROL ENDPOINTS =====
+  
+  // Get user's course access permissions
+  app.get("/api/access/courses", requireAuth, async (req, res) => {
+    try {
+      const user = await getUserProfile(req.user.uid);
+      const userTier = user?.accessTier || 'beginner';
+      const allowedCourses = getAllowedCourses(userTier);
+      
+      res.json({
+        userTier,
+        allowedCourses,
+        allCourses: Object.keys(courseDatabase).map(id => ({
+          id,
+          ...courseDatabase[id],
+          hasAccess: hasAccess(userTier, 'courses', id)
+        }))
+      });
+    } catch (error) {
+      console.error('Error fetching course access:', error);
+      res.status(500).json({ error: 'Failed to fetch course access' });
+    }
+  });
+
+  // Check access to specific course
+  app.get("/api/access/course/:courseId", requireAuth, async (req, res) => {
+    try {
+      const { courseId } = req.params;
+      const user = await getUserProfile(req.user.uid);
+      const userTier = user?.accessTier || 'beginner';
+      
+      const courseInfo = courseDatabase[courseId];
+      if (!courseInfo) {
+        return res.status(404).json({ error: 'Course not found' });
+      }
+
+      const hasAccessToCourse = hasAccess(userTier, 'courses', courseId);
+      
+      if (!hasAccessToCourse) {
+        const upgradeTarget = getUpgradeTarget(userTier, 'courses', courseId);
+        return res.json({
+          hasAccess: false,
+          currentTier: userTier,
+          requiredTier: courseInfo.requiredTier,
+          upgradeTarget,
+          upgradeUrl: `/upgrade?target=${upgradeTarget}`,
+          course: courseInfo
+        });
+      }
+
+      res.json({
+        hasAccess: true,
+        currentTier: userTier,
+        course: courseInfo
+      });
+    } catch (error) {
+      console.error('Error checking course access:', error);
+      res.status(500).json({ error: 'Failed to check course access' });
+    }
+  });
+
+  // Get access to specific features
+  app.get("/api/access/feature/:feature", requireAuth, async (req, res) => {
+    try {
+      const { feature } = req.params;
+      const user = await getUserProfile(req.user.uid);
+      const userTier = user?.accessTier || 'beginner';
+      
+      const hasFeatureAccess = hasAccess(userTier, feature);
+      
+      if (!hasFeatureAccess) {
+        const upgradeTarget = getUpgradeTarget(userTier, feature);
+        return res.json({
+          hasAccess: false,
+          currentTier: userTier,
+          requiredTier: upgradeTarget,
+          upgradeUrl: `/upgrade?target=${upgradeTarget}`
+        });
+      }
+
+      res.json({
+        hasAccess: true,
+        currentTier: userTier
+      });
+    } catch (error) {
+      console.error('Error checking feature access:', error);
+      res.status(500).json({ error: 'Failed to check feature access' });
+    }
+  });
 
   // Firebase Auth routes
   app.post('/api/auth/signup', async (req, res) => {
