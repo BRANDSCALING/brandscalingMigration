@@ -66,8 +66,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           </Button>
         </div>
 
-        <nav className="mt-6">
-          <div className="px-3">
+        <nav className="mt-6 flex-1 overflow-y-auto pb-20">
+          <div className="px-3 space-y-1">
             {sidebarItems.map((item) => {
               const Icon = item.icon;
               const isActive = location === item.path || 
@@ -76,7 +76,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               return (
                 <Link key={item.path} href={item.path}>
                   <div className={`
-                    flex items-center px-3 py-2 mb-1 text-sm font-medium rounded-md transition-colors cursor-pointer
+                    flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors cursor-pointer
                     ${isActive 
                       ? 'bg-blue-100 text-blue-700' 
                       : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
