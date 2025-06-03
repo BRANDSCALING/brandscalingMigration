@@ -11,6 +11,7 @@ import {
   blogPosts, 
   aiAgents,
   courses,
+  lessons,
   userProgress,
   leads,
   stripePurchases,
@@ -25,6 +26,10 @@ import {
   type Event,
   type BlogPost,
   type AiAgent,
+  type Course,
+  type InsertCourse,
+  type Lesson,
+  type InsertLesson,
   type Lead,
   type InsertLead,
   type StripePurchase,
@@ -102,6 +107,21 @@ export interface IStorage {
   getLmsModules(): Promise<LmsModule[]>;
   getLmsProgress(userId: string): Promise<LmsProgress[]>;
   markModuleComplete(userId: string, moduleId: number): Promise<void>;
+
+  // Course management operations
+  getAllCourses(): Promise<any[]>;
+  getCourse(id: number): Promise<any | undefined>;
+  createCourse(courseData: any): Promise<any>;
+  updateCourse(id: number, courseData: any): Promise<any>;
+  deleteCourse(id: number): Promise<void>;
+
+  // Lesson management operations
+  getLessons(courseId: number): Promise<any[]>;
+  getLesson(id: number): Promise<any | undefined>;
+  createLesson(lessonData: any): Promise<any>;
+  updateLesson(id: number, lessonData: any): Promise<any>;
+  deleteLesson(id: number): Promise<void>;
+  reorderLessons(courseId: number, lessonIds: number[]): Promise<void>;
   
   // Quiz operations
   saveQuizResult(resultData: Omit<QuizResult, 'id' | 'createdAt'>): Promise<QuizResult>;

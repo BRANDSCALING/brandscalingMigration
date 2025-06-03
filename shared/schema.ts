@@ -114,9 +114,21 @@ export const courses = pgTable("courses", {
   track: varchar("track").notNull(), // architect, alchemist
   level: integer("level").notNull().default(1),
   imageUrl: varchar("image_url"),
-  content: jsonb("content"), // course modules and lessons
+  accessTier: varchar("access_tier").notNull().default("beginner"), // beginner, intermediate, advanced, mastermind
   isPublished: boolean("is_published").default(false),
-  requiredTier: varchar("required_tier").default("beginner"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Course lessons
+export const lessons = pgTable("lessons", {
+  id: serial("id").primaryKey(),
+  courseId: integer("course_id").notNull().references(() => courses.id),
+  title: varchar("title").notNull(),
+  videoUrl: varchar("video_url"),
+  workbookUrl: varchar("workbook_url"),
+  requiredTier: varchar("required_tier").notNull().default("beginner"), // beginner, intermediate, advanced, mastermind
+  order: integer("order").notNull().default(0),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -332,6 +344,14 @@ export const usersRelations = relations(users, ({ many }) => ({
 
 export const coursesRelations = relations(courses, ({ many }) => ({
   userProgress: many(userProgress),
+  lessons: many(lessons),
+}));
+
+export const lessonsRelations = relations(lessons, ({ one }) => ({
+  course: one(courses, {
+    fields: [lessons.courseId],
+    references: [courses.id],
+  }),
 }));
 
 export const postsRelations = relations(posts, ({ one, many }) => ({
@@ -425,6 +445,12 @@ export const insertCourseSchema = createInsertSchema(courses).omit({
   updatedAt: true,
 });
 
+export const insertLessonSchema = createInsertSchema(lessons).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 export const insertPostSchema = createInsertSchema(posts).omit({
   id: true,
   createdAt: true,
@@ -487,6 +513,9 @@ export type InsertUser = z.infer<typeof insertUserSchema>;
 
 export type Course = typeof courses.$inferSelect;
 export type InsertCourse = z.infer<typeof insertCourseSchema>;
+
+export type Lesson = typeof lessons.$inferSelect;
+export type InsertLesson = z.infer<typeof insertLessonSchema>;
 
 export type Post = typeof posts.$inferSelect;
 export type InsertPost = z.infer<typeof insertPostSchema>;
