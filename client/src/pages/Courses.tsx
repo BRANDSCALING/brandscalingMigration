@@ -175,29 +175,27 @@ export default function Courses() {
           ) : filteredCourses.length > 0 ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredCourses.map((course: any) => (
-                <GateComponent key={course.id} courseSlug={course.slug}>
-                  <Card className="hover:shadow-lg transition-shadow duration-300">
-                    <CardContent className="p-6">
-                      <div className="flex gap-2 mb-3">
-                        <Badge className={getTrackColor(course.track)}>
-                          {course.track === 'all' ? 'All Tracks' : course.track}
-                        </Badge>
-                        <Badge className={getAccessColor(course.accessLevel)}>
-                          {course.accessLevel}
-                        </Badge>
-                      </div>
-                      <h3 className="text-xl font-semibold mb-2 text-gray-900">
-                        {course.title}
-                      </h3>
-                      <p className="text-gray-600 mb-4">
-                        {course.description}
-                      </p>
-                      <Button className="w-full bg-gradient-to-r from-purple-600 to-orange-500 hover:from-purple-700 hover:to-orange-600">
-                        Access Course
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </GateComponent>
+                <Card key={course.id} className="hover:shadow-lg transition-shadow duration-300">
+                  <CardContent className="p-6">
+                    <div className="flex gap-2 mb-3">
+                      <Badge className={getTrackColor(course.track)}>
+                        {course.track === 'all' ? 'All Tracks' : course.track}
+                      </Badge>
+                      <Badge className={getAccessColor(course.accessLevel)}>
+                        {course.accessLevel}
+                      </Badge>
+                    </div>
+                    <h3 className="text-xl font-semibold mb-2 text-gray-900">
+                      {course.title}
+                    </h3>
+                    <p className="text-gray-600 mb-4">
+                      {course.description}
+                    </p>
+                    <Button className="w-full bg-gradient-to-r from-purple-600 to-orange-500 hover:from-purple-700 hover:to-orange-600">
+                      Access Course
+                    </Button>
+                  </CardContent>
+                </Card>
               ))}
             </div>
           ) : (
