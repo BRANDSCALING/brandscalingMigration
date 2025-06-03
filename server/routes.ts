@@ -11,6 +11,7 @@ import { resendClient } from "@shared/resendClient";
 import { z } from "zod";
 import Stripe from "stripe";
 import { hasAccess, getAllowedCourses, courseDatabase, getUpgradeTarget } from './tierPermissions';
+import { uploadFields } from './upload';
 
 // Initialize Stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -18,6 +19,9 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Serve uploaded files statically
+  app.use('/uploads', express.static('public/uploads'));
+
   // Health check route (public)
   app.get("/api/health", async (req, res) => {
     res.json({ status: "ok", timestamp: new Date().toISOString() });
@@ -2552,6 +2556,31 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
     } catch (error) {
       console.error("Error reordering lessons:", error);
       res.status(500).json({ error: "Failed to reorder lessons" });
+    }
+  });
+
+  // File upload routes
+  app.post("/api/admin/upload", requireAuth, requireRole('admin'), uploadFields, async (req, res) => {
+    try {
+      const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+      const uploadedFiles: { [key: string]: string } = {};
+
+      if (files.image && files.image[0]) {
+        uploadedFiles.imageUrl = `/uploads/images/${files.image[0].filename}`;
+      }
+      
+      if (files.video && files.video[0]) {
+        uploadedFiles.videoUrl = `/uploads/videos/${files.video[0].filename}`;
+      }
+      
+      if (files.workbook && files.workbook[0]) {
+        uploadedFiles.workbookUrl = `/uploads/workbooks/${files.workbook[0].filename}`;
+      }
+
+      res.json(uploadedFiles);
+    } catch (error) {
+      console.error("Error uploading files:", error);
+      res.status(500).json({ error: "Failed to upload files" });
     }
   });
 
