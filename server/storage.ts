@@ -59,7 +59,7 @@ export interface IStorage {
   updateUserAssessment(userId: string, assessmentData: any): Promise<User>;
   
   // Course operations
-  getCourses(): Promise<any[]>;
+  getAllCourses(): Promise<any[]>;
   getCourse(id: number): Promise<any | undefined>;
   createCourse(courseData: any): Promise<any>;
   updateCourse(id: number, courseData: any): Promise<any>;
@@ -640,7 +640,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Course operations
-  async getCourses(): Promise<any[]> {
+  async getAllCourses(): Promise<any[]> {
     const courseList = await db.select().from(courses).orderBy(asc(courses.level));
     return courseList;
   }
@@ -650,12 +650,28 @@ export class DatabaseStorage implements IStorage {
     return course;
   }
 
-  async createCourse(courseData: any): Promise<any> {
+  async createCourse(courseData: {
+    title: string;
+    description?: string;
+    track: string;
+    level?: number;
+    accessTier: string;
+    imageUrl?: string;
+    isPublished?: boolean;
+  }): Promise<any> {
     const [course] = await db.insert(courses).values(courseData).returning();
     return course;
   }
 
-  async updateCourse(id: number, courseData: any): Promise<any> {
+  async updateCourse(id: number, courseData: Partial<{
+    title: string;
+    description: string;
+    track: string;
+    level: number;
+    accessTier: string;
+    imageUrl: string;
+    isPublished: boolean;
+  }>): Promise<any> {
     const [course] = await db
       .update(courses)
       .set({ ...courseData, updatedAt: new Date() })
@@ -666,6 +682,52 @@ export class DatabaseStorage implements IStorage {
 
   async deleteCourse(id: number): Promise<void> {
     await db.delete(courses).where(eq(courses.id, id));
+  }
+
+  // Lesson operations
+  async createLesson(lessonData: {
+    courseId: number;
+    title: string;
+    videoUrl?: string;
+    workbookUrl?: string;
+    requiredTier: string;
+    order?: number;
+  }): Promise<any> {
+    const [lesson] = await db.insert(lessons).values(lessonData).returning();
+    return lesson;
+  }
+
+  async updateLesson(id: number, lessonData: Partial<{
+    title: string;
+    videoUrl: string;
+    workbookUrl: string;
+    requiredTier: string;
+    order: number;
+  }>): Promise<any> {
+    const [lesson] = await db
+      .update(lessons)
+      .set({ ...lessonData, updatedAt: new Date() })
+      .where(eq(lessons.id, id))
+      .returning();
+    return lesson;
+  }
+
+  async deleteLesson(id: number): Promise<void> {
+    await db.delete(lessons).where(eq(lessons.id, id));
+  }
+
+  async listLessonsByCourseId(courseId: number): Promise<any[]> {
+    const lessonList = await db
+      .select()
+      .from(lessons)
+      .where(eq(lessons.courseId, courseId))
+      .orderBy(asc(lessons.order));
+    return lessonList;
+  }
+
+  async getLesson(id: number): Promise<any | undefined> {
+    const [lesson] = await db.select().from(lessons).where(eq(lessons.id, id));
+    return lesson;
   }
 
   // User Progress operations

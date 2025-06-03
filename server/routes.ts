@@ -226,7 +226,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/admin/courses', requireRole(['admin']), async (req, res) => {
     try {
-      const courses = await storage.getCourses();
+      const courses = await storage.getAllCourses();
       res.json(courses);
     } catch (error) {
       console.error('Error fetching courses:', error);
@@ -2500,7 +2500,7 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
   app.get("/api/admin/courses/:courseId/lessons", requireAuth, requireRole('admin'), async (req, res) => {
     try {
       const courseId = parseInt(req.params.courseId);
-      const lessons = await storage.getLessons(courseId);
+      const lessons = await storage.listLessonsByCourseId(courseId);
       res.json(lessons);
     } catch (error) {
       console.error("Error fetching lessons:", error);
