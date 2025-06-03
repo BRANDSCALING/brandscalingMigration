@@ -277,7 +277,7 @@ export default function StudentDashboard() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {dashboardData?.announcements?.length > 0 ? (
+                {dashboardData?.announcements && dashboardData.announcements.length > 0 ? (
                   <div className="space-y-3">
                     {dashboardData.announcements.map((announcement: any) => (
                       <div key={announcement.id} className="border-l-4 border-blue-500 pl-4">
@@ -299,7 +299,7 @@ export default function StudentDashboard() {
             </Card>
 
             {/* Course Progress Summary */}
-            {dashboardData?.progress?.length > 0 && (
+            {dashboardData?.progress && dashboardData.progress.length > 0 && (
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
