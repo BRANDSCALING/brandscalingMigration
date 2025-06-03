@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Trash2, Edit2, Plus, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { FileUpload } from "@/components/FileUpload";
 
 interface Course {
   id: number;
@@ -342,10 +343,12 @@ export default function AdminCourses() {
                 value={courseForm.level}
                 onChange={(e) => setCourseForm({ ...courseForm, level: parseInt(e.target.value) || 1 })}
               />
-              <Input
-                placeholder="Image URL (optional)"
-                value={courseForm.imageUrl}
-                onChange={(e) => setCourseForm({ ...courseForm, imageUrl: e.target.value })}
+              <FileUpload
+                label="Course Image"
+                accept="image/*"
+                fieldName="image"
+                currentUrl={courseForm.imageUrl}
+                onFileUploaded={(url) => setCourseForm({ ...courseForm, imageUrl: url })}
               />
               <div className="flex items-center space-x-2">
                 <input
@@ -392,15 +395,19 @@ export default function AdminCourses() {
                         value={lessonForm.title}
                         onChange={(e) => setLessonForm({ ...lessonForm, title: e.target.value })}
                       />
-                      <Input
-                        placeholder="Video URL (YouTube, Vimeo, etc.)"
-                        value={lessonForm.videoUrl}
-                        onChange={(e) => setLessonForm({ ...lessonForm, videoUrl: e.target.value })}
+                      <FileUpload
+                        label="Lesson Video"
+                        accept="video/*"
+                        fieldName="video"
+                        currentUrl={lessonForm.videoUrl}
+                        onFileUploaded={(url) => setLessonForm({ ...lessonForm, videoUrl: url })}
                       />
-                      <Input
-                        placeholder="Workbook URL (PDF link)"
-                        value={lessonForm.workbookUrl}
-                        onChange={(e) => setLessonForm({ ...lessonForm, workbookUrl: e.target.value })}
+                      <FileUpload
+                        label="Lesson Workbook"
+                        accept="application/pdf"
+                        fieldName="workbook"
+                        currentUrl={lessonForm.workbookUrl}
+                        onFileUploaded={(url) => setLessonForm({ ...lessonForm, workbookUrl: url })}
                       />
                       <div className="grid grid-cols-2 gap-4">
                         <Select value={lessonForm.requiredTier} onValueChange={(value) => setLessonForm({ ...lessonForm, requiredTier: value })}>
