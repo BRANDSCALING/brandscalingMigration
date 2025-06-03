@@ -21,7 +21,7 @@ interface Course {
   enrolled?: number;
 }
 
-type FilterType = 'all' | 'free' | 'paid' | 'mastermind' | 'architect' | 'alchemist';
+type FilterType = 'all' | 'architect' | 'alchemist';
 
 // Real courses loaded from backend API only
 
@@ -31,9 +31,6 @@ export default function Courses() {
 
   const filterOptions = [
     { value: 'all', label: 'All Courses' },
-    { value: 'free', label: 'Free' },
-    { value: 'paid', label: 'Paid' },
-    { value: 'mastermind', label: 'Mastermind' },
     { value: 'architect', label: 'Architect Track' },
     { value: 'alchemist', label: 'Alchemist Track' }
   ];
@@ -46,7 +43,7 @@ export default function Courses() {
     if (filter === 'architect' || filter === 'alchemist') {
       return course.track === filter || course.track === 'all';
     }
-    return course.accessLevel === filter;
+    return true;
   });
 
   const getTrackColor = (track: string) => {
@@ -57,14 +54,7 @@ export default function Courses() {
     }
   };
 
-  const getAccessColor = (access: string) => {
-    switch (access) {
-      case 'free': return 'bg-green-100 text-green-800';
-      case 'paid': return 'bg-blue-100 text-blue-800';
-      case 'mastermind': return 'bg-purple-100 text-purple-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
+
 
   return (
     <div className="min-h-screen bg-white">
