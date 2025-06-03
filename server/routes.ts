@@ -1488,7 +1488,7 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
   });
 
   // Add new lead (Firebase authenticated admins only)
-  app.post("/api/leads/add", requireRole("admin"), async (req, res) => {
+  app.post("/api/leads", requireRole("admin"), async (req, res) => {
     try {
       const { name, email } = req.body;
       const adminUid = req.user?.uid;
