@@ -92,9 +92,7 @@ export default function StudentDashboard() {
 
   const { user, payments, courses, progress, announcements, stats } = dashboardData;
   
-  const getPersonalityEmoji = (type: string) => {
-    return type === 'architect' ? '🏗️' : '🧪';
-  };
+
 
   const formatCurrency = (amountInPence: number) => {
     return new Intl.NumberFormat('en-GB', {
@@ -122,10 +120,10 @@ export default function StudentDashboard() {
             </Avatar>
             <div>
               <h1 className="text-3xl font-bold text-gray-900">
-                Welcome back, {user.firstName}! {getPersonalityEmoji(user.dominantType)}
+                Welcome back, {user.firstName}!
               </h1>
               <p className="text-gray-600">
-                {user.dominantType === 'architect' ? 'The Architect' : 'The Alchemist'} • {user.readinessLevel} Level • {user.accessTier} Tier
+                {user.dominantType} • {user.readinessLevel} Level • {user.accessTier} Tier
               </p>
             </div>
           </div>
