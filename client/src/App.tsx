@@ -27,9 +27,13 @@ import StudentWorkbooks from "@/pages/student/StudentWorkbooks";
 import StudentCommunity from "@/pages/student/StudentCommunity";
 
 // Admin Modules
+import AdminLayout from "@/pages/admin/AdminLayout";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import EmailCampaigns from "@/pages/admin/EmailCampaigns";
+import EmailTemplates from "@/pages/admin/EmailTemplates";
+import Leads from "@/pages/admin/Leads";
 import AdminCourses from "@/pages/admin/AdminCourses";
+import AdminCommunity from "@/pages/admin/AdminCommunity";
 
 import CommunityComingSoon from "@/pages/community/CommunityComingSoon";
 import CollabComingSoon from "@/pages/collab/CollabComingSoon";
@@ -126,10 +130,13 @@ function Router() {
       {/* Admin Module - ONLY accessible to admins */}
       {isAuthenticated && userProfile?.role === 'admin' && (
         <>
-          <Route path="/admin" component={AdminDashboard} />
-          <Route path="/admin/email-campaigns" component={AdminDashboard} />
-          <Route path="/admin/courses" component={AdminCourses} />
-          <Route path="/admin/:path*" component={AdminDashboard} />
+          <Route path="/admin" component={() => <AdminLayout><AdminDashboard /></AdminLayout>} />
+          <Route path="/admin/courses" component={() => <AdminLayout><AdminCourses /></AdminLayout>} />
+          <Route path="/admin/community" component={() => <AdminLayout><AdminCommunity /></AdminLayout>} />
+          <Route path="/admin/leads" component={() => <AdminLayout><Leads /></AdminLayout>} />
+          <Route path="/admin/email-campaigns" component={() => <AdminLayout><EmailCampaigns /></AdminLayout>} />
+          <Route path="/admin/email-templates" component={() => <AdminLayout><EmailTemplates /></AdminLayout>} />
+          <Route path="/admin/settings" component={() => <AdminLayout><AdminDashboard /></AdminLayout>} />
         </>
       )}
 

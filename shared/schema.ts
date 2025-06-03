@@ -145,7 +145,7 @@ export const userProgress = pgTable("user_progress", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-// Community posts
+// Community posts - Enhanced for admin management
 export const posts = pgTable("posts", {
   id: varchar("id").primaryKey().notNull(),
   userId: varchar("user_id").notNull().references(() => users.id),
@@ -159,6 +159,8 @@ export const posts = pgTable("posts", {
   featuredType: varchar("featured_type"), // launch, update, tip, warning, direction
   featuredAt: timestamp("featured_at"),
   featuredBy: varchar("featured_by").references(() => users.id),
+  visibilityTier: varchar("visibility_tier").default("beginner"), // Controls who can see this post
+  isHidden: boolean("is_hidden").default(false), // Admin can hide posts
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
   isDeleted: boolean("is_deleted").default(false),
