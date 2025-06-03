@@ -138,7 +138,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         </header>
 
         {/* Page content */}
-        <main className="p-6">
+        <main className="p-6 pt-0">
           {children}
         </main>
       </div>
