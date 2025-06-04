@@ -34,13 +34,24 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const [location] = useLocation();
   const { user } = useAuth();
 
-  const handleSignOut = () => {
-    // Clear any stored authentication data
-    localStorage.clear();
-    sessionStorage.clear();
-    
-    // Redirect to home page
-    window.location.href = "/";
+  const handleSignOut = async () => {
+    try {
+      // Call logout endpoint
+      await fetch('/api/logout', { method: 'GET' });
+      
+      // Clear any stored authentication data
+      localStorage.clear();
+      sessionStorage.clear();
+      
+      // Force page reload to clear any cached state
+      window.location.href = "/";
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Even if API call fails, clear local data and redirect
+      localStorage.clear();
+      sessionStorage.clear();
+      window.location.href = "/";
+    }
   };
 
   return (
