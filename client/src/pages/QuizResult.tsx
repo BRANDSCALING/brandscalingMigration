@@ -37,7 +37,7 @@ export default function QuizResult() {
   const [, setLocation] = useLocation();
 
   useEffect(() => {
-    const savedResult = localStorage.getItem('dnaQuizResult') as DnaType | null;
+    const savedResult = localStorage.getItem('quizResult') as DnaType | null;
     if (savedResult && Object.keys(dnaTypeConfig).includes(savedResult)) {
       setResult(savedResult);
     } else {
