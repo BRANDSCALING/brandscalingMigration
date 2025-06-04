@@ -51,7 +51,7 @@ export interface IStorage {
   getUserByEmail(email: string): Promise<User | undefined>;
   createUser(userData: Partial<User>): Promise<User>;
   updateUser(id: string, userData: Partial<User>): Promise<User>;
-  upsertUser(userData: Partial<User>): Promise<User>;
+  upsertUser(userData: { id: string; email?: string | null; firstName?: string | null; lastName?: string | null; profileImageUrl?: string | null; role?: string; stripeCustomerId?: string | null; stripeSubscriptionId?: string | null; }): Promise<User>;
   getAllUsers(): Promise<User[]>;
   updateUserRole(userId: string, newRole: string): Promise<User>;
   updateUserAccessTier(userId: string, newTier: string): Promise<User>;
@@ -210,6 +210,37 @@ export class DatabaseStorage implements IStorage {
       .update(users)
       .set({ ...userData, updatedAt: new Date() })
       .where(eq(users.id, id))
+      .returning();
+    return user;
+  }
+
+  async upsertUser(userData: { id: string; email?: string | null; firstName?: string | null; lastName?: string | null; profileImageUrl?: string | null; role?: string; stripeCustomerId?: string | null; stripeSubscriptionId?: string | null; }): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values({
+        id: userData.id,
+        email: userData.email,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        profileImageUrl: userData.profileImageUrl,
+        role: userData.role || 'student',
+        accessTier: 'beginner',
+        stripeCustomerId: userData.stripeCustomerId,
+        stripeSubscriptionId: userData.stripeSubscriptionId,
+      })
+      .onConflictDoUpdate({
+        target: users.id,
+        set: {
+          email: userData.email,
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          profileImageUrl: userData.profileImageUrl,
+          role: userData.role || 'student',
+          stripeCustomerId: userData.stripeCustomerId,
+          stripeSubscriptionId: userData.stripeSubscriptionId,
+          updatedAt: new Date(),
+        },
+      })
       .returning();
     return user;
   }
