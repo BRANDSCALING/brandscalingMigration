@@ -215,12 +215,7 @@ export default function Quiz() {
   const currentQuestionData = questions[currentQuestion];
   const selectedAnswer = answers[currentQuestion];
 
-  const typeIcons: Record<AnswerType, string> = {
-    'Architect': '🧱',
-    'Alchemist': '🔮',
-    'Undeclared': '🌫',
-    'Blurred Identity': '⚖️'
-  };
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 py-8 px-4 font-['Poppins']">
@@ -256,7 +251,6 @@ export default function Quiz() {
                     htmlFor={`${currentQuestion}-${index}`}
                     className="flex items-center space-x-3 cursor-pointer flex-1 p-4 rounded-lg border hover:bg-gray-50"
                   >
-                    <span className="text-2xl">{typeIcons[option.type]}</span>
                     <span className="font-medium text-sm leading-relaxed">{option.text}</span>
                   </Label>
                 </div>
