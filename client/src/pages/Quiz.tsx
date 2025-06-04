@@ -198,7 +198,7 @@ export default function Quiz() {
       localStorage.setItem('quizResult', result);
       
       // Submit to backend
-      if (user?.id) {
+      if (user) {
         await apiRequest('POST', '/api/quiz/submit', { userId: user.id, result });
       }
       
