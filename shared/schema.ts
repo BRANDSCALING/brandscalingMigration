@@ -52,6 +52,14 @@ export const users = pgTable("users", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// User DNA Quiz Results
+export const userDnaResult = pgTable("user_dna_result", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  result: varchar("result").notNull(), // 'Architect' | 'Alchemist' | 'Undeclared' | 'Blurred Identity'
+  completedAt: timestamp("completed_at").notNull().defaultNow(),
+});
+
 // Payment transactions
 export const payments = pgTable("payments", {
   id: serial("id").primaryKey(),
@@ -484,6 +492,11 @@ export const insertQuizSchema = createInsertSchema(quizzes).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
+});
+
+export const insertUserDnaResultSchema = createInsertSchema(userDnaResult).omit({
+  id: true,
+  completedAt: true,
 });
 
 export const insertAiAgentSchema = createInsertSchema(aiAgents).omit({

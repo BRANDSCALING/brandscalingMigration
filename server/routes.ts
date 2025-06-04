@@ -196,6 +196,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Quiz submission endpoint
+  app.post('/api/quiz/submit', requireAuth, async (req, res) => {
+    try {
+      const { result } = req.body;
+      const userId = req.user!.uid;
+      
+      if (!['Architect', 'Alchemist', 'Undeclared', 'Blurred Identity'].includes(result)) {
+        return res.status(400).json({ message: 'Invalid quiz result' });
+      }
+      
+      await storage.upsertUserDnaResult(userId, result);
+      res.json({ success: true, message: 'Quiz result saved' });
+    } catch (error) {
+      console.error("Error saving quiz result:", error);
+      res.status(500).json({ message: "Failed to save quiz result" });
+    }
+  });
+
   app.put('/api/auth/user/role', requireRole(['admin']), async (req, res) => {
     try {
       const { uid, role } = req.body;

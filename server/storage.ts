@@ -17,6 +17,7 @@ import {
   stripePurchases,
   payments,
   emailLogs,
+  userDnaResult,
   type User,
   type Post,
   type PostReply,
@@ -35,7 +36,8 @@ import {
   type StripePurchase,
   type InsertStripePurchase,
   type EmailLog,
-  type InsertEmailLog
+  type InsertEmailLog,
+  insertUserDnaResultSchema
 } from "@shared/schema";
 
 // Simple ID generator
@@ -57,6 +59,7 @@ export interface IStorage {
   updateUserAccessTier(userId: string, newTier: string): Promise<User>;
   updateUserStripeInfo(userId: string, stripeData: { stripeCustomerId?: string; stripeSubscriptionId?: string }): Promise<User>;
   updateUserAssessment(userId: string, assessmentData: any): Promise<User>;
+  upsertUserDnaResult(userId: string, result: string): Promise<void>;
   
   // Course operations
   getAllCourses(): Promise<any[]>;
