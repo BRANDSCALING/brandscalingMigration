@@ -1423,6 +1423,22 @@ export class DatabaseStorage implements IStorage {
       .returning();
     return template;
   }
+
+  async upsertUserDnaResult(userId: string, result: string): Promise<void> {
+    await db
+      .insert(userDnaResult)
+      .values({
+        userId,
+        result,
+      })
+      .onConflictDoUpdate({
+        target: [userDnaResult.userId],
+        set: {
+          result,
+          completedAt: new Date(),
+        },
+      });
+  }
 }
 
 export const storage = new DatabaseStorage();
