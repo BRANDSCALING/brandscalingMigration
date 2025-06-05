@@ -132,15 +132,22 @@ export const courses = pgTable("courses", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-// Course lessons
+// Course lessons with dual DNA perspectives
 export const lessons = pgTable("lessons", {
   id: serial("id").primaryKey(),
   courseId: integer("course_id").notNull().references(() => courses.id),
   title: varchar("title").notNull(),
+  description: text("description"),
+  architectContent: text("architect_content"),
+  alchemistContent: text("alchemist_content"),
+  sharedContent: text("shared_content"),
   videoUrl: varchar("video_url"),
+  architectVideoUrl: varchar("architect_video_url"),
+  alchemistVideoUrl: varchar("alchemist_video_url"),
   workbookUrl: varchar("workbook_url"),
   requiredTier: varchar("required_tier").notNull().default("beginner"), // beginner, intermediate, advanced, mastermind
   order: integer("order").notNull().default(0),
+  isPublished: boolean("is_published").default(false),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
