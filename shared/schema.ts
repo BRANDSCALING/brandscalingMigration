@@ -433,10 +433,6 @@ export const aiConversationsRelations = relations(aiConversations, ({ one }) => 
     fields: [aiConversations.userId],
     references: [users.id],
   }),
-  agent: one(aiAgents, {
-    fields: [aiConversations.agentId],
-    references: [aiAgents.id],
-  }),
 }));
 
 export const eventsRelations = relations(events, ({ many }) => ({

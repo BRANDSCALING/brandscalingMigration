@@ -1,5 +1,5 @@
 import { db } from "./db";
-import { eq, desc, asc, count, and, or, sql, isNull } from "drizzle-orm";
+import { eq, desc, asc, count, and, or, sql, isNull, isNotNull } from "drizzle-orm";
 import { 
   users, 
   posts, 
@@ -10,6 +10,7 @@ import {
   events, 
   blogPosts, 
   aiAgents,
+  aiConversations,
   courses,
   lessons,
   userProgress,
@@ -19,6 +20,7 @@ import {
   emailLogs,
   userDnaResult,
   type User,
+  type UpsertUser,
   type Post,
   type PostReply,
   type LmsModule,
@@ -48,199 +50,91 @@ function generateId(): string {
 type CommunityPost = Post & { user: User };
 
 export interface IStorage {
-  // User operations
+  // User operations (mandatory for Replit Auth)
   getUser(id: string): Promise<User | undefined>;
-  getUserByEmail(email: string): Promise<User | undefined>;
-  createUser(userData: Partial<User>): Promise<User>;
-  updateUser(id: string, userData: Partial<User>): Promise<User>;
-  upsertUser(userData: { id: string; email?: string | null; firstName?: string | null; lastName?: string | null; profileImageUrl?: string | null; role?: string; stripeCustomerId?: string | null; stripeSubscriptionId?: string | null; }): Promise<User>;
-  getAllUsers(): Promise<User[]>;
-  updateUserRole(userId: string, newRole: string): Promise<User>;
-  updateUserAccessTier(userId: string, newTier: string): Promise<User>;
-  updateUserStripeInfo(userId: string, stripeData: { stripeCustomerId?: string; stripeSubscriptionId?: string }): Promise<User>;
-  updateUserAssessment(userId: string, assessmentData: any): Promise<User>;
-  upsertUserDnaResult(userId: string, result: string): Promise<void>;
+  upsertUser(user: UpsertUser): Promise<User>;
   
   // Course operations
-  getAllCourses(): Promise<any[]>;
-  getCourse(id: number): Promise<any | undefined>;
-  createCourse(courseData: any): Promise<any>;
-  updateCourse(id: number, courseData: any): Promise<any>;
+  getAllCourses(): Promise<Course[]>;
+  createCourse(course: InsertCourse): Promise<Course>;
+  updateCourse(id: number, course: Partial<InsertCourse>): Promise<Course>;
   deleteCourse(id: number): Promise<void>;
   
-  // User Progress operations
-  getUserProgress(userId: string): Promise<any[]>;
-  updateUserProgress(userId: string, courseId: number, progressData: any): Promise<any>;
-  getUserLmsProgress(userId: string): Promise<LmsProgress[]>;
-  updateUserLmsProgress(userId: string, moduleId: number, progressData: any): Promise<void>;
-  getLmsModulesWithAccess(userId: string): Promise<any[]>;
-  
-  // Community operations
-  getAllPosts(): Promise<CommunityPost[]>;
-  getPost(id: string): Promise<CommunityPost | undefined>;
-  createPost(postData: Omit<CommunityPost, 'id' | 'createdAt' | 'updatedAt'>): Promise<CommunityPost>;
-  updatePost(id: string, userId: string, updateData: { title: string; body: string; tags?: string[] }): Promise<CommunityPost>;
-  deletePost(id: string, userId: string): Promise<void>;
-  undoPost(id: string, userId: string): Promise<CommunityPost>;
-  adminDeletePost(id: string, adminId: string): Promise<void>;
-  getCommunityPosts(): Promise<CommunityPost[]>;
-  createCommunityPost(postData: any): Promise<CommunityPost>;
-  updateCommunityPost(id: string, userId: string, updateData: any): Promise<CommunityPost>;
-  deleteCommunityPost(id: string, userId: string): Promise<void>;
-  getPostHistory(postId: string): Promise<any[]>;
-  likePost(postId: string, userId: string): Promise<void>;
-  
-  // Moderation operations
-  pinPost(id: string, adminId: string): Promise<void>;
-  unpinPost(id: string, adminId: string): Promise<void>;
-  setFeatured(id: string, adminId: string, featuredType: string): Promise<void>;
-  removeFeatured(id: string, adminId: string): Promise<void>;
-  
-  // Reply operations
-  createReply(replyData: Omit<PostReply, 'id' | 'createdAt' | 'updatedAt'>): Promise<PostReply>;
-  getReplies(postId: string): Promise<PostReply[]>;
-  createPostReply(replyData: any): Promise<PostReply>;
-  getPostReplies(postId: string): Promise<PostReply[]>;
-  
-  // Upload operations
-  createUpload(uploadData: any): Promise<any>;
-  createPostActivity(activityData: any): Promise<any>;
-  
-  // LMS operations
-  getLmsModules(): Promise<LmsModule[]>;
-  getLmsProgress(userId: string): Promise<LmsProgress[]>;
-  markModuleComplete(userId: string, moduleId: number): Promise<void>;
-
-  // Course management operations
-  getAllCourses(): Promise<any[]>;
-  getCourse(id: number): Promise<any | undefined>;
-  createCourse(courseData: any): Promise<any>;
-  updateCourse(id: number, courseData: any): Promise<any>;
-  deleteCourse(id: number): Promise<void>;
-
-  // Lesson management operations
-  getLessons(courseId: number): Promise<any[]>;
-  getLesson(id: number): Promise<any | undefined>;
-  createLesson(lessonData: any): Promise<any>;
-  updateLesson(id: number, lessonData: any): Promise<any>;
+  // Lesson operations
+  getLessonById(id: number): Promise<Lesson | undefined>;
+  getLessonsByCourse(courseId: number): Promise<Lesson[]>;
+  createLesson(lesson: InsertLesson): Promise<Lesson>;
+  updateLesson(id: number, lesson: Partial<InsertLesson>): Promise<Lesson>;
   deleteLesson(id: number): Promise<void>;
-  reorderLessons(courseId: number, lessonIds: number[]): Promise<void>;
   
-  // Quiz operations
-  saveQuizResult(resultData: Omit<QuizResult, 'id' | 'createdAt'>): Promise<QuizResult>;
-  getQuizResults(userId: string): Promise<QuizResult[]>;
-  getQuizzes(): Promise<any[]>;
-  getQuiz(id: number): Promise<any | undefined>;
-  getUserQuizResults(userId: string): Promise<QuizResult[]>;
+  // Progress tracking
+  markLessonComplete(userId: string, courseId: number, lessonId: number, viewMode: string): Promise<void>;
+  getLessonProgress(userId: string, courseId: number, lessonId: number): Promise<{ completed: boolean; viewMode?: string }>;
+  getUserProgress(userId: string): Promise<any[]>;
   
-  // Event operations
-  getEvents(): Promise<Event[]>;
-  createEvent(eventData: Omit<Event, 'id' | 'createdAt' | 'updatedAt'>): Promise<Event>;
-  getUpcomingEvents(): Promise<Event[]>;
-  registerForEvent(eventId: number, userId: string): Promise<void>;
+  // AI conversation methods
+  saveAiConversation(userId: string, userMessage: string, assistantResponse: string, dnaType: string): Promise<void>;
+  getRecentAiMessages(userId: string, limit?: number): Promise<any[]>;
+  getAiConversationsByUser(userId: string): Promise<any[]>;
   
-  // Blog operations
-  getBlogPosts(): Promise<BlogPost[]>;
-  getBlogPost(id: number): Promise<BlogPost | undefined>;
-  createBlogPost(postData: Omit<BlogPost, 'id' | 'createdAt' | 'updatedAt'>): Promise<BlogPost>;
-  updateBlogPost(id: number, updateData: any): Promise<BlogPost>;
+  // Email logging
+  logEmail(emailData: {
+    userId: string;
+    type: string;
+    recipient: string;
+    subject: string;
+    status: string;
+    error?: string;
+  }): Promise<void>;
+  
+  // DNA assessment
+  upsertUserDnaResult(userId: string, result: string, percentages?: any): Promise<void>;
+  getUserDnaResult(userId: string): Promise<any>;
+  
+  // User management
+  getAllActiveUsers(): Promise<User[]>;
+  
+  // Community posts
+  getAllPosts(): Promise<CommunityPost[]>;
+  createPost(post: any): Promise<Post>;
+  updatePost(id: string, updates: any): Promise<Post>;
+  deletePost(id: string): Promise<void>;
+  createPostReply(reply: any): Promise<PostReply>;
+  
+  // Lead management
+  createLead(lead: InsertLead): Promise<Lead>;
+  getAllLeads(): Promise<Lead[]>;
+  updateLead(id: number, updates: any): Promise<Lead>;
+  deleteLead(id: number): Promise<void>;
+  
+  // Events
+  getAllEvents(): Promise<Event[]>;
+  createEvent(event: any): Promise<Event>;
+  updateEvent(id: number, updates: any): Promise<Event>;
+  deleteEvent(id: number): Promise<void>;
+  
+  // Blog posts
+  getAllBlogPosts(): Promise<BlogPost[]>;
+  createBlogPost(post: any): Promise<BlogPost>;
+  updateBlogPost(id: number, updates: any): Promise<BlogPost>;
   deleteBlogPost(id: number): Promise<void>;
-  
-  // AI Agent operations
-  getAiAgents(): Promise<AiAgent[]>;
-  getAiAgent(id: number): Promise<AiAgent | undefined>;
-  createAiAgent(agentData: any): Promise<AiAgent>;
-  updateAiAgent(id: number, agentData: any): Promise<AiAgent>;
-  
-  // Conversation operations
-  getConversation(userId: string, agentId: number): Promise<any | undefined>;
-  createOrUpdateConversation(conversationData: any): Promise<any>;
-  
-  // Lead operations
-  createLead(leadData: InsertLead): Promise<Lead>;
-  getLeads(): Promise<Lead[]>;
-  
-  // Stripe purchase operations
-  createStripePurchase(purchaseData: InsertStripePurchase): Promise<StripePurchase>;
-  updatePurchaseEmailStatus(sessionId: string, emailSent: boolean): Promise<void>;
-  
-  // Email campaign operations
-  getLeadsWithLastEmail(): Promise<(Lead & { lastEmailSent?: Date; lastEmailSentBy?: string })[]>;
-  logEmailSent(emailData: InsertEmailLog): Promise<EmailLog>;
-  
-  // Student Dashboard operations
-  getUserPayments(userId: string): Promise<any[]>;
-  getUserCourses(userId: string, accessTier?: string): Promise<any[]>;
-  getAnnouncements(limit?: number): Promise<any[]>;
-
-  // System operations
-  getSystemStats(): Promise<any>;
-  
-  // Analytics operations
-  getTotalUsersAnalytics(): Promise<any>;
-  getNewPostsAnalytics(): Promise<any>;
-  getUserGrowthAnalytics(): Promise<any>;
-  getModerationAnalytics(): Promise<any>;
-  getBannedUsersAnalytics(): Promise<any>;
 }
 
 export class DatabaseStorage implements IStorage {
+  // User operations (mandatory for Replit Auth)
   async getUser(id: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.id, id));
     return user;
   }
 
-  async getUserByEmail(email: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.email, email));
-    return user;
-  }
-
-  async createUser(userData: Partial<User>): Promise<User> {
-    const [user] = await db.insert(users).values({
-      id: userData.id || generateId(),
-      email: userData.email,
-      firstName: userData.firstName,
-      lastName: userData.lastName,
-      profileImageUrl: userData.profileImageUrl,
-      role: userData.role || 'student',
-      accessTier: userData.accessTier || 'free',
-    }).returning();
-    return user;
-  }
-
-  async updateUser(id: string, userData: Partial<User>): Promise<User> {
-    const [user] = await db
-      .update(users)
-      .set({ ...userData, updatedAt: new Date() })
-      .where(eq(users.id, id))
-      .returning();
-    return user;
-  }
-
-  async upsertUser(userData: { id: string; email?: string | null; firstName?: string | null; lastName?: string | null; profileImageUrl?: string | null; role?: string; stripeCustomerId?: string | null; stripeSubscriptionId?: string | null; }): Promise<User> {
+  async upsertUser(userData: UpsertUser): Promise<User> {
     const [user] = await db
       .insert(users)
-      .values({
-        id: userData.id,
-        email: userData.email,
-        firstName: userData.firstName,
-        lastName: userData.lastName,
-        profileImageUrl: userData.profileImageUrl,
-        role: userData.role || 'student',
-        accessTier: 'beginner',
-        stripeCustomerId: userData.stripeCustomerId,
-        stripeSubscriptionId: userData.stripeSubscriptionId,
-      })
+      .values(userData)
       .onConflictDoUpdate({
         target: users.id,
         set: {
-          email: userData.email,
-          firstName: userData.firstName,
-          lastName: userData.lastName,
-          profileImageUrl: userData.profileImageUrl,
-          role: userData.role || 'student',
-          stripeCustomerId: userData.stripeCustomerId,
-          stripeSubscriptionId: userData.stripeSubscriptionId,
+          ...userData,
           updatedAt: new Date(),
         },
       })
@@ -248,981 +142,9 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
 
-  async getAllPosts(): Promise<CommunityPost[]> {
-    const postsWithUsers = await db
-      .select()
-      .from(posts)
-      .leftJoin(users, eq(posts.userId, users.id))
-      .where(eq(posts.isDeleted, false))
-      .orderBy(
-        desc(posts.featuredAt),
-        desc(posts.pinnedAt), 
-        desc(posts.createdAt)
-      );
-
-    return postsWithUsers.map(({ posts: post, users: user }) => ({
-      ...post,
-      tags: post.tags || [],
-      uploadUrls: post.uploadUrls || [],
-      user: user || {
-        id: '',
-        email: null,
-        firstName: null,
-        lastName: null,
-        profileImageUrl: null,
-        role: 'student',
-        accessTier: 'beginner',
-        stripeCustomerId: null,
-        stripeSubscriptionId: null,
-        stripeId: null,
-        stripePaidAt: null,
-        architectScore: null,
-        alchemistScore: null,
-        readinessScore: null,
-        dominantType: null,
-        readinessLevel: null,
-        tags: null,
-        assessmentComplete: false,
-        createdAt: null,
-        updatedAt: null
-      }
-    }));
-  }
-
-  async getPost(id: string): Promise<CommunityPost | undefined> {
-    const [result] = await db
-      .select()
-      .from(posts)
-      .leftJoin(users, eq(posts.userId, users.id))
-      .where(and(eq(posts.id, id), eq(posts.isDeleted, false)));
-
-    if (!result) return undefined;
-
-    const { posts: post, users: user } = result;
-
-    return {
-      ...post,
-      tags: post.tags || [],
-      uploadUrls: post.uploadUrls || [],
-      user: user || {
-        id: '',
-        email: null,
-        firstName: null,
-        lastName: null,
-        profileImageUrl: null,
-        role: 'student',
-        accessTier: 'beginner',
-        stripeCustomerId: null,
-        stripeSubscriptionId: null,
-        stripeId: null,
-        stripePaidAt: null,
-        architectScore: null,
-        alchemistScore: null,
-        readinessScore: null,
-        dominantType: null,
-        readinessLevel: null,
-        tags: null,
-        assessmentComplete: false,
-        createdAt: null,
-        updatedAt: null
-      }
-    };
-  }
-
-  async createPost(postData: Omit<CommunityPost, 'id' | 'createdAt' | 'updatedAt'>): Promise<CommunityPost> {
-    const postId = generateId();
-    const [newPost] = await db.insert(posts).values({
-      id: postId,
-      title: postData.title,
-      body: postData.body,
-      userId: postData.userId,
-      tags: postData.tags,
-      uploadUrls: postData.uploadUrls,
-      isPinned: false,
-      featuredType: null,
-      isDeleted: false,
-    }).returning();
-
-    const fullPost = await this.getPost(postId);
-    return fullPost!;
-  }
-
-  async updatePost(id: string, userId: string, updateData: { title: string; body: string; tags?: string[] }): Promise<CommunityPost> {
-    const existingPost = await this.getPost(id);
-    if (!existingPost || existingPost.userId !== userId) {
-      throw new Error('Post not found or user not authorized');
-    }
-
-    const now = new Date();
-    const timeDiff = now.getTime() - new Date(existingPost.createdAt!).getTime();
-    const fiveMinutes = 5 * 60 * 1000;
-
-    if (timeDiff > fiveMinutes) {
-      throw new Error('Edit time limit exceeded');
-    }
-
-    await db
-      .update(posts)
-      .set({
-        title: updateData.title,
-        body: updateData.body,
-        tags: updateData.tags,
-        updatedAt: now,
-      })
-      .where(eq(posts.id, id));
-
-    const updatedPost = await this.getPost(id);
-    return updatedPost!;
-  }
-
-  async deletePost(id: string, userId: string): Promise<void> {
-    const post = await this.getPost(id);
-    if (!post || post.userId !== userId) {
-      throw new Error('Post not found or user not authorized');
-    }
-
-    const now = new Date();
-    const timeDiff = now.getTime() - new Date(post.createdAt!).getTime();
-    const sixtySeconds = 60 * 1000;
-
-    if (timeDiff > sixtySeconds) {
-      throw new Error('Delete time limit exceeded');
-    }
-
-    await db
-      .update(posts)
-      .set({ isDeleted: true, updatedAt: now })
-      .where(eq(posts.id, id));
-  }
-
-  async undoPost(id: string, userId: string): Promise<CommunityPost> {
-    const [post] = await db
-      .select()
-      .from(posts)
-      .where(and(eq(posts.id, id), eq(posts.userId, userId), eq(posts.isDeleted, true)));
-
-    if (!post) {
-      throw new Error('Post not found or user not authorized');
-    }
-
-    const now = new Date();
-    const timeDiff = now.getTime() - new Date(post.updatedAt!).getTime();
-    const sixtySeconds = 60 * 1000;
-
-    if (timeDiff > sixtySeconds) {
-      throw new Error('Undo time limit exceeded');
-    }
-
-    await db
-      .update(posts)
-      .set({ isDeleted: false, updatedAt: now })
-      .where(eq(posts.id, id));
-
-    const restoredPost = await this.getPost(id);
-    return restoredPost!;
-  }
-
-  async adminDeletePost(id: string, adminId: string): Promise<void> {
-    await db
-      .update(posts)
-      .set({ isDeleted: true, updatedAt: new Date() })
-      .where(eq(posts.id, id));
-  }
-
-  async pinPost(id: string, adminId: string): Promise<void> {
-    await db
-      .update(posts)
-      .set({
-        isPinned: true,
-        pinnedAt: new Date(),
-        pinnedBy: adminId,
-        updatedAt: new Date(),
-      })
-      .where(eq(posts.id, id));
-  }
-
-  async unpinPost(id: string, adminId: string): Promise<void> {
-    await db
-      .update(posts)
-      .set({
-        isPinned: false,
-        pinnedAt: null,
-        pinnedBy: null,
-        updatedAt: new Date(),
-      })
-      .where(eq(posts.id, id));
-  }
-
-  async setFeatured(id: string, adminId: string, featuredType: string): Promise<void> {
-    await db
-      .update(posts)
-      .set({
-        featuredType: featuredType,
-        featuredAt: new Date(),
-        featuredBy: adminId,
-        updatedAt: new Date(),
-      })
-      .where(eq(posts.id, id));
-  }
-
-  async removeFeatured(id: string, adminId: string): Promise<void> {
-    await db
-      .update(posts)
-      .set({
-        featuredType: null,
-        featuredAt: null,
-        featuredBy: null,
-        updatedAt: new Date(),
-      })
-      .where(eq(posts.id, id));
-  }
-
-  async createReply(replyData: Omit<PostReply, 'id' | 'createdAt' | 'updatedAt'>): Promise<PostReply> {
-    const [reply] = await db.insert(postReplies).values({
-      id: generateId(),
-      body: replyData.body,
-      userId: replyData.userId,
-      postId: replyData.postId,
-      isDeleted: false,
-    }).returning();
-    return reply;
-  }
-
-  async getReplies(postId: string): Promise<PostReply[]> {
-    const replies = await db
-      .select()
-      .from(postReplies)
-      .where(and(eq(postReplies.postId, postId), eq(postReplies.isDeleted, false)))
-      .orderBy(asc(postReplies.createdAt));
-    return replies;
-  }
-
-  async getLmsModules(): Promise<LmsModule[]> {
-    const modules = await db
-      .select()
-      .from(lmsModules)
-      .where(eq(lmsModules.isActive, true))
-      .orderBy(asc(lmsModules.order));
-    return modules;
-  }
-
-  async getLmsProgress(userId: string): Promise<LmsProgress[]> {
-    const progress = await db
-      .select()
-      .from(lmsProgress)
-      .where(eq(lmsProgress.userId, userId));
-    return progress;
-  }
-
-  async markModuleComplete(userId: string, moduleId: number): Promise<void> {
-    await db.insert(lmsProgress).values({
-      userId,
-      moduleId,
-      completed: true,
-      completedAt: new Date(),
-    }).onConflictDoUpdate({
-      target: [lmsProgress.userId, lmsProgress.moduleId],
-      set: {
-        completed: true,
-        completedAt: new Date(),
-        updatedAt: new Date(),
-      },
-    });
-  }
-
-  async saveQuizResult(resultData: Omit<QuizResult, 'id' | 'createdAt'>): Promise<QuizResult> {
-    const [result] = await db.insert(quizResults).values({
-      userId: resultData.userId,
-      quizId: 1, // Default quiz ID
-      answers: resultData.answers || {},
-      score: resultData.score,
-      results: resultData.results || {},
-    }).returning();
-    return result;
-  }
-
-  async getQuizResults(userId: string): Promise<QuizResult[]> {
-    const results = await db
-      .select()
-      .from(quizResults)
-      .where(eq(quizResults.userId, userId))
-      .orderBy(desc(quizResults.createdAt));
-    return results;
-  }
-
-  async getEvents(): Promise<Event[]> {
-    const eventList = await db
-      .select()
-      .from(events)
-      .orderBy(asc(events.createdAt));
-    return eventList;
-  }
-
-  async createEvent(eventData: Omit<Event, 'id' | 'createdAt' | 'updatedAt'>): Promise<Event> {
-    const [event] = await db.insert(events).values(eventData).returning();
-    return event;
-  }
-
-  async getBlogPosts(): Promise<BlogPost[]> {
-    const posts = await db
-      .select({
-        id: blogPosts.id,
-        title: blogPosts.title,
-        slug: blogPosts.slug,
-        summary: blogPosts.summary,
-        content: blogPosts.content,
-        tags: blogPosts.tags,
-        status: blogPosts.status,
-        authorId: blogPosts.authorId,
-        createdAt: blogPosts.createdAt,
-        updatedAt: blogPosts.updatedAt,
-        author: {
-          id: users.id,
-          email: users.email,
-          firstName: users.firstName,
-          lastName: users.lastName,
-          profileImageUrl: users.profileImageUrl,
-          role: users.role,
-        }
-      })
-      .from(blogPosts)
-      .leftJoin(users, eq(blogPosts.authorId, users.id))
-      .where(eq(blogPosts.status, 'published'))
-      .orderBy(desc(blogPosts.createdAt));
-    return posts;
-  }
-
-  async getBlogPost(id: number): Promise<BlogPost | undefined> {
-    const [post] = await db
-      .select({
-        id: blogPosts.id,
-        title: blogPosts.title,
-        slug: blogPosts.slug,
-        summary: blogPosts.summary,
-        content: blogPosts.content,
-        tags: blogPosts.tags,
-        status: blogPosts.status,
-        authorId: blogPosts.authorId,
-        createdAt: blogPosts.createdAt,
-        updatedAt: blogPosts.updatedAt,
-        author: {
-          id: users.id,
-          email: users.email,
-          firstName: users.firstName,
-          lastName: users.lastName,
-          profileImageUrl: users.profileImageUrl,
-          role: users.role,
-        }
-      })
-      .from(blogPosts)
-      .leftJoin(users, eq(blogPosts.authorId, users.id))
-      .where(eq(blogPosts.id, id));
-    return post;
-  }
-
-  async createBlogPost(postData: Omit<BlogPost, 'id' | 'createdAt' | 'updatedAt'>): Promise<BlogPost> {
-    const [post] = await db.insert(blogPosts).values(postData).returning();
-    return post;
-  }
-
-  async getAiAgents(): Promise<AiAgent[]> {
-    const agents = await db
-      .select()
-      .from(aiAgents)
-      .where(eq(aiAgents.isActive, true));
-    return agents;
-  }
-
-  async getAiAgent(id: number): Promise<AiAgent | undefined> {
-    const [agent] = await db
-      .select()
-      .from(aiAgents)
-      .where(eq(aiAgents.id, id));
-    return agent;
-  }
-
-  // Additional User operations
-  async upsertUser(userData: Partial<User>): Promise<User> {
-    if (userData.id) {
-      const existingUser = await this.getUser(userData.id);
-      if (existingUser) {
-        return this.updateUser(userData.id, userData);
-      }
-    }
-    return this.createUser(userData);
-  }
-
-  async getAllUsers(): Promise<User[]> {
-    const userList = await db.select().from(users).orderBy(desc(users.createdAt));
-    return userList;
-  }
-
-  async updateUserRole(userId: string, newRole: string): Promise<User> {
-    return this.updateUser(userId, { role: newRole });
-  }
-
-  async updateUserAccessTier(userId: string, newTier: string): Promise<User> {
-    return this.updateUser(userId, { accessTier: newTier });
-  }
-
-  async updateUserStripeInfo(userId: string, stripeData: { stripeCustomerId?: string; stripeSubscriptionId?: string }): Promise<User> {
-    return this.updateUser(userId, stripeData);
-  }
-
-  async updateUserAssessment(userId: string, assessmentData: any): Promise<User> {
-    return this.updateUser(userId, assessmentData);
-  }
-
   // Course operations
-  async getAllCourses(): Promise<any[]> {
-    const courseList = await db.select().from(courses).orderBy(asc(courses.level));
-    return courseList;
-  }
-
-  async getCourse(id: number): Promise<any | undefined> {
-    const [course] = await db.select().from(courses).where(eq(courses.id, id));
-    return course;
-  }
-
-  async createCourse(courseData: {
-    title: string;
-    description?: string;
-    track: string;
-    level?: number;
-    accessTier: string;
-    imageUrl?: string;
-    isPublished?: boolean;
-  }): Promise<any> {
-    const [course] = await db.insert(courses).values(courseData).returning();
-    return course;
-  }
-
-  async updateCourse(id: number, courseData: Partial<{
-    title: string;
-    description: string;
-    track: string;
-    level: number;
-    accessTier: string;
-    imageUrl: string;
-    isPublished: boolean;
-  }>): Promise<any> {
-    const [course] = await db
-      .update(courses)
-      .set({ ...courseData, updatedAt: new Date() })
-      .where(eq(courses.id, id))
-      .returning();
-    return course;
-  }
-
-  async deleteCourse(id: number): Promise<void> {
-    await db.delete(courses).where(eq(courses.id, id));
-  }
-
-  // Lesson operations
-  async createLesson(lessonData: {
-    courseId: number;
-    title: string;
-    videoUrl?: string;
-    workbookUrl?: string;
-    requiredTier: string;
-    order?: number;
-  }): Promise<any> {
-    const [lesson] = await db.insert(lessons).values(lessonData).returning();
-    return lesson;
-  }
-
-  async updateLesson(id: number, lessonData: Partial<{
-    title: string;
-    videoUrl: string;
-    workbookUrl: string;
-    requiredTier: string;
-    order: number;
-  }>): Promise<any> {
-    const [lesson] = await db
-      .update(lessons)
-      .set({ ...lessonData, updatedAt: new Date() })
-      .where(eq(lessons.id, id))
-      .returning();
-    return lesson;
-  }
-
-  async deleteLesson(id: number): Promise<void> {
-    await db.delete(lessons).where(eq(lessons.id, id));
-  }
-
-  async listLessonsByCourseId(courseId: number): Promise<any[]> {
-    const lessonList = await db
-      .select()
-      .from(lessons)
-      .where(eq(lessons.courseId, courseId))
-      .orderBy(asc(lessons.order));
-    return lessonList;
-  }
-
-  async getLesson(id: number): Promise<any | undefined> {
-    const [lesson] = await db.select().from(lessons).where(eq(lessons.id, id));
-    return lesson;
-  }
-
-  async reorderLessons(courseId: number, lessonIds: number[]): Promise<void> {
-    for (let i = 0; i < lessonIds.length; i++) {
-      await db
-        .update(lessons)
-        .set({ order: i + 1 })
-        .where(eq(lessons.id, lessonIds[i]));
-    }
-  }
-
-  // User Progress operations
-  async getUserProgress(userId: string): Promise<any[]> {
-    const progress = await db
-      .select()
-      .from(userProgress)
-      .where(eq(userProgress.userId, userId));
-    return progress;
-  }
-
-  async updateUserProgress(userId: string, courseId: number, progressData: any): Promise<any> {
-    const [progress] = await db.insert(userProgress).values({
-      userId,
-      courseId,
-      ...progressData
-    }).onConflictDoUpdate({
-      target: [userProgress.userId, userProgress.courseId],
-      set: { ...progressData, updatedAt: new Date() }
-    }).returning();
-    return progress;
-  }
-
-  async getUserLmsProgress(userId: string): Promise<LmsProgress[]> {
-    return this.getLmsProgress(userId);
-  }
-
-  async updateUserLmsProgress(userId: string, moduleId: number, progressData: any): Promise<void> {
-    await db.insert(lmsProgress).values({
-      userId,
-      moduleId,
-      ...progressData
-    }).onConflictDoUpdate({
-      target: [lmsProgress.userId, lmsProgress.moduleId],
-      set: { ...progressData, updatedAt: new Date() }
-    });
-  }
-
-  async getLmsModulesWithAccess(userId: string): Promise<any[]> {
-    const user = await this.getUser(userId);
-    const modules = await this.getLmsModules();
-    
-    return modules.map(module => ({
-      ...module,
-      isAccessible: true // Based on user tier and module requirements
-    }));
-  }
-
-  // Additional Community operations
-  async getCommunityPosts(): Promise<CommunityPost[]> {
-    return this.getAllPosts();
-  }
-
-  async createCommunityPost(postData: any): Promise<CommunityPost> {
-    return this.createPost(postData);
-  }
-
-  async updateCommunityPost(id: string, userId: string, updateData: any): Promise<CommunityPost> {
-    return this.updatePost(id, userId, updateData);
-  }
-
-  async deleteCommunityPost(id: string, userId: string): Promise<void> {
-    return this.deletePost(id, userId);
-  }
-
-  async getPostHistory(postId: string): Promise<any[]> {
-    // Return empty array as post history isn't tracked in current schema
-    return [];
-  }
-
-  async likePost(postId: string, userId: string): Promise<void> {
-    // Post likes not implemented in current schema
-    return;
-  }
-
-  // Additional Reply operations
-  async createPostReply(replyData: any): Promise<PostReply> {
-    return this.createReply(replyData);
-  }
-
-  async getPostReplies(postId: string): Promise<PostReply[]> {
-    return this.getReplies(postId);
-  }
-
-  // Upload operations
-  async createUpload(uploadData: any): Promise<any> {
-    // File uploads not tracked in current schema
-    return { id: generateId(), ...uploadData };
-  }
-
-  async createPostActivity(activityData: any): Promise<any> {
-    // Post activity not tracked in current schema
-    return { id: generateId(), ...activityData };
-  }
-
-  // Additional Quiz operations
-  async getQuizzes(): Promise<any[]> {
-    // Quiz table not defined in current schema, return empty array
-    return [];
-  }
-
-  async getQuiz(id: number): Promise<any | undefined> {
-    // Quiz table not defined in current schema
-    return undefined;
-  }
-
-  async getUserQuizResults(userId: string): Promise<QuizResult[]> {
-    return this.getQuizResults(userId);
-  }
-
-  // Additional Event operations
-  async getUpcomingEvents(): Promise<Event[]> {
-    const upcomingEvents = await db
-      .select()
-      .from(events)
-      .where(sql`${events.scheduledAt} > NOW()`)
-      .orderBy(asc(events.scheduledAt));
-    return upcomingEvents;
-  }
-
-  async registerForEvent(eventId: number, userId: string): Promise<void> {
-    // Event registration not implemented in current schema
-    return;
-  }
-
-  // Additional Blog operations
-  async updateBlogPost(id: number, updateData: any): Promise<BlogPost> {
-    const [post] = await db
-      .update(blogPosts)
-      .set({ ...updateData, updatedAt: new Date() })
-      .where(eq(blogPosts.id, id))
-      .returning();
-    return post;
-  }
-
-  async deleteBlogPost(id: number): Promise<void> {
-    await db.delete(blogPosts).where(eq(blogPosts.id, id));
-  }
-
-  // Additional AI Agent operations
-  async createAiAgent(agentData: any): Promise<AiAgent> {
-    const [agent] = await db.insert(aiAgents).values(agentData).returning();
-    return agent;
-  }
-
-  async updateAiAgent(id: number, agentData: any): Promise<AiAgent> {
-    const [agent] = await db
-      .update(aiAgents)
-      .set({ ...agentData, updatedAt: new Date() })
-      .where(eq(aiAgents.id, id))
-      .returning();
-    return agent;
-  }
-
-  // Conversation operations
-  async getConversation(userId: string, agentId: number): Promise<any | undefined> {
-    // Conversations not fully implemented in current schema
-    return undefined;
-  }
-
-  async createOrUpdateConversation(conversationData: any): Promise<any> {
-    // Conversations not fully implemented in current schema
-    return { id: generateId(), ...conversationData };
-  }
-
-  // Lead operations
-  async createLead(leadData: InsertLead): Promise<Lead> {
-    const [lead] = await db.insert(leads).values(leadData).returning();
-    return lead;
-  }
-
-  async getLeads(): Promise<Lead[]> {
-    const allLeads = await db.select().from(leads).orderBy(desc(leads.createdAt));
-    return allLeads;
-  }
-
-  // Stripe purchase operations
-  async createStripePurchase(purchaseData: InsertStripePurchase): Promise<StripePurchase> {
-    const [purchase] = await db.insert(stripePurchases).values(purchaseData).returning();
-    return purchase;
-  }
-
-  async updatePurchaseEmailStatus(sessionId: string, emailSent: boolean): Promise<void> {
-    await db
-      .update(stripePurchases)
-      .set({ 
-        emailSent,
-        emailSentAt: emailSent ? new Date() : null
-      })
-      .where(eq(stripePurchases.stripeSessionId, sessionId));
-  }
-
-  // Email campaign operations
-  async getLeadsWithLastEmail(): Promise<(Lead & { lastEmailSent?: Date; lastEmailSentBy?: string })[]> {
-    const leadsWithEmails = await db
-      .select({
-        id: leads.id,
-        name: leads.name,
-        email: leads.email,
-        addedByAdmin: leads.addedByAdmin,
-        createdAt: leads.createdAt,
-        lastEmailSent: emailLogs.sentAt,
-        lastEmailSentBy: emailLogs.sentBy,
-      })
-      .from(leads)
-      .leftJoin(
-        emailLogs,
-        eq(leads.id, emailLogs.leadId)
-      )
-      .orderBy(desc(leads.createdAt), desc(emailLogs.sentAt));
-
-    // Group by lead to get the most recent email per lead
-    const groupedLeads = leadsWithEmails.reduce((acc, row) => {
-      if (!acc[row.id]) {
-        acc[row.id] = {
-          id: row.id,
-          name: row.name,
-          email: row.email,
-          addedByAdmin: row.addedByAdmin,
-          createdAt: row.createdAt,
-          lastEmailSent: row.lastEmailSent,
-          lastEmailSentBy: row.lastEmailSentBy,
-        };
-      }
-      return acc;
-    }, {} as Record<number, Lead & { lastEmailSent?: Date; lastEmailSentBy?: string }>);
-
-    return Object.values(groupedLeads);
-  }
-
-  async logEmailSent(emailData: InsertEmailLog): Promise<EmailLog> {
-    const [log] = await db.insert(emailLogs).values(emailData).returning();
-    return log;
-  }
-
-  // System operations
-  async getSystemStats(): Promise<any> {
-    const [userCount] = await db.select({ count: count() }).from(users);
-    const [postCount] = await db.select({ count: count() }).from(posts);
-    const [courseCount] = await db.select({ count: count() }).from(courses);
-    const [eventCount] = await db.select({ count: count() }).from(events);
-
-    return {
-      users: userCount.count,
-      posts: postCount.count,
-      courses: courseCount.count,
-      events: eventCount.count
-    };
-  }
-
-  // Analytics operations
-  async getTotalUsersAnalytics(): Promise<any> {
-    // Get total registered users count
-    const [totalUsers] = await db.select({ count: count() }).from(users);
-    
-    // Get users registered in last 7 days
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-    
-    const [recentUsers] = await db
-      .select({ count: count() })
-      .from(users)
-      .where(sql`${users.createdAt} >= ${sevenDaysAgo}`);
-
-    return {
-      total: totalUsers.count,
-      recent: recentUsers.count,
-      description: "Total registered users on the platform"
-    };
-  }
-
-  async getNewPostsAnalytics(): Promise<any> {
-    // Get post creation data for the last 30 days
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
-    const postsData = await db
-      .select({
-        date: sql<string>`DATE(${posts.createdAt})`,
-        count: count()
-      })
-      .from(posts)
-      .where(and(
-        sql`${posts.createdAt} >= ${thirtyDaysAgo}`,
-        eq(posts.isDeleted, false)
-      ))
-      .groupBy(sql`DATE(${posts.createdAt})`)
-      .orderBy(sql`DATE(${posts.createdAt})`);
-
-    // Generate daily data for last 30 days
-    const dailyData = Array.from({ length: 30 }, (_, i) => {
-      const date = new Date();
-      date.setDate(date.getDate() - (29 - i));
-      const dateStr = date.toISOString().split('T')[0];
-      const found = postsData.find(d => d.date === dateStr);
-      return found ? found.count : 0;
-    });
-
-    const total = dailyData.reduce((a, b) => a + b, 0);
-    const previousTotal = Math.max(1, total * 0.9); // Simulate previous month
-    const change = Math.round(((total - previousTotal) / previousTotal) * 100);
-
-    return {
-      daily: dailyData,
-      total: total,
-      change: change
-    };
-  }
-
-  async getUserGrowthAnalytics(): Promise<any> {
-    // Get cumulative user growth
-    const usersData = await db
-      .select({
-        date: sql<string>`DATE(${users.createdAt})`,
-        count: count()
-      })
-      .from(users)
-      .groupBy(sql`DATE(${users.createdAt})`)
-      .orderBy(sql`DATE(${users.createdAt})`);
-
-    const [totalUsers] = await db.select({ count: count() }).from(users);
-    
-    // Generate cumulative data
-    let cumulative = 0;
-    const labels: string[] = [];
-    const cumulativeData: number[] = [];
-
-    usersData.forEach(item => {
-      cumulative += item.count;
-      labels.push(item.date);
-      cumulativeData.push(cumulative);
-    });
-
-    const growth = totalUsers.count > 0 ? Math.round((totalUsers.count / Math.max(1, totalUsers.count * 0.8) - 1) * 100) : 0;
-
-    return {
-      labels: labels,
-      cumulative: cumulativeData,
-      total: totalUsers.count,
-      growth: growth
-    };
-  }
-
-  async getModerationAnalytics(): Promise<any> {
-    // Get moderation statistics based on existing schema
-    const [totalPosts] = await db
-      .select({ count: count() })
-      .from(posts);
-
-    const [deletedPosts] = await db
-      .select({ count: count() })
-      .from(posts)
-      .where(eq(posts.isDeleted, true));
-
-    const activePosts = totalPosts.count - deletedPosts.count;
-
-    return {
-      pending: 0, // No pending system in current schema
-      approved: activePosts,
-      rejected: deletedPosts.count,
-      trend: Math.floor(Math.random() * 3) - 1
-    };
-  }
-
-  async getBannedUsersAnalytics(): Promise<any> {
-    // Get banned user statistics
-    const [bannedUsers] = await db
-      .select({ count: count() })
-      .from(users)
-      .where(eq(users.role, 'banned'));
-
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-
-    const [recentBanned] = await db
-      .select({ count: count() })
-      .from(users)
-      .where(and(
-        eq(users.role, 'banned'),
-        sql`${users.updatedAt} >= ${sevenDaysAgo}`
-      ));
-
-    return {
-      total: bannedUsers.count,
-      recent: recentBanned.count
-    };
-  }
-
-  // Student Dashboard methods
-  async getUserPayments(userId: string): Promise<any[]> {
-    try {
-      const userPayments = await db
-        .select()
-        .from(payments)
-        .where(eq(payments.userId, userId))
-        .orderBy(desc(payments.paidAt));
-      
-      return userPayments;
-    } catch (error) {
-      console.error('Error fetching user payments:', error);
-      return [];
-    }
-  }
-
-  async getUserCourses(userId: string, accessTier?: string): Promise<any[]> {
-    try {
-      // Get user's courses based on their access tier and payments
-      const userCourses = await db
-        .select()
-        .from(lmsModules)
-        .where(
-          accessTier 
-            ? or(
-                eq(lmsModules.requiredTier, accessTier),
-                eq(lmsModules.requiredTier, 'beginner')
-              )
-            : eq(lmsModules.isActive, true)
-        )
-        .orderBy(asc(lmsModules.order));
-      
-      return userCourses;
-    } catch (error) {
-      console.error('Error fetching user courses:', error);
-      return [];
-    }
-  }
-
-  async getAnnouncements(limit: number = 5): Promise<any[]> {
-    try {
-      // Get recent blog posts as announcements
-      const announcements = await db
-        .select()
-        .from(blogPosts)
-        .where(eq(blogPosts.status, 'published'))
-        .orderBy(desc(blogPosts.createdAt))
-        .limit(limit);
-      
-      return announcements;
-    } catch (error) {
-      console.error('Error fetching announcements:', error);
-      return [];
-    }
-  }
-
-  // Course management operations
   async getAllCourses(): Promise<Course[]> {
-    return await db.select().from(courses).orderBy(asc(courses.title));
-  }
-
-  async getCourse(id: number): Promise<Course | undefined> {
-    const [course] = await db.select().from(courses).where(eq(courses.id, id));
-    return course;
+    return await db.select().from(courses).orderBy(asc(courses.order));
   }
 
   async createCourse(courseData: InsertCourse): Promise<Course> {
@@ -1240,24 +162,21 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteCourse(id: number): Promise<void> {
-    // Delete all lessons first
-    await db.delete(lessons).where(eq(lessons.courseId, id));
-    // Delete the course
     await db.delete(courses).where(eq(courses.id, id));
   }
 
-  // Lesson management operations
-  async getLessons(courseId: number): Promise<Lesson[]> {
+  // Lesson operations
+  async getLessonById(id: number): Promise<Lesson | undefined> {
+    const [lesson] = await db.select().from(lessons).where(eq(lessons.id, id));
+    return lesson;
+  }
+
+  async getLessonsByCourse(courseId: number): Promise<Lesson[]> {
     return await db
       .select()
       .from(lessons)
       .where(eq(lessons.courseId, courseId))
       .orderBy(asc(lessons.order));
-  }
-
-  async getLesson(id: number): Promise<Lesson | undefined> {
-    const [lesson] = await db.select().from(lessons).where(eq(lessons.id, id));
-    return lesson;
   }
 
   async createLesson(lessonData: InsertLesson): Promise<Lesson> {
@@ -1278,152 +197,96 @@ export class DatabaseStorage implements IStorage {
     await db.delete(lessons).where(eq(lessons.id, id));
   }
 
-  async reorderLessons(courseId: number, lessonIds: number[]): Promise<void> {
-    for (let i = 0; i < lessonIds.length; i++) {
-      await db
-        .update(lessons)
-        .set({ order: i + 1, updatedAt: new Date() })
-        .where(and(eq(lessons.id, lessonIds[i]), eq(lessons.courseId, courseId)));
-    }
-  }
-
-  // Admin Community Management Methods
-  async getPostsForAdmin(filterTier?: string, filterStatus?: string): Promise<Post[]> {
-    let query = db.select().from(posts);
-    
-    if (filterTier) {
-      query = query.where(eq(posts.tierAccess, filterTier));
-    }
-    if (filterStatus === 'hidden') {
-      query = query.where(eq(posts.isVisible, false));
-    } else if (filterStatus === 'visible') {
-      query = query.where(eq(posts.isVisible, true));
-    }
-    
-    return await query.orderBy(desc(posts.createdAt));
-  }
-
-  async createAdminPost(postData: InsertPost): Promise<Post> {
-    const [post] = await db.insert(posts).values(postData).returning();
-    return post;
-  }
-
-  async togglePostPin(postId: string, adminId: string): Promise<Post> {
-    const [currentPost] = await db.select().from(posts).where(eq(posts.id, postId));
-    const [post] = await db
-      .update(posts)
-      .set({ 
-        isPinned: !currentPost.isPinned,
-        updatedAt: new Date()
+  // Progress tracking
+  async markLessonComplete(userId: string, courseId: number, lessonId: number, viewMode: string): Promise<void> {
+    await db
+      .insert(userProgress)
+      .values({
+        userId,
+        courseId,
+        lessonId,
+        completedAt: new Date(),
+        viewMode
       })
-      .where(eq(posts.id, postId))
-      .returning();
-    return post;
+      .onConflictDoUpdate({
+        target: [userProgress.userId, userProgress.courseId, userProgress.lessonId],
+        set: {
+          completedAt: new Date(),
+          viewMode
+        }
+      });
   }
 
-  async togglePostVisibility(postId: string): Promise<Post> {
-    const [currentPost] = await db.select().from(posts).where(eq(posts.id, postId));
-    const [post] = await db
-      .update(posts)
-      .set({ 
-        isVisible: !currentPost.isVisible,
-        updatedAt: new Date()
-      })
-      .where(eq(posts.id, postId))
-      .returning();
-    return post;
+  async getLessonProgress(userId: string, courseId: number, lessonId: number): Promise<{ completed: boolean; viewMode?: string }> {
+    const [progress] = await db
+      .select()
+      .from(userProgress)
+      .where(
+        and(
+          eq(userProgress.userId, userId),
+          eq(userProgress.courseId, courseId),
+          eq(userProgress.lessonId, lessonId)
+        )
+      );
+    return progress ? { completed: true, viewMode: progress.viewMode } : { completed: false };
   }
 
-  async toggleReplyVisibility(replyId: string): Promise<PostReply> {
-    const [currentReply] = await db.select().from(postReplies).where(eq(postReplies.id, replyId));
-    const [reply] = await db
-      .update(postReplies)
-      .set({ 
-        isVisible: !currentReply.isVisible,
-        updatedAt: new Date()
-      })
-      .where(eq(postReplies.id, replyId))
-      .returning();
-    return reply;
+  async getUserProgress(userId: string): Promise<any[]> {
+    return await db
+      .select()
+      .from(userProgress)
+      .where(eq(userProgress.userId, userId))
+      .orderBy(desc(userProgress.completedAt));
   }
 
-  // Admin Lead Management Methods
-  async getLeadsForAdmin(filterStatus?: string, filterSource?: string): Promise<Lead[]> {
-    let query = db.select().from(leads);
-    
-    if (filterStatus) {
-      query = query.where(eq(leads.status, filterStatus));
-    }
-    if (filterSource) {
-      query = query.where(eq(leads.source, filterSource));
-    }
-    
-    return await query.orderBy(desc(leads.createdAt));
+  // AI conversation methods
+  async saveAiConversation(userId: string, userMessage: string, assistantResponse: string, dnaType: string): Promise<void> {
+    await db.insert(aiConversations).values([
+      {
+        userId,
+        role: 'user',
+        content: userMessage,
+        dnaType
+      },
+      {
+        userId,
+        role: 'assistant',
+        content: assistantResponse,
+        dnaType
+      }
+    ]);
   }
 
-  async getAllLeads(): Promise<Lead[]> {
-    return await db.select().from(leads).orderBy(desc(leads.createdAt));
+  async getRecentAiMessages(userId: string, limit: number = 10): Promise<any[]> {
+    return await db
+      .select()
+      .from(aiConversations)
+      .where(eq(aiConversations.userId, userId))
+      .orderBy(desc(aiConversations.createdAt))
+      .limit(limit);
   }
 
-  async deleteLead(id: number): Promise<void> {
-    await db.delete(leads).where(eq(leads.id, id));
+  async getAiConversationsByUser(userId: string): Promise<any[]> {
+    return await db
+      .select()
+      .from(aiConversations)
+      .where(eq(aiConversations.userId, userId))
+      .orderBy(aiConversations.createdAt);
   }
 
-  exportLeadsToCSV(leads: Lead[]): string {
-    const headers = ['ID', 'Name', 'Email', 'Phone', 'Company', 'Status', 'Source', 'Created At'];
-    const csvContent = [
-      headers.join(','),
-      ...leads.map(lead => [
-        lead.id,
-        `"${lead.name}"`,
-        `"${lead.email}"`,
-        `"${lead.phone || ''}"`,
-        `"${lead.company || ''}"`,
-        `"${lead.status}"`,
-        `"${lead.source}"`,
-        `"${lead.createdAt?.toISOString() || ''}"`
-      ].join(','))
-    ].join('\n');
-    
-    return csvContent;
+  // Email logging
+  async logEmail(emailData: {
+    userId: string;
+    type: string;
+    recipient: string;
+    subject: string;
+    status: string;
+    error?: string;
+  }): Promise<void> {
+    await db.insert(emailLogs).values(emailData);
   }
 
-  // Admin Email Template Management Methods
-  async getEmailTemplates(): Promise<EmailTemplate[]> {
-    return await db.select().from(emailTemplates).orderBy(desc(emailTemplates.createdAt));
-  }
-
-  async createEmailTemplate(templateData: InsertEmailTemplate): Promise<EmailTemplate> {
-    const [template] = await db.insert(emailTemplates).values(templateData).returning();
-    return template;
-  }
-
-  async updateEmailTemplate(id: number, templateData: Partial<InsertEmailTemplate>): Promise<EmailTemplate> {
-    const [template] = await db
-      .update(emailTemplates)
-      .set({ ...templateData, updatedAt: new Date() })
-      .where(eq(emailTemplates.id, id))
-      .returning();
-    return template;
-  }
-
-  async deleteEmailTemplate(id: number): Promise<void> {
-    await db.delete(emailTemplates).where(eq(emailTemplates.id, id));
-  }
-
-  async toggleEmailTemplateStatus(id: number): Promise<EmailTemplate> {
-    const [currentTemplate] = await db.select().from(emailTemplates).where(eq(emailTemplates.id, id));
-    const [template] = await db
-      .update(emailTemplates)
-      .set({ 
-        isActive: !currentTemplate.isActive,
-        updatedAt: new Date()
-      })
-      .where(eq(emailTemplates.id, id))
-      .returning();
-    return template;
-  }
-
+  // DNA assessment
   async upsertUserDnaResult(userId: string, result: string, percentages?: any): Promise<void> {
     await db
       .insert(userDnaResult)
@@ -1446,6 +309,165 @@ export class DatabaseStorage implements IStorage {
           completedAt: new Date(),
         },
       });
+  }
+
+  async getUserDnaResult(userId: string): Promise<any> {
+    const [result] = await db
+      .select()
+      .from(userDnaResult)
+      .where(eq(userDnaResult.userId, userId));
+    return result;
+  }
+
+  // User management
+  async getAllActiveUsers(): Promise<User[]> {
+    return await db
+      .select()
+      .from(users)
+      .where(isNotNull(users.email));
+  }
+
+  // Community posts
+  async getAllPosts(): Promise<CommunityPost[]> {
+    return await db
+      .select({
+        id: posts.id,
+        userId: posts.userId,
+        title: posts.title,
+        body: posts.body,
+        tags: posts.tags,
+        uploadUrls: posts.uploadUrls,
+        isPinned: posts.isPinned,
+        pinnedAt: posts.pinnedAt,
+        pinnedBy: posts.pinnedBy,
+        likeCount: posts.likeCount,
+        replyCount: posts.replyCount,
+        viewCount: posts.viewCount,
+        lastActivity: posts.lastActivity,
+        createdAt: posts.createdAt,
+        updatedAt: posts.updatedAt,
+        isDeleted: posts.isDeleted,
+        user: {
+          id: users.id,
+          email: users.email,
+          firstName: users.firstName,
+          lastName: users.lastName,
+          profileImageUrl: users.profileImageUrl,
+          createdAt: users.createdAt,
+          updatedAt: users.updatedAt
+        }
+      })
+      .from(posts)
+      .leftJoin(users, eq(posts.userId, users.id))
+      .where(eq(posts.isDeleted, false))
+      .orderBy(desc(posts.lastActivity)) as CommunityPost[];
+  }
+
+  async createPost(postData: any): Promise<Post> {
+    const [post] = await db.insert(posts).values({
+      id: generateId(),
+      ...postData,
+    }).returning();
+    return post;
+  }
+
+  async updatePost(id: string, updates: any): Promise<Post> {
+    const [post] = await db
+      .update(posts)
+      .set({
+        ...updates,
+        updatedAt: new Date(),
+      })
+      .where(eq(posts.id, id))
+      .returning();
+    return post;
+  }
+
+  async deletePost(id: string): Promise<void> {
+    await db
+      .update(posts)
+      .set({
+        isDeleted: true,
+        updatedAt: new Date(),
+      })
+      .where(eq(posts.id, id));
+  }
+
+  async createPostReply(replyData: any): Promise<PostReply> {
+    const [reply] = await db.insert(postReplies).values({
+      id: generateId(),
+      ...replyData,
+    }).returning();
+    return reply;
+  }
+
+  // Lead management
+  async createLead(leadData: InsertLead): Promise<Lead> {
+    const [lead] = await db.insert(leads).values(leadData).returning();
+    return lead;
+  }
+
+  async getAllLeads(): Promise<Lead[]> {
+    return await db.select().from(leads).orderBy(desc(leads.createdAt));
+  }
+
+  async updateLead(id: number, updates: any): Promise<Lead> {
+    const [lead] = await db
+      .update(leads)
+      .set(updates)
+      .where(eq(leads.id, id))
+      .returning();
+    return lead;
+  }
+
+  async deleteLead(id: number): Promise<void> {
+    await db.delete(leads).where(eq(leads.id, id));
+  }
+
+  // Events
+  async getAllEvents(): Promise<Event[]> {
+    return await db.select().from(events).orderBy(asc(events.scheduledAt));
+  }
+
+  async createEvent(eventData: any): Promise<Event> {
+    const [event] = await db.insert(events).values(eventData).returning();
+    return event;
+  }
+
+  async updateEvent(id: number, updates: any): Promise<Event> {
+    const [event] = await db
+      .update(events)
+      .set(updates)
+      .where(eq(events.id, id))
+      .returning();
+    return event;
+  }
+
+  async deleteEvent(id: number): Promise<void> {
+    await db.delete(events).where(eq(events.id, id));
+  }
+
+  // Blog posts
+  async getAllBlogPosts(): Promise<BlogPost[]> {
+    return await db.select().from(blogPosts).orderBy(desc(blogPosts.createdAt));
+  }
+
+  async createBlogPost(postData: any): Promise<BlogPost> {
+    const [post] = await db.insert(blogPosts).values(postData).returning();
+    return post;
+  }
+
+  async updateBlogPost(id: number, updates: any): Promise<BlogPost> {
+    const [post] = await db
+      .update(blogPosts)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(blogPosts.id, id))
+      .returning();
+    return post;
+  }
+
+  async deleteBlogPost(id: number): Promise<void> {
+    await db.delete(blogPosts).where(eq(blogPosts.id, id));
   }
 }
 
