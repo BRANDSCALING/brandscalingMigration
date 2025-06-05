@@ -18,7 +18,7 @@ import {
   stripePurchases,
   payments,
   emailLogs,
-  userDnaResult,
+  dnaResults,
   type User,
   type UpsertUser,
   type Post,
@@ -287,33 +287,28 @@ export class DatabaseStorage implements IStorage {
   // DNA assessment
   async upsertUserDnaResult(userId: string, result: string, percentages?: any): Promise<void> {
     await db
-      .insert(userDnaResult)
+      .insert(dnaResults)
       .values({
         userId,
         result,
-        architectPercentage: percentages?.architect || 0,
-        alchemistPercentage: percentages?.alchemist || 0,
-        undeclaredPercentage: percentages?.undeclared || 0,
-        blurredIdentityPercentage: percentages?.blurredIdentity || 0,
+        percentages,
+        updatedAt: new Date()
       })
       .onConflictDoUpdate({
-        target: [userDnaResult.userId],
+        target: dnaResults.userId,
         set: {
           result,
-          architectPercentage: percentages?.architect || 0,
-          alchemistPercentage: percentages?.alchemist || 0,
-          undeclaredPercentage: percentages?.undeclared || 0,
-          blurredIdentityPercentage: percentages?.blurredIdentity || 0,
-          completedAt: new Date(),
-        },
+          percentages,
+          updatedAt: new Date()
+        }
       });
   }
 
   async getUserDnaResult(userId: string): Promise<any> {
     const [result] = await db
       .select()
-      .from(userDnaResult)
-      .where(eq(userDnaResult.userId, userId));
+      .from(dnaResults)
+      .where(eq(dnaResults.userId, userId));
     return result;
   }
 
