@@ -264,10 +264,22 @@ export const aiAgents = pgTable("ai_agents", {
 export const aiConversations = pgTable("ai_conversations", {
   id: serial("id").primaryKey(),
   userId: varchar("user_id").notNull().references(() => users.id),
-  agentId: integer("agent_id").notNull().references(() => aiAgents.id),
-  messages: jsonb("messages").notNull(), // array of messages
+  role: varchar("role").notNull(), // user, assistant
+  content: text("content").notNull(),
+  dnaType: varchar("dna_type"),
   createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Email logs
+export const emailLogs = pgTable("email_logs", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  type: varchar("type").notNull(), // welcome, dna_complete, course_complete, weekly_digest
+  recipient: varchar("recipient").notNull(),
+  subject: varchar("subject").notNull(),
+  status: varchar("status").notNull(), // sent, failed
+  error: text("error"),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
 // Workflow automation
@@ -342,8 +354,8 @@ export const stripePurchases = pgTable("stripe_purchases", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-// Email campaign logs table
-export const emailLogs = pgTable("email_logs", {
+// Email campaign logs table (for lead email campaigns)
+export const emailCampaignLogs = pgTable("email_campaign_logs", {
   id: serial("id").primaryKey(),
   leadId: integer("lead_id").notNull().references(() => leads.id),
   subject: varchar("subject").notNull(),

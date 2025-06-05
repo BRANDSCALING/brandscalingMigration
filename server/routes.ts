@@ -5,7 +5,7 @@ import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
 import { pool } from "./db";
 import { verifyFirebaseToken, requireAuth, requireRole, createUserProfile, getUserProfile, updateUserRole } from "./firebaseAuth";
-import { chatWithAgent } from "./openai";
+import { chatWithAgent } from "./aiAgent";
 import { updateUserAfterPurchase } from "./updateUserAfterPurchase";
 import { resendClient } from "@shared/resendClient";
 import { z } from "zod";
@@ -276,6 +276,83 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error updating user role:", error);
       res.status(500).json({ message: "Failed to update user role" });
+    }
+  });
+
+  // AI Chat endpoint
+  app.post('/api/ai/chat', requireAuth, async (req, res) => {
+    try {
+      const { message, dnaType } = req.body;
+      const userId = req.user!.uid;
+      
+      const response = await chatWithAgent(message, dnaType, userId);
+      
+      res.json({ response });
+    } catch (error) {
+      console.error('Error in AI chat:', error);
+      res.status(500).json({ message: 'Failed to process chat request' });
+    }
+  });
+
+  // Get AI conversation history
+  app.get('/api/ai/conversation', requireAuth, async (req, res) => {
+    try {
+      const userId = req.user!.uid;
+      const conversations = await storage.getAiConversationsByUser(userId);
+      
+      res.json({ messages: conversations });
+    } catch (error) {
+      console.error('Error fetching conversation history:', error);
+      res.status(500).json({ message: 'Failed to fetch conversation history' });
+    }
+  });
+
+  // Get lesson details with dual-track content
+  app.get('/api/lessons/:lessonId', requireAuth, async (req, res) => {
+    try {
+      const { lessonId } = req.params;
+      const lesson = await storage.getLessonById(parseInt(lessonId));
+      
+      if (!lesson) {
+        return res.status(404).json({ message: 'Lesson not found' });
+      }
+      
+      const course = await storage.getCourseById(lesson.courseId);
+      
+      res.json({ lesson, course });
+    } catch (error) {
+      console.error('Error fetching lesson:', error);
+      res.status(500).json({ message: 'Failed to fetch lesson' });
+    }
+  });
+
+  // Complete lesson
+  app.post('/api/lessons/complete', requireAuth, async (req, res) => {
+    try {
+      const { courseId, lessonId, viewMode } = req.body;
+      const userId = req.user!.uid;
+      
+      await storage.markLessonComplete(userId, parseInt(courseId), parseInt(lessonId), viewMode);
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Error completing lesson:', error);
+      res.status(500).json({ message: 'Failed to complete lesson' });
+    }
+  });
+
+  // Get lesson progress
+  app.get('/api/progress/:courseId/:lessonId', requireAuth, async (req, res) => {
+    try {
+      const { courseId, lessonId } = req.params;
+      const userId = req.user!.uid;
+      
+      const progress = await storage.getLessonProgress(userId, parseInt(courseId), parseInt(lessonId));
+      
+      res.json(progress || { completed: false });
+    } catch (error) {
+      console.error('Error fetching progress:', error);
+      res.status(500).json({ message: 'Failed to fetch progress' });
     }
   });
 
