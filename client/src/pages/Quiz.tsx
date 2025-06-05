@@ -165,7 +165,7 @@ export default function Quiz() {
     }
   };
 
-  const calculateResult = (): AnswerType => {
+  const calculateResult = () => {
     const counts = {
       'Architect': 0,
       'Alchemist': 0,
@@ -177,12 +177,26 @@ export default function Quiz() {
       counts[answer]++;
     });
 
+    const totalAnswers = Object.keys(answers).length;
+    
+    // Calculate percentages
+    const percentages = {
+      architect: Math.round((counts['Architect'] / totalAnswers) * 100),
+      alchemist: Math.round((counts['Alchemist'] / totalAnswers) * 100),
+      undeclared: Math.round((counts['Undeclared'] / totalAnswers) * 100),
+      blurredIdentity: Math.round((counts['Blurred Identity'] / totalAnswers) * 100)
+    };
+
+    // Determine dominant type
     const maxCount = Math.max(...Object.values(counts));
     const dominantTypes = Object.entries(counts)
       .filter(([, count]) => count === maxCount)
       .map(([type]) => type as AnswerType);
 
-    return dominantTypes[0];
+    return {
+      dominantType: dominantTypes[0],
+      percentages
+    };
   };
 
   const submitQuiz = async () => {
@@ -195,11 +209,15 @@ export default function Quiz() {
       const result = calculateResult();
       
       // Save to localStorage
-      localStorage.setItem('quizResult', result);
+      localStorage.setItem('quizResult', JSON.stringify(result));
       
       // Submit to backend
       if (user) {
-        await apiRequest('POST', '/api/quiz/submit', { userId: user.id, result });
+        await apiRequest('POST', '/api/quiz/submit', { 
+          userId: user.id, 
+          result: result.dominantType,
+          percentages: result.percentages
+        });
       }
       
       // Redirect to result page
