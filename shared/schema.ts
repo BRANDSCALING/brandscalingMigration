@@ -282,6 +282,16 @@ export const emailLogs = pgTable("email_logs", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// DNA assessment results
+export const dnaResults = pgTable("dna_results", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id).unique(),
+  result: varchar("result").notNull(), // Architect, Alchemist, Blurred Identity, Unfocused Potential
+  percentages: jsonb("percentages"), // Store detailed percentages
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Workflow automation
 export const workflows = pgTable("workflows", {
   id: serial("id").primaryKey(),

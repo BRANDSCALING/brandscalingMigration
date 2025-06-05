@@ -212,9 +212,8 @@ export default function Quiz() {
       localStorage.setItem('quizResult', JSON.stringify(result));
       
       // Submit to backend
-      if (user?.id) {
+      if (user) {
         await apiRequest('POST', '/api/quiz/submit', { 
-          userId: user.id, 
           result: result.dominantType,
           percentages: result.percentages
         });

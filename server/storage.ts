@@ -144,7 +144,7 @@ export class DatabaseStorage implements IStorage {
 
   // Course operations
   async getAllCourses(): Promise<Course[]> {
-    return await db.select().from(courses).orderBy(asc(courses.order));
+    return await db.select().from(courses).orderBy(asc(courses.id));
   }
 
   async createCourse(courseData: InsertCourse): Promise<Course> {
@@ -204,15 +204,14 @@ export class DatabaseStorage implements IStorage {
       .values({
         userId,
         courseId,
-        lessonId,
-        completedAt: new Date(),
-        viewMode
+        progress: 100,
+        completedAt: new Date()
       })
       .onConflictDoUpdate({
-        target: [userProgress.userId, userProgress.courseId, userProgress.lessonId],
+        target: [userProgress.userId, userProgress.courseId],
         set: {
           completedAt: new Date(),
-          viewMode
+          progress: 100
         }
       });
   }
@@ -224,11 +223,10 @@ export class DatabaseStorage implements IStorage {
       .where(
         and(
           eq(userProgress.userId, userId),
-          eq(userProgress.courseId, courseId),
-          eq(userProgress.lessonId, lessonId)
+          eq(userProgress.courseId, courseId)
         )
       );
-    return progress ? { completed: true, viewMode: progress.viewMode } : { completed: false };
+    return progress ? { completed: true, viewMode: 'completed' } : { completed: false };
   }
 
   async getUserProgress(userId: string): Promise<any[]> {

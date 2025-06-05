@@ -509,7 +509,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/courses", requireAuth, async (req, res) => {
     try {
       const track = req.query.track as string;
-      const courses = await storage.getCourses(track);
+      const courses = await storage.getAllCourses();
       res.json(courses);
     } catch (error) {
       console.error("Error fetching courses:", error);
