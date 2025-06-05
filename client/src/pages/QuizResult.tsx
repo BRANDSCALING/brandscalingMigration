@@ -67,7 +67,7 @@ export default function QuizResult() {
             <p className="text-gray-600 mt-2">Your dominant entrepreneurial type</p>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
               <div className="text-center">
                 <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
                   <div className="w-8 h-8 bg-blue-600 rounded"></div>
@@ -88,17 +88,6 @@ export default function QuizResult() {
                   {result.percentages.alchemist}%
                 </div>
                 <p className="text-sm text-gray-600">Intuitive, Creative, Transformational</p>
-              </div>
-
-              <div className="text-center">
-                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <div className="w-8 h-8 bg-purple-600 rounded-full"></div>
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-2">Hybrid</h3>
-                <div className="text-3xl font-bold text-purple-600 mb-1">
-                  {Math.max(result.percentages.undeclared, result.percentages.blurredIdentity)}%
-                </div>
-                <p className="text-sm text-gray-600">Balanced, Adaptive, Comprehensive</p>
               </div>
             </div>
 
