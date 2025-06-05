@@ -67,16 +67,15 @@ export default function QuizResult() {
             <p className="text-gray-600 mt-2">Your dominant entrepreneurial type</p>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
               <div className="text-center">
                 <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
                   <div className="w-8 h-8 bg-blue-600 rounded"></div>
                 </div>
                 <h3 className="font-semibold text-gray-900 mb-2">Architect</h3>
-                <div className="text-3xl font-bold text-blue-600 mb-1">
+                <div className="text-2xl font-bold text-blue-600 mb-1">
                   {result.percentages.architect}%
                 </div>
-                <p className="text-sm text-gray-600">Systematic, Strategic, Optimizing</p>
               </div>
 
               <div className="text-center">
@@ -84,10 +83,29 @@ export default function QuizResult() {
                   <div className="w-8 h-8 bg-red-500 rounded-full"></div>
                 </div>
                 <h3 className="font-semibold text-gray-900 mb-2">Alchemist</h3>
-                <div className="text-3xl font-bold text-red-500 mb-1">
+                <div className="text-2xl font-bold text-red-500 mb-1">
                   {result.percentages.alchemist}%
                 </div>
-                <p className="text-sm text-gray-600">Intuitive, Creative, Transformational</p>
+              </div>
+
+              <div className="text-center">
+                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <div className="w-8 h-8 bg-purple-600 rounded-full"></div>
+                </div>
+                <h3 className="font-semibold text-gray-900 mb-2">Blurred Identity</h3>
+                <div className="text-2xl font-bold text-purple-600 mb-1">
+                  {result.percentages.blurredIdentity}%
+                </div>
+              </div>
+
+              <div className="text-center">
+                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <div className="w-8 h-8 bg-gray-600 rounded-full"></div>
+                </div>
+                <h3 className="font-semibold text-gray-900 mb-2">Unfocused Potential</h3>
+                <div className="text-2xl font-bold text-gray-600 mb-1">
+                  {result.percentages.undeclared}%
+                </div>
               </div>
             </div>
 
