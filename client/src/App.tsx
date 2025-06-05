@@ -21,6 +21,9 @@ import ThankYou from "@/pages/ThankYou";
 import Affiliates from "@/pages/Affiliates";
 import Layout from "@/components/Layout";
 import DevLogin from "@/pages/DevLogin";
+import Dashboard from "@/pages/Dashboard";
+import LessonView from "@/pages/LessonView";
+import AICoach from "@/pages/AICoach";
 
 // Sandboxed Modules
 import StudentDashboard from "@/pages/student/StudentDashboard";
@@ -162,6 +165,18 @@ function Router() {
           <Route path="/student/workbooks" component={StudentWorkbooks} />
           <Route path="/student/community" component={StudentCommunity} />
           <Route path="/student/:path*" component={StudentDashboard} />
+        </>
+      )}
+
+      {/* Dual-Track Learning System - Accessible to authenticated users */}
+      {isAuthenticated && (
+        <>
+          <Route path="/dashboard" component={Dashboard} />
+          <Route path="/courses" component={CoursesPage} />
+          <Route path="/courses/:courseId/lessons/:lessonId">
+            {(params) => <LessonView params={params} />}
+          </Route>
+          <Route path="/ai-coach" component={AICoach} />
         </>
       )}
 
