@@ -57,6 +57,10 @@ export const userDnaResult = pgTable("user_dna_result", {
   id: serial("id").primaryKey(),
   userId: varchar("user_id").notNull().references(() => users.id),
   result: varchar("result").notNull(), // 'Architect' | 'Alchemist' | 'Undeclared' | 'Blurred Identity'
+  architectPercentage: integer("architect_percentage").default(0),
+  alchemistPercentage: integer("alchemist_percentage").default(0),
+  undeclaredPercentage: integer("undeclared_percentage").default(0),
+  blurredIdentityPercentage: integer("blurred_identity_percentage").default(0),
   completedAt: timestamp("completed_at").notNull().defaultNow(),
 });
 

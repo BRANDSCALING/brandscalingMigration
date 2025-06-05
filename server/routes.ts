@@ -199,14 +199,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Quiz submission endpoint
   app.post('/api/quiz/submit', requireAuth, async (req, res) => {
     try {
-      const { result } = req.body;
+      const { result, percentages } = req.body;
       const userId = req.user!.uid;
       
       if (!['Architect', 'Alchemist', 'Undeclared', 'Blurred Identity'].includes(result)) {
         return res.status(400).json({ message: 'Invalid quiz result' });
       }
       
-      await storage.upsertUserDnaResult(userId, result);
+      await storage.upsertUserDnaResult(userId, result, percentages);
       res.json({ success: true, message: 'Quiz result saved' });
     } catch (error) {
       console.error("Error saving quiz result:", error);

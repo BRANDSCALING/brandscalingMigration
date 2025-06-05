@@ -1424,17 +1424,25 @@ export class DatabaseStorage implements IStorage {
     return template;
   }
 
-  async upsertUserDnaResult(userId: string, result: string): Promise<void> {
+  async upsertUserDnaResult(userId: string, result: string, percentages?: any): Promise<void> {
     await db
       .insert(userDnaResult)
       .values({
         userId,
         result,
+        architectPercentage: percentages?.architect || 0,
+        alchemistPercentage: percentages?.alchemist || 0,
+        undeclaredPercentage: percentages?.undeclared || 0,
+        blurredIdentityPercentage: percentages?.blurredIdentity || 0,
       })
       .onConflictDoUpdate({
         target: [userDnaResult.userId],
         set: {
           result,
+          architectPercentage: percentages?.architect || 0,
+          alchemistPercentage: percentages?.alchemist || 0,
+          undeclaredPercentage: percentages?.undeclared || 0,
+          blurredIdentityPercentage: percentages?.blurredIdentity || 0,
           completedAt: new Date(),
         },
       });
