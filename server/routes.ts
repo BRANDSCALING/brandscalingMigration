@@ -18,30 +18,32 @@ function calculateEntrepreneurialDnaScore(answers: Record<number, string>) {
   let architectScore = 0;
   let alchemistScore = 0;
   let blurredScore = 0;
+  let undeclaredScore = 0;
   
-  // Q1-Q6: Determine Default DNA
-  for (let i = 1; i <= 6; i++) {
+  // Q1-Q8: Determine Default DNA using new scoring labels
+  for (let i = 1; i <= 8; i++) {
     const answer = answers[i];
     if (answer === 'A') architectScore++;
     else if (answer === 'B') alchemistScore++;
-    else if (answer === 'C' || answer === 'D') blurredScore++;
+    else if (answer === 'C') blurredScore++;
+    else if (answer === 'D') undeclaredScore++;
   }
   
-  // Determine default type
+  // Determine default type based on highest score (minimum 5 out of 8 for clear type)
   let defaultType: 'Architect' | 'Alchemist' | 'Blurred Identity';
-  if (architectScore >= 4) {
+  if (architectScore >= 5) {
     defaultType = 'Architect';
-  } else if (alchemistScore >= 4) {
+  } else if (alchemistScore >= 5) {
     defaultType = 'Alchemist';
   } else {
     defaultType = 'Blurred Identity';
   }
   
-  // Q7-Q12: Measure Awareness (opposite of default)
+  // Q9-Q16: Measure Awareness (opposite of default)
   let awarenessScore = 0;
   const oppositeType = defaultType === 'Architect' ? 'B' : 'A';
   
-  for (let i = 7; i <= 12; i++) {
+  for (let i = 9; i <= 16; i++) {
     const answer = answers[i];
     if (answer === oppositeType) {
       awarenessScore += 1;
@@ -50,15 +52,15 @@ function calculateEntrepreneurialDnaScore(answers: Record<number, string>) {
     }
   }
   
-  // Convert awareness score to percentage (out of 6 possible points)
-  const awarenessPercentage = Math.round((awarenessScore / 6) * 100);
+  // Convert awareness score to percentage (out of 8 possible points)
+  const awarenessPercentage = Math.round((awarenessScore / 8) * 100);
   
   return {
     defaultType,
     awarenessPercentage,
     architectScore,
     alchemistScore,
-    blurredScore,
+    blurredScore: blurredScore + undeclaredScore, // Combine for compatibility
     awarenessScore
   };
 }

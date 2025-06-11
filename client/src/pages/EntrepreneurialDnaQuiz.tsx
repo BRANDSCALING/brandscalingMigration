@@ -28,204 +28,165 @@ interface QuizResult {
 const QUIZ_QUESTIONS: Question[] = [
   {
     id: 1,
-    text: "When starting a new business venture, what's your first instinct?",
+    text: "You're going away for the weekend. How do you prepare the night before?",
     answers: {
-      A: "Create a detailed business plan and timeline",
-      B: "Network with potential partners and customers",
-      C: "Research the market thoroughly first",
-      D: "Jump in and learn as I go"
+      A: "I mentally run through what I need and pack once — essentials are covered.",
+      B: "I write a full list, check everything off, repack a few times, still feel uneasy.",
+      C: "I throw things in last minute and trust it'll be fine.",
+      D: "I pack, unpack, and get overwhelmed deciding what I even need."
     }
   },
   {
     id: 2,
-    text: "Your ideal work environment is:",
+    text: "A close friend unintentionally hurts your feelings. How do you respond?",
     answers: {
-      A: "Structured with clear processes and systems",
-      B: "Dynamic with lots of human interaction",
-      C: "Flexible with room for creativity",
-      D: "Whatever works best for the current project"
+      A: "I won't say anything — they'll figure it out or I'll quietly move on.",
+      B: "I'll express it — maybe now, maybe later — but it will come out.",
+      C: "I react suddenly, then second-guess if I was overdramatic.",
+      D: "I feel stuck about whether I should say something or not."
     }
   },
   {
     id: 3,
-    text: "When making important business decisions, you rely most on:",
+    text: "You walk into a room full of strangers. What do you do?",
     answers: {
-      A: "Data, analytics, and logical frameworks",
-      B: "Intuition and emotional intelligence",
-      C: "Input from trusted advisors",
-      D: "A combination of multiple approaches"
+      A: "I observe quietly, scan the room, and engage when it makes sense.",
+      B: "I act on how I feel — I might blend in or suddenly become the centre of attention.",
+      C: "I linger around and wait for someone to notice or invite me.",
+      D: "I'm unsure how to show up — I feel pressure to act right."
     }
   },
   {
     id: 4,
-    text: "Your greatest strength as an entrepreneur is:",
+    text: "You've committed to waking up at 6am for a week. Day 3, you're exhausted. What happens?",
     answers: {
-      A: "Strategic thinking and execution",
-      B: "Building relationships and inspiring others",
-      C: "Adaptability and problem-solving",
-      D: "Learning quickly from mistakes"
+      A: "I stick to it. Fatigue doesn't override commitment unless it's serious.",
+      B: "I ask myself if the reason still matters — if not, I adjust without guilt.",
+      C: "I sleep in, feel bad, and try again tomorrow.",
+      D: "I feel torn — I want to keep going but can't force myself either."
     }
   },
   {
     id: 5,
-    text: "When facing a major challenge, you typically:",
+    text: "You've completed a project and it performs well. How do you feel about it?",
     answers: {
-      A: "Break it down into manageable steps",
-      B: "Rally your team for collective brainstorming",
-      C: "Seek advice from mentors or experts",
-      D: "Try multiple solutions simultaneously"
+      A: "If the result is strong, I'm satisfied — no need to change anything.",
+      B: "I immediately wonder how it could have been even better.",
+      C: "I feel good but uneasy — maybe I missed something important.",
+      D: "I can't tell if I'm happy or not — depends what others say."
     }
   },
   {
     id: 6,
-    text: "Your approach to scaling a business is:",
+    text: "You're pursuing a goal no one else has achieved. How do you think about it?",
     answers: {
-      A: "Build robust systems and processes first",
-      B: "Focus on culture and team development",
-      C: "Test and iterate based on market feedback",
-      D: "Pursue multiple growth strategies at once"
+      A: "I need to see a path or example — otherwise I'm not sure it's achievable.",
+      B: "Even if no one's done it, I know it's possible — I just need the steps.",
+      C: "I doubt myself, but I still try in case it works out.",
+      D: "I switch between confidence and confusion depending on the day."
     }
   },
   {
     id: 7,
-    text: "When communicating your vision, you emphasize:",
+    text: "You're preparing for something two weeks away. How do you usually plan?",
     answers: {
-      A: "The logical benefits and ROI",
-      B: "The emotional impact and transformation",
-      C: "The practical implementation steps",
-      D: "Different aspects to different audiences"
+      A: "I break it down early and map out tasks by week or day, so it doesn't stack up.",
+      B: "I map it out in detail far in advance, but then I keep improving and adding to it, often creating overwhelm — and later try to simplify again.",
+      C: "I kind of half-plan, get distracted, and usually scramble to pull it together.",
+      D: "I don't really plan — I usually go with what happens closer to the time."
     }
   },
   {
     id: 8,
-    text: "Your leadership style is best described as:",
+    text: "Someone challenges your viewpoint in a conversation. How do you respond?",
     answers: {
-      A: "Results-oriented and systematic",
-      B: "Inspirational and collaborative",
-      C: "Supportive and adaptive",
-      D: "Situational based on team needs"
+      A: "I stay calm, clarify my logic, and listen to see if their view has merit.",
+      B: "If I strongly believe in it, I won't give up until I feel they understand — but if I'm neutral, I stay open.",
+      C: "I react emotionally, then question whether I overdid it.",
+      D: "I nod along even if I disagree, and then think about it for hours later."
     }
   },
   {
     id: 9,
-    text: "When evaluating new opportunities, you focus on:",
+    text: "You're working with someone who's doing things 'wrong.' What's your response?",
     answers: {
-      A: "Scalability and long-term potential",
-      B: "Market demand and customer passion",
-      C: "Resource requirements and feasibility",
-      D: "Multiple factors with equal weight"
+      A: "I re-explain the system and ask them to stick to the structure.",
+      B: "I try to understand why they're doing it that way — if I like them, I'll adapt or just do it myself out of frustration.",
+      C: "I take over entirely and avoid explaining.",
+      D: "I get confused about whether to fix it, explain, or let them do it their way."
     }
   },
   {
     id: 10,
-    text: "Your ideal customer interaction involves:",
+    text: "How do you work toward a long-term goal (6–12 months away)?",
     answers: {
-      A: "Demonstrating clear value propositions",
-      B: "Building deep personal connections",
-      C: "Understanding their specific needs",
-      D: "Adapting your approach to their style"
+      A: "I set clear milestones and track them until the goal is complete.",
+      B: "I envision the end result, emotionally commit, and make it real in my mind — then build toward it as it gets closer.",
+      C: "I try to start but never build momentum — it stays an idea.",
+      D: "I keep rethinking the goal before I even begin."
     }
   },
   {
     id: 11,
-    text: "When building your team, you prioritize:",
+    text: "You've discovered a new strategy or tool. What's your style of using it?",
     answers: {
-      A: "Skills, experience, and track record",
-      B: "Cultural fit and shared values",
-      C: "Complementary strengths to yours",
-      D: "A diverse mix of backgrounds and perspectives"
+      A: "I test a small piece, measure the results, and build on it.",
+      B: "I dive in, get obsessed, test everything, and either burn out or master it.",
+      C: "I research endlessly and then hesitate to take action.",
+      D: "I get excited, start it, then forget to follow through."
     }
   },
   {
     id: 12,
-    text: "Your approach to innovation is:",
+    text: "Something makes perfect sense on paper, but feels wrong to you. What do you do?",
     answers: {
-      A: "Systematic R&D with measured iteration",
-      B: "Intuitive leaps based on market insights",
-      C: "Collaborative experimentation with users",
-      D: "Rapid prototyping across multiple ideas"
+      A: "If it's logical, I move forward — emotion won't hold me back.",
+      B: "I need to figure out why it feels wrong. If it doesn't make sense to me, something must be missing.",
+      C: "I keep asking people for advice and still stay stuck.",
+      D: "I do it anyway but feel disconnected the whole time."
     }
   },
   {
     id: 13,
-    text: "When things don't go according to plan, you:",
+    text: "You're asked to speak in front of a large group. What happens internally?",
     answers: {
-      A: "Analyze what went wrong and adjust the system",
-      B: "Reframe the situation and rally the team",
-      C: "Pivot quickly based on new information",
-      D: "Try multiple recovery strategies simultaneously"
+      A: "I know exactly what I want to say and how to explain it. I've rehearsed or practiced mentally.",
+      B: "I'm happy to speak — even if I don't know the topic, I'll admit that. I can shine or stumble depending on the moment. I've been working on articulating more clearly.",
+      C: "I stress out, lose clarity mid-sentence, and overcorrect.",
+      D: "I prepare, but get nervous and change everything at the last minute."
     }
   },
   {
     id: 14,
-    text: "Your greatest business fear is:",
+    text: "You've spent the entire week at home, alone. How do you feel?",
     answers: {
-      A: "Poor execution of a good strategy",
-      B: "Losing connection with your market",
-      C: "Making irreversible mistakes",
-      D: "Not maximizing all opportunities"
+      A: "Drained, foggy, and ready to get out. I need movement and stimulation.",
+      B: "I could be super productive or completely still — and both are fine. When ready, I come alive in a moment.",
+      C: "Unproductive and annoyed at myself for wasting the time.",
+      D: "I'm not sure — part of me liked it, part of me wants to escape."
     }
   },
   {
     id: 15,
-    text: "You measure success primarily by:",
+    text: "Your regular routine is completely disrupted for 3 days. How do you respond?",
     answers: {
-      A: "Achieving specific metrics and KPIs",
-      B: "Impact on customers and community",
-      C: "Personal growth and learning",
-      D: "Progress across multiple dimensions"
+      A: "I feel off-track, so I rebuild the routine as quickly as I can.",
+      B: "I struggle with fixed routines. I can do the same tasks — just at different times and moods.",
+      C: "I don't recover well — the disruption throws off everything.",
+      D: "I like the break but get disoriented when it's time to get back to work."
     }
   },
   {
     id: 16,
-    text: "Your long-term vision involves:",
+    text: "You're up against a tight deadline and still working. What happens?",
     answers: {
-      A: "Building a scalable, sustainable enterprise",
-      B: "Creating meaningful change in the world",
-      C: "Continuous adaptation and evolution",
-      D: "Exploring multiple business ventures"
+      A: "I execute in structured sprints, track deliverables, and get it done on time.",
+      B: "I try to work in structured sprints, but I keep tweaking — sometimes I miss deadlines and deliver brilliance late.",
+      C: "I overthink, delay too much, then panic.",
+      D: "I avoid working until the pressure is too high to ignore."
     }
   },
-  {
-    id: 17,
-    text: "When networking, you focus on:",
-    answers: {
-      A: "Strategic partnerships and business value",
-      B: "Authentic relationships and mutual support",
-      C: "Learning opportunities and knowledge exchange",
-      D: "Diverse connections across industries"
-    }
-  },
-  {
-    id: 18,
-    text: "Your decision-making speed is:",
-    answers: {
-      A: "Deliberate after thorough analysis",
-      B: "Quick based on gut instinct",
-      C: "Varies based on the situation",
-      D: "Fast with ability to change course"
-    }
-  },
-  {
-    id: 19,
-    text: "You handle uncertainty by:",
-    answers: {
-      A: "Creating contingency plans and frameworks",
-      B: "Staying connected to your purpose",
-      C: "Remaining flexible and open to change",
-      D: "Embracing it as part of the journey"
-    }
-  },
-  {
-    id: 20,
-    text: "Your ultimate entrepreneurial goal is:",
-    answers: {
-      A: "Building a lasting business legacy",
-      B: "Making a meaningful difference",
-      C: "Continuous personal and professional growth",
-      D: "Exploring all possibilities and potential"
-    }
-  }
+
 ];
 
 export default function EntrepreneurialDnaQuiz() {
@@ -272,7 +233,7 @@ export default function EntrepreneurialDnaQuiz() {
       setIsProcessing(false);
     }
     
-    if (currentQuestion < 20) {
+    if (currentQuestion < 16) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
       await submitQuiz();
@@ -465,7 +426,7 @@ export default function EntrepreneurialDnaQuiz() {
   }
 
   const currentQ = QUIZ_QUESTIONS[currentQuestion - 1];
-  const progress = (currentQuestion / 20) * 100;
+  const progress = (currentQuestion / 16) * 100;
   const canProceed = answers[currentQuestion] !== undefined;
 
   return (
@@ -475,7 +436,7 @@ export default function EntrepreneurialDnaQuiz() {
           <div className="flex items-center justify-between mb-4">
             <h1 className="text-2xl font-bold">Entrepreneurial DNA Quiz™</h1>
             <span className="text-sm text-gray-600 dark:text-gray-400">
-              Question {currentQuestion} of 20
+              Question {currentQuestion} of 16
             </span>
           </div>
           <Progress value={progress} className="h-2" />
