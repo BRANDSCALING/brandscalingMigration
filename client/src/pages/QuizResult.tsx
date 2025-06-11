@@ -25,10 +25,10 @@ export default function QuizResult() {
         setResult(parsedResult);
       } catch (error) {
         console.error('Error parsing quiz result:', error);
-        setLocation('/quiz');
+        setLocation('/entrepreneurial-dna-quiz');
       }
     } else {
-      setLocation('/quiz');
+      setLocation('/entrepreneurial-dna-quiz');
     }
   }, [setLocation]);
 
@@ -129,7 +129,7 @@ export default function QuizResult() {
               <div>
                 <Button
                   variant="outline"
-                  onClick={() => setLocation('/quiz')}
+                  onClick={() => setLocation('/entrepreneurial-dna-quiz')}
                   className="text-sm"
                 >
                   Retake Assessment
