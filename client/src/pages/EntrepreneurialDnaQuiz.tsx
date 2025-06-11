@@ -249,11 +249,11 @@ export default function EntrepreneurialDnaQuiz() {
 
   const checkRetakeEligibility = async () => {
     try {
-      const response = await apiRequest('GET', '/api/quiz/entrepreneurial-dna/eligibility');
-      if (!response.canRetake) {
+      const data = await apiRequest('GET', '/api/quiz/entrepreneurial-dna/eligibility');
+      if (!data.canRetake) {
         setRetakeInfo({
           canRetake: false,
-          nextRetakeDate: response.nextRetakeDate
+          nextRetakeDate: data.nextRetakeDate
         });
       }
     } catch (error) {

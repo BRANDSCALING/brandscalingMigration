@@ -292,6 +292,23 @@ export const dnaResults = pgTable("dna_results", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Entrepreneurial DNA Quiz responses
+export const entrepreneurialDnaQuizResponses = pgTable("entrepreneurial_dna_quiz_responses", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  answers: jsonb("answers").notNull(), // Store all 20 answers
+  defaultType: varchar("default_type").notNull(), // Architect, Alchemist, Blurred Identity
+  awarenessPercentage: real("awareness_percentage").notNull(),
+  architectScore: integer("architect_score").notNull(),
+  alchemistScore: integer("alchemist_score").notNull(),
+  blurredScore: integer("blurred_score").notNull(),
+  awarenessScore: real("awareness_score").notNull(),
+  canRetake: boolean("can_retake").default(false),
+  nextRetakeDate: timestamp("next_retake_date"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Workflow automation
 export const workflows = pgTable("workflows", {
   id: serial("id").primaryKey(),

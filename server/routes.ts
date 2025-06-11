@@ -13,6 +13,56 @@ import Stripe from "stripe";
 import { hasAccess, getAllowedCourses, courseDatabase, getUpgradeTarget } from './tierPermissions';
 import { uploadFields } from './upload';
 
+// Entrepreneurial DNA Quiz scoring engine
+function calculateEntrepreneurialDnaScore(answers: Record<number, string>) {
+  let architectScore = 0;
+  let alchemistScore = 0;
+  let blurredScore = 0;
+  
+  // Q1-Q6: Determine Default DNA
+  for (let i = 1; i <= 6; i++) {
+    const answer = answers[i];
+    if (answer === 'A') architectScore++;
+    else if (answer === 'B') alchemistScore++;
+    else if (answer === 'C' || answer === 'D') blurredScore++;
+  }
+  
+  // Determine default type
+  let defaultType: 'Architect' | 'Alchemist' | 'Blurred Identity';
+  if (architectScore >= 4) {
+    defaultType = 'Architect';
+  } else if (alchemistScore >= 4) {
+    defaultType = 'Alchemist';
+  } else {
+    defaultType = 'Blurred Identity';
+  }
+  
+  // Q7-Q12: Measure Awareness (opposite of default)
+  let awarenessScore = 0;
+  const oppositeType = defaultType === 'Architect' ? 'B' : 'A';
+  
+  for (let i = 7; i <= 12; i++) {
+    const answer = answers[i];
+    if (answer === oppositeType) {
+      awarenessScore += 1;
+    } else if (answer === 'C' || answer === 'D') {
+      awarenessScore += 0.5;
+    }
+  }
+  
+  // Convert awareness score to percentage (out of 6 possible points)
+  const awarenessPercentage = Math.round((awarenessScore / 6) * 100);
+  
+  return {
+    defaultType,
+    awarenessPercentage,
+    architectScore,
+    alchemistScore,
+    blurredScore,
+    awarenessScore
+  };
+}
+
 // Initialize Stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-05-28.basil",
@@ -246,7 +296,61 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Quiz submission endpoint
+  // Entrepreneurial DNA Quiz endpoints
+  app.get('/api/quiz/entrepreneurial-dna/eligibility', requireAuth, async (req, res) => {
+    try {
+      const userId = req.user!.uid;
+      const eligibility = await storage.checkEntrepreneurialDnaQuizEligibility(userId);
+      res.json(eligibility);
+    } catch (error) {
+      console.error("Error checking quiz eligibility:", error);
+      res.status(500).json({ message: "Failed to check quiz eligibility" });
+    }
+  });
+
+  app.post('/api/quiz/entrepreneurial-dna/submit', requireAuth, async (req, res) => {
+    try {
+      const { answers } = req.body;
+      const userId = req.user!.uid;
+      
+      // Check if user can retake
+      const eligibility = await storage.checkEntrepreneurialDnaQuizEligibility(userId);
+      if (!eligibility.canRetake) {
+        return res.status(400).json({ 
+          message: 'Quiz cannot be retaken yet',
+          nextRetakeDate: eligibility.nextRetakeDate 
+        });
+      }
+
+      // Scoring engine implementation
+      const result = calculateEntrepreneurialDnaScore(answers);
+      
+      // Save to database
+      await storage.saveEntrepreneurialDnaQuizResponse(
+        userId,
+        answers,
+        result.defaultType,
+        result.awarenessPercentage,
+        {
+          architect: result.architectScore,
+          alchemist: result.alchemistScore,
+          blurred: result.blurredScore,
+          awareness: result.awarenessScore
+        }
+      );
+
+      res.json({
+        defaultType: result.defaultType,
+        awarenessPercentage: result.awarenessPercentage,
+        canRetake: false
+      });
+    } catch (error) {
+      console.error("Error submitting Entrepreneurial DNA quiz:", error);
+      res.status(500).json({ message: "Failed to submit quiz" });
+    }
+  });
+
+  // Legacy quiz submission endpoint
   app.post('/api/quiz/submit', requireAuth, async (req, res) => {
     try {
       const { result, percentages } = req.body;

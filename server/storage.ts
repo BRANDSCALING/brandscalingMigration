@@ -19,6 +19,7 @@ import {
   payments,
   emailLogs,
   dnaResults,
+  entrepreneurialDnaQuizResponses,
   type User,
   type UpsertUser,
   type Post,
@@ -310,6 +311,69 @@ export class DatabaseStorage implements IStorage {
       .from(dnaResults)
       .where(eq(dnaResults.userId, userId));
     return result;
+  }
+
+  // Entrepreneurial DNA Quiz methods
+  async saveEntrepreneurialDnaQuizResponse(
+    userId: string,
+    answers: Record<number, string>,
+    defaultType: string,
+    awarenessPercentage: number,
+    scores: {
+      architect: number;
+      alchemist: number;
+      blurred: number;
+      awareness: number;
+    }
+  ): Promise<void> {
+    const nextRetakeDate = new Date();
+    nextRetakeDate.setDate(nextRetakeDate.getDate() + 30);
+
+    await db
+      .insert(entrepreneurialDnaQuizResponses)
+      .values({
+        userId,
+        answers,
+        defaultType,
+        awarenessPercentage,
+        architectScore: scores.architect,
+        alchemistScore: scores.alchemist,
+        blurredScore: scores.blurred,
+        awarenessScore: scores.awareness,
+        canRetake: false,
+        nextRetakeDate,
+        updatedAt: new Date()
+      });
+  }
+
+  async getLatestEntrepreneurialDnaQuizResponse(userId: string): Promise<any> {
+    const [response] = await db
+      .select()
+      .from(entrepreneurialDnaQuizResponses)
+      .where(eq(entrepreneurialDnaQuizResponses.userId, userId))
+      .orderBy(desc(entrepreneurialDnaQuizResponses.createdAt))
+      .limit(1);
+    return response;
+  }
+
+  async checkEntrepreneurialDnaQuizEligibility(userId: string): Promise<{ canRetake: boolean; nextRetakeDate?: string }> {
+    const latest = await this.getLatestEntrepreneurialDnaQuizResponse(userId);
+    
+    if (!latest) {
+      return { canRetake: true };
+    }
+
+    const now = new Date();
+    const nextRetakeDate = new Date(latest.nextRetakeDate);
+    
+    if (now >= nextRetakeDate) {
+      return { canRetake: true };
+    }
+
+    return {
+      canRetake: false,
+      nextRetakeDate: latest.nextRetakeDate
+    };
   }
 
   // User management
