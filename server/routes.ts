@@ -20,8 +20,8 @@ function calculateEntrepreneurialDnaScore(answers: Record<number, string>) {
   let blurredScore = 0;
   let undeclaredScore = 0;
   
-  // Q1-Q8: Determine Default DNA using new scoring labels
-  for (let i = 1; i <= 8; i++) {
+  // Q1-Q10: Determine Default DNA using new scoring labels
+  for (let i = 1; i <= 10; i++) {
     const answer = answers[i];
     if (answer === 'A') architectScore++;
     else if (answer === 'B') alchemistScore++;
@@ -29,21 +29,21 @@ function calculateEntrepreneurialDnaScore(answers: Record<number, string>) {
     else if (answer === 'D') undeclaredScore++;
   }
   
-  // Determine default type based on highest score (minimum 5 out of 8 for clear type)
+  // Determine default type based on highest score (minimum 6 out of 10 for clear type)
   let defaultType: 'Architect' | 'Alchemist' | 'Blurred Identity';
-  if (architectScore >= 5) {
+  if (architectScore >= 6) {
     defaultType = 'Architect';
-  } else if (alchemistScore >= 5) {
+  } else if (alchemistScore >= 6) {
     defaultType = 'Alchemist';
   } else {
     defaultType = 'Blurred Identity';
   }
   
-  // Q9-Q16: Measure Awareness (opposite of default)
+  // Q11-Q20: Measure Awareness (opposite of default)
   let awarenessScore = 0;
   const oppositeType = defaultType === 'Architect' ? 'B' : 'A';
   
-  for (let i = 9; i <= 16; i++) {
+  for (let i = 11; i <= 20; i++) {
     const answer = answers[i];
     if (answer === oppositeType) {
       awarenessScore += 1;
@@ -52,8 +52,8 @@ function calculateEntrepreneurialDnaScore(answers: Record<number, string>) {
     }
   }
   
-  // Convert awareness score to percentage (out of 8 possible points)
-  const awarenessPercentage = Math.round((awarenessScore / 8) * 100);
+  // Convert awareness score to percentage (out of 10 possible points)
+  const awarenessPercentage = Math.round((awarenessScore / 10) * 100);
   
   return {
     defaultType,

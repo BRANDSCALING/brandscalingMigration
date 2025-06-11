@@ -186,7 +186,46 @@ const QUIZ_QUESTIONS: Question[] = [
       D: "I avoid working until the pressure is too high to ignore."
     }
   },
-
+  {
+    id: 17,
+    text: "You see someone receive praise for a method that you know is inefficient. How do you feel?",
+    answers: {
+      A: "Annoyed, but I stay quiet unless it affects results directly.",
+      B: "Frustrated — I feel a need to point it out, even if it causes tension.",
+      C: "Jealous — I wish I got the recognition, even if I'm not sure why.",
+      D: "Confused — I don't know if I'm right to judge or just overthinking."
+    }
+  },
+  {
+    id: 18,
+    text: "You've been assigned a task but given almost no guidance. What do you do?",
+    answers: {
+      A: "I build a structure from scratch and complete it efficiently.",
+      B: "I intuitively start and figure it out as I go — refining as I learn.",
+      C: "I start, stop, restart — unsure how to keep momentum.",
+      D: "I feel blocked and spend time waiting for more clarity."
+    }
+  },
+  {
+    id: 19,
+    text: "You're being observed while doing something important. What changes?",
+    answers: {
+      A: "Nothing — I operate the same regardless of who's watching.",
+      B: "I become more aware of the energy and adjust instinctively.",
+      C: "I second-guess myself or perform better depending on who's watching.",
+      D: "I feel thrown off and unsure how to act."
+    }
+  },
+  {
+    id: 20,
+    text: "You receive contradictory advice from people you respect. What happens?",
+    answers: {
+      A: "I break it down logically, cross-check, and choose based on data.",
+      B: "I filter through what aligns with my internal sense of truth and trust that.",
+      C: "I spiral and delay the decision trying to weigh everything.",
+      D: "I follow the advice I emotionally prefer, even if it lacks clarity."
+    }
+  }
 ];
 
 export default function EntrepreneurialDnaQuiz() {
@@ -233,7 +272,7 @@ export default function EntrepreneurialDnaQuiz() {
       setIsProcessing(false);
     }
     
-    if (currentQuestion < 16) {
+    if (currentQuestion < 20) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
       await submitQuiz();
@@ -426,7 +465,7 @@ export default function EntrepreneurialDnaQuiz() {
   }
 
   const currentQ = QUIZ_QUESTIONS[currentQuestion - 1];
-  const progress = (currentQuestion / 16) * 100;
+  const progress = (currentQuestion / 20) * 100;
   const canProceed = answers[currentQuestion] !== undefined;
 
   return (
@@ -436,7 +475,7 @@ export default function EntrepreneurialDnaQuiz() {
           <div className="flex items-center justify-between mb-4">
             <h1 className="text-2xl font-bold">Entrepreneurial DNA Quiz™</h1>
             <span className="text-sm text-gray-600 dark:text-gray-400">
-              Question {currentQuestion} of 16
+              Question {currentQuestion} of 20
             </span>
           </div>
           <Progress value={progress} className="h-2" />
