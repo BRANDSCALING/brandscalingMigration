@@ -25,6 +25,7 @@ interface QuizResult {
   nextRetakeDate?: string;
 }
 
+// Cache-busting key: v2.0-20questions
 const QUIZ_QUESTIONS: Question[] = [
   {
     id: 1,
@@ -484,7 +485,7 @@ export default function EntrepreneurialDnaQuiz() {
         <Card>
           <CardContent className="p-8">
             <h2 className="text-xl font-semibold mb-6 leading-relaxed">
-              {currentQ.text}
+              {currentQ?.text}
             </h2>
 
             <div className="space-y-4 mb-8">
