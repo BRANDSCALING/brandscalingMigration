@@ -12,7 +12,7 @@ export async function apiRequest(
   method: string,
   url: string,
   data?: unknown | undefined,
-): Promise<Response> {
+): Promise<any> {
   const headers: Record<string, string> = data ? { "Content-Type": "application/json" } : {};
 
   // Add Firebase auth token if user is logged in
@@ -34,7 +34,14 @@ export async function apiRequest(
   });
 
   await throwIfResNotOk(res);
-  return res;
+  
+  // Parse JSON response
+  try {
+    return await res.json();
+  } catch (error) {
+    // If response is not JSON, return empty object
+    return {};
+  }
 }
 
 type UnauthorizedBehavior = "returnNull" | "throw";

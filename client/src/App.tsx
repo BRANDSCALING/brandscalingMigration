@@ -13,6 +13,7 @@ import Community from "@/pages/Community";
 import Quiz from "@/pages/Quiz";
 import QuizResult from "@/pages/QuizResult";
 import DeepQuiz from "@/pages/DeepQuiz";
+import EntrepreneurialDnaQuiz from "@/pages/EntrepreneurialDnaQuiz";
 import About from "@/pages/About";
 import Contact from "@/pages/Contact";
 import Blog from "@/pages/Blog";
@@ -139,6 +140,7 @@ function Router() {
       <Route path="/quiz" component={() => <PublicPage><Quiz /></PublicPage>} />
       <Route path="/quiz/result" component={() => <PublicPage><QuizResult /></PublicPage>} />
       <Route path="/deep-quiz" component={() => <PublicPage><DeepQuiz /></PublicPage>} />
+      <Route path="/entrepreneurial-dna-quiz" component={() => <PublicPage><EntrepreneurialDnaQuiz /></PublicPage>} />
       <Route path="/checkout" component={() => <PublicPage><Checkout /></PublicPage>} />
       <Route path="/thank-you" component={() => <PublicPage><ThankYou /></PublicPage>} />
       <Route path="/affiliates" component={() => <PublicPage><Affiliates /></PublicPage>} />

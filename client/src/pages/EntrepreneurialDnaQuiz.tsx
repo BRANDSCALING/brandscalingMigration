@@ -282,10 +282,10 @@ export default function EntrepreneurialDnaQuiz() {
   const submitQuiz = async () => {
     setIsSubmitting(true);
     try {
-      const response = await apiRequest('POST', '/api/quiz/entrepreneurial-dna/submit', {
+      const data = await apiRequest('POST', '/api/quiz/entrepreneurial-dna/submit', {
         answers
       });
-      setResult(response);
+      setResult(data);
       setShowResults(true);
     } catch (error) {
       console.error('Error submitting quiz:', error);
