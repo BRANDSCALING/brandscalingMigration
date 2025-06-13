@@ -3,18 +3,16 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import Layout from "@/components/Layout";
+import EntrepreneurialDnaQuiz from "@/pages/EntrepreneurialDnaQuiz";
+import QuizResult from "@/pages/QuizResult";
+import Landing from "@/pages/Landing";
 
-// Direct imports to test basic routing
-const TestQuiz = () => (
-  <div className="min-h-screen bg-white p-8">
-    <h1 className="text-3xl font-bold mb-6">Entrepreneurial DNA Quiz</h1>
-    <p className="text-lg">Quiz route is working! This confirms routing is functional.</p>
-    <div className="mt-4 p-4 bg-green-100 border border-green-300 rounded">
-      <p>✓ All old 12-question quiz content removed</p>
-      <p>✓ Only 20-question Entrepreneurial DNA Quiz™ remains</p>
-      <p>✓ Routing system is now operational</p>
-    </div>
-  </div>
+// Now loading the actual quiz with your 20 questions
+const QuizPage = () => (
+  <Layout>
+    <EntrepreneurialDnaQuiz />
+  </Layout>
 );
 
 const TestHome = () => (
@@ -30,8 +28,17 @@ const TestHome = () => (
 function SimpleRouter() {
   return (
     <Switch>
-      <Route path="/entrepreneurial-dna-quiz" component={TestQuiz} />
-      <Route path="/" component={TestHome} />
+      <Route path="/entrepreneurial-dna-quiz" component={QuizPage} />
+      <Route path="/quiz/result">
+        <Layout>
+          <QuizResult />
+        </Layout>
+      </Route>
+      <Route path="/">
+        <Layout>
+          <Landing />
+        </Layout>
+      </Route>
       <Route>
         <div className="min-h-screen bg-red-50 p-8">
           <h1 className="text-2xl font-bold text-red-600">404 - Page Not Found</h1>

@@ -1,5 +1,5 @@
 import { createRoot } from "react-dom/client";
-import SimpleApp from "./SimpleApp";
+import QuickFix from "./QuickFix";
 import "./index.css";
 
-createRoot(document.getElementById("root")!).render(<SimpleApp />);
+createRoot(document.getElementById("root")!).render(<QuickFix />);
