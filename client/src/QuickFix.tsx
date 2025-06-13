@@ -312,9 +312,9 @@ export default function QuickFix() {
   const progress = ((currentQuestion + 1) / QUIZ_QUESTIONS.length) * 100;
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
+    <div className="w-full bg-gray-50 p-4" style={{ minHeight: '100vh' }}>
       <div className="max-w-2xl mx-auto">
-        <div className="mb-8">
+        <div className="mb-6">
           <div className="flex justify-between items-center mb-4">
             <h1 className="text-2xl font-bold">Entrepreneurial DNA Quiz™</h1>
             <span className="text-sm text-gray-600">
@@ -324,7 +324,7 @@ export default function QuickFix() {
           <Progress value={progress} className="h-2" />
         </div>
 
-        <Card className="mb-8">
+        <Card className="mb-6">
           <CardContent className="p-6">
             <h2 className="text-xl font-semibold mb-6">{question.text}</h2>
             <div className="space-y-3">
@@ -346,7 +346,7 @@ export default function QuickFix() {
           </CardContent>
         </Card>
 
-        <div className="flex justify-between">
+        <div className="flex justify-between pb-8">
           <Button
             variant="outline"
             onClick={() => setCurrentQuestion(Math.max(0, currentQuestion - 1))}
