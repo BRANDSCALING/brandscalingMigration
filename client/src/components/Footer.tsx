@@ -24,7 +24,7 @@ export default function Footer() {
             <h4 className="font-semibold mb-4">Learn</h4>
             <div className="space-y-2">
               <Link href="/courses" className="block text-slate-400 hover:text-white">Courses</Link>
-              <Link href="/quiz" className="block text-slate-400 hover:text-white">Assessment</Link>
+              <Link href="/entrepreneurial-dna-quiz" className="block text-slate-400 hover:text-white">Assessment</Link>
               <Link href="/community" className="block text-slate-400 hover:text-white">Community</Link>
             </div>
           </div>

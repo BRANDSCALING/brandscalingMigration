@@ -18,7 +18,7 @@ export default function FinalCTA({ heading, cta1, cta2 }: FinalCTAProps) {
               {heading}
             </h2>
             <div className="flex flex-col sm:flex-row gap-6 justify-center">
-              <Link href="/quiz">
+              <Link href="/entrepreneurial-dna-quiz">
                 <Button size="lg" className="bg-white text-primary hover:bg-gray-100 text-lg px-8 py-4">
                   {cta1}
                 </Button>

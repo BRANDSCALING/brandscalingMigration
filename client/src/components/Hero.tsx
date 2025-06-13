@@ -21,7 +21,7 @@ export default function Hero({ title, subtitle, cta1, cta2 }: HeroProps) {
           {subtitle}
         </p>
         <div className="flex flex-col sm:flex-row gap-6 justify-center">
-          <Link href="/quiz">
+          <Link href="/entrepreneurial-dna-quiz">
             <Button size="lg" className="bg-brand-orange hover:bg-brand-coral text-white text-lg px-8 py-4 shadow-lg hover:shadow-xl transition-all">
               {cta1}
             </Button>

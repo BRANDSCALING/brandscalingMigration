@@ -13,7 +13,7 @@ export default function Landing() {
             Scale smarter. Align deeper. Build what your strategy and spirit agree on.
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
-            <Link href="/quiz">
+            <Link href="/entrepreneurial-dna-quiz">
               <Button size="lg" className="bg-brand-purple hover:bg-brand-purple/90">
                 Take the Personality Quiz
               </Button>
@@ -91,7 +91,7 @@ export default function Landing() {
               You'll learn faster and scale smoother once you know how you're wired. Take the free quiz to unlock your track — and build from your strengths.
             </p>
             <div className="flex gap-4 justify-center flex-wrap">
-              <Link href="/quiz">
+              <Link href="/entrepreneurial-dna-quiz">
                 <Button size="lg" className="bg-brand-purple hover:bg-brand-purple/90">
                   Take the 3-Minute Quiz
                 </Button>
