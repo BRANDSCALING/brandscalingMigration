@@ -45,146 +45,25 @@ import CommunityComingSoon from "@/pages/community/CommunityComingSoon";
 import CollabComingSoon from "@/pages/collab/CollabComingSoon";
 
 function Router() {
-  const { isAuthenticated, loading, userProfile, logout } = useFirebaseAuth();
-  const [location, setLocation] = useLocation();
-
-  // Force logout on app start if needed
-  useEffect(() => {
-    if (!loading && location === '/force-logout') {
-      logout();
-    }
-  }, [loading, location, logout]);
-
-  // Role-based redirects and access control
-  useEffect(() => {
-    if (!loading) {
-      if (isAuthenticated && userProfile) {
-        // Redirect from auth page after successful login
-        if (location === '/auth') {
-          switch (userProfile.role) {
-            case 'admin':
-              setLocation('/admin');
-              break;
-            case 'student':
-              setLocation('/student');
-              break;
-            default:
-              setLocation('/student');
-          }
-        }
-      } else {
-        // Redirect logged-out users from protected routes to home
-        if (location.startsWith('/student') || location.startsWith('/admin')) {
-          setLocation('/');
-        }
-      }
-    }
-  }, [isAuthenticated, loading, userProfile, location, setLocation]);
-
-  if (loading) {
-    return (
-      <div className="h-screen flex items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" aria-label="Loading"/>
-      </div>
-    );
-  }
-
-  // Helper component for public pages - allow both authenticated and unauthenticated access
-  const PublicPage = ({ children }: { children: React.ReactNode }) => {
-    return <Layout>{children}</Layout>;
-  };
-
-  // Helper component for visitor-only pages (community/collab)
-  const VisitorOnlyPage = ({ children }: { children: React.ReactNode }) => {
-    useEffect(() => {
-      if (isAuthenticated && userProfile) {
-        if (userProfile.role === 'student') {
-          setLocation('/student');
-        }
-      }
-    }, [isAuthenticated, userProfile, setLocation]);
-    
-    return (
-      <Layout>
-        {children}
-      </Layout>
-    );
-  };
-
   return (
     <Switch>
-      {/* Auth Route - Always accessible */}
+      {/* Quiz - Top Priority */}
+      <Route path="/entrepreneurial-dna-quiz" component={() => <Layout><EntrepreneurialDnaQuiz /></Layout>} />
+      <Route path="/quiz/result" component={() => <Layout><QuizResult /></Layout>} />
+      
+      {/* Main Pages */}
+      <Route path="/" component={() => <Layout><Landing /></Layout>} />
+      <Route path="/about" component={() => <Layout><About /></Layout>} />
+      <Route path="/courses" component={() => <Layout><CoursesPage /></Layout>} />
+      <Route path="/contact" component={() => <Layout><Contact /></Layout>} />
+      <Route path="/blog" component={() => <Layout><Blog /></Layout>} />
       <Route path="/auth" component={Auth} />
       
-      {/* Development Login - Always accessible */}
-      <Route path="/dev-login" component={DevLogin} />
+      {/* Admin */}
+      <Route path="/admin" component={() => <AdminLayout><AdminDashboard /></AdminLayout>} />
       
-      {/* Development Admin Routes - Always accessible for testing */}
-      <Route path="/dev-admin" component={() => <AdminLayout><AdminDashboard /></AdminLayout>} />
-      <Route path="/dev-admin/courses" component={() => <AdminLayout><AdminCourses /></AdminLayout>} />
-      <Route path="/dev-admin/community" component={() => <AdminLayout><AdminCommunity /></AdminLayout>} />
-      <Route path="/dev-admin/leads" component={() => <AdminLayout><Leads /></AdminLayout>} />
-      <Route path="/dev-admin/email-campaigns" component={() => <AdminLayout><EmailCampaigns /></AdminLayout>} />
-      <Route path="/dev-admin/email-templates" component={() => <AdminLayout><EmailTemplates /></AdminLayout>} />
-
-      {/* Visitor-Only Routes - Block authenticated users */}
-      <Route path="/community" component={() => <VisitorOnlyPage><CommunityComingSoon /></VisitorOnlyPage>} />
-      <Route path="/collab" component={() => <VisitorOnlyPage><CollabComingSoon /></VisitorOnlyPage>} />
-
-      {/* Quiz Routes - Must come before other routes to prevent conflicts */}
-      <Route path="/entrepreneurial-dna-quiz" component={() => <PublicPage><EntrepreneurialDnaQuiz /></PublicPage>} />
-      <Route path="/quiz/result" component={() => <PublicPage><QuizResult /></PublicPage>} />
-      <Route path="/deep-quiz" component={() => <PublicPage><DeepQuiz /></PublicPage>} />
-
-      {/* Public Marketing Routes - Handle authenticated users with safe navigation */}
-      <Route path="/" component={() => <Layout><Landing /></Layout>} />
-      <Route path="/about" component={() => <PublicPage><About /></PublicPage>} />
-      <Route path="/courses" component={() => <PublicPage><CoursesPage /></PublicPage>} />
-      <Route path="/contact" component={() => <PublicPage><Contact /></PublicPage>} />
-      <Route path="/blog" component={() => <PublicPage><Blog /></PublicPage>} />
-      <Route path="/checkout" component={() => <PublicPage><Checkout /></PublicPage>} />
-      <Route path="/thank-you" component={() => <PublicPage><ThankYou /></PublicPage>} />
-      <Route path="/affiliates" component={() => <PublicPage><Affiliates /></PublicPage>} />
-
-      {/* SANDBOXED AUTHENTICATED ROUTES */}
-      {/* Admin Module - ONLY accessible to admins */}
-      {isAuthenticated && userProfile?.role === 'admin' && (
-        <>
-          <Route path="/admin" component={() => <AdminLayout><AdminDashboard /></AdminLayout>} />
-          <Route path="/admin/courses" component={() => <AdminLayout><AdminCourses /></AdminLayout>} />
-          <Route path="/admin/community" component={() => <AdminLayout><AdminCommunity /></AdminLayout>} />
-          <Route path="/admin/leads" component={() => <AdminLayout><Leads /></AdminLayout>} />
-          <Route path="/admin/email-campaigns" component={() => <AdminLayout><EmailCampaigns /></AdminLayout>} />
-          <Route path="/admin/email-templates" component={() => <AdminLayout><EmailTemplates /></AdminLayout>} />
-          <Route path="/admin/settings" component={() => <AdminLayout><AdminDashboard /></AdminLayout>} />
-        </>
-      )}
-
-      {/* Student Module - Accessible to students and admins */}
-      {isAuthenticated && (userProfile?.role === 'student' || userProfile?.role === 'admin') && (
-        <>
-          <Route path="/student" component={StudentDashboard} />
-          <Route path="/student/courses" component={StudentCourses} />
-          <Route path="/student/workbooks" component={StudentWorkbooks} />
-          <Route path="/student/community" component={StudentCommunity} />
-          <Route path="/student/:path*" component={StudentDashboard} />
-        </>
-      )}
-
-      {/* Dual-Track Learning System - Accessible to authenticated users */}
-      {isAuthenticated && (
-        <>
-          <Route path="/dashboard" component={Dashboard} />
-          <Route path="/courses/:courseId/lessons/:lessonId">
-            {(params) => <LessonView params={params} />}
-          </Route>
-          <Route path="/ai-coach" component={AICoach} />
-        </>
-      )}
-
-
-
-      {/* Block cross-role access with 404 */}
+      
+      {/* 404 Fallback */}
       <Route component={NotFound} />
     </Switch>
   );
