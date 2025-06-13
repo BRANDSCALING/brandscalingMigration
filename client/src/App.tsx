@@ -131,16 +131,17 @@ function Router() {
       <Route path="/community" component={() => <VisitorOnlyPage><CommunityComingSoon /></VisitorOnlyPage>} />
       <Route path="/collab" component={() => <VisitorOnlyPage><CollabComingSoon /></VisitorOnlyPage>} />
 
+      {/* Quiz Routes - Must come before other routes to prevent conflicts */}
+      <Route path="/entrepreneurial-dna-quiz" component={() => <PublicPage><EntrepreneurialDnaQuiz /></PublicPage>} />
+      <Route path="/quiz/result" component={() => <PublicPage><QuizResult /></PublicPage>} />
+      <Route path="/deep-quiz" component={() => <PublicPage><DeepQuiz /></PublicPage>} />
+
       {/* Public Marketing Routes - Handle authenticated users with safe navigation */}
       <Route path="/" component={() => <Layout><Landing /></Layout>} />
       <Route path="/about" component={() => <PublicPage><About /></PublicPage>} />
       <Route path="/courses" component={() => <PublicPage><CoursesPage /></PublicPage>} />
       <Route path="/contact" component={() => <PublicPage><Contact /></PublicPage>} />
       <Route path="/blog" component={() => <PublicPage><Blog /></PublicPage>} />
-
-      <Route path="/quiz/result" component={() => <PublicPage><QuizResult /></PublicPage>} />
-      <Route path="/deep-quiz" component={() => <PublicPage><DeepQuiz /></PublicPage>} />
-      <Route path="/entrepreneurial-dna-quiz" component={() => <PublicPage><EntrepreneurialDnaQuiz /></PublicPage>} />
       <Route path="/checkout" component={() => <PublicPage><Checkout /></PublicPage>} />
       <Route path="/thank-you" component={() => <PublicPage><ThankYou /></PublicPage>} />
       <Route path="/affiliates" component={() => <PublicPage><Affiliates /></PublicPage>} />
@@ -174,7 +175,6 @@ function Router() {
       {isAuthenticated && (
         <>
           <Route path="/dashboard" component={Dashboard} />
-          <Route path="/courses" component={CoursesPage} />
           <Route path="/courses/:courseId/lessons/:lessonId">
             {(params) => <LessonView params={params} />}
           </Route>
