@@ -116,7 +116,7 @@ export default function Dashboard() {
 
                 {dominantType === 'Undeclared' && (
                   <Button 
-                    onClick={() => setLocation('/quiz')}
+                    onClick={() => setLocation('/entrepreneurial-dna-quiz')}
                     className="w-full mt-4"
                   >
                     Take DNA Assessment
@@ -185,7 +185,7 @@ export default function Dashboard() {
                 </Button>
                 
                 <Button 
-                  onClick={() => setLocation('/quiz')}
+                  onClick={() => setLocation('/entrepreneurial-dna-quiz')}
                   className="w-full justify-start"
                   variant="outline"
                 >
@@ -215,7 +215,7 @@ export default function Dashboard() {
                 <p className="text-gray-600 mb-4">
                   Unlock personalized course recommendations by completing your DNA assessment
                 </p>
-                <Button onClick={() => setLocation('/quiz')}>
+                <Button onClick={() => setLocation('/entrepreneurial-dna-quiz')}>
                   Take Assessment Now
                 </Button>
               </div>

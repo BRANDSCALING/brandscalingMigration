@@ -64,7 +64,7 @@ export default function Header() {
             <Link href="/blog" className="text-gray-700 hover:text-gray-900 font-medium">
               Blog
             </Link>
-            <Link href="/quiz" className="text-gray-700 hover:text-gray-900 font-medium">
+            <Link href="/entrepreneurial-dna-quiz" className="text-gray-700 hover:text-gray-900 font-medium">
               What's Your E-DNA?
             </Link>
           </nav>
@@ -95,7 +95,7 @@ export default function Header() {
             <Link href="/blog" className="text-gray-700 hover:text-gray-900 font-medium">
               Blog
             </Link>
-            <Link href="/quiz" className="text-gray-700 hover:text-gray-900 font-medium">
+            <Link href="/entrepreneurial-dna-quiz" className="text-gray-700 hover:text-gray-900 font-medium">
               What's Your E-DNA?
             </Link>
           </nav>

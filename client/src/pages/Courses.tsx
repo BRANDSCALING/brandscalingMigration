@@ -108,7 +108,7 @@ export default function Courses() {
                 </p>
                 <Button 
                   size="sm" 
-                  onClick={() => setLocation('/quiz')}
+                  onClick={() => setLocation('/entrepreneurial-dna-quiz')}
                   className="bg-yellow-600 hover:bg-yellow-700"
                 >
                   Take Assessment
