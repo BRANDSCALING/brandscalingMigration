@@ -25,6 +25,7 @@ import DevLogin from "@/pages/DevLogin";
 import Dashboard from "@/pages/Dashboard";
 import LessonView from "@/pages/LessonView";
 import AICoach from "@/pages/AICoach";
+import SmartBusinessBuilder from "@/pages/SmartBusinessBuilder";
 
 // Sandboxed Modules
 import StudentDashboard from "@/pages/student/StudentDashboard";

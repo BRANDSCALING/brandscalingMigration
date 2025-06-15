@@ -3062,5 +3062,157 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
 
 
 
+  // Smart Business Builder API endpoints
+  app.post("/api/build-model", requireAuth, async (req, res) => {
+    try {
+      const { answers, dnaType } = req.body;
+      const userId = req.user?.uid;
+
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      if (!answers || !dnaType) {
+        return res.status(400).json({ error: 'Answers and DNA type are required' });
+      }
+
+      // Create OpenAI prompt based on DNA type and answers
+      const prompt = `Based on the user's Entrepreneurial DNA type (${dnaType}) and their inputs, restructure the following business idea into a viable, simplified business model. Make recommendations for clarity, monetization, and ease of launch. Use a tone aligned to the DNA profile.
+
+User's DNA Type: ${dnaType}
+Business Answers:
+1. Idea: ${answers.idea}
+2. Problem: ${answers.problem}
+3. Audience: ${answers.audience}
+4. Timing: ${answers.timing}
+5. Offer: ${answers.offer}
+6. Monetization: ${answers.monetization}
+7. Costs: ${answers.costs}
+8. Differentiation: ${answers.differentiation}
+9. Obstacles: ${answers.obstacles}
+10. Support: ${answers.support}
+
+Please structure your response as a JSON object with the following format:
+{
+  "audience": "Clear target customer description",
+  "problem": "Refined problem statement", 
+  "solution": "Clear solution description",
+  "offer": "Refined value proposition",
+  "deliveryModel": "How the solution will be delivered",
+  "revenueModel": "Monetization strategy",
+  "costDrivers": "Main cost considerations",
+  "uniqueAdvantage": "Key competitive advantages",
+  "launchSteps": ["Step 1", "Step 2", "Step 3"],
+  "warnings": ["Risk 1", "Risk 2"],
+  "suggestions": ["Improvement 1", "Improvement 2"],
+  "confidenceLevel": 8
+}
+
+${dnaType === 'architect' ? 
+  'Use logical, structured language with clear bullet points and data-driven recommendations.' : 
+  'Use engaging, visionary language that connects to purpose and transformation.'}`;
+
+      // Call OpenAI API
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o',
+          messages: [
+            {
+              role: 'user',
+              content: prompt
+            }
+          ],
+          response_format: { type: "json_object" },
+          max_tokens: 2000,
+          temperature: 0.7,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`OpenAI API error: ${response.status}`);
+      }
+
+      const openaiResult = await response.json();
+      const businessModel = JSON.parse(openaiResult.choices[0].message.content);
+
+      res.json(businessModel);
+    } catch (error) {
+      console.error("Error generating business model:", error);
+      res.status(500).json({ error: "Failed to generate business model" });
+    }
+  });
+
+  // Save business model to database
+  app.post("/api/business-models", requireAuth, async (req, res) => {
+    try {
+      const { dnaType, inputAnswers, gptOutput, confidenceScore, title } = req.body;
+      const userId = req.user?.uid;
+
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      const businessModel = await storage.createBusinessModel({
+        userId,
+        dnaType,
+        inputAnswers,
+        gptOutput,
+        confidenceScore,
+        title: title || `${dnaType} Model - ${new Date().toLocaleDateString()}`,
+        status: 'draft'
+      });
+
+      res.json(businessModel);
+    } catch (error) {
+      console.error("Error saving business model:", error);
+      res.status(500).json({ error: "Failed to save business model" });
+    }
+  });
+
+  // Get user's business models
+  app.get("/api/business-models", requireAuth, async (req, res) => {
+    try {
+      const userId = req.user?.uid;
+
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      const businessModels = await storage.getUserBusinessModels(userId);
+      res.json(businessModels);
+    } catch (error) {
+      console.error("Error fetching business models:", error);
+      res.status(500).json({ error: "Failed to fetch business models" });
+    }
+  });
+
+  // Get specific business model
+  app.get("/api/business-models/:id", requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const userId = req.user?.uid;
+
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      const businessModel = await storage.getBusinessModel(id, userId);
+      
+      if (!businessModel) {
+        return res.status(404).json({ error: 'Business model not found' });
+      }
+
+      res.json(businessModel);
+    } catch (error) {
+      console.error("Error fetching business model:", error);
+      res.status(500).json({ error: "Failed to fetch business model" });
+    }
+  });
+
   return httpServer;
 }

@@ -20,6 +20,7 @@ import {
   emailLogs,
   dnaResults,
   entrepreneurialDnaQuizResponses,
+  businessModels,
   type User,
   type UpsertUser,
   type Post,
@@ -40,6 +41,8 @@ import {
   type InsertStripePurchase,
   type EmailLog,
   type InsertEmailLog,
+  type BusinessModel,
+  type InsertBusinessModel,
   insertUserDnaResultSchema
 } from "@shared/schema";
 
@@ -119,6 +122,11 @@ export interface IStorage {
   createBlogPost(post: any): Promise<BlogPost>;
   updateBlogPost(id: number, updates: any): Promise<BlogPost>;
   deleteBlogPost(id: number): Promise<void>;
+  
+  // Business models
+  createBusinessModel(model: InsertBusinessModel): Promise<BusinessModel>;
+  getUserBusinessModels(userId: string): Promise<BusinessModel[]>;
+  getBusinessModel(id: string, userId: string): Promise<BusinessModel | undefined>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -525,6 +533,31 @@ export class DatabaseStorage implements IStorage {
 
   async deleteBlogPost(id: number): Promise<void> {
     await db.delete(blogPosts).where(eq(blogPosts.id, id));
+  }
+
+  // Business model operations
+  async createBusinessModel(modelData: InsertBusinessModel): Promise<BusinessModel> {
+    const [model] = await db
+      .insert(businessModels)
+      .values(modelData)
+      .returning();
+    return model;
+  }
+
+  async getUserBusinessModels(userId: string): Promise<BusinessModel[]> {
+    return await db
+      .select()
+      .from(businessModels)
+      .where(eq(businessModels.userId, userId))
+      .orderBy(desc(businessModels.createdAt));
+  }
+
+  async getBusinessModel(id: string, userId: string): Promise<BusinessModel | undefined> {
+    const [model] = await db
+      .select()
+      .from(businessModels)
+      .where(and(eq(businessModels.id, id), eq(businessModels.userId, userId)));
+    return model;
   }
 }
 
