@@ -537,9 +537,13 @@ export class DatabaseStorage implements IStorage {
 
   // Business model operations
   async createBusinessModel(modelData: InsertBusinessModel): Promise<BusinessModel> {
+    const modelWithId = {
+      id: generateId(),
+      ...modelData
+    };
     const [model] = await db
       .insert(businessModels)
-      .values(modelData)
+      .values(modelWithId)
       .returning();
     return model;
   }

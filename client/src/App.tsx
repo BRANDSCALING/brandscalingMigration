@@ -2,7 +2,7 @@ import { Switch, Route, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
-import { TooltipProvider } from "@/components/ui/tooltip";
+// import { TooltipProvider } from "@/components/ui/tooltip";
 import { useFirebaseAuth } from "@/hooks/useFirebaseAuth";
 import { useEffect, useState } from "react";
 import NotFound from "@/pages/not-found";
@@ -56,6 +56,7 @@ function Router() {
       <Route path="/" component={() => <Layout><Landing /></Layout>} />
       <Route path="/about" component={() => <Layout><About /></Layout>} />
       <Route path="/courses" component={() => <Layout><CoursesPage /></Layout>} />
+      <Route path="/smart-business-builder" component={() => <Layout><SmartBusinessBuilder /></Layout>} />
       <Route path="/contact" component={() => <Layout><Contact /></Layout>} />
       <Route path="/blog" component={() => <Layout><Blog /></Layout>} />
       <Route path="/auth" component={Auth} />
@@ -73,10 +74,8 @@ function Router() {
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Router />
-        <Toaster />
-      </TooltipProvider>
+      <Router />
+      <Toaster />
     </QueryClientProvider>
   );
 }

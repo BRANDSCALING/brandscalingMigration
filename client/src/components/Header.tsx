@@ -52,6 +52,9 @@ export default function Header() {
             <Link href="/courses" className="text-gray-700 hover:text-gray-900 font-medium">
               Courses
             </Link>
+            <Link href="/smart-business-builder" className="text-gray-700 hover:text-gray-900 font-medium">
+              Smart Business Builder
+            </Link>
             <Link href="/community" className="text-gray-700 hover:text-gray-900 font-medium">
               Community
             </Link>
