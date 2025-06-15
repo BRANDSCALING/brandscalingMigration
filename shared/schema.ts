@@ -247,6 +247,20 @@ export const quizResults = pgTable("quiz_results", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Business Models (Smart Business Builder)
+export const businessModels = pgTable("business_models", {
+  id: varchar("id").primaryKey().notNull(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  dnaType: varchar("dna_type").notNull(), // architect, alchemist
+  inputAnswers: jsonb("input_answers").notNull(), // 10 form answers
+  gptOutput: jsonb("gpt_output"), // AI generated business model
+  confidenceScore: integer("confidence_score"),
+  title: varchar("title"), // user-given name for the model
+  status: varchar("status").default("draft"), // draft, finalized
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // AI Agents and prompts
 export const aiAgents = pgTable("ai_agents", {
   id: serial("id").primaryKey(),
@@ -484,6 +498,13 @@ export const blogPostsRelations = relations(blogPosts, ({ one }) => ({
   }),
 }));
 
+export const businessModelsRelations = relations(businessModels, ({ one }) => ({
+  user: one(users, {
+    fields: [businessModels.userId],
+    references: [users.id],
+  }),
+}));
+
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).omit({
   createdAt: true,
@@ -567,6 +588,12 @@ export const insertLeadSchema = createInsertSchema(leads).omit({
   createdAt: true,
 });
 
+export const insertBusinessModelSchema = createInsertSchema(businessModels).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 // Types
 export type UpsertUser = z.infer<typeof upsertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -617,6 +644,9 @@ export type InsertBlogPost = z.infer<typeof insertBlogPostSchema>;
 
 export type Lead = typeof leads.$inferSelect;
 export type InsertLead = z.infer<typeof insertLeadSchema>;
+
+export type BusinessModel = typeof businessModels.$inferSelect;
+export type InsertBusinessModel = z.infer<typeof insertBusinessModelSchema>;
 
 export type StripePurchase = typeof stripePurchases.$inferSelect;
 export type InsertStripePurchase = typeof stripePurchases.$inferInsert;

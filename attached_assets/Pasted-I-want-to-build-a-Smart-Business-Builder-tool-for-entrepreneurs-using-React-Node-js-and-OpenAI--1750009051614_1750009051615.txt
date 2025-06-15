@@ -1,0 +1,89 @@
+I want to build a “Smart Business Builder™” tool for entrepreneurs using React, Node.js, and OpenAI inside my existing Replit platform. Please follow these steps carefully:
+
+---
+
+🧩 FRONTEND:
+
+1. Create a multi-step React form wizard with 10 questions.
+2. Each question should have **two versions**: one for “Architect” (logic-based) and one for “Alchemist” (emotion-based).
+   - Add a toggle at the top to switch between Architect and Alchemist view.
+   - When toggled, the question text changes dynamically to match the selected DNA type.
+3. The 10 questions are:
+   1. What is your idea?
+   2. What problem are you solving?
+   3. Who is this for?
+   4. Why now?
+   5. What is your offer?
+   6. How will you make money?
+   7. What does it cost to deliver?
+   8. What makes you different?
+   9. What’s stopping you from launching?
+   10. What support do you need?
+
+4. After the user completes all questions, include a “Build My Model” button to send the inputs to the backend.
+
+---
+
+⚙️ BACKEND:
+
+5. Create a Node.js API endpoint at `/api/build-model` that:
+   - Accepts the 10 user answers and their selected DNA type (Architect or Alchemist)
+   - Sends them to OpenAI’s GPT using the following master prompt:
+
+“Based on the user’s Entrepreneurial DNA type and their inputs, restructure the following business idea into a viable, simplified business model. Make recommendations for clarity, monetization, and ease of launch. Use a tone aligned to the DNA profile.
+
+Include:
+- Audience
+- Problem
+- Solution
+- Offer
+- Delivery Model
+- Revenue Model
+- Cost Drivers
+- Unique Advantage
+- Launch Priority Steps
+
+Also return:
+- Warnings or Risks
+- Pivot/Improvement Suggestions
+- Confidence Level (1–10)”
+
+6. Format the GPT output as JSON and return it to the frontend.
+
+---
+
+📋 OUTPUT DISPLAY:
+
+7. On the frontend, display the GPT output with clear sections:
+   - 1-Page Business Model
+   - Warnings / Fixes
+   - Suggestions to Improve
+   - Confidence Score
+8. Include a button: “Download as PDF” (use jsPDF to format and export)
+
+9. Add a “Save My Model” button that stores inputs + GPT output in the database.
+
+---
+
+💾 DATABASE:
+
+10. Create a `business_models` table or collection with:
+    - user_id
+    - input_answers (as object)
+    - DNA_type
+    - GPT_output (as object)
+    - timestamp
+
+11. Show the user a “My Business Models” section in their dashboard with edit/resubmit functionality.
+
+---
+
+✅ FINAL TOUCHES:
+
+- Make UI mobile-first and clean. Use purple tones for Architect and orange tones for Alchemist.
+- Include tooltips next to each question to give examples (e.g. “Describe the kind of person your product helps.”)
+- Optional: Add a brief welcome message with video placeholder for Fariza (The Alchemist) and Hanif (The Architect).
+
+---
+
+Please confirm if you understand these instructions. Begin building step-by-step and let me know if you need any additional context.

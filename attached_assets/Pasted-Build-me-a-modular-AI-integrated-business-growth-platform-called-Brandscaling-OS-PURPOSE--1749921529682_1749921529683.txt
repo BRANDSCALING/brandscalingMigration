@@ -1,0 +1,101 @@
+Build me a modular, AI-integrated business growth platform called **Brandscaling OS™**.
+
+## PURPOSE:
+This is a full-stack platform that guides entrepreneurs through personalized learning and growth based on their **Entrepreneurial DNA (E-DNA)** — either Architect (strategic) or Alchemist (creative). It must offer a public-facing website, a private user dashboard, LMS, AI agents, a gamified community, CRM, and admin control.
+
+## FRONTEND SITE (built in Dora or React):
+- SEO-optimized, scroll-animated homepage
+- Pages:
+  - Home (AI hero animation, CTA to Quiz + Mastermind)
+  - Quiz (E-DNA Test)
+  - Courses (Free/Paid, filtered by level)
+  - Blog + Framework Library (searchable, Architect/Alchemist toggle)
+  - AI Help (live preview of 2 AI agents)
+  - Community (public thread preview)
+  - Mastermind (high-ticket CTA)
+  - Contact
+
+## QUIZ ENGINE:
+- 20-question E-DNA quiz
+- Logic: Q1–6 = core type, Q7–12 = awareness of opposite, Q13–20 = validation
+- Output = user type (Architect or Alchemist) + awareness %
+- Redirect user to personalized dashboard
+- Built in Lovable (MVP) and ported to Replit
+
+## DASHBOARD (after login):
+Tabs:
+- Dashboard (user progress, AI prompts, next best step)
+- AI Agents (choose Architect or Alchemist assistant)
+- Courses & Frameworks (only purchased/unlocked clickable)
+- Collab Club
+- Community
+- Events
+- Affiliate Hub (only if unlocked)
+
+## AI AGENTS:
+- Two only: AI Architect & AI Alchemist
+- Embedded across:
+  - Dashboard
+  - Courses (Ask-AI)
+  - Community threads
+  - Funnel/Offer builder
+- Dual tone response logic:
+  - Architect = structured, logical, bullet-point
+  - Alchemist = visual, metaphorical, emotional
+
+## LMS:
+- Video + text + workbook + quiz + certificates
+- Gamified (badges, streaks, leaderboard)
+- Course access controlled by level + purchase + E-DNA
+- Toggle Architect/Alchemist view of content
+
+## COMMUNITY:
+- Threads: Wins, Q&A, Feedback, Events
+- Mastermind-only rooms
+- Weekly digest email
+- Auto-summarise long threads
+- Role-based access
+
+## ADMIN PANEL:
+- Dashboard overview
+- Courses/Frameworks
+- User manager (levels + access)
+- Funnels & automations
+- Email campaigns
+- AI prompt trainer
+- Community moderation
+- Affiliate invite manager
+- System settings
+
+## GAMIFICATION:
+- Leaderboards
+- Share-to-unlock content (e.g. “Invite 5 friends”)
+- Social share tokens
+- Affiliate only unlocked via email share, event attendance, or internal invite
+
+## STACK & CONNECTIONS:
+
+- Dora → visual public website
+- Lovable → quiz logic (for now)
+- Replit → app engine (full dashboard, LMS, CRM, community)
+- Firebase → user auth
+- PostgreSQL → database for users, courses, events, etc.
+- Stripe → payment + webhook content unlock
+- Resend → transactional & onboarding email delivery
+- Calendly → taster days, coaching calls
+- GHL → short-term CRM for funnels and nurture
+- Internal Replit analytics → total users, course data, posts, completions
+
+## REQUIREMENTS:
+- Modular: changing quiz logic, email, or LMS shouldn’t affect other modules
+- Fully responsive: mobile-first layout, app-ready
+- Visual-first: hero animations, hover effects, storytelling UI
+- AI-ready: all flows should support AI assistants with custom personas
+
+Deliver:
+- A working version of this platform at `app.brandscaling.com`
+- Fully functioning E-DNA logic with dashboard-based personalization
+- Locked/unlocked course content
+- Community threads with moderation
+- Admin panel with section-based permissions
+- Share-to-unlock gamification and affiliate visibility rules
