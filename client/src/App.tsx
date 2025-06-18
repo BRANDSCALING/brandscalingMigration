@@ -62,8 +62,13 @@ function Router() {
       <Route path="/auth" component={Auth} />
       <Route path="/dev-login" component={DevLogin} />
       
-      {/* Admin */}
+      {/* Admin Routes */}
       <Route path="/admin" component={() => <AdminLayout><AdminDashboard /></AdminLayout>} />
+      <Route path="/admin/courses" component={() => <AdminLayout><AdminCourses /></AdminLayout>} />
+      <Route path="/admin/community" component={() => <AdminLayout><AdminCommunity /></AdminLayout>} />
+      <Route path="/admin/email-campaigns" component={() => <AdminLayout><EmailCampaigns /></AdminLayout>} />
+      <Route path="/admin/email-templates" component={() => <AdminLayout><EmailTemplates /></AdminLayout>} />
+      <Route path="/admin/leads" component={() => <AdminLayout><Leads /></AdminLayout>} />
       
       
       {/* 404 Fallback */}
