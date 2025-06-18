@@ -129,6 +129,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Apply Firebase auth middleware to all other API routes (except auth endpoint)
   app.use('/api', (req, res, next) => {
+    // Skip auth completely for admin routes in development
+    if (req.path.startsWith('/admin/')) {
+      return next();
+    }
+    
     // Skip auth middleware for already handled routes
     if (req.path === '/auth/user' || req.path === '/dev/create-admin') {
       return next();
@@ -2765,6 +2770,63 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
     } catch (error) {
       console.error("Error fetching courses:", error);
       res.status(500).json({ error: "Failed to fetch courses" });
+    }
+  });
+
+  // Admin community management route
+  app.get("/api/admin/community/posts", async (req, res) => {
+    try {
+      const { filterTier, filterStatus } = req.query;
+      
+      // For development: return sample community posts
+      const posts = [
+        {
+          id: "post-1",
+          title: "Welcome to the Brandscaling Community",
+          body: "This is our main community hub for entrepreneurs.",
+          userId: "admin-dev-12345",
+          tags: ["announcement", "welcome"],
+          uploadUrls: [],
+          isPinned: true,
+          isHidden: false,
+          visibilityTier: "foundation",
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          user: {
+            id: "admin-dev-12345",
+            email: "admin@brandscaling.com",
+            firstName: "Admin",
+            lastName: "User",
+            accessTier: "mastermind",
+            profileImageUrl: null
+          }
+        },
+        {
+          id: "post-2",
+          title: "DNA Assessment Results Discussion",
+          body: "Share your entrepreneurial DNA results and insights here.",
+          userId: "user-123",
+          tags: ["dna", "discussion"],
+          uploadUrls: [],
+          isPinned: false,
+          isHidden: false,
+          visibilityTier: "advanced",
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          user: {
+            id: "user-123",
+            email: "user@example.com",
+            firstName: "John",
+            lastName: "Doe",
+            accessTier: "advanced",
+            profileImageUrl: null
+          }
+        }
+      ];
+      res.json(posts);
+    } catch (error) {
+      console.error("Error fetching community posts:", error);
+      res.status(500).json({ error: "Failed to fetch community posts" });
     }
   });
 
