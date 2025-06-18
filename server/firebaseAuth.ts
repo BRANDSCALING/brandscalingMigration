@@ -39,6 +39,35 @@ if (!admin.apps.length) {
 export const verifyFirebaseToken: RequestHandler = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
+    
+    // Check for development admin credentials first
+    if (process.env.NODE_ENV === 'development') {
+      const devAdminId = req.headers['x-dev-admin-id'];
+      if (devAdminId === 'admin-dev-12345') {
+        // Create development admin user
+        let user = await storage.getUser('admin-dev-12345');
+        if (!user) {
+          user = await storage.upsertUser({
+            id: 'admin-dev-12345',
+            email: 'admin@brandscaling.com',
+            role: 'admin',
+            firstName: 'Admin',
+            lastName: 'User',
+            profileImageUrl: null,
+            stripeCustomerId: null,
+            stripeSubscriptionId: null
+          });
+        }
+        
+        req.user = {
+          uid: user.id,
+          email: user.email || 'admin@brandscaling.com',
+          role: user.role
+        };
+        return next();
+      }
+    }
+    
     if (!authHeader?.startsWith('Bearer ')) {
       return res.status(401).json({ error: 'Unauthorized: No token provided' });
     }

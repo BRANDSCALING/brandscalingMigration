@@ -130,9 +130,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Apply Firebase auth middleware to all other API routes (except auth endpoint)
   app.use('/api', (req, res, next) => {
     // Skip auth middleware for already handled routes
-    if (req.path === '/auth/user') {
+    if (req.path === '/auth/user' || req.path === '/dev/create-admin') {
       return next();
     }
+    
+    // In development mode, bypass auth for admin user
+    if (process.env.NODE_ENV === 'development') {
+      const devAdminId = req.headers['x-dev-admin-id'];
+      if (devAdminId === 'admin-dev-12345') {
+        req.user = {
+          uid: 'admin-dev-12345',
+          email: 'admin@brandscaling.com',
+          role: 'admin'
+        };
+        return next();
+      }
+    }
+    
     return verifyFirebaseToken(req, res, next);
   });
 

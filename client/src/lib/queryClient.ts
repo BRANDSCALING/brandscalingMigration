@@ -15,8 +15,13 @@ export async function apiRequest(
 ): Promise<any> {
   const headers: Record<string, string> = data ? { "Content-Type": "application/json" } : {};
 
+  // Check for development admin credentials first
+  const devAdminId = localStorage.getItem('devAdminId');
+  if (devAdminId === 'admin-dev-12345') {
+    headers['x-dev-admin-id'] = devAdminId;
+  }
   // Add Firebase auth token if user is logged in
-  if (auth.currentUser) {
+  else if (auth.currentUser) {
     try {
       // Force refresh to get a fresh token
       const token = await auth.currentUser.getIdToken(true);
