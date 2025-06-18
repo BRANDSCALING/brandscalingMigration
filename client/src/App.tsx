@@ -41,6 +41,7 @@ import EmailTemplates from "@/pages/admin/EmailTemplates";
 import Leads from "@/pages/admin/Leads";
 import AdminCourses from "@/pages/admin/AdminCourses";
 import AdminCommunity from "@/pages/admin/AdminCommunity";
+import AdminSettings from "@/pages/admin/AdminSettings";
 
 import CommunityComingSoon from "@/pages/community/CommunityComingSoon";
 import CollabComingSoon from "@/pages/collab/CollabComingSoon";
@@ -69,6 +70,7 @@ function Router() {
       <Route path="/admin/email-campaigns" component={() => <AdminLayout><EmailCampaigns /></AdminLayout>} />
       <Route path="/admin/email-templates" component={() => <AdminLayout><EmailTemplates /></AdminLayout>} />
       <Route path="/admin/leads" component={() => <AdminLayout><Leads /></AdminLayout>} />
+      <Route path="/admin/settings" component={() => <AdminLayout><AdminSettings /></AdminLayout>} />
       
       
       {/* 404 Fallback */}
