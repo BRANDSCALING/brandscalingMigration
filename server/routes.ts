@@ -281,28 +281,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       };
       
       // Return basic dashboard structure
-      const dashboardData = {
+      res.json({
         userDnaResult: null,
         recommendedCourses: [],
         recentProgress: [],
         nextLessons: [],
         communityActivity: [],
         userTier: user.accessTier || 'mastermind'
-      };
-      
-      res.json({
-        userDnaResult: userDnaResult ? {
-          architect: userDnaResult.architect,
-          alchemist: userDnaResult.alchemist,
-          blurredIdentity: userDnaResult.blurredIdentity,
-          unfocusedPotential: userDnaResult.unfocusedPotential,
-          dominantType: userDnaResult.dominantType
-        } : null,
-        recommendedCourses,
-        recentProgress,
-        nextLessons,
-        communityActivity,
-        userTier
       });
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
