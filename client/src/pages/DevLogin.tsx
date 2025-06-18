@@ -47,18 +47,24 @@ export default function DevLogin() {
   };
 
   const loginAsAdmin = () => {
-    // For development: simulate admin login
+    // Clear any existing auth data
+    localStorage.clear();
+    sessionStorage.clear();
+    
+    // Set development admin credentials
     localStorage.setItem('devAdminId', 'admin-dev-12345');
     localStorage.setItem('devAdminEmail', 'admin@brandscaling.com');
     localStorage.setItem('devAdminRole', 'admin');
     
     toast({
-      title: "Development Login",
-      description: "Logged in as admin user for development.",
+      title: "Admin Access Granted",
+      description: "Logged in as admin with full privileges.",
     });
     
-    // Redirect to admin panel
-    window.location.href = '/admin';
+    // Force page reload to clear any cached auth state
+    setTimeout(() => {
+      window.location.href = '/admin/courses';
+    }, 1000);
   };
 
   return (
