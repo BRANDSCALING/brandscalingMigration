@@ -74,6 +74,10 @@ export const verifyFirebaseToken: RequestHandler = async (req, res, next) => {
 
     const token = authHeader.split('Bearer ')[1];
     
+    if (!token || token === 'undefined' || token === 'null') {
+      return res.status(401).json({ error: 'Unauthorized: Invalid token' });
+    }
+    
     let decodedToken;
     
     // Try Firebase Admin verification first

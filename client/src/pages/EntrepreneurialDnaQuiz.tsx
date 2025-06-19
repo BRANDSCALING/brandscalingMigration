@@ -290,6 +290,10 @@ export default function EntrepreneurialDnaQuiz() {
       setShowResults(true);
     } catch (error) {
       console.error('Error submitting quiz:', error);
+      console.error('Error details:', JSON.stringify(error, null, 2));
+      // Show user-friendly error message
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      alert(`Quiz submission failed: ${errorMessage}`);
     } finally {
       setIsSubmitting(false);
     }
