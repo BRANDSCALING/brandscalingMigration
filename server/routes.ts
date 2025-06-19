@@ -317,6 +317,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { answers } = req.body;
       const userId = req.user!.uid;
       
+      // Ensure user exists in database (especially for development mode)
+      let user = await storage.getUser(userId);
+      if (!user) {
+        // Create user if doesn't exist (development mode fallback)
+        const email = req.user!.email || 'admin@brandscaling.com';
+        user = await storage.createUser({
+          id: userId,
+          email: email,
+          firstName: 'Admin',
+          lastName: 'User',
+          accessTier: 'mastermind',
+          role: 'admin'
+        });
+      }
+      
       // Check if user can retake
       const eligibility = await storage.checkEntrepreneurialDnaQuizEligibility(userId);
       if (!eligibility.canRetake) {
