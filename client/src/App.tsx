@@ -61,6 +61,7 @@ function Router() {
       <Route path="/contact" component={() => <Layout><Contact /></Layout>} />
       <Route path="/blog" component={() => <Layout><Blog /></Layout>} />
       <Route path="/auth" component={Auth} />
+      <Route path="/login" component={Auth} />
       <Route path="/dev-login" component={DevLogin} />
       
       {/* Admin Routes */}
