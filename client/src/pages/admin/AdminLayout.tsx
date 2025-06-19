@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { 
   BookOpen, 
@@ -33,9 +34,19 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [location] = useLocation();
   const { user } = useAuth();
+  const queryClient = useQueryClient();
 
   const handleSignOut = async () => {
     try {
+      // Try Firebase signout first
+      try {
+        const { getAuth, signOut } = await import('firebase/auth');
+        const auth = getAuth();
+        await signOut(auth);
+      } catch (firebaseError) {
+        console.log('Firebase signout not available in development mode');
+      }
+      
       // Call logout endpoint
       await fetch('/api/logout', { method: 'GET' });
       
@@ -43,13 +54,17 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       localStorage.clear();
       sessionStorage.clear();
       
+      // Clear query cache
+      queryClient.clear();
+      
       // Force page reload to clear any cached state
       window.location.href = "/";
     } catch (error) {
       console.error('Logout error:', error);
-      // Even if API call fails, clear local data and redirect
+      // Force logout even if API calls fail
       localStorage.clear();
       sessionStorage.clear();
+      queryClient.clear();
       window.location.href = "/";
     }
   };
