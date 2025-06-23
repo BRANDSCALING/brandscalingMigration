@@ -47,8 +47,6 @@ export default function AIAgents() {
 
   const chatMutation = useMutation({
     mutationFn: async (data: { message: string; agentType: 'architect' | 'alchemist' }) => {
-      console.log('Sending data to AI agent:', data);
-      
       const response = await fetch('/api/ai-agents/chat', {
         method: 'POST',
         headers: {
@@ -58,14 +56,10 @@ export default function AIAgents() {
       });
       
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('AI agent error:', errorText);
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       
-      const result = await response.json();
-      console.log('AI agent response:', result);
-      return result;
+      return response.json();
     },
     onSuccess: (response) => {
       const newMessage: Message = {
@@ -78,7 +72,6 @@ export default function AIAgents() {
       setMessages(prev => [...prev, newMessage]);
     },
     onError: (error) => {
-      console.error('Chat mutation error:', error);
       const errorMessage: Message = {
         id: Date.now().toString(),
         role: 'assistant',
@@ -129,8 +122,6 @@ export default function AIAgents() {
     const trimmedMessage = message.trim();
     if (!trimmedMessage) return;
 
-    console.log('Sending message:', trimmedMessage, 'to agent:', activeAgent);
-
     const userMessage: Message = {
       id: Date.now().toString(),
       role: 'user',
@@ -152,7 +143,6 @@ export default function AIAgents() {
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      console.log('Enter key pressed, current message:', message);
       handleSendMessage();
     }
   };
@@ -373,10 +363,7 @@ export default function AIAgents() {
                 <div className="flex gap-2">
                   <Input
                     value={message}
-                    onChange={(e) => {
-                      console.log('Input change:', e.target.value);
-                      setMessage(e.target.value);
-                    }}
+                    onChange={(e) => setMessage(e.target.value)}
                     onKeyDown={handleKeyPress}
                     placeholder={`Ask The AI ${activeAgent.charAt(0).toUpperCase() + activeAgent.slice(1)} anything...`}
                     disabled={chatMutation.isPending}
@@ -384,10 +371,7 @@ export default function AIAgents() {
                     autoFocus
                   />
                   <Button 
-                    onClick={() => {
-                      console.log('Button clicked, current message:', message);
-                      handleSendMessage();
-                    }}
+                    onClick={handleSendMessage}
                     disabled={!message.trim() || chatMutation.isPending}
                     className={getAgentColor(activeAgent)}
                     type="button"

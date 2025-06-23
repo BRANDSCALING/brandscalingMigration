@@ -1,0 +1,53 @@
+chunk-RPCDYKBN.js?v=fe3b9330:21551 Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+api/dashboard:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 (Unauthorized)Understand this error
+AIAgents.tsx:377 Input change: Hello! It seems like your message might be missing some content. How can I assist you today? If you have a question or a topic you need advice on, please let me know, and I'd be happy to help with clear and structured guidance.
+AIAgents.tsx:377 Input change: H
+AIAgents.tsx:377 Input change: Hi
+AIAgents.tsx:377 Input change: Hi 
+AIAgents.tsx:377 Input change: Hi ,
+AIAgents.tsx:377 Input change: Hi , 
+AIAgents.tsx:377 Input change: Hi , n
+AIAgents.tsx:377 Input change: Hi , ne
+AIAgents.tsx:377 Input change: Hi , nee
+AIAgents.tsx:377 Input change: Hi , need
+AIAgents.tsx:377 Input change: Hi , need 
+AIAgents.tsx:377 Input change: Hi , need a
+AIAgents.tsx:377 Input change: Hi , need a 
+AIAgents.tsx:377 Input change: Hi , need a l
+AIAgents.tsx:377 Input change: Hi , need a le
+AIAgents.tsx:377 Input change: Hi , need a lea
+AIAgents.tsx:377 Input change: Hi , need a lean
+AIAgents.tsx:377 Input change: Hi , need a lean 
+AIAgents.tsx:377 Input change: Hi , need a lean c
+AIAgents.tsx:377 Input change: Hi , need a lean ca
+AIAgents.tsx:377 Input change: Hi , need a lean can
+AIAgents.tsx:377 Input change: Hi , need a lean canv
+AIAgents.tsx:377 Input change: Hi , need a lean canva
+AIAgents.tsx:377 Input change: Hi , need a lean canvas
+AIAgents.tsx:377 Input change: Hi , need a lean canvas 
+AIAgents.tsx:377 Input change: Hi , ea lean canvas 
+AIAgents.tsx:377 Input change: Hi , exa lean canvas 
+AIAgents.tsx:377 Input change: Hi , expa lean canvas 
+AIAgents.tsx:377 Input change: Hi , expla lean canvas 
+AIAgents.tsx:377 Input change: Hi , explaa lean canvas 
+AIAgents.tsx:377 Input change: Hi , explaia lean canvas 
+AIAgents.tsx:377 Input change: Hi , explaina lean canvas 
+AIAgents.tsx:377 Input change: Hi , explain a lean canvas 
+AIAgents.tsx:377 Input change: Hi , explain ta lean canvas 
+AIAgents.tsx:377 Input change: Hi , explain tha lean canvas 
+AIAgents.tsx:377 Input change: Hi , explain thea lean canvas 
+AIAgents.tsx:377 Input change: Hi , explain the a lean canvas 
+AIAgents.tsx:377 Input change: Hi , explain the lean canvas 
+AIAgents.tsx:388 Button clicked, current message: Hi , explain the lean canvas 
+AIAgents.tsx:132 Sending message: Hi , explain the lean canvas to agent: architect
+AIAgents.tsx:50 Sending data to AI agent: Object
+AIAgents.tsx:67 AI agent response: Object
+AIAgents.tsx:377 Input change: Hello! It seems like your message might be missing some content. How can I assist you today? If you have a question or a topic you need advice on, please let me know, and I'd be happy to help with clear and structured guidance.
+AIAgents.tsx:377 Input change: Hi , explain the lean canvas
+AIAgents.tsx:155 Enter key pressed, current message: Hi , explain the lean canvas
+AIAgents.tsx:132 Sending message: Hi , explain the lean canvas to agent: architect
+AIAgents.tsx:50 Sending data to AI agent: Object
+AIAgents.tsx:67 AI agent response: Object

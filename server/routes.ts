@@ -1785,20 +1785,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Chat with AI agents using n8n webhooks
   app.post('/api/ai-agents/chat', async (req, res) => {
     try {
-      console.log('=== AI AGENT REQUEST DEBUG ===');
-      console.log('Raw request body:', req.body);
-      console.log('Headers:', req.headers);
-      
       const { message, agentType } = req.body;
       const userId = req.user?.uid || 'anonymous-user';
       
-      console.log('Extracted message:', message);
-      console.log('Extracted agentType:', agentType);
-      console.log('Message length:', message?.length);
-      console.log('Message type:', typeof message);
-      
       if (!message || !agentType) {
-        console.log('VALIDATION FAILED - message:', message, 'agentType:', agentType);
         return res.status(400).json({ error: 'Message and agent type are required' });
       }
 
@@ -1822,14 +1812,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log(`Calling ${agentType} agent at: ${webhookUrl}`);
       
-      // Prepare context for the AI agent
+      // Prepare context for the AI agent - try multiple field names for n8n compatibility
       const contextData = {
-        userMessage: message,
+        message: message.trim(),
+        userMessage: message.trim(),
+        query: message.trim(),
+        prompt: message.trim(),
+        user_input: message.trim(),
+        text: message.trim(),
+        content: message.trim(),
         userDnaType: dominantType,
         awarenessPercentage: dnaResult?.awarenessPercentage || 0,
         userId: userId,
         agentType: agentType
       };
+
+      console.log('Sending payload to n8n:', contextData);
 
       // Call n8n webhook
       const response = await fetch(webhookUrl, {
