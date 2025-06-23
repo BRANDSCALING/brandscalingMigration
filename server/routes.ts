@@ -135,7 +135,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
     
     // Skip auth middleware for already handled routes
-    if (req.path === '/auth/user' || req.path === '/dev/create-admin') {
+    if (req.path === '/auth/user' || req.path === '/dev/create-admin' || req.path === '/ai-agents/chat') {
       return next();
     }
     
@@ -1711,9 +1711,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: 'Message and agent type are required' });
       }
 
-      // Get user's DNA result for context
-      const dnaResult = await storage.getLatestEntrepreneurialDnaQuizResponse(userId);
-      const dominantType = dnaResult?.defaultType || 'Undeclared';
+      // Get user's DNA result for context (only if authenticated)
+      let dnaResult = null;
+      let dominantType = 'Undeclared';
+      
+      if (userId !== 'anonymous-user') {
+        try {
+          dnaResult = await storage.getLatestEntrepreneurialDnaQuizResponse(userId);
+          dominantType = dnaResult?.defaultType || 'Undeclared';
+        } catch (error) {
+          console.log('Could not fetch DNA result for user:', error);
+        }
+      }
       
       // Determine webhook URL based on agent type
       const webhookUrl = agentType === 'architect' 

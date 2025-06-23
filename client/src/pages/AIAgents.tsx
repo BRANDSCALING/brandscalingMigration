@@ -49,7 +49,19 @@ export default function AIAgents() {
 
   const chatMutation = useMutation({
     mutationFn: async (data: { message: string; agentType: 'architect' | 'alchemist' }) => {
-      return apiRequest('POST', '/api/ai-agents/chat', data);
+      const response = await fetch('/api/ai-agents/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      return response.json();
     },
     onSuccess: (response) => {
       const newMessage: Message = {
