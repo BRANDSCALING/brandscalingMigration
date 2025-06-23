@@ -378,7 +378,7 @@ export default function InteractiveWorkbooks() {
               </Button>
             )}
           </div>
-        </div>
+        </BrandSection>
       </div>
     );
   }

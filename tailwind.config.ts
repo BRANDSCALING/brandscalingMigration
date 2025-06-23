@@ -11,6 +11,16 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       colors: {
+        // Brandscaling 2025 Color System
+        'architect-indigo': 'hsl(var(--architect-indigo))',
+        'founder-red': 'hsl(var(--founder-red))',
+        'deep-plum': 'hsl(var(--deep-plum))',
+        'scale-orange': 'hsl(var(--scale-orange))',
+        'precision-pink': 'hsl(var(--precision-pink))',
+        'strategic-black': 'hsl(var(--strategic-black))',
+        'pure-white': 'hsl(var(--pure-white))',
+        
+        // shadcn compatibility
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
@@ -62,6 +72,17 @@ export default {
           ring: "hsl(var(--sidebar-ring))",
         },
       },
+      fontFamily: {
+        'sans': ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+        'heading': ['Inter', 'system-ui', 'sans-serif'],
+      },
+      fontSize: {
+        'h1': ['4rem', { lineHeight: '1.1', letterSpacing: '-0.025em' }], // 64px
+        'h2': ['2.5rem', { lineHeight: '1.2', letterSpacing: '-0.025em' }], // 40px
+        'h3': ['1.875rem', { lineHeight: '1.3', letterSpacing: '-0.025em' }], // 30px
+        'body': ['1.125rem', { lineHeight: '1.6' }], // 18px
+        'body-large': ['1.25rem', { lineHeight: '1.6' }], // 20px
+      },
       keyframes: {
         "accordion-down": {
           from: {
@@ -83,6 +104,12 @@ export default {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "gradient-shift": "gradient-shift 3s ease infinite",
+      },
+      backgroundImage: {
+        'gradient-brandscaling': 'var(--brandscaling-gradient)',
+        'gradient-architect': 'var(--architect-gradient)',
+        'gradient-alchemist': 'var(--alchemist-gradient)',
       },
     },
   },
