@@ -1,56 +1,106 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
-import brandscalingLogo from "@assets/FullLogo.png";
+import { Infinity, ArrowRight } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="bg-slate-900 text-white py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="grid md:grid-cols-4 gap-8">
-          <div>
-            <div className="flex items-center space-x-2 mb-4">
-              <img 
-                src={brandscalingLogo} 
-                alt="Brandscaling" 
-                className="h-8 w-auto"
-              />
+    <footer className="bg-strategic-black text-white">
+      <div className="container-brandscaling spacing-section">
+        <div className="grid md:grid-cols-4 gap-12">
+          {/* Brand Section */}
+          <div className="md:col-span-1">
+            <div className="flex items-center space-x-3 mb-6">
+              <div className="p-2 rounded-xl gradient-brandscaling">
+                <Infinity className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <span className="text-xl font-bold gradient-brandscaling bg-clip-text text-transparent">
+                  Brandscaling
+                </span>
+                <p className="text-xs text-gray-400 font-medium">
+                  Purpose → Profit → Purpose
+                </p>
+              </div>
             </div>
-            <p className="text-slate-400">
-              {/* AWAITING REAL CONTENT */}
+            <p className="text-gray-300 text-sm leading-relaxed mb-6">
+              Transforming entrepreneurs from idea to 9-figures through the proven Infinite Scaling Methodology.
             </p>
-          </div>
-          
-          <div>
-            <h4 className="font-semibold mb-4">Learn</h4>
             <div className="space-y-2">
-              <Link href="/courses" className="block text-slate-400 hover:text-white">Courses</Link>
-              <Link href="/entrepreneurial-dna-quiz" className="block text-slate-400 hover:text-white">Assessment</Link>
-              <Link href="/community" className="block text-slate-400 hover:text-white">Community</Link>
+              <p className="text-xs text-gray-400">
+                "Every entrepreneur is either an Architect or an Alchemist."
+              </p>
+              <p className="text-xs text-scale-orange font-medium">
+                Discover your Entrepreneurial DNA today.
+              </p>
             </div>
           </div>
           
+          {/* Platform Section */}
           <div>
-            <h4 className="font-semibold mb-4">Company</h4>
-            <div className="space-y-2">
-              <Link href="/about" className="block text-slate-400 hover:text-white">About</Link>
-              <Link href="/blog" className="block text-slate-400 hover:text-white">Blog</Link>
-              <Link href="/contact" className="block text-slate-400 hover:text-white">Contact</Link>
-              <Link href="/affiliates" className="block text-slate-400 hover:text-white">Affiliates</Link>
+            <h4 className="font-bold text-white mb-6">Platform</h4>
+            <div className="space-y-3">
+              <Link href="/entrepreneurial-dna-quiz" className="block text-gray-300 hover:text-scale-orange transition-colors text-sm">
+                Entrepreneurial DNA Quiz
+              </Link>
+              <Link href="/courses" className="block text-gray-300 hover:text-scale-orange transition-colors text-sm">
+                Learning Pathways
+              </Link>
+              <Link href="/ai-agents" className="block text-gray-300 hover:text-scale-orange transition-colors text-sm">
+                AI Business Advisors
+              </Link>
+              <Link href="/workbooks" className="block text-gray-300 hover:text-scale-orange transition-colors text-sm">
+                Interactive Workbooks
+              </Link>
             </div>
           </div>
           
+          {/* Company Section */}
           <div>
-            <h4 className="font-semibold mb-4">Get Started</h4>
-            <Link href="/signup">
-              <Button className="w-full bg-primary hover:bg-blue-600">
-                {/* AWAITING REAL CONTENT */}
+            <h4 className="font-bold text-white mb-6">Company</h4>
+            <div className="space-y-3">
+              <Link href="/about" className="block text-gray-300 hover:text-scale-orange transition-colors text-sm">
+                About the Method
+              </Link>
+              <Link href="/blog" className="block text-gray-300 hover:text-scale-orange transition-colors text-sm">
+                Scaling Insights
+              </Link>
+              <Link href="/contact" className="block text-gray-300 hover:text-scale-orange transition-colors text-sm">
+                Contact
+              </Link>
+              <Link href="/community" className="block text-gray-300 hover:text-scale-orange transition-colors text-sm">
+                Community Hub
+              </Link>
+            </div>
+          </div>
+          
+          {/* Start Scaling Section */}
+          <div>
+            <h4 className="font-bold text-white mb-6">Start Scaling</h4>
+            <p className="text-gray-300 text-sm mb-4">
+              Ready to discover your Entrepreneurial DNA and begin your infinite scaling journey?
+            </p>
+            <Link href="/entrepreneurial-dna-quiz">
+              <Button className="w-full gradient-brandscaling hover:opacity-90 text-white font-medium">
+                Take DNA Quiz
+                <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </Link>
           </div>
         </div>
         
-        <div className="border-t border-slate-800 mt-8 pt-8 text-center text-slate-400">
-          <p>&copy; 2024 Brandscaling Platform. {/* AWAITING REAL CONTENT */}</p>
+        {/* Bottom Bar */}
+        <div className="border-t border-gray-800 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+          <p className="text-gray-400 text-sm">
+            &copy; 2025 Brandscaling. Scaling entrepreneurs from purpose to 9-figure profit.
+          </p>
+          <div className="flex items-center space-x-6 text-xs text-gray-400">
+            <Link href="/privacy" className="hover:text-scale-orange transition-colors">
+              Privacy Policy
+            </Link>
+            <Link href="/terms" className="hover:text-scale-orange transition-colors">
+              Terms of Service
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

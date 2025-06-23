@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Link } from 'wouter';
+import { ArrowRight, Brain, Building2, Users, TrendingUp, CheckCircle, Target, Zap } from 'lucide-react';
+import { BrandSection, PersonalityMode, BrandQuote } from '@/components/BrandSystem';
 
 export default function Landing() {
   const [email, setEmail] = useState('');
@@ -11,43 +13,83 @@ export default function Landing() {
   };
 
   return (
-    <div className="min-h-screen bg-white font-poppins text-brand-gray">
-      {/* Header */}
-      <header className="fixed top-0 w-full z-50 backdrop-blur bg-white/70 shadow-sm">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-          <Link href="/">
-            <a className="text-xl font-bold">Brandscaling</a>
-          </Link>
-          <div className="flex gap-4 items-center">
-            <button>🔍</button>
-            <button>📸</button>
-            <button>👤</button>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-white">{/* Removed old duplicate header */}
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 text-center bg-gradient-to-br from-gray-50 to-white">
-        <h1 className="text-5xl font-bold mb-6">The World's 1st AI-Powered Business Operating System</h1>
-        <p className="text-xl text-gray-600 mb-8">Discover your Entrepreneurial DNA and scale from idea to 9-figures using AI</p>
-        <div className="flex justify-center gap-4 mb-6">
-          <Button className="bg-brand-indigo text-white px-6 py-3">Discover Your DNA</Button>
-          <Button variant="outline" className="border-brand-indigo text-brand-indigo px-6 py-3">Explore Courses</Button>
+      <BrandSection className="spacing-section bg-gradient-to-br from-white via-gray-50 to-white">
+        <div className="container-brandscaling text-center">
+          <div className="max-w-4xl mx-auto">
+            <h1 className="text-h1 text-strategic-black mb-6 leading-tight">
+              The World's 1st AI-Powered Business 
+              <span className="gradient-brandscaling bg-clip-text text-transparent block">
+                Operating System
+              </span>
+            </h1>
+            <p className="text-body-large text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
+              Discover your Entrepreneurial DNA and scale from idea to 9-figures using proven methodologies and AI-powered guidance
+            </p>
+            
+            <div className="flex flex-col sm:flex-row justify-center gap-6 mb-12">
+              <Link href="/entrepreneurial-dna-quiz">
+                <Button size="lg" className="gradient-brandscaling text-white font-medium px-8 py-4 text-lg">
+                  Discover Your E-DNA
+                  <Brain className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+              <Link href="/courses">
+                <Button variant="outline" size="lg" className="border-architect-indigo text-architect-indigo hover:bg-architect-indigo hover:text-white px-8 py-4 text-lg">
+                  Explore Learning Paths
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+            </div>
+
+            <BrandQuote 
+              text="Purpose → Profit → Purpose. Every entrepreneur is either an Architect or an Alchemist. Which are you?"
+              author="The Brandscaling Method"
+            />
+          </div>
         </div>
-        <div className="animate-bounce text-gray-500">⬇</div>
-      </section>
+      </BrandSection>
 
       {/* AI Mentors Section */}
-      <section className="py-20 px-6 bg-white">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-10">
-          <Card className="bg-gradient-to-br from-indigo-100 to-purple-100">
-            <CardContent className="p-6">
-              <h3 className="text-xl font-bold text-indigo-600 mb-2">The AI Architect</h3>
-              <p className="text-gray-600">Precise • Calm • Strategic</p>
-              <ul className="mt-4 list-disc list-inside text-gray-700">
-                <li>Performance protocols & structured routines</li>
-                <li>Cognitive optimization frameworks</li>
-                <li>Purpose alignment structures</li>
+      <BrandSection className="spacing-section bg-gray-50">
+        <div className="container-brandscaling">
+          <div className="text-center mb-16">
+            <h2 className="text-h2 text-strategic-black mb-4">
+              Meet Your AI Business Advisors
+            </h2>
+            <p className="text-body text-gray-600 max-w-2xl mx-auto">
+              Two distinct AI personalities, each tailored to your Entrepreneurial DNA type, ready to guide your scaling journey.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-12">
+            <PersonalityMode type="architect">
+              <Card className="h-full border-architect-indigo/20 bg-white shadow-lg hover:shadow-xl transition-all duration-300">
+                <CardContent className="p-8">
+                  <div className="flex items-center mb-6">
+                    <div className="p-3 rounded-xl gradient-architect mr-4">
+                      <Building2 className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-architect">The AI Architect</h3>
+                      <p className="text-gray-600 font-medium">Precise • Calm • Strategic</p>
+                    </div>
+                  </div>
+                  <ul className="space-y-3 text-gray-700">
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-architect mt-0.5 mr-3 flex-shrink-0" />
+                      Performance protocols & structured routines
+                    </li>
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-architect mt-0.5 mr-3 flex-shrink-0" />
+                      Cognitive optimization frameworks
+                    </li>
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-architect mt-0.5 mr-3 flex-shrink-0" />
+                      Purpose alignment structures
+                    </li>
               </ul>
             </CardContent>
           </Card>

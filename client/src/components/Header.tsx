@@ -1,27 +1,10 @@
 import { Link } from "wouter";
-import { User, LogOut, Settings } from "lucide-react";
-import brandscalingLogo from "@assets/FullLogo.png";
+import { User, Infinity } from "lucide-react";
 import { useFirebaseAuth } from "@/hooks/useFirebaseAuth";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 export default function Header() {
   const { isAuthenticated, userProfile, logout } = useFirebaseAuth();
-
-  const handleSignOut = async () => {
-    try {
-      await logout();
-      window.location.href = '/';
-    } catch (error) {
-      console.error('Sign out error:', error);
-      window.location.href = '/';
-    }
-  };
 
   const getDashboardLink = () => {
     if (userProfile?.role === 'admin') return '/admin';
@@ -30,85 +13,76 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <div className="flex items-center">
-            <Link href="/">
-              <img 
-                src={brandscalingLogo} 
-                alt="Brandscaling" 
-                className="h-12 w-auto hover:opacity-80 transition-opacity cursor-pointer"
-              />
+    <header className="bg-white/95 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-50">
+      <div className="container-brandscaling">
+        <div className="flex justify-between items-center h-20">
+          {/* Brandscaling Logo with Infinity Symbol */}
+          <div className="flex items-center space-x-3">
+            <Link href="/" className="flex items-center space-x-3 group">
+              <div className="p-2 rounded-xl gradient-brandscaling">
+                <Infinity className="h-6 w-6 text-white" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-2xl font-bold gradient-brandscaling bg-clip-text text-transparent">
+                  Brandscaling
+                </span>
+                <span className="text-xs text-gray-500 font-medium tracking-wide">
+                  Purpose → Profit → Purpose
+                </span>
+              </div>
             </Link>
           </div>
 
           {/* Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            <Link href="/about" className="text-gray-700 hover:text-gray-900 font-medium">
+          <nav className="hidden lg:flex items-center space-x-8">
+            <Link href="/about" className="text-gray-700 hover:text-architect transition-colors font-medium">
               About
             </Link>
-            <Link href="/courses" className="text-gray-700 hover:text-gray-900 font-medium">
+            <Link href="/courses" className="text-gray-700 hover:text-architect transition-colors font-medium">
               Courses
             </Link>
-            <Link href="/ai-agents" className="text-gray-700 hover:text-gray-900 font-medium">
+            <Link href="/ai-agents" className="text-gray-700 hover:text-alchemist transition-colors font-medium">
               AI Advisors
             </Link>
-            <Link href="/workbooks" className="text-gray-700 hover:text-gray-900 font-medium">
+            <Link href="/workbooks" className="text-gray-700 hover:text-alchemist transition-colors font-medium">
               Workbooks
             </Link>
-            <Link href="/smart-business-builder" className="text-gray-700 hover:text-gray-900 font-medium">
-              Smart Business Builder
-            </Link>
-            <Link href="/community" className="text-gray-700 hover:text-gray-900 font-medium">
-              Community
-            </Link>
-            <Link href="/collab" className="text-gray-700 hover:text-gray-900 font-medium">
-              Collaboration Club
-            </Link>
-            <Link href="/contact" className="text-gray-700 hover:text-gray-900 font-medium">
-              Contact Us
-            </Link>
-            <Link href="/blog" className="text-gray-700 hover:text-gray-900 font-medium">
-              Blog
-            </Link>
-            <Link href="/entrepreneurial-dna-quiz" className="text-gray-700 hover:text-gray-900 font-medium">
-              What's Your E-DNA?
+            <Link href="/entrepreneurial-dna-quiz">
+              <Button variant="outline" className="border-architect-indigo text-architect-indigo hover:bg-architect-indigo hover:text-white">
+                Discover Your E-DNA
+              </Button>
             </Link>
           </nav>
 
-          {/* User Icon - Goes to appropriate dashboard */}
-          <div className="flex items-center">
-            <Link href={getDashboardLink()} className="p-2 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors">
-              <User className="h-6 w-6" />
+          {/* User Dashboard Access */}
+          <div className="flex items-center space-x-4">
+            <Link href={getDashboardLink()}>
+              <Button variant="ghost" size="icon" className="text-gray-700 hover:text-architect hover:bg-gray-50">
+                <User className="h-5 w-5" />
+              </Button>
             </Link>
           </div>
         </div>
 
         {/* Mobile Navigation */}
-        <div className="md:hidden border-t border-gray-200 py-4">
-          <nav className="flex flex-col space-y-4">
-            <Link href="/about" className="text-gray-700 hover:text-gray-900 font-medium">
+        <div className="lg:hidden border-t border-gray-100 py-4">
+          <nav className="flex flex-col space-y-3">
+            <Link href="/about" className="text-gray-700 hover:text-architect font-medium py-2">
               About
             </Link>
-            <Link href="/courses" className="text-gray-700 hover:text-gray-900 font-medium">
+            <Link href="/courses" className="text-gray-700 hover:text-architect font-medium py-2">
               Courses
             </Link>
-            <Link href="/ai-agents" className="text-gray-700 hover:text-gray-900 font-medium">
+            <Link href="/ai-agents" className="text-gray-700 hover:text-alchemist font-medium py-2">
               AI Advisors
             </Link>
-            <Link href="/community" className="text-gray-700 hover:text-gray-900 font-medium">
-              Community
+            <Link href="/workbooks" className="text-gray-700 hover:text-alchemist font-medium py-2">
+              Workbooks
             </Link>
-            <Link href="/contact" className="text-gray-700 hover:text-gray-900 font-medium">
-              Contact Us
-            </Link>
-            <Link href="/blog" className="text-gray-700 hover:text-gray-900 font-medium">
-              Blog
-            </Link>
-            <Link href="/entrepreneurial-dna-quiz" className="text-gray-700 hover:text-gray-900 font-medium">
-              What's Your E-DNA?
+            <Link href="/entrepreneurial-dna-quiz" className="py-2">
+              <Button variant="outline" className="w-full border-architect-indigo text-architect-indigo hover:bg-architect-indigo hover:text-white">
+                Discover Your E-DNA
+              </Button>
             </Link>
           </nav>
         </div>
