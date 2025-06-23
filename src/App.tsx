@@ -46,18 +46,24 @@ function AppRoutes() {
     );
   }
 
-  if (!user) {
-    return <SupabaseAuth />;
-  }
-
   return (
     <Switch>
-      {/* Public routes for authenticated users */}
+      {/* Public homepage - accessible to everyone */}
       <Route path="/" component={HomePage} />
+      
+      {/* Auth route */}
+      {!user && (
+        <Route path="/auth" component={SupabaseAuth} />
+      )}
+      {/* Quiz route - requires authentication */}
       <Route path="/quiz">
-        <PublicLayout>
-          <EntrepreneurialDnaQuiz />
-        </PublicLayout>
+        {user ? (
+          <PublicLayout>
+            <EntrepreneurialDnaQuiz />
+          </PublicLayout>
+        ) : (
+          <SupabaseAuth />
+        )}
       </Route>
       <Route path="/quiz-result">
         <PublicLayout>
