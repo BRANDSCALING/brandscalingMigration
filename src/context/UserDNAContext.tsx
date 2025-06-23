@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { useAuth } from './AuthContext';
-import { supabase } from '../../backend/services/supabase';
+import { supabase } from '../lib/supabase';
 
 interface DNAResult {
   id: string;
