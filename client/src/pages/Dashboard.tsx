@@ -164,6 +164,43 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
+          {/* AI Advisors */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <span className="text-purple-600">✨</span>
+                AI Business Advisors
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <p className="text-sm text-gray-600">
+                  Get personalized guidance from AI agents trained on your {dominantType} DNA
+                </p>
+                
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="p-3 border rounded-lg text-center">
+                    <div className="w-6 h-6 mx-auto mb-2 text-blue-600">🧠</div>
+                    <p className="text-sm font-medium">AI Architect</p>
+                    <p className="text-xs text-gray-600">Strategic & Systematic</p>
+                  </div>
+                  <div className="p-3 border rounded-lg text-center">
+                    <div className="w-6 h-6 mx-auto mb-2 text-red-500">💡</div>
+                    <p className="text-sm font-medium">AI Alchemist</p>
+                    <p className="text-xs text-gray-600">Intuitive & Creative</p>
+                  </div>
+                </div>
+                
+                <Button 
+                  className="w-full"
+                  onClick={() => setLocation('/ai-agents')}
+                >
+                  Chat with AI Advisors
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Quick Actions */}
           <Card>
             <CardHeader>
