@@ -47,6 +47,8 @@ export default function AIAgents() {
 
   const chatMutation = useMutation({
     mutationFn: async (data: { message: string; agentType: 'architect' | 'alchemist' }) => {
+      console.log('Sending data to AI agent:', data);
+      
       const response = await fetch('/api/ai-agents/chat', {
         method: 'POST',
         headers: {
@@ -56,10 +58,14 @@ export default function AIAgents() {
       });
       
       if (!response.ok) {
+        const errorText = await response.text();
+        console.error('AI agent error:', errorText);
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       
-      return response.json();
+      const result = await response.json();
+      console.log('AI agent response:', result);
+      return result;
     },
     onSuccess: (response) => {
       const newMessage: Message = {
@@ -70,7 +76,17 @@ export default function AIAgents() {
         agentType: activeAgent
       };
       setMessages(prev => [...prev, newMessage]);
-      // queryClient.invalidateQueries({ queryKey: ['/api/ai-conversations'] });
+    },
+    onError: (error) => {
+      console.error('Chat mutation error:', error);
+      const errorMessage: Message = {
+        id: Date.now().toString(),
+        role: 'assistant',
+        content: 'Sorry, I encountered an error. Please try again.',
+        timestamp: new Date(),
+        agentType: activeAgent
+      };
+      setMessages(prev => [...prev, errorMessage]);
     },
   });
 
@@ -110,27 +126,33 @@ export default function AIAgents() {
   // Remove authentication requirement - allow access without login
 
   const handleSendMessage = () => {
-    if (!message.trim()) return;
+    const trimmedMessage = message.trim();
+    if (!trimmedMessage) return;
+
+    console.log('Sending message:', trimmedMessage, 'to agent:', activeAgent);
 
     const userMessage: Message = {
       id: Date.now().toString(),
       role: 'user',
-      content: message,
+      content: trimmedMessage,
       timestamp: new Date(),
       agentType: activeAgent
     };
 
     setMessages(prev => [...prev, userMessage]);
+    
     chatMutation.mutate({
-      message: message,
+      message: trimmedMessage,
       agentType: activeAgent
     });
+    
     setMessage('');
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
+      console.log('Enter key pressed, current message:', message);
       handleSendMessage();
     }
   };
@@ -351,16 +373,24 @@ export default function AIAgents() {
                 <div className="flex gap-2">
                   <Input
                     value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    onKeyPress={handleKeyPress}
+                    onChange={(e) => {
+                      console.log('Input change:', e.target.value);
+                      setMessage(e.target.value);
+                    }}
+                    onKeyDown={handleKeyPress}
                     placeholder={`Ask The AI ${activeAgent.charAt(0).toUpperCase() + activeAgent.slice(1)} anything...`}
                     disabled={chatMutation.isPending}
                     className="flex-1"
+                    autoFocus
                   />
                   <Button 
-                    onClick={handleSendMessage}
+                    onClick={() => {
+                      console.log('Button clicked, current message:', message);
+                      handleSendMessage();
+                    }}
                     disabled={!message.trim() || chatMutation.isPending}
                     className={getAgentColor(activeAgent)}
+                    type="button"
                   >
                     <Send className="h-4 w-4" />
                   </Button>

@@ -1785,10 +1785,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Chat with AI agents using n8n webhooks
   app.post('/api/ai-agents/chat', async (req, res) => {
     try {
+      console.log('=== AI AGENT REQUEST DEBUG ===');
+      console.log('Raw request body:', req.body);
+      console.log('Headers:', req.headers);
+      
       const { message, agentType } = req.body;
       const userId = req.user?.uid || 'anonymous-user';
       
+      console.log('Extracted message:', message);
+      console.log('Extracted agentType:', agentType);
+      console.log('Message length:', message?.length);
+      console.log('Message type:', typeof message);
+      
       if (!message || !agentType) {
+        console.log('VALIDATION FAILED - message:', message, 'agentType:', agentType);
         return res.status(400).json({ error: 'Message and agent type are required' });
       }
 
