@@ -1702,10 +1702,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // AI Agents Integration Routes
   
   // Chat with AI agents using n8n webhooks
-  app.post('/api/ai-agents/chat', requireAuth, async (req, res) => {
+  app.post('/api/ai-agents/chat', async (req, res) => {
     try {
       const { message, agentType } = req.body;
-      const userId = req.user!.uid;
+      const userId = req.user?.uid || 'anonymous-user';
       
       if (!message || !agentType) {
         return res.status(400).json({ error: 'Message and agent type are required' });
@@ -1754,7 +1754,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (aiResponse.Message?.Message) {
         responseText = aiResponse.Message.Message;
       } else if (aiResponse.Message?.Data) {
-        responseText = JSON.parse(aiResponse.Message.Data);
+        try {
+          // Clean the data before parsing - remove control characters
+          const cleanData = aiResponse.Message.Data.replace(/[\x00-\x1F\x7F]/g, '');
+          responseText = JSON.parse(cleanData);
+        } catch (parseError) {
+          console.log('JSON parse error, using raw data:', parseError);
+          // If JSON parsing fails, use the raw data without quotes
+          responseText = aiResponse.Message.Data.replace(/^"|"$/g, '').replace(/\\n/g, '\n');
+        }
       } else if (aiResponse.response) {
         responseText = aiResponse.response;
       } else if (aiResponse.message) {
@@ -1763,13 +1771,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         responseText = 'I apologize, but I encountered an issue processing your request.';
       }
       
-      // Save conversation to database
-      await storage.saveAiConversation(
-        userId, 
-        message, 
-        responseText,
-        agentType
-      );
+      // Save conversation to database (only if user is authenticated)
+      if (req.user?.uid) {
+        try {
+          await storage.saveAiConversation(
+            userId, 
+            message, 
+            responseText,
+            agentType
+          );
+        } catch (error) {
+          console.error('Error saving conversation:', error);
+          // Don't block response if saving fails
+        }
+      }
 
       res.json({
         response: responseText,
