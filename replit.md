@@ -122,6 +122,7 @@ The Brandscaling Platform is a full-stack AI-powered business operating system t
 
 ```
 Changelog:
+- June 23, 2025. Student Dashboard now accessible via /student and /test-student routes
 - June 23, 2025. AI Agents system fully tested and working with n8n webhooks
 - June 23, 2025. Enhanced LMS Core System with DNA personalization completed
 - June 23, 2025. AI Agents system integrated with n8n webhooks
