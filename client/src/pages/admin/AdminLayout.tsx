@@ -150,7 +150,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       </div>
 
       {/* Main content */}
-      <div className="lg:ml-64">
+      <div className="flex-1 lg:ml-64">
         {/* Mobile header only */}
         <div className="lg:hidden bg-white shadow-sm border-b border-gray-200">
           <div className="flex items-center justify-between h-16 px-4">
@@ -167,7 +167,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         </div>
 
         {/* Page content */}
-        <main className="p-6 lg:pt-6">
+        <main className="min-h-screen bg-gray-50 p-0">
           {children}
         </main>
       </div>
