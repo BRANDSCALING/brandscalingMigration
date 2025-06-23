@@ -359,27 +359,27 @@ export default function AIAgents() {
               </ScrollArea>
               
               {/* Input */}
-              <div className="border-t p-4">
-                <div className="flex gap-2">
+              <div className="border-t-2 border-architect-indigo/20 p-6 bg-gray-50 dark:bg-gray-900">
+                <div className="flex gap-3">
                   <Input
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     onKeyDown={handleKeyPress}
-                    placeholder={`Ask The AI ${activeAgent.charAt(0).toUpperCase() + activeAgent.slice(1)} anything...`}
+                    placeholder={`Ask The ${activeAgent === 'architect' ? 'Architect' : 'Alchemist'} anything...`}
                     disabled={chatMutation.isPending}
-                    className="flex-1"
+                    className="flex-1 h-12 text-body border-2 border-gray-300 focus:border-architect-indigo"
                     autoFocus
                   />
                   <Button 
                     onClick={handleSendMessage}
                     disabled={!message.trim() || chatMutation.isPending}
-                    className={getAgentColor(activeAgent)}
+                    className={`h-12 px-6 ${activeAgent === 'architect' ? 'btn-architect' : 'btn-alchemist'}`}
                     type="button"
                   >
-                    <Send className="h-4 w-4" />
+                    <Send className="h-5 w-5" />
                   </Button>
                 </div>
-                <p className="text-xs text-gray-500 mt-2">
+                <p className="text-sm text-gray-500 mt-3 text-center">
                   Press Enter to send • Shift+Enter for new line
                 </p>
               </div>

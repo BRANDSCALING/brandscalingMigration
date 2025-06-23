@@ -20,6 +20,7 @@ import {
   Save,
   RefreshCw
 } from 'lucide-react';
+import { BrandSection, BrandGradientText, BrandQuote, PersonalityMode, BrandSoundBites } from '@/components/BrandSystem';
 
 interface WorkbookQuestion {
   id: string;
@@ -250,10 +251,10 @@ export default function InteractiveWorkbooks() {
     const isLastQuestion = currentQuestionIndex === selectedWorkbook.questions.length - 1;
 
     return (
-      <div className="min-h-screen bg-gray-50 py-8 px-4">
-        <div className="max-w-4xl mx-auto">
+      <div className="min-h-screen bg-pure-white dark:bg-strategic-black">
+        <BrandSection spacing="large">
           {/* Header */}
-          <div className="mb-6">
+          <div className="mb-8">
             <Button 
               variant="outline" 
               onClick={() => {
@@ -261,19 +262,21 @@ export default function InteractiveWorkbooks() {
                 setCurrentQuestionIndex(0);
                 setResponses({});
               }}
-              className="mb-4"
+              className="mb-6 border-2 border-architect-indigo text-architect hover:bg-architect-indigo hover:text-white"
             >
               ← Back to Workbooks
             </Button>
             
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">{selectedWorkbook.title}</h1>
-                <p className="text-gray-600 mt-1">{selectedWorkbook.description}</p>
+                <h1 className="text-h2 font-bold text-strategic-black dark:text-pure-white">
+                  <BrandGradientText>{selectedWorkbook.title}</BrandGradientText>
+                </h1>
+                <p className="text-body text-gray-600 dark:text-gray-300 mt-2">{selectedWorkbook.description}</p>
               </div>
-              <Badge className={getDnaColor(selectedWorkbook.dnaTrack)}>
+              <Badge className={`${getDnaColor(selectedWorkbook.dnaTrack)} px-4 py-2`}>
                 {getDnaIcon(selectedWorkbook.dnaTrack)}
-                <span className="ml-1 capitalize">{selectedWorkbook.dnaTrack}</span>
+                <span className="ml-2 capitalize font-medium">{selectedWorkbook.dnaTrack}</span>
               </Badge>
             </div>
           </div>
@@ -381,27 +384,34 @@ export default function InteractiveWorkbooks() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-pure-white dark:bg-strategic-black">
+      <BrandSection spacing="large">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Interactive Workbooks</h1>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Complete DNA-personalized workbooks to structure your business thinking and generate 
-            downloadable resources tailored to your entrepreneurial type.
+        <div className="text-center mb-12">
+          <h1 className="text-h1 font-bold mb-6 text-strategic-black dark:text-pure-white">
+            Interactive <BrandGradientText>Workbooks</BrandGradientText>
+          </h1>
+          <p className="text-body-large text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8">
+            DNA-personalized workbooks to structure your business thinking. 
+            Not templates—frameworks that generate downloadable resources tailored to your entrepreneurial type.
           </p>
+          <BrandQuote attribution="architect" centered>
+            {BrandSoundBites.alignment}
+          </BrandQuote>
         </div>
 
         {/* Upload Section */}
-        <Card className="mb-8">
+        <Card className="mb-12 border-2 border-scale-orange/20">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Upload className="h-5 w-5" />
+            <CardTitle className="flex items-center gap-3 text-alchemist">
+              <div className="w-10 h-10 bg-scale-orange rounded-lg flex items-center justify-center">
+                <Upload className="h-5 w-5 text-white" />
+              </div>
               Upload Your Own Workbook
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+            <div className="border-2 border-dashed border-scale-orange/40 rounded-lg p-8 text-center bg-gradient-to-r from-scale-orange/5 to-precision-pink/5">
               <input
                 ref={fileInputRef}
                 type="file"
@@ -410,11 +420,16 @@ export default function InteractiveWorkbooks() {
                 onChange={handleFileUpload}
                 className="hidden"
               />
-              <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600 mb-4">
+              <div className="w-16 h-16 bg-scale-orange/20 rounded-lg flex items-center justify-center mx-auto mb-6">
+                <FileText className="h-8 w-8 text-scale-orange" />
+              </div>
+              <p className="text-body text-gray-600 dark:text-gray-300 mb-6">
                 Upload PDF or DOCX files to convert into interactive workbooks
               </p>
-              <Button onClick={() => fileInputRef.current?.click()}>
+              <Button 
+                onClick={() => fileInputRef.current?.click()}
+                className="btn-alchemist px-8 py-3"
+              >
                 Choose Files
               </Button>
             </div>
