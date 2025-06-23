@@ -42,10 +42,8 @@ export default function AIAgents() {
     enabled: !!user,
   });
 
-  const { data: conversationHistory } = useQuery({
-    queryKey: ['/api/ai-conversations', activeAgent],
-    enabled: !!user,
-  });
+  // Disable conversation history for now due to auth issues
+  const conversationHistory = null;
 
   const chatMutation = useMutation({
     mutationFn: async (data: { message: string; agentType: 'architect' | 'alchemist' }) => {
@@ -72,15 +70,16 @@ export default function AIAgents() {
         agentType: activeAgent
       };
       setMessages(prev => [...prev, newMessage]);
-      queryClient.invalidateQueries({ queryKey: ['/api/ai-conversations'] });
+      // queryClient.invalidateQueries({ queryKey: ['/api/ai-conversations'] });
     },
   });
 
-  useEffect(() => {
-    if (!authLoading && !user) {
-      setLocation('/');
-    }
-  }, [user, authLoading, setLocation]);
+  // Remove authentication requirement for AI agents
+  // useEffect(() => {
+  //   if (!authLoading && !user) {
+  //     setLocation('/');
+  //   }
+  // }, [user, authLoading, setLocation]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -108,16 +107,7 @@ export default function AIAgents() {
     }
   }, [userDnaResult]);
 
-  if (authLoading || !user) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-lg">Loading AI agents...</p>
-        </div>
-      </div>
-    );
-  }
+  // Remove authentication requirement - allow access without login
 
   const handleSendMessage = () => {
     if (!message.trim()) return;
@@ -145,7 +135,7 @@ export default function AIAgents() {
     }
   };
 
-  const dominantType = userDnaResult?.userDnaResult?.dominantType || 'Undeclared';
+  const dominantType = userDnaResult?.userDnaResult?.dominantType || 'Architect';
 
   const getAgentColor = (type: 'architect' | 'alchemist') => {
     return type === 'architect' ? 'bg-blue-600' : 'bg-red-500';
