@@ -144,6 +144,67 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Student login endpoint
+  app.post('/api/auth/student-login', async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      
+      // For development: allow any email/password combination for students
+      if (password.length >= 6) {
+        const studentUser = {
+          id: `student-${Date.now()}`,
+          email: email,
+          firstName: "Student",
+          lastName: "User",
+          role: "student",
+          accessTier: "beginner",
+          profileImageUrl: null,
+          stripeCustomerId: null,
+          stripeSubscriptionId: null,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        };
+        
+        res.json({ user: studentUser, message: "Student login successful" });
+      } else {
+        res.status(401).json({ message: "Password must be at least 6 characters" });
+      }
+    } catch (error) {
+      console.error("Error in student login:", error);
+      res.status(500).json({ message: "Student login failed" });
+    }
+  });
+
+  // Student signup endpoint
+  app.post('/api/auth/student-signup', async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      
+      if (password.length < 6) {
+        return res.status(400).json({ message: "Password must be at least 6 characters" });
+      }
+      
+      const studentUser = {
+        id: `student-${Date.now()}`,
+        email: email,
+        firstName: "Student",
+        lastName: "User",
+        role: "student",
+        accessTier: "beginner",
+        profileImageUrl: null,
+        stripeCustomerId: null,
+        stripeSubscriptionId: null,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      
+      res.json({ user: studentUser, message: "Student account created successfully" });
+    } catch (error) {
+      console.error("Error in student signup:", error);
+      res.status(500).json({ message: "Student signup failed" });
+    }
+  });
+
   // Development authentication bypass for /api/auth/user endpoint
   app.get('/api/auth/user', async (req, res) => {
     try {
@@ -165,6 +226,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
         };
         
         return res.json(devUser);
+      }
+      
+      // Check for student session
+      const studentId = req.headers['x-student-id'];
+      const studentEmail = req.headers['x-student-email'];
+      if (studentId && studentEmail) {
+        const studentUser = {
+          id: studentId,
+          email: studentEmail,
+          firstName: "Student",
+          lastName: "User",
+          role: "student",
+          accessTier: "beginner",
+          profileImageUrl: null,
+          stripeCustomerId: null,
+          stripeSubscriptionId: null,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        };
+        
+        return res.json(studentUser);
       }
       
       // No authenticated user

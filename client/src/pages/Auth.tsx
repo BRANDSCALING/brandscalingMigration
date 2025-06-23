@@ -55,21 +55,33 @@ export default function Auth() {
     }
 
     try {
-      const user = await signIn(signInEmail, signInPassword);
-      if (user && user.role === 'admin') {
-        toast({
-          title: "Admin Access Required",
-          description: "Redirecting to admin login portal...",
-        });
-        logout();
-        setLocation('/admin-login');
-        return;
+      // Use direct student login API
+      const response = await fetch('/api/auth/student-login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: signInEmail, password: signInPassword }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Invalid credentials');
       }
+
+      const data = await response.json();
+      
+      // Store student session
+      localStorage.setItem('studentId', data.user.id);
+      localStorage.setItem('studentEmail', data.user.email);
       
       toast({
         title: "Welcome Back!",
         description: "Logged into your student dashboard."
       });
+      
+      // Redirect to student dashboard
+      setLocation('/student');
     } catch (error: any) {
       toast({
         title: "Login Failed",
@@ -110,11 +122,33 @@ export default function Auth() {
     }
 
     try {
-      await signUp(signUpEmail, signUpPassword);
+      // Use direct student signup API
+      const response = await fetch('/api/auth/student-signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: signUpEmail, password: signUpPassword }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Signup failed');
+      }
+
+      const data = await response.json();
+      
+      // Store student session
+      localStorage.setItem('studentId', data.user.id);
+      localStorage.setItem('studentEmail', data.user.email);
+      
       toast({
         title: "Student Account Created!",
         description: "Welcome to Brandscaling. Redirecting to your dashboard..."
       });
+      
+      // Redirect to student dashboard
+      setLocation('/student');
     } catch (error: any) {
       toast({
         title: "Registration Failed",
