@@ -13,12 +13,37 @@
    - **Role**: admin
    - **Access Level**: mastermind (full access)
    - **Status**: Active
+   - **Password**: [Encrypted - not accessible]
 
 2. **Developer Admin**
    - **Email**: info@brandscaling.co.uk
    - **Role**: admin
    - **Access Level**: mastermind
    - **Status**: Active
+   - **Password**: [Encrypted - not accessible]
+
+3. **Development Admin**
+   - **Email**: farizajaved@yahoo.co.uk
+   - **Role**: admin
+   - **Access Level**: mastermind
+   - **Status**: Active
+   - **Password**: [Encrypted - not accessible]
+
+## WORKING ADMIN CREDENTIALS
+
+**For Immediate Access:**
+- **Email**: `admin@brandscaling.com`  
+- **Password**: `brandscaling2025`
+- **Portal**: `/admin-login`
+- **Role**: admin (full access)
+
+## Password Reset Instructions
+
+If you need to reset passwords for other admin accounts:
+
+1. Use the Firebase console or admin SDK
+2. Or create new admin accounts through the admin dashboard once logged in
+3. All admin accounts have mastermind-level access
 
 ### Authentication Flow
 
