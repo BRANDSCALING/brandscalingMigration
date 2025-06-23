@@ -66,11 +66,26 @@ interface DashboardData {
 }
 
 export default function StudentDashboard() {
-  const { userProfile } = useFirebaseAuth();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [, setLocation] = useLocation();
+  
+  useEffect(() => {
+    // Check for student authentication
+    const studentId = localStorage.getItem('studentId');
+    const studentEmail = localStorage.getItem('studentEmail');
+    
+    if (studentId && studentEmail) {
+      setIsAuthenticated(true);
+    } else {
+      setLocation('/auth');
+    }
+    setLoading(false);
+  }, [setLocation]);
   
   const { data: dashboardData, isLoading, error } = useQuery<DashboardData>({
     queryKey: ['/api/student/dashboard'],
-    enabled: !!userProfile,
+    enabled: isAuthenticated,
     retry: false
   });
 
@@ -97,7 +112,22 @@ export default function StudentDashboard() {
     );
   }
 
-  if (isLoading || !dashboardData) {
+  if (loading || isLoading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-scale-orange mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading your personalized dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return null;
+  }
+
+  if (!dashboardData) {
     return (
       <div className="min-h-screen bg-gray-50 p-6">
         <div className="max-w-7xl mx-auto">

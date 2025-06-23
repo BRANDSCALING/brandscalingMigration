@@ -56,14 +56,17 @@ export const getQueryFn: <T>(options: {
   async ({ queryKey }) => {
     const headers: Record<string, string> = {};
 
-    // Add Firebase auth token if user is logged in
-    if (auth.currentUser) {
-      try {
-        // Force refresh to get a fresh token
-        const token = await auth.currentUser.getIdToken(true);
-        headers.Authorization = `Bearer ${token}`;
-      } catch (error) {
-        console.warn('Failed to get auth token:', error);
+    // Check for admin session first
+    const adminId = localStorage.getItem('adminId');
+    if (adminId) {
+      headers['x-admin-id'] = 'admin-dev-12345';
+    } else {
+      // Check for student session
+      const studentId = localStorage.getItem('studentId');
+      const studentEmail = localStorage.getItem('studentEmail');
+      if (studentId && studentEmail) {
+        headers['x-student-id'] = studentId;
+        headers['x-student-email'] = studentEmail;
       }
     }
 
