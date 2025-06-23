@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -68,10 +68,34 @@ interface DashboardData {
 export default function StudentDashboard() {
   const { userProfile } = useFirebaseAuth();
   
-  const { data: dashboardData, isLoading } = useQuery<DashboardData>({
+  const { data: dashboardData, isLoading, error } = useQuery<DashboardData>({
     queryKey: ['/api/student/dashboard'],
-    enabled: !!userProfile
+    enabled: !!userProfile,
+    retry: false
   });
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 p-6">
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+            <h2 className="text-xl font-semibold text-red-800 mb-2">Access Issue</h2>
+            <p className="text-red-600 mb-4">
+              Unable to load student dashboard. You may need to authenticate first.
+            </p>
+            <div className="space-x-4">
+              <Button asChild>
+                <a href="/auth">Sign In</a>
+              </Button>
+              <Button variant="outline" asChild>
+                <a href="/test-student">Test Dashboard</a>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading || !dashboardData) {
     return (

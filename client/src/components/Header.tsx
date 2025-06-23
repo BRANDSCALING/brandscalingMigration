@@ -75,9 +75,9 @@ export default function Header() {
             </Link>
           </nav>
 
-          {/* User Icon - Always goes to Auth */}
+          {/* User Icon - Goes to appropriate dashboard */}
           <div className="flex items-center">
-            <Link href="/auth" className="p-2 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors">
+            <Link href={getDashboardLink()} className="p-2 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors">
               <User className="h-6 w-6" />
             </Link>
           </div>
