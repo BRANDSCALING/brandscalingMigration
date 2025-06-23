@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Navigation } from '../components/Navigation';
+import { Navigation } from '../components/common/Navigation';
 import { Button } from '../components/ui/button';
 
 interface DashboardLayoutProps {
