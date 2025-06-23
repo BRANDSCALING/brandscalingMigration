@@ -37,6 +37,14 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  // Initialize LMS data
+  try {
+    const { seedLMSData } = await import("./seedData");
+    await seedLMSData();
+  } catch (error) {
+    console.log("LMS seeding skipped:", error.message);
+  }
+
   const server = await registerRoutes(app);
 
   // Setup Vite or static serving AFTER API routes

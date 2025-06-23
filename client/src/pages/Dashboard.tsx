@@ -49,6 +49,9 @@ export default function Dashboard() {
   const dominantType = dnaResult?.dominantType || 'Undeclared';
   const architectPercentage = dnaResult?.architect || 0;
   const alchemistPercentage = dnaResult?.alchemist || 0;
+  const coursesWithProgress = dashboardData?.coursesWithProgress || [];
+  const recommendedCourses = dashboardData?.recommendedCourses || [];
+  const inProgressCourses = dashboardData?.inProgressCourses || [];
 
   const getDnaColor = (type: string) => {
     switch (type) {
