@@ -275,25 +275,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Unauthorized" });
       }
       
-      // For admin users, return simplified dashboard data
-      const user = await getUserProfile(userId) || {
-        id: userId,
-        email: req.user?.email || 'admin@brandscaling.com',
-        role: req.user?.role || 'admin',
-        accessTier: 'mastermind',
-        firstName: 'Admin',
-        lastName: 'User'
-      };
-      
-      // Return basic dashboard structure
-      res.json({
-        userDnaResult: null,
-        recommendedCourses: [],
-        recentProgress: [],
-        nextLessons: [],
-        communityActivity: [],
-        userTier: user.accessTier || 'mastermind'
-      });
+      // Get personalized dashboard data
+      const dashboardData = await storage.getPersonalizedDashboard(userId);
+      res.json(dashboardData);
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
       res.status(500).json({ message: "Failed to fetch dashboard data" });
