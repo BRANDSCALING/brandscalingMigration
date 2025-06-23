@@ -398,6 +398,106 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ===== ADMIN COURSE MANAGEMENT API ENDPOINTS =====
+  
+  // Get all courses (admin only)
+  app.get("/api/admin/courses", requireRole('admin'), async (req, res) => {
+    try {
+      const courses = await storage.getAllCourses();
+      res.json(courses);
+    } catch (error) {
+      console.error('Error fetching courses:', error);
+      res.status(500).json({ error: 'Failed to fetch courses' });
+    }
+  });
+
+  // Create new course (admin only)
+  app.post("/api/admin/courses", requireRole('admin'), async (req, res) => {
+    try {
+      const courseData = req.body;
+      const newCourse = await storage.createCourse(courseData);
+      res.json(newCourse);
+    } catch (error) {
+      console.error('Error creating course:', error);
+      res.status(500).json({ error: 'Failed to create course' });
+    }
+  });
+
+  // Update course (admin only)
+  app.put("/api/admin/courses/:id", requireRole('admin'), async (req, res) => {
+    try {
+      const courseId = parseInt(req.params.id);
+      const updateData = req.body;
+      const updatedCourse = await storage.updateCourse(courseId, updateData);
+      res.json(updatedCourse);
+    } catch (error) {
+      console.error('Error updating course:', error);
+      res.status(500).json({ error: 'Failed to update course' });
+    }
+  });
+
+  // Delete course (admin only)
+  app.delete("/api/admin/courses/:id", requireRole('admin'), async (req, res) => {
+    try {
+      const courseId = parseInt(req.params.id);
+      await storage.deleteCourse(courseId);
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Error deleting course:', error);
+      res.status(500).json({ error: 'Failed to delete course' });
+    }
+  });
+
+  // Get lessons for a course (admin only)
+  app.get("/api/admin/courses/:id/lessons", requireRole('admin'), async (req, res) => {
+    try {
+      const courseId = parseInt(req.params.id);
+      const lessons = await storage.getCourseLessons(courseId);
+      res.json(lessons);
+    } catch (error) {
+      console.error('Error fetching lessons:', error);
+      res.status(500).json({ error: 'Failed to fetch lessons' });
+    }
+  });
+
+  // Create lesson for a course (admin only)
+  app.post("/api/admin/courses/:id/lessons", requireRole('admin'), async (req, res) => {
+    try {
+      const courseId = parseInt(req.params.id);
+      const lessonData = { ...req.body, courseId };
+      const newLesson = await storage.createLesson(lessonData);
+      res.json(newLesson);
+    } catch (error) {
+      console.error('Error creating lesson:', error);
+      res.status(500).json({ error: 'Failed to create lesson' });
+    }
+  });
+
+  // Update lesson (admin only)
+  app.put("/api/admin/lessons/:id", requireRole('admin'), async (req, res) => {
+    try {
+      const lessonId = parseInt(req.params.id);
+      const updateData = req.body;
+      const updatedLesson = await storage.updateLesson(lessonId, updateData);
+      res.json(updatedLesson);
+    } catch (error) {
+      console.error('Error updating lesson:', error);
+      res.status(500).json({ error: 'Failed to update lesson' });
+    }
+  });
+
+  // Delete lesson (admin only)
+  app.delete("/api/admin/lessons/:id", requireRole('admin'), async (req, res) => {
+    try {
+      const lessonId = parseInt(req.params.id);
+      await storage.deleteLesson(lessonId);
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Error deleting lesson:', error);
+      res.status(500).json({ error: 'Failed to delete lesson' });
+    }
+  });
+
   // Firebase Auth routes
   app.post('/api/auth/signup', async (req, res) => {
     try {
