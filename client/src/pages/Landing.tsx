@@ -99,7 +99,7 @@ export default function Landing() {
         <div className="grid md:grid-cols-2 gap-6 max-w-6xl mx-auto mb-8">
           {[
             {title: 'Idea-Stuck Dreamer', desc: 'Ideas in your head, but nowhere in motion.'},
-            {title: 'Framework-Frustrated', desc: 'Proven methods didn't match your DNA.'},
+            {title: 'Framework-Frustrated', desc: 'Proven methods didn\'t match your DNA.'},
             {title: 'Mastermind Graduate', desc: 'Outgrew peers and rooms.'},
             {title: 'Successful-but-Stuck', desc: 'Profitable but unsure of next move.'},
           ].map((card, i) => (
@@ -177,16 +177,6 @@ export default function Landing() {
       </footer>
     </div>
   );
-
-        {/* Brand Philosophy Section */}
-        <section className="px-6 py-16 max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold mb-6 text-center">Why Scaling Should Start With Personality, Not Process.</h2>
-          <p className="text-lg text-gray-600 max-w-4xl mx-auto text-center leading-relaxed">
-            You've followed frameworks, joined programs, hired experts. But they weren't built for how you actually think. 
-            Brandscaling flips the model. We teach through your operating system — Architect or Alchemist — then map systems, 
-            automation, and team structures around it.
-          </p>
-        </section>
 
         {/* Avatar Identification Section */}
         <section className="px-6 py-16 max-w-6xl mx-auto">
@@ -375,7 +365,6 @@ export default function Landing() {
             </Button>
           </div>
         </section>
-      </main>
     </div>
   );
 }
