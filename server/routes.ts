@@ -1749,16 +1749,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const aiResponse = await response.json();
       console.log('AI agent response:', aiResponse);
       
+      // Extract the actual response text from different possible structures
+      let responseText = '';
+      if (aiResponse.Message?.Message) {
+        responseText = aiResponse.Message.Message;
+      } else if (aiResponse.Message?.Data) {
+        responseText = JSON.parse(aiResponse.Message.Data);
+      } else if (aiResponse.response) {
+        responseText = aiResponse.response;
+      } else if (aiResponse.message) {
+        responseText = aiResponse.message;
+      } else {
+        responseText = 'I apologize, but I encountered an issue processing your request.';
+      }
+      
       // Save conversation to database
       await storage.saveAiConversation(
         userId, 
         message, 
-        aiResponse.response || aiResponse.message || 'I apologize, but I encountered an issue processing your request.',
+        responseText,
         agentType
       );
 
       res.json({
-        response: aiResponse.response || aiResponse.message || 'I apologize, but I encountered an issue processing your request.',
+        response: responseText,
         agentType: agentType,
         timestamp: new Date().toISOString()
       });
