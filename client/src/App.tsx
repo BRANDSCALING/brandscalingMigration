@@ -26,6 +26,7 @@ import Dashboard from "@/pages/Dashboard";
 import LessonView from "@/pages/LessonView";
 import AICoach from "@/pages/AICoach";
 import SmartBusinessBuilder from "@/pages/SmartBusinessBuilder";
+import AIAgents from "@/pages/AIAgents";
 
 // Sandboxed Modules
 import StudentDashboard from "@/pages/student/StudentDashboard";
@@ -89,6 +90,14 @@ function Router() {
         component={() => (
           <Layout>
             <CoursesPage />
+          </Layout>
+        )}
+      />
+      <Route
+        path="/ai-agents"
+        component={() => (
+          <Layout>
+            <AIAgents />
           </Layout>
         )}
       />

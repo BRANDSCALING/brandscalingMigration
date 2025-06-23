@@ -1699,6 +1699,98 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // AI Agents Integration Routes
+  
+  // Chat with AI agents using n8n webhooks
+  app.post('/api/ai-agents/chat', requireAuth, async (req, res) => {
+    try {
+      const { message, agentType } = req.body;
+      const userId = req.user!.uid;
+      
+      if (!message || !agentType) {
+        return res.status(400).json({ error: 'Message and agent type are required' });
+      }
+
+      // Get user's DNA result for context
+      const dnaResult = await storage.getLatestEntrepreneurialDnaQuizResponse(userId);
+      const dominantType = dnaResult?.defaultType || 'Undeclared';
+      
+      // Determine webhook URL based on agent type
+      const webhookUrl = agentType === 'architect' 
+        ? 'https://brandscaling.app.n8n.cloud/webhook/architect-agent'
+        : 'https://brandscaling.app.n8n.cloud/webhook/alchemist-agent';
+      
+      console.log(`Calling ${agentType} agent at: ${webhookUrl}`);
+      
+      // Prepare context for the AI agent
+      const contextData = {
+        userMessage: message,
+        userDnaType: dominantType,
+        awarenessPercentage: dnaResult?.awarenessPercentage || 0,
+        userId: userId,
+        agentType: agentType
+      };
+
+      // Call n8n webhook
+      const response = await fetch(webhookUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(contextData)
+      });
+
+      console.log(`AI agent response status: ${response.status}`);
+
+      if (!response.ok) {
+        throw new Error(`AI agent responded with status: ${response.status}`);
+      }
+
+      const aiResponse = await response.json();
+      console.log('AI agent response:', aiResponse);
+      
+      // Save conversation to database
+      await storage.saveAiConversation(
+        userId, 
+        message, 
+        aiResponse.response || aiResponse.message || 'I apologize, but I encountered an issue processing your request.',
+        agentType
+      );
+
+      res.json({
+        response: aiResponse.response || aiResponse.message || 'I apologize, but I encountered an issue processing your request.',
+        agentType: agentType,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Error communicating with AI agent:', error);
+      res.status(500).json({ 
+        error: 'Failed to communicate with AI agent',
+        response: 'I apologize, but I\'m temporarily unavailable. Please try again in a moment.'
+      });
+    }
+  });
+
+  // Get AI conversation history
+  app.get('/api/ai-conversations/:agentType?', requireAuth, async (req, res) => {
+    try {
+      const userId = req.user!.uid;
+      const agentType = req.params.agentType;
+      
+      const conversations = await storage.getAiConversationsByUser(userId);
+      
+      // Filter by agent type if specified
+      const filteredConversations = agentType 
+        ? conversations.filter((conv: any) => conv.dnaType === agentType)
+        : conversations;
+      
+      res.json(filteredConversations);
+    } catch (error) {
+      console.error('Error fetching AI conversations:', error);
+      res.status(500).json({ error: 'Failed to fetch conversation history' });
+    }
+  });
+
   // AI Assistant endpoint for LMS
   app.post("/api/lms/ai-assistant", requireAuth, async (req: any, res) => {
     try {
