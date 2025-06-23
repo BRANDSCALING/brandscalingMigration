@@ -80,6 +80,11 @@ export interface IStorage {
   getLessonProgress(userId: string, courseId: number, lessonId: number): Promise<{ completed: boolean; viewMode?: string }>;
   getUserProgress(userId: string): Promise<any[]>;
   getCourseProgress(userId: string, courseId: number): Promise<{ progress: number; completedLessons: number; totalLessons: number }>;
+  
+  // Student dashboard specific methods
+  getUserPayments(userId: string): Promise<any[]>;
+  getUserCourses(userId: string, accessTier: string): Promise<any[]>;
+  getAnnouncements(limit?: number): Promise<any[]>;
   getPersonalizedDashboard(userId: string): Promise<any>;
   
   // AI conversation methods
@@ -350,6 +355,27 @@ export class DatabaseStorage implements IStorage {
     const progress = Math.round((completedLessons / totalLessons) * 100);
     
     return { progress, completedLessons, totalLessons };
+  }
+
+  // Student dashboard methods
+  async getUserPayments(userId: string): Promise<any[]> {
+    // For now, return empty array - will be populated when payment system is integrated
+    return [];
+  }
+
+  async getUserCourses(userId: string, accessTier: string): Promise<any[]> {
+    const allCourses = await db
+      .select()
+      .from(courses)
+      .where(eq(courses.isPublished, true))
+      .orderBy(asc(courses.id));
+
+    return allCourses.filter(course => this.checkTierAccess(accessTier, course.requiredTier));
+  }
+
+  async getAnnouncements(limit: number = 5): Promise<any[]> {
+    // For now, return empty array - will be populated when announcement system is integrated
+    return [];
   }
 
   private checkTierAccess(userTier: string, requiredTier: string): boolean {

@@ -27,8 +27,6 @@ import LessonView from "@/pages/LessonView";
 import AICoach from "@/pages/AICoach";
 import SmartBusinessBuilder from "@/pages/SmartBusinessBuilder";
 import AIAgents from "@/pages/AIAgents";
-
-// Sandboxed Modules
 import StudentDashboard from "@/pages/student/StudentDashboard";
 import StudentCourses from "@/pages/student/StudentCourses";
 import StudentWorkbooks from "@/pages/student/StudentWorkbooks";
@@ -128,6 +126,16 @@ function Router() {
       <Route path="/auth" component={Auth} />
       <Route path="/login" component={Auth} />
       <Route path="/dev-login" component={DevLogin} />
+
+      {/* Student Route */}
+      <Route
+        path="/student"
+        component={() => (
+          <Layout>
+            <StudentDashboard />
+          </Layout>
+        )}
+      />
 
       {/* Admin Routes */}
       <Route
