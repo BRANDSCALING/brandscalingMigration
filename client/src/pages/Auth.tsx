@@ -163,272 +163,216 @@ export default function Auth() {
     }
   };
 
-  // If user is already logged in, show options
+  // Check if user is already authenticated and redirect
+  useEffect(() => {
+    if (userProfile) {
+      if (userProfile.role === 'admin') {
+        toast({
+          title: "Admin Access",
+          description: "Please use the admin login portal.",
+          variant: "destructive",
+        });
+        logout();
+        setLocation('/admin-login');
+      } else {
+        setLocation('/student');
+        toast({
+          title: "Welcome back!",
+          description: "You've been logged into your student dashboard.",
+        });
+      }
+    }
+  }, [userProfile, setLocation, toast, logout]);
+
+  // If user is already logged in, show loading
   if (userProfile) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        {/* Header with Back Navigation */}
-        <header className="bg-white shadow-sm sticky top-0 z-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-16">
-              {/* Back to Website */}
-              <Link href="/" className="flex items-center space-x-2 text-gray-600 hover:text-gray-900">
-                <ArrowLeft className="h-4 w-4" />
-                <span>Back to Website</span>
-              </Link>
-              
-              {/* Logo */}
-              <Link href="/" className="text-2xl font-bold gradient-brandscaling bg-clip-text text-transparent">
-                Brandscaling
-              </Link>
-              
-              {/* Spacer */}
-              <div className="w-24"></div>
-            </div>
-          </div>
-        </header>
-        
-        {/* Main Content */}
-        <div className="flex items-center justify-center px-4 py-12">
-          <Card className="w-full max-w-md">
-            <CardHeader className="text-center">
-              <CardTitle className="text-2xl font-bold">Already Signed In</CardTitle>
-              <CardDescription>
-                You are currently signed in as: {userProfile.email}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Button 
-                onClick={() => {
-                  if (userProfile.role === 'admin') {
-                    setLocation('/admin');
-                  } else {
-                    setLocation('/student');
-                  }
-                }}
-                className="w-full"
-              >
-                Continue to Dashboard
-              </Button>
-              
-              <Button 
-                onClick={handleLogout}
-                variant="outline"
-                className="w-full"
-              >
-                Sign Out & Login as Different User
-              </Button>
-            </CardContent>
-          </Card>
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-scale-orange mx-auto mb-4"></div>
+          <p className="text-gray-600">Redirecting to your dashboard...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header with Back Navigation */}
-      <header className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            {/* Back to Website */}
-            <Link href="/" className="flex items-center space-x-2 text-gray-600 hover:text-gray-900">
-              <ArrowLeft className="h-4 w-4" />
-              <span>Back to Website</span>
-            </Link>
-            
-            {/* Logo */}
-            <Link href="/">
-              <img 
-                src={brandscalingLogo} 
-                alt="Brandscaling" 
-                className="h-12 w-auto hover:opacity-80 transition-opacity cursor-pointer"
-              />
-            </Link>
-            
-            {/* Spacer */}
-            <div className="w-24"></div>
-          </div>
-        </div>
-      </header>
-      
-      {/* Main Content */}
-      <div className="flex items-center justify-center px-4 py-12">
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold">Welcome to Brandscaling</CardTitle>
-            <CardDescription>
-              Sign in to your account or create a new one to get started
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Tabs defaultValue="signin" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="signin">Sign In</TabsTrigger>
-                <TabsTrigger value="signup">Sign Up</TabsTrigger>
-              </TabsList>
-              
-              {/* Sign In Tab */}
-              <TabsContent value="signin">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        {/* Back to main site */}
+        <Link href="/" className="flex items-center text-gray-600 hover:text-gray-900 transition-colors">
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back to Brandscaling
+        </Link>
+
+        <BrandSection>
+          <Card className="border-scale-orange/20">
+            <CardHeader className="text-center">
+              <div className="mx-auto mb-4 p-3 rounded-xl gradient-alchemist w-fit">
+                <GraduationCap className="h-8 w-8 text-white" />
+              </div>
+              <CardTitle className="text-2xl font-bold text-strategic-black">
+                Student Portal
+              </CardTitle>
+              <CardDescription className="text-gray-600">
+                Access your personalized learning journey
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Tabs defaultValue="signin" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="signin">Sign In</TabsTrigger>
+                  <TabsTrigger value="signup">Join Platform</TabsTrigger>
+                </TabsList>
+
+              <TabsContent value="signin" className="space-y-6">
                 <form onSubmit={handleSignIn} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="signin-email">Email</Label>
+                  <div>
+                    <Label htmlFor="signin-email" className="text-strategic-black font-medium">
+                      Email Address
+                    </Label>
                     <Input
                       id="signin-email"
                       type="email"
-                      placeholder=""
                       value={signInEmail}
                       onChange={(e) => setSignInEmail(e.target.value)}
+                      placeholder="your.email@example.com"
+                      className="mt-1"
                       required
                     />
                   </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="signin-password">Password</Label>
-                    <div className="relative">
+                  <div>
+                    <Label htmlFor="signin-password" className="text-strategic-black font-medium">
+                      Password
+                    </Label>
+                    <div className="relative mt-1">
                       <Input
                         id="signin-password"
                         type={showPassword ? "text" : "password"}
-                        placeholder=""
                         value={signInPassword}
                         onChange={(e) => setSignInPassword(e.target.value)}
+                        placeholder="Enter your password"
+                        className="pr-10"
                         required
                       />
-                      <Button
+                      <button
                         type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center"
                         onClick={() => setShowPassword(!showPassword)}
                       >
                         {showPassword ? (
-                          <EyeOff className="h-4 w-4" />
+                          <EyeOff className="h-4 w-4 text-gray-400" />
                         ) : (
-                          <Eye className="h-4 w-4" />
+                          <Eye className="h-4 w-4 text-gray-400" />
                         )}
-                      </Button>
+                      </button>
                     </div>
                   </div>
-
-                  <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? "Signing in..." : "Sign In"}
+                  <Button type="submit" className="w-full btn-alchemist" disabled={loading}>
+                    {loading ? 'Signing in...' : 'Access Learning Dashboard'}
                   </Button>
-
-                  <div className="text-center">
-                    <Button variant="link" className="text-sm">
-                      Forgot your password?
-                    </Button>
-                  </div>
                 </form>
               </TabsContent>
-              
-              {/* Sign Up Tab */}
-              <TabsContent value="signup">
+
+              <TabsContent value="signup" className="space-y-6">
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                  <div className="flex items-start">
+                    <UserPlus className="h-5 w-5 text-blue-600 mt-0.5 mr-3 flex-shrink-0" />
+                    <div>
+                      <h4 className="text-sm font-medium text-blue-900">
+                        Student Registration
+                      </h4>
+                      <p className="text-xs text-blue-700 mt-1">
+                        Create your account to access personalized learning paths based on your Entrepreneurial DNA.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
                 <form onSubmit={handleSignUp} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-email">Email</Label>
+                  <div>
+                    <Label htmlFor="signup-email" className="text-strategic-black font-medium">
+                      Email Address
+                    </Label>
                     <Input
                       id="signup-email"
                       type="email"
-                      placeholder=""
                       value={signUpEmail}
                       onChange={(e) => setSignUpEmail(e.target.value)}
+                      placeholder="your.email@example.com"
+                      className="mt-1"
                       required
                     />
                   </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-password">Password</Label>
-                    <div className="relative">
+                  <div>
+                    <Label htmlFor="signup-password" className="text-strategic-black font-medium">
+                      Create Password
+                    </Label>
+                    <div className="relative mt-1">
                       <Input
                         id="signup-password"
                         type={showPassword ? "text" : "password"}
-                        placeholder=""
                         value={signUpPassword}
                         onChange={(e) => setSignUpPassword(e.target.value)}
+                        placeholder="Create a secure password"
+                        className="pr-10"
                         required
                       />
-                      <Button
+                      <button
                         type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center"
                         onClick={() => setShowPassword(!showPassword)}
                       >
                         {showPassword ? (
-                          <EyeOff className="h-4 w-4" />
+                          <EyeOff className="h-4 w-4 text-gray-400" />
                         ) : (
-                          <Eye className="h-4 w-4" />
+                          <Eye className="h-4 w-4 text-gray-400" />
                         )}
-                      </Button>
+                      </button>
                     </div>
                   </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="confirm-password">Confirm Password</Label>
+                  <div>
+                    <Label htmlFor="confirm-password" className="text-strategic-black font-medium">
+                      Confirm Password
+                    </Label>
                     <Input
                       id="confirm-password"
-                      type={showPassword ? "text" : "password"}
-                      placeholder=""
+                      type="password"
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
+                      placeholder="Confirm your password"
+                      className="mt-1"
                       required
                     />
                   </div>
-
-                  <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? "Creating account..." : "Create Account"}
+                  <Button type="submit" className="w-full btn-alchemist" disabled={loading}>
+                    {loading ? 'Creating account...' : 'Join Brandscaling Platform'}
                   </Button>
                 </form>
               </TabsContent>
             </Tabs>
 
-            {/* Single Google Sign In - Outside of tabs */}
-            <div className="relative my-6">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white px-2 text-muted-foreground">
-                  Or continue with
-                </span>
-              </div>
-            </div>
-
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={handleGoogleSignIn}
-              disabled={loading}
-            >
-              <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
-                <path
-                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                  fill="#4285F4"
-                />
-                <path
-                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                  fill="#34A853"
-                />
-                <path
-                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                  fill="#FBBC05"
-                />
-                <path
-                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                  fill="#EA4335"
-                />
-              </svg>
-              {loading ? "Signing in..." : "Continue with Google"}
-            </Button>
-
             {error && (
-              <div className="mt-4 p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded">
-                {error}
+              <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md">
+                <p className="text-sm text-red-800">{error}</p>
               </div>
             )}
+
+            <div className="mt-6 pt-6 border-t border-gray-200">
+              <div className="text-center">
+                <p className="text-sm text-gray-600 mb-2">
+                  Looking for admin access?
+                </p>
+                <Link href="/admin-login">
+                  <Button variant="outline" size="sm" className="border-architect-indigo text-architect-indigo hover:bg-architect-indigo hover:text-white">
+                    Admin Portal
+                  </Button>
+                </Link>
+              </div>
+            </div>
           </CardContent>
         </Card>
+        </BrandSection>
       </div>
     </div>
   );
