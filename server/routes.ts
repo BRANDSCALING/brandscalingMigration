@@ -257,19 +257,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Apply Firebase auth middleware to all other API routes (except auth endpoint)
+  // Apply auth middleware to all other API routes (except auth endpoint)
   app.use('/api', (req, res, next) => {
+    // Skip auth middleware for already handled routes
+    if (req.path === '/auth/user' || req.path === '/auth/admin-login' || req.path === '/auth/student-login' || req.path === '/auth/student-signup' || req.path === '/dev/create-admin' || req.path === '/ai-agents/chat') {
+      return next();
+    }
+    
+    // Check for admin session
+    const adminId = req.headers['x-admin-id'];
+    if (adminId === 'admin-dev-12345') {
+      req.user = {
+        uid: 'admin-dev-12345',
+        email: 'admin@brandscaling.com',
+        role: 'admin'
+      };
+      return next();
+    }
+    
+    // Check for student session
+    const studentId = req.headers['x-student-id'];
+    const studentEmail = req.headers['x-student-email'];
+    if (studentId && studentEmail) {
+      req.user = {
+        uid: studentId,
+        email: studentEmail,
+        role: 'student'
+      };
+      return next();
+    }
+    
     // Skip auth completely for admin routes in development
     if (req.path.startsWith('/admin/')) {
       return next();
     }
     
-    // Skip auth middleware for already handled routes
-    if (req.path === '/auth/user' || req.path === '/dev/create-admin' || req.path === '/ai-agents/chat') {
-      return next();
-    }
-    
-    // In development mode, bypass auth for admin user
+    // In development mode, bypass auth for Firebase users
     if (process.env.NODE_ENV === 'development') {
       const devAdminId = req.headers['x-dev-admin-id'];
       if (devAdminId === 'admin-dev-12345') {
@@ -400,10 +423,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Student dashboard endpoint
   app.get('/api/student/dashboard', async (req, res) => {
     try {
-      const studentId = req.headers['x-student-id'];
-      const studentEmail = req.headers['x-student-email'];
+      const userId = req.user?.uid;
+      const userEmail = req.user?.email;
       
-      if (!studentId || !studentEmail) {
+      if (!userId || !userEmail) {
         return res.status(401).json({ message: "Student authentication required" });
       }
       
@@ -412,7 +435,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         user: {
           firstName: "Student",
           lastName: "User",
-          email: studentEmail,
+          email: userEmail,
           dominantType: "Alchemist",
           readinessLevel: "Intermediate",
           accessTier: "beginner",

@@ -90,20 +90,25 @@ export default function StudentDashboard() {
   });
 
   if (error) {
+    console.error('Dashboard error:', error);
     return (
       <div className="min-h-screen bg-gray-50 p-6">
         <div className="max-w-4xl mx-auto">
           <div className="bg-red-50 border border-red-200 rounded-lg p-6">
             <h2 className="text-xl font-semibold text-red-800 mb-2">Access Issue</h2>
             <p className="text-red-600 mb-4">
-              Unable to load student dashboard. You may need to authenticate first.
+              Unable to load student dashboard. Authentication error: {error.message}
             </p>
             <div className="space-x-4">
-              <Button asChild>
-                <a href="/auth">Sign In</a>
+              <Button onClick={() => {
+                localStorage.removeItem('studentId');
+                localStorage.removeItem('studentEmail');
+                setLocation('/auth');
+              }}>
+                Sign In Again
               </Button>
-              <Button variant="outline" asChild>
-                <a href="/test-student">Test Dashboard</a>
+              <Button variant="outline" onClick={() => window.location.reload()}>
+                Retry
               </Button>
             </div>
           </div>
