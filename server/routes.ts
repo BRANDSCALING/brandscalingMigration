@@ -1829,7 +1829,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       console.log('Sending payload to n8n:', contextData);
 
-      // Call n8n webhook
+      // Call n8n webhook with the input field
       const response = await fetch(webhookUrl, {
         method: 'POST',
         headers: {
