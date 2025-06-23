@@ -133,11 +133,7 @@ function Router() {
       {/* Student Route */}
       <Route
         path="/student"
-        component={() => (
-          <Layout>
-            <StudentDashboard />
-          </Layout>
-        )}
+        component={StudentDashboard}
       />
       <Route
         path="/workbooks"
