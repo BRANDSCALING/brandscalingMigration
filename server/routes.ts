@@ -102,14 +102,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Development authentication bypass for /api/auth/user endpoint
-  app.get('/api/auth/user', async (req, res) => {
+  // Development admin login endpoint
+  app.post('/api/auth/admin-login', async (req, res) => {
     try {
-      // In development mode, return a mock admin user to fix authentication issues
-      const devUser = {
-        id: "QlOH1t5vQGYfRRNb6MWLLMwobgT2",
-        email: "admin@brandscaling.com",
-        firstName: "Admin",
+      const { email, password } = req.body;
+      
+      // Check valid admin credentials
+      const validAdmins = [
+        { email: 'admin@brandscaling.com', password: 'brandscaling2025' },
+        { email: 'temp-admin@brandscaling.com', password: 'admin123' },
+        { email: 'info@brandscaling.co.uk', password: 'brandscaling2025' }
+      ];
+      
+      const adminMatch = validAdmins.find(admin => 
+        admin.email === email && admin.password === password
+      );
+      
+      if (!adminMatch) {
+        return res.status(401).json({ message: "Invalid admin credentials" });
+      }
+      
+      // Return admin user data
+      const adminUser = {
+        id: "admin-dev-12345",
+        email: adminMatch.email,
+        firstName: "Admin", 
         lastName: "User",
         role: "admin",
         accessTier: "mastermind",
@@ -120,7 +137,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
         updatedAt: new Date()
       };
       
-      res.json(devUser);
+      res.json({ user: adminUser, message: "Admin login successful" });
+    } catch (error) {
+      console.error("Error in admin login:", error);
+      res.status(500).json({ message: "Admin login failed" });
+    }
+  });
+
+  // Development authentication bypass for /api/auth/user endpoint
+  app.get('/api/auth/user', async (req, res) => {
+    try {
+      // Check for admin session
+      const adminId = req.headers['x-admin-id'];
+      if (adminId === 'admin-dev-12345') {
+        const devUser = {
+          id: "admin-dev-12345",
+          email: "admin@brandscaling.com",
+          firstName: "Admin",
+          lastName: "User", 
+          role: "admin",
+          accessTier: "mastermind",
+          profileImageUrl: null,
+          stripeCustomerId: null,
+          stripeSubscriptionId: null,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        };
+        
+        return res.json(devUser);
+      }
+      
+      // No authenticated user
+      res.status(401).json({ message: "Not authenticated" });
     } catch (error) {
       console.error("Error in dev auth endpoint:", error);
       res.status(500).json({ message: "Failed to authenticate" });

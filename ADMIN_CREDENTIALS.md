@@ -31,8 +31,20 @@
 
 ## WORKING ADMIN CREDENTIALS
 
-**For Immediate Access:**
-- **Email**: `admin@brandscaling.com`  
+**Primary Admin Account:**
+- **Email**: `admin@brandscaling.com`
+- **Password**: `brandscaling2025`
+- **Portal**: `/admin-login`
+- **Role**: admin (full access)
+
+**Alternative Admin Account:**
+- **Email**: `temp-admin@brandscaling.com`
+- **Password**: `admin123`
+- **Portal**: `/admin-login`
+- **Role**: admin (full access)
+
+**Developer Admin Account:**
+- **Email**: `info@brandscaling.co.uk`
 - **Password**: `brandscaling2025`
 - **Portal**: `/admin-login`
 - **Role**: admin (full access)

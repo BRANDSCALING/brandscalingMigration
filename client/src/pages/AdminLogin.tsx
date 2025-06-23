@@ -71,7 +71,32 @@ export default function AdminLogin() {
     }
 
     try {
-      await signIn(email, password);
+      // Use direct admin login API
+      const response = await fetch('/api/auth/admin-login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Invalid admin credentials');
+      }
+
+      const data = await response.json();
+      
+      // Store admin session
+      localStorage.setItem('adminId', 'admin-dev-12345');
+      localStorage.setItem('adminEmail', email);
+      
+      toast({
+        title: "Admin Access Granted",
+        description: "Welcome to the admin dashboard."
+      });
+      
+      // Redirect to admin dashboard
+      setLocation('/admin');
     } catch (err: any) {
       toast({
         title: "Login Failed",
