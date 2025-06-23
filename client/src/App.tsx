@@ -28,7 +28,6 @@ import AICoach from "@/pages/AICoach";
 import SmartBusinessBuilder from "@/pages/SmartBusinessBuilder";
 import AIAgents from "@/pages/AIAgents";
 import StudentDashboard from "@/pages/student/StudentDashboard";
-import TestStudentDashboard from "@/pages/TestStudentDashboard";
 import StudentCourses from "@/pages/student/StudentCourses";
 import StudentWorkbooks from "@/pages/student/StudentWorkbooks";
 import StudentCommunity from "@/pages/student/StudentCommunity";
@@ -137,14 +136,7 @@ function Router() {
           </Layout>
         )}
       />
-      <Route
-        path="/test-student"
-        component={() => (
-          <Layout>
-            <TestStudentDashboard />
-          </Layout>
-        )}
-      />
+
 
       {/* Admin Routes */}
       <Route
