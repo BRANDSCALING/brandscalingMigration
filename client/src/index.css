@@ -4,6 +4,32 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Brand Colors */
+.text-brand-gray {
+  color: #6b7280;
+}
+
+.text-brand-black {
+  color: #111827;
+}
+
+.bg-brand-indigo {
+  background-color: #4f46e5;
+}
+
+.border-brand-indigo {
+  border-color: #4f46e5;
+}
+
+.text-brand-indigo {
+  color: #4f46e5;
+}
+
+/* Poppins Font */
+.font-poppins {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
 :root {
   /* Brandscaling Logo Colors */
   --brand-purple: 270 91% 25%; /* Deep purple from logo */

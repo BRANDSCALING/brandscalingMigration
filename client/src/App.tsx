@@ -50,30 +50,134 @@ function Router() {
   return (
     <Switch>
       {/* Quiz - Top Priority */}
-      <Route path="/entrepreneurial-dna-quiz" component={() => <Layout><EntrepreneurialDnaQuiz /></Layout>} />
-      <Route path="/quiz/result" component={() => <Layout><QuizResult /></Layout>} />
-      
+      <Route
+        path="/entrepreneurial-dna-quiz"
+        component={() => (
+          <Layout>
+            <EntrepreneurialDnaQuiz />
+          </Layout>
+        )}
+      />
+      <Route
+        path="/quiz/result"
+        component={() => (
+          <Layout>
+            <QuizResult />
+          </Layout>
+        )}
+      />
+
       {/* Main Pages */}
-      <Route path="/" component={() => <Layout><Landing /></Layout>} />
-      <Route path="/about" component={() => <Layout><About /></Layout>} />
-      <Route path="/courses" component={() => <Layout><CoursesPage /></Layout>} />
-      <Route path="/smart-business-builder" component={() => <Layout><SmartBusinessBuilder /></Layout>} />
-      <Route path="/contact" component={() => <Layout><Contact /></Layout>} />
-      <Route path="/blog" component={() => <Layout><Blog /></Layout>} />
+      <Route
+        path="/"
+        component={() => (
+          <Layout>
+            <Landing />
+          </Layout>
+        )}
+      />
+      <Route
+        path="/about"
+        component={() => (
+          <Layout>
+            <About />
+          </Layout>
+        )}
+      />
+      <Route
+        path="/courses"
+        component={() => (
+          <Layout>
+            <CoursesPage />
+          </Layout>
+        )}
+      />
+      <Route
+        path="/smart-business-builder"
+        component={() => (
+          <Layout>
+            <SmartBusinessBuilder />
+          </Layout>
+        )}
+      />
+      <Route
+        path="/contact"
+        component={() => (
+          <Layout>
+            <Contact />
+          </Layout>
+        )}
+      />
+      <Route
+        path="/blog"
+        component={() => (
+          <Layout>
+            <Blog />
+          </Layout>
+        )}
+      />
       <Route path="/auth" component={Auth} />
       <Route path="/login" component={Auth} />
       <Route path="/dev-login" component={DevLogin} />
-      
+
       {/* Admin Routes */}
-      <Route path="/admin" component={() => <AdminLayout><AdminDashboard /></AdminLayout>} />
-      <Route path="/admin/courses" component={() => <AdminLayout><AdminCourses /></AdminLayout>} />
-      <Route path="/admin/community" component={() => <AdminLayout><AdminCommunity /></AdminLayout>} />
-      <Route path="/admin/email-campaigns" component={() => <AdminLayout><EmailCampaigns /></AdminLayout>} />
-      <Route path="/admin/email-templates" component={() => <AdminLayout><EmailTemplates /></AdminLayout>} />
-      <Route path="/admin/leads" component={() => <AdminLayout><Leads /></AdminLayout>} />
-      <Route path="/admin/settings" component={() => <AdminLayout><AdminSettings /></AdminLayout>} />
-      
-      
+      <Route
+        path="/admin"
+        component={() => (
+          <AdminLayout>
+            <AdminDashboard />
+          </AdminLayout>
+        )}
+      />
+      <Route
+        path="/admin/courses"
+        component={() => (
+          <AdminLayout>
+            <AdminCourses />
+          </AdminLayout>
+        )}
+      />
+      <Route
+        path="/admin/community"
+        component={() => (
+          <AdminLayout>
+            <AdminCommunity />
+          </AdminLayout>
+        )}
+      />
+      <Route
+        path="/admin/email-campaigns"
+        component={() => (
+          <AdminLayout>
+            <EmailCampaigns />
+          </AdminLayout>
+        )}
+      />
+      <Route
+        path="/admin/email-templates"
+        component={() => (
+          <AdminLayout>
+            <EmailTemplates />
+          </AdminLayout>
+        )}
+      />
+      <Route
+        path="/admin/leads"
+        component={() => (
+          <AdminLayout>
+            <Leads />
+          </AdminLayout>
+        )}
+      />
+      <Route
+        path="/admin/settings"
+        component={() => (
+          <AdminLayout>
+            <AdminSettings />
+          </AdminLayout>
+        )}
+      />
+
       {/* 404 Fallback */}
       <Route component={NotFound} />
     </Switch>
