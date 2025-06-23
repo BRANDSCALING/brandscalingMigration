@@ -15,33 +15,19 @@ export async function apiRequest(
 ): Promise<any> {
   const headers: Record<string, string> = data ? { "Content-Type": "application/json" } : {};
 
-  // Check for development admin credentials first
-  const devAdminId = localStorage.getItem('devAdminId');
-  if (devAdminId === 'admin-dev-12345') {
-    headers['x-dev-admin-id'] = devAdminId;
+  // Check for admin session first
+  const adminId = localStorage.getItem('adminId');
+  if (adminId) {
+    headers['x-admin-id'] = 'admin-dev-12345';
   }
-  // Add Firebase auth token if user is logged in
-  else if (auth.currentUser) {
-    try {
-      // Force refresh to get a fresh token
-      const token = await auth.currentUser.getIdToken(true);
-      if (token && token !== 'undefined') {
-        headers.Authorization = `Bearer ${token}`;
-      } else {
-        // Fallback to development mode
-        headers['x-dev-admin-id'] = 'admin-dev-12345';
-        localStorage.setItem('devAdminId', 'admin-dev-12345');
-      }
-    } catch (error) {
-      console.warn('Failed to get auth token, using development mode:', error);
-      // Fallback to development mode
-      headers['x-dev-admin-id'] = 'admin-dev-12345';
-      localStorage.setItem('devAdminId', 'admin-dev-12345');
+  // Check for student session
+  else {
+    const studentId = localStorage.getItem('studentId');
+    const studentEmail = localStorage.getItem('studentEmail');
+    if (studentId && studentEmail) {
+      headers['x-student-id'] = studentId;
+      headers['x-student-email'] = studentEmail;
     }
-  } else {
-    // No auth user, use development mode
-    headers['x-dev-admin-id'] = 'admin-dev-12345';
-    localStorage.setItem('devAdminId', 'admin-dev-12345');
   }
 
   const res = await fetch(url, {

@@ -397,19 +397,73 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Dashboard data endpoint
-  app.get('/api/dashboard', async (req, res) => {
+  // Student dashboard endpoint
+  app.get('/api/student/dashboard', async (req, res) => {
     try {
-      const userId = req.user?.uid;
-      if (!userId) {
-        return res.status(401).json({ message: "Unauthorized" });
+      const studentId = req.headers['x-student-id'];
+      const studentEmail = req.headers['x-student-email'];
+      
+      if (!studentId || !studentEmail) {
+        return res.status(401).json({ message: "Student authentication required" });
       }
       
-      // Get personalized dashboard data
-      const dashboardData = await storage.getPersonalizedDashboard(userId);
+      // Return mock student dashboard data
+      const dashboardData = {
+        user: {
+          firstName: "Student",
+          lastName: "User",
+          email: studentEmail,
+          dominantType: "Alchemist",
+          readinessLevel: "Intermediate",
+          accessTier: "beginner",
+          assessmentComplete: true,
+          profileImageUrl: null
+        },
+        courses: [
+          {
+            id: "course-1",
+            title: "Entrepreneurial DNA Discovery",
+            description: "Discover your unique entrepreneurial type",
+            progress: 75,
+            tier: "foundation",
+            modules: 8,
+            completedModules: 6
+          },
+          {
+            id: "course-2", 
+            title: "Alchemist Scaling Methods",
+            description: "Learn creative scaling strategies for your type",
+            progress: 30,
+            tier: "advanced",
+            modules: 12,
+            completedModules: 3
+          }
+        ],
+        progress: [
+          { courseId: "course-1", completedAt: new Date(), lessonId: "lesson-6" },
+          { courseId: "course-2", completedAt: new Date(), lessonId: "lesson-3" }
+        ],
+        payments: [],
+        announcements: [
+          {
+            id: "announce-1",
+            title: "Welcome to Brandscaling!",
+            message: "Start your entrepreneurial journey today.",
+            createdAt: new Date()
+          }
+        ],
+        stats: {
+          totalCourses: 2,
+          completedCourses: 0,
+          totalLessons: 20,
+          completedLessons: 9,
+          streak: 7
+        }
+      };
+      
       res.json(dashboardData);
     } catch (error) {
-      console.error("Error fetching dashboard data:", error);
+      console.error("Error fetching student dashboard:", error);
       res.status(500).json({ message: "Failed to fetch dashboard data" });
     }
   });
