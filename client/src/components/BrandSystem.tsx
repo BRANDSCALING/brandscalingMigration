@@ -148,15 +148,17 @@ export const BrandGradientText: React.FC<BrandGradientTextProps> = ({
 };
 
 interface PersonalityModeProps {
-  mode: 'architect' | 'alchemist';
+  type: 'architect' | 'alchemist';
   children: React.ReactNode;
   showLabel?: boolean;
+  className?: string;
 }
 
 export const PersonalityMode: React.FC<PersonalityModeProps> = ({
-  mode,
+  type,
   children,
-  showLabel = false
+  showLabel = false,
+  className = ''
 }) => {
   const modeStyles = {
     architect: {
@@ -173,10 +175,10 @@ export const PersonalityMode: React.FC<PersonalityModeProps> = ({
     }
   };
 
-  const style = modeStyles[mode];
+  const style = modeStyles[type] || modeStyles.architect;
 
   return (
-    <div className={`${style.border} ${style.bg} p-6 rounded-r-lg`}>
+    <div className={`${style.border} ${style.bg} p-6 rounded-r-lg ${className}`}>
       {showLabel && (
         <div className={`text-sm font-medium ${style.text} mb-3`}>
           {style.label}

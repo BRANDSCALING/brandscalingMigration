@@ -90,95 +90,165 @@ export default function Landing() {
                       <CheckCircle className="h-5 w-5 text-architect mt-0.5 mr-3 flex-shrink-0" />
                       Purpose alignment structures
                     </li>
-              </ul>
-            </CardContent>
-          </Card>
-          <Card className="bg-gradient-to-br from-orange-100 to-yellow-100">
-            <CardContent className="p-6">
-              <h3 className="text-xl font-bold text-orange-600 mb-2">The AI Alchemist</h3>
-              <p className="text-gray-600">Intuitive • Present • Transformational</p>
-              <ul className="mt-4 list-disc list-inside text-gray-700">
-                <li>Flow-state mastery & energy optimization</li>
-                <li>Creative manifestation systems</li>
-                <li>Authenticity-first scaling methods</li>
-              </ul>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
+                  </ul>
+                  <div className="mt-6">
+                    <Link href="/ai-agents">
+                      <Button variant="outline" className="w-full border-architect-indigo text-architect-indigo hover:bg-architect-indigo hover:text-white">
+                        Meet the Architect
+                      </Button>
+                    </Link>
+                  </div>
+                </CardContent>
+              </Card>
+            </PersonalityMode>
 
-      {/* Avatar Quiz Section */}
-      <section className="py-20 px-6">
-        <h2 className="text-3xl font-bold text-center mb-10">If You've Felt This, You're Home.</h2>
-        <div className="grid md:grid-cols-2 gap-6 max-w-6xl mx-auto mb-8">
-          {[
-            {title: 'Idea-Stuck Dreamer', desc: 'Ideas in your head, but nowhere in motion.'},
-            {title: 'Framework-Frustrated', desc: 'Proven methods didn\'t match your DNA.'},
-            {title: 'Mastermind Graduate', desc: 'Outgrew peers and rooms.'},
-            {title: 'Successful-but-Stuck', desc: 'Profitable but unsure of next move.'},
-          ].map((card, i) => (
-            <Card key={i} className="p-6 hover:shadow-md transition-shadow">
-              <CardContent>
-                <h3 className="text-xl font-semibold mb-2">{card.title}</h3>
-                <p className="text-gray-600">{card.desc}</p>
-              </CardContent>
-            </Card>
-          ))}
+            <PersonalityMode type="alchemist">
+              <Card className="h-full border-scale-orange/20 bg-white shadow-lg hover:shadow-xl transition-all duration-300">
+                <CardContent className="p-8">
+                  <div className="flex items-center mb-6">
+                    <div className="p-3 rounded-xl gradient-alchemist mr-4">
+                      <Zap className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-alchemist">The AI Alchemist</h3>
+                      <p className="text-gray-600 font-medium">Warm • Magnetic • Empowering</p>
+                    </div>
+                  </div>
+                  <ul className="space-y-3 text-gray-700">
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-alchemist mt-0.5 mr-3 flex-shrink-0" />
+                      Personal brand development strategies
+                    </li>
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-alchemist mt-0.5 mr-3 flex-shrink-0" />
+                      High-energy motivation systems
+                    </li>
+                    <li className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-alchemist mt-0.5 mr-3 flex-shrink-0" />
+                      Creative problem-solving approaches
+                    </li>
+                  </ul>
+                  <div className="mt-6">
+                    <Link href="/ai-agents">
+                      <Button variant="outline" className="w-full border-scale-orange text-scale-orange hover:bg-scale-orange hover:text-white">
+                        Meet the Alchemist
+                      </Button>
+                    </Link>
+                  </div>
+                </CardContent>
+              </Card>
+            </PersonalityMode>
+          </div>
         </div>
-      </section>
+      </BrandSection>
 
-      {/* Quiz Teaser Banner */}
-      <section className="py-16 text-center bg-black text-white">
-        <h2 className="text-4xl font-bold mb-4">What's Your Entrepreneurial DNA?</h2>
-        <Button className="bg-white text-black px-6 py-3">Take the Quiz</Button>
-      </section>
+      {/* DNA Quiz Section */}
+      <BrandSection className="spacing-section">
+        <div className="container-brandscaling">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-h2 text-strategic-black mb-6">
+              Discover Your Entrepreneurial DNA
+            </h2>
+            <p className="text-body-large text-gray-600 mb-8 max-w-2xl mx-auto">
+              Take our scientifically-designed assessment to unlock personalized business strategies tailored to your unique entrepreneurial blueprint.
+            </p>
+            
+            <div className="grid md:grid-cols-2 gap-8 mb-12">
+              <div className="text-left">
+                <div className="flex items-center mb-4">
+                  <Target className="h-6 w-6 text-architect mr-3" />
+                  <h3 className="text-xl font-bold text-strategic-black">The Architect Path</h3>
+                </div>
+                <p className="text-gray-600">
+                  Systematic builders who scale through structured processes, data-driven decisions, and methodical execution.
+                </p>
+              </div>
+              <div className="text-left">
+                <div className="flex items-center mb-4">
+                  <Zap className="h-6 w-6 text-alchemist mr-3" />
+                  <h3 className="text-xl font-bold text-strategic-black">The Alchemist Path</h3>
+                </div>
+                <p className="text-gray-600">
+                  Intuitive innovators who scale through creativity, personal magnetism, and transformational leadership.
+                </p>
+              </div>
+            </div>
+
+            <Link href="/entrepreneurial-dna-quiz">
+              <Button size="lg" className="gradient-brandscaling text-white font-medium px-12 py-6 text-xl">
+                Take Your DNA Quiz Now
+                <ArrowRight className="ml-3 h-6 w-6" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </BrandSection>
+
+      {/* Recognition Section */}
+      <BrandSection className="spacing-section bg-gray-50">
+        <div className="container-brandscaling">
+          <div className="text-center mb-12">
+            <h2 className="text-h2 text-strategic-black mb-6">If You've Felt This, You're Home</h2>
+            <p className="text-body text-gray-600 max-w-2xl mx-auto">
+              Entrepreneurs from every stage find their breakthrough moment through Brandscaling's DNA-matched methodology.
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              {title: 'Idea-Stuck Dreamer', desc: 'Brilliant ideas trapped in your head, but nowhere in motion.'},
+              {title: 'Framework-Frustrated', desc: 'Tried proven methods that didn\'t match your DNA.'},
+              {title: 'Mastermind Graduate', desc: 'Outgrew your peers and rooms, seeking the next level.'},
+              {title: 'Successful-but-Stuck', desc: 'Profitable but unsure of your next strategic move.'},
+            ].map((card, i) => (
+              <Card key={i} className="bg-white border-gray-200 hover:shadow-lg transition-all duration-300 hover:border-scale-orange/30">
+                <CardContent className="p-6">
+                  <h3 className="text-lg font-bold text-strategic-black mb-3">{card.title}</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">{card.desc}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </BrandSection>
 
       {/* Final CTA */}
-      <section className="py-20 text-center bg-gradient-to-br from-indigo-700 to-purple-700 text-white">
-        <h2 className="text-3xl font-bold mb-6">Begin your journey to 9-figure scale. Discover your DNA today.</h2>
-        <div className="flex gap-4 justify-center">
-          <Button className="bg-orange-500 px-6 py-3">Take the Quiz</Button>
-          <Button variant="outline" className="border-white text-white px-6 py-3">Join the Newsletter</Button>
-        </div>
-      </section>
+      <BrandSection className="spacing-section gradient-brandscaling text-white">
+        <div className="container-brandscaling text-center">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-h2 text-white mb-6">
+              Begin Your Journey to 9-Figure Scale
+            </h2>
+            <p className="text-body-large text-white/90 mb-8 max-w-2xl mx-auto">
+              Every billion-dollar business started with one entrepreneur discovering their true DNA and scaling accordingly. Your breakthrough moment starts now.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row justify-center gap-6">
+              <Link href="/entrepreneurial-dna-quiz">
+                <Button size="lg" variant="secondary" className="bg-white text-strategic-black hover:bg-white/90 font-medium px-8 py-4 text-lg">
+                  Discover Your DNA
+                  <Brain className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+              <Link href="/courses">
+                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-strategic-black px-8 py-4 text-lg">
+                  Explore Platform
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+            </div>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-16">
-        <div className="max-w-7xl mx-auto grid md:grid-cols-4 gap-8 px-6">
-          <div>
-            <h4 className="font-bold text-lg mb-4">Brandscaling</h4>
-            <p>Scale based on your entrepreneurial DNA, not someone else's template.</p>
-          </div>
-          <div>
-            <h4 className="font-bold mb-4">Platform</h4>
-            <ul className="space-y-2 text-gray-400">
-              <li><Link href="/quiz"><a>DNA Quiz</a></Link></li>
-              <li><Link href="/courses"><a>Courses</a></Link></li>
-              <li><Link href="/about"><a>About</a></Link></li>
-              <li><Link href="/blog"><a>Blog</a></Link></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-bold mb-4">Frameworks</h4>
-            <ul className="space-y-2 text-gray-400">
-              <li>Infinite Scaling Methodology™</li>
-              <li>F.U.S.E. Framework™</li>
-              <li>Customer Creation Factory™</li>
-              <li>Doctor-Patient Sales Model</li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-bold mb-4">Support</h4>
-            <ul className="space-y-2 text-gray-400">
-              <li>Help Center</li>
-              <li>Community</li>
-              <li>Contact Us</li>
-              <li>Terms & Privacy</li>
-            </ul>
+            <div className="mt-8 pt-8 border-t border-white/20">
+              <BrandQuote 
+                text="Every entrepreneur is either an Architect or an Alchemist. The key is knowing which you are and scaling accordingly."
+                author="The Infinite Scaling Methodology"
+                className="text-white/90"
+              />
+            </div>
           </div>
         </div>
-        <div className="text-center text-gray-400 mt-12">&copy; 2024 Brandscaling. All rights reserved.</div>
-      </footer>
+      </BrandSection>
+      {/* Footer is now handled by Layout component */}
     </div>
   );
 }
