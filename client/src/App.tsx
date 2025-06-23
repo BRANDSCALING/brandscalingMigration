@@ -22,6 +22,7 @@ import ThankYou from "@/pages/ThankYou";
 import Affiliates from "@/pages/Affiliates";
 import Layout from "@/components/Layout";
 import DevLogin from "@/pages/DevLogin";
+import AdminLogin from "@/pages/AdminLogin";
 import Dashboard from "@/pages/Dashboard";
 import LessonView from "@/pages/LessonView";
 import AICoach from "@/pages/AICoach";
@@ -127,6 +128,7 @@ function Router() {
       <Route path="/auth" component={Auth} />
       <Route path="/login" component={Auth} />
       <Route path="/dev-login" component={DevLogin} />
+      <Route path="/admin-login" component={AdminLogin} />
 
       {/* Student Route */}
       <Route

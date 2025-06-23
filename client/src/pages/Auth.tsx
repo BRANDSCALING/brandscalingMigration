@@ -7,8 +7,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { useLocation, Link } from 'wouter';
-import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
-import brandscalingLogo from "@assets/FullLogo.png";
+import { Eye, EyeOff, ArrowLeft, GraduationCap, UserPlus } from 'lucide-react';
+import { BrandSection } from '@/components/BrandSystem';
 
 export default function Auth() {
   const [, setLocation] = useLocation();

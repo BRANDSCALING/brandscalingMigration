@@ -7,7 +7,7 @@ export default function Header() {
   const { isAuthenticated, userProfile, logout } = useFirebaseAuth();
 
   const getDashboardLink = () => {
-    if (userProfile?.role === 'admin') return '/admin';
+    if (userProfile?.role === 'admin') return '/admin-login';
     if (userProfile?.role === 'student') return '/student';
     return '/auth';
   };
