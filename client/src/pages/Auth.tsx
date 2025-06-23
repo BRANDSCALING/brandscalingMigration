@@ -55,15 +55,25 @@ export default function Auth() {
     }
 
     try {
-      await signIn(signInEmail, signInPassword);
+      const user = await signIn(signInEmail, signInPassword);
+      if (user && user.role === 'admin') {
+        toast({
+          title: "Admin Access Required",
+          description: "Redirecting to admin login portal...",
+        });
+        logout();
+        setLocation('/admin-login');
+        return;
+      }
+      
       toast({
-        title: "Welcome back!",
-        description: "You have successfully signed in."
+        title: "Welcome Back!",
+        description: "Logged into your student dashboard."
       });
     } catch (error: any) {
       toast({
-        title: "Sign In Failed",
-        description: error.message || "Invalid email or password",
+        title: "Login Failed",
+        description: error.message || "Invalid student credentials.",
         variant: "destructive"
       });
     }
@@ -100,15 +110,15 @@ export default function Auth() {
     }
 
     try {
-      await signUp(signUpEmail, signUpPassword, 'student');
+      await signUp(signUpEmail, signUpPassword);
       toast({
-        title: "Account Created!",
+        title: "Student Account Created!",
         description: "Welcome to Brandscaling. Redirecting to your dashboard..."
       });
     } catch (error: any) {
       toast({
-        title: "Sign Up Failed",
-        description: error.message || "Failed to create account",
+        title: "Registration Failed",
+        description: error.message || "Unable to create student account.",
         variant: "destructive"
       });
     }
@@ -168,12 +178,8 @@ export default function Auth() {
               </Link>
               
               {/* Logo */}
-              <Link href="/">
-                <img 
-                  src={brandscalingLogo} 
-                  alt="Brandscaling" 
-                  className="h-12 w-auto hover:opacity-80 transition-opacity cursor-pointer"
-                />
+              <Link href="/" className="text-2xl font-bold gradient-brandscaling bg-clip-text text-transparent">
+                Brandscaling
               </Link>
               
               {/* Spacer */}
