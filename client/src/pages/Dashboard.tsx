@@ -201,6 +201,44 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
+          {/* Interactive Workbooks */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <span className="text-green-600">📋</span>
+                Interactive Workbooks
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <p className="text-sm text-gray-600">
+                  Complete DNA-personalized exercises and generate downloadable business resources
+                </p>
+                
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="p-3 border rounded-lg text-center">
+                    <div className="w-6 h-6 mx-auto mb-2 text-blue-600">📊</div>
+                    <p className="text-sm font-medium">Business Canvas</p>
+                    <p className="text-xs text-gray-600">Strategic Planning</p>
+                  </div>
+                  <div className="p-3 border rounded-lg text-center">
+                    <div className="w-6 h-6 mx-auto mb-2 text-purple-600">🎯</div>
+                    <p className="text-sm font-medium">Vision Alignment</p>
+                    <p className="text-xs text-gray-600">Purpose & Goals</p>
+                  </div>
+                </div>
+                
+                <Button 
+                  className="w-full"
+                  onClick={() => setLocation('/workbooks')}
+                  variant="outline"
+                >
+                  Explore Workbooks
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Quick Actions */}
           <Card>
             <CardHeader>

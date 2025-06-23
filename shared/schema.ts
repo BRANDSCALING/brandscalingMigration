@@ -284,6 +284,47 @@ export const aiConversations = pgTable("ai_conversations", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Interactive Workbooks
+export const workbooks = pgTable("workbooks", {
+  id: serial("id").primaryKey(),
+  title: varchar("title").notNull(),
+  description: text("description"),
+  category: varchar("category").notNull(),
+  difficulty: varchar("difficulty").notNull(), // beginner, intermediate, advanced
+  dnaTrack: varchar("dna_track").notNull(), // architect, alchemist, both
+  questions: jsonb("questions").notNull(),
+  estimatedTime: integer("estimated_time").notNull(),
+  requiredTier: varchar("required_tier").default("beginner"),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// User Workbook Progress
+export const userWorkbookProgress = pgTable("user_workbook_progress", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  workbookId: integer("workbook_id").notNull().references(() => workbooks.id),
+  responses: jsonb("responses").notNull(),
+  completedAt: timestamp("completed_at"),
+  downloadUrl: text("download_url"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Uploaded Workbook Files
+export const uploadedWorkbooks = pgTable("uploaded_workbooks", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  filename: varchar("filename").notNull(),
+  originalName: varchar("original_name").notNull(),
+  fileType: varchar("file_type").notNull(),
+  fileUrl: text("file_url").notNull(),
+  processingStatus: varchar("processing_status").default("pending"), // pending, processing, completed, failed
+  extractedQuestions: jsonb("extracted_questions"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Email logs
 export const emailLogs = pgTable("email_logs", {
   id: serial("id").primaryKey(),

@@ -55,6 +55,9 @@ export default function Header() {
             <Link href="/ai-agents" className="text-gray-700 hover:text-gray-900 font-medium">
               AI Advisors
             </Link>
+            <Link href="/workbooks" className="text-gray-700 hover:text-gray-900 font-medium">
+              Workbooks
+            </Link>
             <Link href="/smart-business-builder" className="text-gray-700 hover:text-gray-900 font-medium">
               Smart Business Builder
             </Link>

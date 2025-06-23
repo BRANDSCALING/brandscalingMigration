@@ -28,6 +28,7 @@ import AICoach from "@/pages/AICoach";
 import SmartBusinessBuilder from "@/pages/SmartBusinessBuilder";
 import AIAgents from "@/pages/AIAgents";
 import StudentDashboard from "@/pages/student/StudentDashboard";
+import InteractiveWorkbooks from "@/pages/InteractiveWorkbooks";
 import StudentCourses from "@/pages/student/StudentCourses";
 import StudentWorkbooks from "@/pages/student/StudentWorkbooks";
 import StudentCommunity from "@/pages/student/StudentCommunity";
@@ -136,7 +137,14 @@ function Router() {
           </Layout>
         )}
       />
-
+      <Route
+        path="/workbooks"
+        component={() => (
+          <Layout>
+            <InteractiveWorkbooks />
+          </Layout>
+        )}
+      />
 
       {/* Admin Routes */}
       <Route

@@ -85,6 +85,13 @@ export interface IStorage {
   getUserPayments(userId: string): Promise<any[]>;
   getUserCourses(userId: string, accessTier: string): Promise<any[]>;
   getAnnouncements(limit?: number): Promise<any[]>;
+  
+  // Workbook methods
+  getAllWorkbooks(): Promise<any[]>;
+  getWorkbookById(id: number): Promise<any>;
+  getUserWorkbookProgress(userId: string): Promise<any[]>;
+  saveWorkbookProgress(userId: string, workbookId: number, responses: any, downloadUrl?: string): Promise<void>;
+  saveUploadedWorkbook(userId: string, filename: string, originalName: string, fileType: string, fileUrl: string): Promise<any>;
   getPersonalizedDashboard(userId: string): Promise<any>;
   
   // AI conversation methods
@@ -376,6 +383,66 @@ export class DatabaseStorage implements IStorage {
   async getAnnouncements(limit: number = 5): Promise<any[]> {
     // For now, return empty array - will be populated when announcement system is integrated
     return [];
+  }
+
+  // Workbook methods
+  async getAllWorkbooks(): Promise<any[]> {
+    return await db
+      .select()
+      .from(workbooks)
+      .where(eq(workbooks.isActive, true))
+      .orderBy(asc(workbooks.difficulty), asc(workbooks.title));
+  }
+
+  async getWorkbookById(id: number): Promise<any> {
+    const [workbook] = await db
+      .select()
+      .from(workbooks)
+      .where(eq(workbooks.id, id));
+    return workbook;
+  }
+
+  async getUserWorkbookProgress(userId: string): Promise<any[]> {
+    return await db
+      .select()
+      .from(userWorkbookProgress)
+      .where(eq(userWorkbookProgress.userId, userId))
+      .orderBy(desc(userWorkbookProgress.completedAt));
+  }
+
+  async saveWorkbookProgress(userId: string, workbookId: number, responses: any, downloadUrl?: string): Promise<void> {
+    await db
+      .insert(userWorkbookProgress)
+      .values({
+        userId,
+        workbookId,
+        responses,
+        completedAt: new Date(),
+        downloadUrl
+      })
+      .onConflictDoUpdate({
+        target: [userWorkbookProgress.userId, userWorkbookProgress.workbookId],
+        set: {
+          responses,
+          completedAt: new Date(),
+          downloadUrl,
+          updatedAt: new Date()
+        }
+      });
+  }
+
+  async saveUploadedWorkbook(userId: string, filename: string, originalName: string, fileType: string, fileUrl: string): Promise<any> {
+    const [uploaded] = await db
+      .insert(uploadedWorkbooks)
+      .values({
+        userId,
+        filename,
+        originalName,
+        fileType,
+        fileUrl
+      })
+      .returning();
+    return uploaded;
   }
 
   private checkTierAccess(userTier: string, requiredTier: string): boolean {

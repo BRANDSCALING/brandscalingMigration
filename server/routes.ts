@@ -414,6 +414,87 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Interactive Workbooks API Routes
+  
+  // Get all available workbooks
+  app.get('/api/workbooks', async (req, res) => {
+    try {
+      const workbooks = await storage.getAllWorkbooks();
+      res.json(workbooks);
+    } catch (error) {
+      console.error('Error fetching workbooks:', error);
+      res.status(500).json({ message: 'Failed to fetch workbooks' });
+    }
+  });
+
+  // Get user's workbook progress
+  app.get('/api/workbooks/progress', async (req, res) => {
+    try {
+      const userId = req.user?.uid || 'anonymous-user';
+      if (userId === 'anonymous-user') {
+        return res.json([]);
+      }
+      
+      const progress = await storage.getUserWorkbookProgress(userId);
+      res.json(progress);
+    } catch (error) {
+      console.error('Error fetching workbook progress:', error);
+      res.status(500).json({ message: 'Failed to fetch workbook progress' });
+    }
+  });
+
+  // Generate completed workbook PDF
+  app.post('/api/workbooks/generate', async (req, res) => {
+    try {
+      const { workbookId, responses } = req.body;
+      const userId = req.user?.uid || 'anonymous-user';
+      
+      if (!workbookId || !responses) {
+        return res.status(400).json({ message: 'Workbook ID and responses are required' });
+      }
+
+      // Get workbook details
+      const workbook = await storage.getWorkbookById(parseInt(workbookId));
+      if (!workbook) {
+        return res.status(404).json({ message: 'Workbook not found' });
+      }
+
+      // Generate PDF URL (mock for now)
+      const downloadUrl = `/api/workbooks/download/${workbookId}/${userId}`;
+      
+      // Save progress
+      if (userId !== 'anonymous-user') {
+        await storage.saveWorkbookProgress(userId, parseInt(workbookId), responses, downloadUrl);
+      }
+      
+      res.json({
+        success: true,
+        downloadUrl,
+        message: 'Workbook completed successfully'
+      });
+    } catch (error) {
+      console.error('Error generating workbook:', error);
+      res.status(500).json({ message: 'Failed to generate workbook' });
+    }
+  });
+
+  // Upload workbook file
+  app.post('/api/workbooks/upload', async (req, res) => {
+    try {
+      const userId = req.user?.uid || 'anonymous-user';
+      
+      // Mock file processing for now
+      res.json({
+        success: true,
+        message: 'File uploaded successfully. Processing will begin shortly.',
+        fileId: Date.now().toString()
+      });
+    } catch (error) {
+      console.error('Error uploading workbook:', error);
+      res.status(500).json({ message: 'Failed to upload workbook' });
+    }
+  });
+
   // Get lesson details with dual-track content
   app.get('/api/lessons/:lessonId', requireAuth, async (req, res) => {
     try {
