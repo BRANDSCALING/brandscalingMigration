@@ -180,6 +180,56 @@ export class DatabaseStorage implements IStorage {
     await db.delete(courses).where(eq(courses.id, id));
   }
 
+  async getCoursesWithAccess(userId: string): Promise<Array<Course & { hasAccess: boolean; progress: number }>> {
+    const user = await this.getUser(userId);
+    const userTier = user?.accessTier || 'beginner';
+    
+    const allCourses = await db.select().from(courses).where(eq(courses.isPublished, true));
+    
+    const coursesWithAccess = await Promise.all(
+      allCourses.map(async (course) => {
+        const hasAccess = this.checkTierAccess(userTier, course.accessTier as string);
+        const progressData = await this.getCourseProgress(userId, course.id);
+        
+        return {
+          ...course,
+          hasAccess,
+          progress: progressData.progress,
+          completedLessons: progressData.completedLessons,
+          totalLessons: progressData.totalLessons
+        };
+      })
+    );
+    
+    return coursesWithAccess;
+  }
+
+  async getCourseById(id: number): Promise<Course | undefined> {
+    const [course] = await db.select().from(courses).where(eq(courses.id, id));
+    return course;
+  }
+
+  async getCourseWithLessons(courseId: number, userId: string): Promise<any> {
+    const course = await this.getCourseById(courseId);
+    if (!course) return null;
+    
+    const courseLessons = await db
+      .select()
+      .from(lessons)
+      .where(and(eq(lessons.courseId, courseId), eq(lessons.isPublished, true)))
+      .orderBy(lessons.order);
+    
+    const progressData = await this.getCourseProgress(userId, courseId);
+    
+    return {
+      ...course,
+      lessons: courseLessons,
+      progress: progressData.progress,
+      completedLessons: progressData.completedLessons,
+      totalLessons: progressData.totalLessons
+    };
+  }
+
   // Lesson operations
   async getLessonById(id: number): Promise<Lesson | undefined> {
     const [lesson] = await db.select().from(lessons).where(eq(lessons.id, id));
@@ -302,6 +352,14 @@ export class DatabaseStorage implements IStorage {
     return { progress, completedLessons, totalLessons };
   }
 
+  private checkTierAccess(userTier: string, requiredTier: string): boolean {
+    const tierHierarchy = ['beginner', 'intermediate', 'advanced', 'mastermind'];
+    const userTierIndex = tierHierarchy.indexOf(userTier);
+    const requiredTierIndex = tierHierarchy.indexOf(requiredTier);
+    
+    return userTierIndex >= requiredTierIndex;
+  }
+
   async getPersonalizedDashboard(userId: string): Promise<any> {
     const user = await this.getUser(userId);
     const dnaResult = await this.getLatestEntrepreneurialDnaQuizResponse(userId);
@@ -336,14 +394,6 @@ export class DatabaseStorage implements IStorage {
       inProgressCourses,
       coursesWithProgress
     };
-  }
-
-  private checkTierAccess(userTier: string, requiredTier: string): boolean {
-    const tierHierarchy = ['beginner', 'intermediate', 'advanced', 'mastermind'];
-    const userTierIndex = tierHierarchy.indexOf(userTier);
-    const requiredTierIndex = tierHierarchy.indexOf(requiredTier);
-    
-    return userTierIndex >= requiredTierIndex;
   }
 
   // AI conversation methods
