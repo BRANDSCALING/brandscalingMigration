@@ -21,6 +21,7 @@ import {
   dnaResults,
   entrepreneurialDnaQuizResponses,
   businessModels,
+  uploadedWorkbooks,
   type User,
   type UpsertUser,
   type Post,
@@ -515,15 +516,21 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateUploadedWorkbookStatus(id: number, status: string, extractedQuestions?: string[]): Promise<any> {
-    const [updated] = await db
-      .update(uploadedWorkbooks)
-      .set({
-        processingStatus: status,
-        extractedQuestions: extractedQuestions || null
-      })
-      .where(eq(uploadedWorkbooks.id, id))
-      .returning();
-    return updated;
+    try {
+      const [updated] = await db
+        .update(uploadedWorkbooks)
+        .set({
+          processingStatus: status,
+          extractedQuestions: extractedQuestions || null
+        })
+        .where(eq(uploadedWorkbooks.id, id))
+        .returning();
+      console.log('Updated workbook status:', updated);
+      return updated;
+    } catch (error) {
+      console.error('Error updating workbook status:', error);
+      throw error;
+    }
   }
 
   async getUploadedWorkbook(id: number): Promise<any> {
@@ -535,11 +542,16 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUserUploadedWorkbooks(userId: string): Promise<any[]> {
-    return await db
-      .select()
-      .from(uploadedWorkbooks)
-      .where(eq(uploadedWorkbooks.userId, userId))
-      .orderBy(desc(uploadedWorkbooks.createdAt));
+    try {
+      return await db
+        .select()
+        .from(uploadedWorkbooks)
+        .where(eq(uploadedWorkbooks.userId, userId))
+        .orderBy(desc(uploadedWorkbooks.createdAt));
+    } catch (error) {
+      console.error('Error fetching uploaded workbooks:', error);
+      return [];
+    }
   }
 
   private checkTierAccess(userTier: string, requiredTier: string): boolean {

@@ -810,17 +810,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/workbooks/progress', async (req, res) => {
     try {
       const userId = req.user?.uid || 'anonymous-user';
+      console.log('Fetching workbooks for user:', userId);
       
       // Get uploaded workbooks for this user
       const uploadedWorkbooks = await storage.getUserUploadedWorkbooks(userId);
+      console.log('Found workbooks:', uploadedWorkbooks);
       
-      res.json(uploadedWorkbooks.map((wb: any) => ({
+      const response = uploadedWorkbooks.map((wb: any) => ({
         id: wb.id,
-        filename: wb.originalName,
-        status: wb.processingStatus,
-        uploadedAt: wb.createdAt,
-        questions: wb.extractedQuestions || []
-      })));
+        filename: wb.originalName || wb.original_name,
+        status: wb.processingStatus || wb.processing_status,
+        uploadedAt: wb.createdAt || wb.created_at,
+        questions: wb.extractedQuestions || wb.extracted_questions || []
+      }));
+      
+      res.json(response);
     } catch (error) {
       console.error('Error fetching workbook progress:', error);
       res.status(500).json({ message: 'Failed to fetch workbook progress' });
