@@ -704,7 +704,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Entrepreneurial DNA Quiz endpoints
-  app.get('/api/quiz/entrepreneurial-dna/eligibility', requireAuth, async (req, res) => {
+  app.get('/api/quiz/entrepreneurial-dna/eligibility', async (req, res) => {
     try {
       const userId = req.user!.uid;
       const eligibility = await storage.checkEntrepreneurialDnaQuizEligibility(userId);
@@ -715,7 +715,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/quiz/entrepreneurial-dna/submit', requireAuth, async (req, res) => {
+  app.post('/api/quiz/entrepreneurial-dna/submit', async (req, res) => {
     try {
       const { answers } = req.body;
       const userId = req.user!.uid;

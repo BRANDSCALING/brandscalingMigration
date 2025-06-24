@@ -7,6 +7,7 @@ import { apiRequest } from '@/lib/queryClient';
 import { useAuth } from '@/hooks/useAuth';
 import { Loader2, ArrowRight, RotateCcw } from 'lucide-react';
 import { ENTREPRENEURIAL_DNA_QUESTIONS, DNA_SUBTYPES } from '@shared/entrepreneurialDnaData';
+import DnaResultDisplay from '@/components/DnaResultDisplay';
 
 interface Question {
   id: number;
@@ -29,16 +30,6 @@ interface QuizResult {
 
 // Using enhanced question set from shared data
 const QUIZ_QUESTIONS = ENTREPRENEURIAL_DNA_QUESTIONS;
-  {
-    id: 1,
-    text: "You're going away for the weekend. How do you prepare the night before?",
-    answers: {
-      A: "I mentally run through what I need and pack once — essentials are covered.",
-      B: "I write a full list, check everything off, repack a few times, still feel uneasy.",
-      C: "I throw things in last minute and trust it'll be fine.",
-      D: "I pack, unpack, and get overwhelmed deciding what I even need."
-    }
-  },
   {
     id: 2,
     text: "A close friend unintentionally hurts your feelings. How do you respond?",
@@ -244,12 +235,8 @@ export default function EntrepreneurialDnaQuiz() {
   const [isCheckingEligibility, setIsCheckingEligibility] = useState(true);
 
   useEffect(() => {
-    if (!user) {
-      setLocation('/login');
-      return;
-    }
     checkRetakeEligibility();
-  }, [user, setLocation]);
+  }, []);
 
   const checkRetakeEligibility = async () => {
     setIsCheckingEligibility(true);

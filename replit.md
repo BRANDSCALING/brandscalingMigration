@@ -122,6 +122,7 @@ The Brandscaling Platform is a full-stack AI-powered business operating system t
 
 ```
 Changelog:
+- June 24, 2025. Enhanced E-DNA Quiz System Complete: Implemented comprehensive 12-subtype assessment with detailed personality profiles, enhanced scoring algorithm, and rich result displays
 - June 24, 2025. Workbook Upload Processing Complete: Fixed authentication barriers, implemented real-time status updates from "processing" to "completed", added proper database storage and frontend polling for seamless user experience
 - June 24, 2025. AI Agents communication improved: Enhanced prompts and fallback responses to ensure Architect provides structured business advice and Alchemist gives practical yet creative guidance
 - June 24, 2025. Hero background video perfected: Clean, clearly visible animated logo video as background in Landing.tsx hero section with 100% opacity for professional presentation
