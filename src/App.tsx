@@ -108,7 +108,22 @@ function AppRoutes() {
         </PublicLayout>
       </Route>
       
-
+      {/* Student routes */}
+      <Route path="/student">
+        <StudentLayout>
+          <StudentDashboard />
+        </StudentLayout>
+      </Route>
+      <Route path="/student/courses">
+        <StudentLayout>
+          <StudentCourses />
+        </StudentLayout>
+      </Route>
+      <Route path="/student/course/:id">
+        <StudentLayout>
+          <StudentCourseView />
+        </StudentLayout>
+      </Route>
 
       {/* Admin routes */}
       {isAdmin && (
