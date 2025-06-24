@@ -39,30 +39,13 @@ export const users = pgTable("users", {
   stripeId: varchar("stripe_id"), // Stripe session/payment ID
   stripePaidAt: timestamp("stripe_paid_at"), // Payment completion timestamp
   
-  // Deep assessment results
-  architectScore: integer("architect_score"),
-  alchemistScore: integer("alchemist_score"),
-  readinessScore: integer("readiness_score"),
-  dominantType: varchar("dominant_type"), // architect, alchemist
-  readinessLevel: varchar("readiness_level"), // starter, builder, advanced
-  tags: text("tags"), // comma-separated assessment tags
-  assessmentComplete: boolean("assessment_complete").default(false),
+
   
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-// User DNA Quiz Results
-export const userDnaResult = pgTable("user_dna_result", {
-  id: serial("id").primaryKey(),
-  userId: varchar("user_id").notNull().references(() => users.id),
-  result: varchar("result").notNull(), // 'Architect' | 'Alchemist' | 'Undeclared' | 'Blurred Identity'
-  architectPercentage: integer("architect_percentage").default(0),
-  alchemistPercentage: integer("alchemist_percentage").default(0),
-  undeclaredPercentage: integer("undeclared_percentage").default(0),
-  blurredIdentityPercentage: integer("blurred_identity_percentage").default(0),
-  completedAt: timestamp("completed_at").notNull().defaultNow(),
-});
+
 
 // Payment transactions
 export const payments = pgTable("payments", {
@@ -602,7 +585,7 @@ export const insertQuizSchema = createInsertSchema(quizzes).omit({
   updatedAt: true,
 });
 
-export const insertUserDnaResultSchema = createInsertSchema(userDnaResult).omit({
+// Removed unauthorized DNA result schema
   id: true,
   completedAt: true,
 });

@@ -14,103 +14,17 @@ import { hasAccess, getAllowedCourses, courseDatabase, getUpgradeTarget } from '
 import { uploadFields, uploadWorkbooks } from './upload';
 
 // Entrepreneurial DNA Quiz scoring engine
+// Placeholder for authentic scoring logic - awaiting user specifications
 function calculateEntrepreneurialDnaScore(answers: Record<number, string>) {
-  let architectScore = 0;
-  let alchemistScore = 0;
-  let blurredScore = 0;
-  let undeclaredScore = 0;
-  
-  // Q1-Q6: Default DNA Detection using exact scoring logic
-  const questionMapping = {
-    1: { A: 'architect', B: 'alchemist', C: 'blurred', D: 'undeclared' },
-    2: { A: 'alchemist', B: 'architect', C: 'blurred', D: 'undeclared' },
-    3: { A: 'blurred', B: 'alchemist', C: 'architect', D: 'undeclared' },
-    4: { A: 'undeclared', B: 'alchemist', C: 'blurred', D: 'architect' },
-    5: { A: 'architect', B: 'alchemist', C: 'blurred', D: 'undeclared' },
-    6: { A: 'architect', B: 'alchemist', C: 'blurred', D: 'undeclared' }
-  };
-  
-  // Count scores for Q1-Q6
-  for (let i = 1; i <= 6; i++) {
-    const answer = answers[i];
-    const type = questionMapping[i][answer];
-    if (type === 'architect') architectScore++;
-    else if (type === 'alchemist') alchemistScore++;
-    else if (type === 'blurred') blurredScore++;
-    else if (type === 'undeclared') undeclaredScore++;
-  }
-  
-  // Default DNA Logic: 4+ of same type = clear type, otherwise Blurred
-  let defaultType: 'Architect' | 'Alchemist' | 'Blurred Identity';
-  if (architectScore >= 4) {
-    defaultType = 'Architect';
-  } else if (alchemistScore >= 4) {
-    defaultType = 'Alchemist';
-  } else {
-    defaultType = 'Blurred Identity';
-  }
-  
-  // Q7-Q12: Awareness scoring (dynamic based on default type)
-  let awarenessScore = 0;
-  
-  // For Q7-Q12, count awareness points based on opposite type alignment
-  for (let i = 7; i <= 12; i++) {
-    const answer = answers[i];
-    if (answer === 'D') {
-      // "None of these" = 0 points
-      awarenessScore += 0;
-    } else if (defaultType === 'Architect') {
-      // Architect measuring Alchemist awareness: A,B,C = +1 each
-      if (['A', 'B', 'C'].includes(answer)) {
-        awarenessScore += 1;
-      }
-    } else if (defaultType === 'Alchemist') {
-      // Alchemist measuring Architect awareness: A,B,C = +1 each
-      if (['A', 'B', 'C'].includes(answer)) {
-        awarenessScore += 1;
-      }
-    } else if (defaultType === 'Blurred Identity') {
-      // Blurred: Q7-Q9 = Architect awareness, Q10-Q12 = Alchemist awareness
-      if (i <= 9 && ['A', 'B', 'C'].includes(answer)) {
-        awarenessScore += 1;
-      } else if (i >= 10 && ['A', 'B', 'C'].includes(answer)) {
-        awarenessScore += 1;
-      }
-    }
-  }
-  
-  // Convert awareness to percentage: 0=0%, 1=17%, 2=33%, 3=50%, 4=67%, 5=83%, 6=100%
-  const awarenessMapping = { 0: 0, 1: 17, 2: 33, 3: 50, 4: 67, 5: 83, 6: 100 };
-  const awarenessPercentage = awarenessMapping[Math.min(awarenessScore, 6)] || 0;
-  
-  // Determine subtype based on default type and awareness level
-  let subtype = 'basic';
-  if (defaultType === 'Architect') {
-    if (awarenessPercentage >= 83) subtype = 'ultimate-strategist';
-    else if (awarenessPercentage >= 67) subtype = 'master-strategist';
-    else if (awarenessPercentage >= 50) subtype = 'internal-analyzer';
-    else subtype = 'systemised-builder';
-  } else if (defaultType === 'Alchemist') {
-    if (awarenessPercentage >= 83) subtype = 'ultimate-alchemist';
-    else if (awarenessPercentage >= 67) subtype = 'magnetic-perfectionist';
-    else if (awarenessPercentage >= 50) subtype = 'energetic-empath';
-    else subtype = 'visionary-oracle';
-  } else {
-    if (awarenessPercentage >= 67) subtype = 'performer';
-    else if (awarenessPercentage >= 50) subtype = 'overthinker';
-    else if (awarenessPercentage >= 33) subtype = 'self-betrayer';
-    else subtype = 'self-forsaker';
-  }
-  
   return {
-    defaultType,
-    subtype,
-    awarenessPercentage,
-    architectScore,
-    alchemistScore,
-    blurredScore,
-    undeclaredScore,
-    awarenessScore
+    defaultType: 'Blurred Identity',
+    subtype: 'basic',
+    awarenessPercentage: 0,
+    architectScore: 0,
+    alchemistScore: 0,
+    blurredScore: 0,
+    undeclaredScore: 0,
+    awarenessScore: 0
   };
 }
 
