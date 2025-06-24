@@ -16,7 +16,7 @@ export default function Landing() {
     <div className="min-h-screen bg-white">{/* Removed old duplicate header */}
 
       {/* Hero Section */}
-      <BrandSection className="spacing-section relative overflow-hidden">
+      <BrandSection className="spacing-section relative overflow-hidden bg-gradient-to-br from-white via-gray-50 to-white">
         {/* Background Video */}
         <div className="absolute inset-0 z-0">
           <video
@@ -24,53 +24,24 @@ export default function Landing() {
             loop
             muted
             playsInline
-            className="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto transform -translate-x-1/2 -translate-y-1/2 object-cover opacity-20"
+            className="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto transform -translate-x-1/2 -translate-y-1/2 object-cover opacity-15 scale-110"
+            style={{ filter: 'blur(1px)' }}
+            onLoadedData={() => console.log('Background video loaded')}
             onError={(e) => {
               console.log('Background video failed to load:', e);
               const target = e.target as HTMLVideoElement;
               target.style.display = 'none';
             }}
           >
-            <source src="/logo-brandscaling.mp4" type="video/mp4" />
             <source src="/logo-animation.mp4" type="video/mp4" />
+            <source src="/uploads/logo-animation.mp4" type="video/mp4" />
           </video>
-          {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-white via-gray-50 to-white opacity-90"></div>
+          {/* Subtle overlay */}
+          <div className="absolute inset-0 bg-white/30"></div>
         </div>
         
         <div className="container-brandscaling text-center relative z-10">
           <div className="max-w-4xl mx-auto">
-            {/* Logo Video Above Title */}
-            <div className="flex justify-center mb-8">
-              <div className="relative w-24 h-24 md:w-32 md:h-32">
-                <video
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="w-full h-full object-contain absolute z-10"
-                  onLoadedData={() => {
-                    console.log('Logo video loaded successfully');
-                    // Hide fallback when video loads
-                    const target = e.target as HTMLVideoElement;
-                    const fallback = target.nextElementSibling as HTMLElement;
-                    if (fallback) fallback.style.display = 'none';
-                  }}
-                  onError={(e) => {
-                    console.error('Logo video failed to load:', e);
-                    // Video failed, fallback remains visible
-                  }}
-                >
-                  <source src="/logo-brandscaling.mp4" type="video/mp4" />
-                  <source src="/logo-animation.mp4" type="video/mp4" />
-                </video>
-                {/* Fallback brand icon */}
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-orange-500 rounded-full flex items-center justify-center text-white font-bold text-2xl md:text-3xl z-0">
-                  BS
-                </div>
-              </div>
-            </div>
-            
             <h1 className="text-h1 text-strategic-black mb-6 leading-tight">
               The World's 1st AI-Powered Business 
               <span className="gradient-brandscaling bg-clip-text text-transparent block">
