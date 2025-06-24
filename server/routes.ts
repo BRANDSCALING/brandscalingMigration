@@ -650,7 +650,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.user?.uid || 'anonymous-user';
       
       if (!answers || Object.keys(answers).length < 6) {
-        return res.status(400).json({ message: 'Invalid answers provided - need at least 6 answers' });
+        return res.status(400).json({ message: 'Invalid answers provided - need exactly 6 answers' });
       }
 
       // Scoring engine implementation
