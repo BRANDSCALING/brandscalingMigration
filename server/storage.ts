@@ -643,9 +643,7 @@ export class DatabaseStorage implements IStorage {
     await db.insert(emailLogs).values(emailData);
   }
 
-  // Placeholder for authentic DNA methods - awaiting user specifications
 
-  // Placeholder for authentic quiz methods
 
   // User management
   async getAllActiveUsers(): Promise<User[]> {

@@ -653,9 +653,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: 'Invalid answers provided - need exactly 6 answers' });
       }
 
-      // Scoring engine implementation
-      // Placeholder - awaiting authentic scoring logic
-      const result = { defaultType: 'Blurred Identity', subtype: 'basic', awarenessPercentage: 0 };
+      // No scoring logic implemented
+      return res.status(501).json({ message: 'Quiz scoring not implemented' });
       
       // Try to save to database, but don't fail if unavailable
       try {
@@ -1532,44 +1531,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/quizzes/:id/submit", requireAuth, async (req: any, res) => {
-    try {
-      const userId = req.user.uid;
-      const quizId = parseInt(req.params.id);
-      const { answers, score } = req.body;
-
-      const submissionSchema = z.object({
-        answers: z.any(),
-        score: z.number().min(0).max(1),
-      });
-
-      const validatedData = submissionSchema.parse({ answers, score });
-      
-      const result = await storage.saveQuizResult(
-        userId,
-        quizId,
-        validatedData.answers,
-        validatedData.score
-      );
-      
-      res.json(result);
-    } catch (error) {
-      console.error("Error submitting quiz:", error);
-      res.status(500).json({ message: "Failed to submit quiz" });
-    }
-  });
-
-  app.get("/api/user/quiz-results", requireAuth, async (req: any, res) => {
-    try {
-      const userId = req.user.uid;
-      const quizId = req.query.quizId ? parseInt(req.query.quizId as string) : undefined;
-      const results = await storage.getUserQuizResults(userId, quizId);
-      res.json(results);
-    } catch (error) {
-      console.error("Error fetching quiz results:", error);
-      res.status(500).json({ message: "Failed to fetch quiz results" });
-    }
-  });
+  
 
   // AI Agent routes
   app.get("/api/ai-agents", requireAuth, async (req, res) => {
@@ -2366,49 +2328,7 @@ Keep responses helpful, concise, and actionable. Always relate advice back to th
     }
   });
 
-  // Deep Assessment endpoint
-  app.post("/api/quiz/deep-assessment", requireAuth, async (req: any, res) => {
-    try {
-      const userId = req.user.uid;
-      const { answers, architectScore, alchemistScore, readinessScore, dominantType, readinessLevel, tags, completedAt } = req.body;
-      
-      // Update user profile with assessment results
-      await storage.updateUserAssessment(userId, {
-        architectScore,
-        alchemistScore,
-        readinessScore,
-        dominantType,
-        readinessLevel,
-        tags: tags.join(','),
-        assessmentComplete: true
-      });
 
-      // Store detailed quiz results
-      await storage.saveQuizResult(userId, 999, answers, readinessScore, {
-        architectScore,
-        alchemistScore,
-        readinessScore,
-        dominantType,
-        readinessLevel,
-        tags
-      });
-
-      res.json({
-        success: true,
-        profile: {
-          architectScore,
-          alchemistScore,
-          readinessScore,
-          dominantType,
-          readinessLevel,
-          tags
-        }
-      });
-    } catch (error: any) {
-      console.error("Error saving deep assessment:", error);
-      res.status(500).json({ message: "Failed to save assessment results" });
-    }
-  });
 
   app.post("/api/admin/ai-agents", requireAuth, async (req: any, res) => {
     try {

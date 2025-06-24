@@ -114,30 +114,7 @@ export default function EntrepreneurialDnaQuiz() {
     return Math.max(0, diffDays);
   };
 
-  const getResultContent = (type: string, awarenessPercentage: number) => {
-    const templates = {
-      'Architect': {
-        title: 'The Architect',
-        description: 'You are a systems thinker who builds scalable, sustainable businesses through strategic planning and execution.',
-        strengths: ['Strategic Planning', 'Systems Thinking', 'Execution Excellence', 'Scalable Solutions'],
-        growth: 'Your awareness of Alchemist traits will help you connect more deeply with customers and inspire your team.'
-      },
-      'Alchemist': {
-        title: 'The Alchemist',
-        description: 'You are a relationship builder who creates transformation through emotional connection and intuitive leadership.',
-        strengths: ['Relationship Building', 'Intuitive Leadership', 'Customer Connection', 'Transformational Impact'],
-        growth: 'Your awareness of Architect traits will help you build more robust systems and sustainable growth.'
-      },
-      'Blurred Identity': {
-        title: 'The Blurred Identity',
-        description: 'You have a unique blend of traits that allows you to adapt and excel in various entrepreneurial situations.',
-        strengths: ['Adaptability', 'Versatile Thinking', 'Situational Leadership', 'Multi-faceted Approach'],
-        growth: 'Focus on developing your strongest traits while maintaining your adaptive flexibility.'
-      }
-    };
 
-    return templates[type as keyof typeof templates] || templates['Blurred Identity'];
-  };
 
   if (!user) {
     return <div>Please log in to take the quiz.</div>;
