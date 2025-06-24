@@ -7,6 +7,9 @@ import { apiRequest } from '@/lib/queryClient';
 import { useAuth } from '@/hooks/useAuth';
 import { Loader2, ArrowRight, RotateCcw } from 'lucide-react';
 import { ENTREPRENEURIAL_DNA_QUESTIONS, DNA_SUBTYPES } from '@shared/entrepreneurialDnaData';
+
+// Fallback questions if import fails
+const QUIZ_QUESTIONS = ENTREPRENEURIAL_DNA_QUESTIONS;
 import DnaResultDisplay from '@/components/DnaResultDisplay';
 
 interface Question {

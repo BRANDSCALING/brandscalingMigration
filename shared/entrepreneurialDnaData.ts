@@ -242,19 +242,11 @@ export const DNA_SUBTYPES: Record<string, DNASubtype> = {
     risks: 'Deep unfulfillment, disconnection from self',
     nextSteps: 'Reconnect with emotional intelligence'
   },
-  'self-betrayer': {
-    id: 'self-betrayer',
-    name: 'The Self-Betrayer', 
+  
+  'suppressed-alchemist': {
+    id: 'suppressed-alchemist',
+    name: 'The Suppressed Alchemist',
     emoji: '🧩',
-    category: 'blurred',
-    operatingLoop: 'Abandoned Structure',
-    coreIdentity: 'Origin: Architect. Abandoned structure, floats in feelings. Origin Architect who traded logic for emotional acceptance. Feels everything but lacks clarity. Needs restoration of mental frameworks.',
-    oppositeAwareness: 'Low awareness - abandoned natural mode',
-    edge: 'Emotional sensitivity',
-    risks: 'Lack of structure, emotional overwhelm',
-    nextSteps: 'Restore logical frameworks and structure'
-  }
-};
     category: 'blurred',
     operatingLoop: 'Suppressed Emotion → Thought → Justification',
     coreIdentity: 'You are a high-functioning operator — but something always feels off. You act like an Architect, yet you were never one to begin with. You once led with intuition, emotion, and energetic presence — but somewhere along the way, you shut it down.',
@@ -273,7 +265,7 @@ export const DNA_SUBTYPES: Record<string, DNASubtype> = {
     coreIdentity: 'You weren\'t born scattered — you became that way. Your original clarity got clouded. Your logic got overridden. You once trusted systems, structure, and strategy… but somewhere along the way, your need to adapt became louder than your inner compass.',
     oppositeAwareness: 'You once craved certainty. You lived by logic, made structured decisions, and needed clear paths. But somewhere along the line, your structure was questioned, rejected — or made you feel unworthy. So you shifted.',
     edge: 'You\'re emotionally attuned. You\'re present. You care. You adapt fast. You\'ve developed a level of empathy and awareness most Architects never reach.',
-    risks: 'You confuse chaos for creativity. You wait for "alignment" instead of creating it. You may attract Alchemist environments that feel energising — but drain you slowly.',
+    risks: 'You confuse chaos for creativity. You wait for "alignment" instead of create it. You may attract Alchemist environments that feel energising — but drain you slowly.',
     nextSteps: 'Start writing again. Mapping again. Simplifying again. Return to frameworks, flows, systems — not to control the world, but to return to you. Let your logic breathe again.'
   }
 };
