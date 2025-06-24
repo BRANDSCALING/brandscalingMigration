@@ -27,10 +27,10 @@ import EmailCampaigns from '../client/src/pages/admin/EmailCampaigns';
 import AdminSettings from '../client/src/pages/admin/AdminSettings';
 
 // Student pages
-import { StudentLayout } from '../client/src/layouts/StudentLayout';
-import { StudentDashboard } from '../client/src/pages/student/StudentDashboard';
-import { StudentCourses } from '../client/src/pages/student/StudentCourses';
-import { StudentCourseView } from '../client/src/pages/student/StudentCourseView';
+import { StudentLayout } from './layouts/StudentLayout';
+import { StudentDashboard } from './pages/student/StudentDashboard';
+import { StudentCourses } from './pages/student/StudentCourses';
+import { StudentCourseView } from './pages/student/StudentCourseView';
 
 
 const queryClient = new QueryClient({
