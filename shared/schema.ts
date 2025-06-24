@@ -315,13 +315,13 @@ export const userWorkbookProgress = pgTable("user_workbook_progress", {
 // Uploaded Workbook Files
 export const uploadedWorkbooks = pgTable("uploaded_workbooks", {
   id: serial("id").primaryKey(),
-  userId: varchar("user_id").notNull().references(() => users.id),
+  userId: varchar("user_id").notNull(),
   filename: varchar("filename").notNull(),
   originalName: varchar("original_name").notNull(),
   fileType: varchar("file_type").notNull(),
   fileUrl: text("file_url").notNull(),
-  processingStatus: varchar("processing_status").default("pending"), // pending, processing, completed, failed
-  extractedQuestions: jsonb("extracted_questions"),
+  processingStatus: varchar("processing_status").default("processing"), // processing, completed, failed
+  extractedQuestions: text("extracted_questions").array(),
   createdAt: timestamp("created_at").defaultNow(),
 });
 

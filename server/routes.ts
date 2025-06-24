@@ -259,8 +259,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Apply auth middleware to all other API routes (except auth endpoint)
   app.use('/api', (req, res, next) => {
-    // Skip auth middleware for already handled routes
-    if (req.path === '/auth/user' || req.path === '/auth/admin-login' || req.path === '/auth/student-login' || req.path === '/auth/student-signup' || req.path === '/dev/create-admin' || req.path === '/ai-agents/chat' || req.path === '/workbooks/upload' || req.path === '/workbooks/progress') {
+    // Skip auth middleware for public routes
+    const publicPaths = ['/auth/user', '/auth/admin-login', '/auth/student-login', '/auth/student-signup', '/dev/create-admin', '/ai-agents/chat', '/workbooks/upload', '/workbooks/progress', '/workbooks/status'];
+    
+    if (publicPaths.some(path => req.path === path || req.path.startsWith(path))) {
+      // Set anonymous user for workbook routes
+      if (req.path.startsWith('/workbooks')) {
+        req.user = { uid: 'anonymous-user', email: 'anonymous@test.com', role: 'user' };
+      }
       return next();
     }
     
