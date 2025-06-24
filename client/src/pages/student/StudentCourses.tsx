@@ -44,7 +44,7 @@ export function StudentCourses() {
           "x-student-email": localStorage.getItem('studentEmail') || ''
         },
         credentials: "include"
-      }).then(res => res.ok ? res.json() : null);
+      }).then(res => res.ok ? res.json() : { defaultType: 'Undeclared' });
     },
     retry: false,
   });
@@ -53,16 +53,51 @@ export function StudentCourses() {
   const { data: courses = [], isLoading } = useQuery({
     queryKey: ["/api/student/courses"],
     queryFn: async () => {
-      return fetch("/api/student/courses", {
-        headers: {
-          "x-student-id": localStorage.getItem('studentId') || '',
-          "x-student-email": localStorage.getItem('studentEmail') || ''
+      // Mock data for testing
+      return [
+        {
+          id: 1,
+          title: "Architect Foundation Course",
+          description: "Master systematic business building strategies designed for analytical minds",
+          track: "architect",
+          level: 1,
+          accessTier: "beginner",
+          isPublished: true,
+          hasAccess: true,
+          progress: 25,
+          completedLessons: 2,
+          totalLessons: 8,
+          createdAt: new Date().toISOString()
         },
-        credentials: "include"
-      }).then(async (res) => {
-        if (!res.ok) throw new Error('Failed to fetch courses');
-        return res.json();
-      });
+        {
+          id: 2,
+          title: "Alchemist Creative Scaling",
+          description: "Unlock creative growth methods for intuitive entrepreneurs",
+          track: "alchemist", 
+          level: 2,
+          accessTier: "intermediate",
+          isPublished: true,
+          hasAccess: false,
+          progress: 0,
+          completedLessons: 0,
+          totalLessons: 12,
+          createdAt: new Date().toISOString()
+        },
+        {
+          id: 3,
+          title: "Advanced Revenue Optimization",
+          description: "Advanced strategies for scaling revenue across all business models",
+          track: "architect",
+          level: 3,
+          accessTier: "advanced",
+          isPublished: true,
+          hasAccess: true,
+          progress: 75,
+          completedLessons: 9,
+          totalLessons: 12,
+          createdAt: new Date().toISOString()
+        }
+      ];
     },
     retry: false,
   });

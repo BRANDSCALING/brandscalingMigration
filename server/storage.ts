@@ -251,6 +251,39 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getCourseWithLessons(courseId: number, userId: string): Promise<any> {
+    // Get course
+    const course = await this.getCourseById(courseId);
+    if (!course) return null;
+    
+    // Get lessons
+    const lessons = await this.getLessonsByCourse(courseId);
+    
+    // Get progress
+    const progressData = await this.getCourseProgress(userId, courseId);
+    
+    // Get user DNA type
+    const user = await this.getUserProfile(userId);
+    const userDnaType = user?.dominantType || 'Undeclared';
+    
+    return {
+      ...course,
+      lessons: lessons.map(lesson => ({
+        ...lesson,
+        completed: false // TODO: Get actual completion status
+      })),
+      progress: progressData.progress,
+      completedLessons: progressData.completedLessons,
+      totalLessons: progressData.totalLessons,
+      userDnaType
+    };
+  }
+
+  async getLessonById(id: number): Promise<Lesson | undefined> {
+    const [lesson] = await db.select().from(lessons).where(eq(lessons.id, id));
+    return lesson;
+  }
+
+  async getCourseWithLessons(courseId: number, userId: string): Promise<any> {
     const course = await this.getCourseById(courseId);
     if (!course) return null;
     

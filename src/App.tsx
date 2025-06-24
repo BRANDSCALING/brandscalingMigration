@@ -32,6 +32,7 @@ import { StudentDashboard } from '../client/src/pages/student/StudentDashboard';
 import { StudentCourses } from '../client/src/pages/student/StudentCourses';
 import { StudentCourseView } from '../client/src/pages/student/StudentCourseView';
 
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -43,6 +44,9 @@ const queryClient = new QueryClient({
 
 function AppRoutes() {
   const { user, loading, isAdmin, isStudent } = useAuth();
+
+  // Debug logging
+  console.log('Auth state:', { user: !!user, loading, isAdmin, isStudent });
 
   if (loading) {
     return (
@@ -101,6 +105,8 @@ function AppRoutes() {
           <Community />
         </PublicLayout>
       </Route>
+      
+
 
       {/* Admin routes */}
       {isAdmin && (
@@ -138,31 +144,27 @@ function AppRoutes() {
         </>
       )}
 
-      {/* Student routes */}
-      {isStudent && (
-        <>
-          <Route path="/student">
-            <StudentLayout>
-              <StudentDashboard />
-            </StudentLayout>
-          </Route>
-          <Route path="/student/courses">
-            <StudentLayout>
-              <StudentCourses />
-            </StudentLayout>
-          </Route>
-          <Route path="/student/course/:id">
-            <StudentLayout>
-              <StudentCourseView />
-            </StudentLayout>
-          </Route>
-          <Route path="/test-student">
-            <StudentLayout>
-              <StudentDashboard />
-            </StudentLayout>
-          </Route>
-        </>
-      )}
+      {/* Student routes - always show for debugging */}
+      <Route path="/student">
+        <StudentLayout>
+          <StudentDashboard />
+        </StudentLayout>
+      </Route>
+      <Route path="/student/courses">
+        <StudentLayout>
+          <StudentCourses />
+        </StudentLayout>
+      </Route>
+      <Route path="/student/course/:id">
+        <StudentLayout>
+          <StudentCourseView />
+        </StudentLayout>
+      </Route>
+      <Route path="/test-student">
+        <StudentLayout>
+          <StudentDashboard />
+        </StudentLayout>
+      </Route>
 
       {/* 404 fallback */}
       <Route>

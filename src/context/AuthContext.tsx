@@ -73,10 +73,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (!error && data) {
         setIsAdmin(data.role === 'admin');
+        setIsStudent(data.role === 'student');
       }
     } catch (error) {
-      console.error('Error checking admin status:', error);
+      console.error('Error checking auth status:', error);
       setIsAdmin(false);
+      setIsStudent(false);
     }
   };
 
@@ -101,6 +103,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (error) throw error;
   };
 
+  // Check for local authentication on mount
+  useEffect(() => {
+    const adminId = localStorage.getItem('adminId');
+    const adminEmail = localStorage.getItem('adminEmail');
+    if (adminId && adminEmail) {
+      setIsAdmin(true);
+      setUser({
+        id: adminId,
+        email: adminEmail,
+        role: 'admin'
+      } as any);
+      setLoading(false);
+      return;
+    }
+    
+    const studentId = localStorage.getItem('studentId');
+    const studentEmail = localStorage.getItem('studentEmail');
+    if (studentId && studentEmail) {
+      setIsStudent(true);
+      setUser({
+        id: studentId,
+        email: studentEmail,
+        role: 'student'
+      } as any);
+      setLoading(false);
+      return;
+    }
+  }, []);
+
   const value = {
     user,
     session,
@@ -109,6 +140,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     signUp,
     signOut,
     isAdmin,
+    isStudent,
   };
 
   return (
