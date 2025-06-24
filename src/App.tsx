@@ -28,10 +28,10 @@ import AdminSettings from '../client/src/pages/admin/AdminSettings';
 
 // Student pages
 import { StudentLayout } from './layouts/StudentLayout';
-import StudentDashboard from './pages/student/StudentDashboard';
-import StudentCourses from './pages/student/StudentCourses';
-import StudentCourseView from './pages/student/StudentCourseView';
-import { TestRoute } from './pages/TestRoute';
+import { StudentDashboard } from './pages/student/StudentDashboard';
+import { StudentCourses } from './pages/student/StudentCourses';
+import { StudentCourseView } from './pages/student/StudentCourseView';
+
 
 
 const queryClient = new QueryClient({
@@ -146,11 +146,12 @@ function AppRoutes() {
         </>
       )}
 
-      {/* Student routes - direct components */}
-      <Route path="/student" component={StudentDashboard} />
-      <Route path="/student/courses" component={StudentCourses} />
-      <Route path="/student/course/:id" component={StudentCourseView} />
-      <Route path="/test-student" component={StudentDashboard} />
+      {/* Legacy test student route */}
+      <Route path="/test-student">
+        <StudentLayout>
+          <StudentDashboard />
+        </StudentLayout>
+      </Route>
 
       {/* 404 fallback */}
       <Route>

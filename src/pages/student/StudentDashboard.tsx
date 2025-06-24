@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { BookOpen, Trophy, Target, TrendingUp, Play } from 'lucide-react';
 
-export default function StudentDashboard() {
+export function StudentDashboard() {
   const studentEmail = localStorage.getItem('studentEmail') || 'Student';
 
   return (
