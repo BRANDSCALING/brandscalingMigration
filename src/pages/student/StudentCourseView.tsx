@@ -45,7 +45,7 @@ interface Course {
   userDnaType: string;
 }
 
-export function StudentCourseView() {
+export default function StudentCourseView() {
   const [, navigate] = useLocation();
   const [match, params] = useRoute("/student/course/:id");
   const courseId = params?.id ? parseInt(params.id) : null;

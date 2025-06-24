@@ -28,9 +28,10 @@ import AdminSettings from '../client/src/pages/admin/AdminSettings';
 
 // Student pages
 import { StudentLayout } from './layouts/StudentLayout';
-import { StudentDashboard } from './pages/student/StudentDashboard';
-import { StudentCourses } from './pages/student/StudentCourses';
-import { StudentCourseView } from './pages/student/StudentCourseView';
+import StudentDashboard from './pages/student/StudentDashboard';
+import StudentCourses from './pages/student/StudentCourses';
+import StudentCourseView from './pages/student/StudentCourseView';
+import { TestRoute } from './pages/TestRoute';
 
 
 const queryClient = new QueryClient({
@@ -45,8 +46,9 @@ const queryClient = new QueryClient({
 function AppRoutes() {
   const { user, loading, isAdmin, isStudent } = useAuth();
 
-  // Debug logging
+  // Debug logging - check current route
   console.log('Auth state:', { user: !!user, loading, isAdmin, isStudent });
+  console.log('Current location:', window.location.pathname);
 
   if (loading) {
     return (
@@ -144,27 +146,11 @@ function AppRoutes() {
         </>
       )}
 
-      {/* Student routes - always show for debugging */}
-      <Route path="/student">
-        <StudentLayout>
-          <StudentDashboard />
-        </StudentLayout>
-      </Route>
-      <Route path="/student/courses">
-        <StudentLayout>
-          <StudentCourses />
-        </StudentLayout>
-      </Route>
-      <Route path="/student/course/:id">
-        <StudentLayout>
-          <StudentCourseView />
-        </StudentLayout>
-      </Route>
-      <Route path="/test-student">
-        <StudentLayout>
-          <StudentDashboard />
-        </StudentLayout>
-      </Route>
+      {/* Student routes - direct components */}
+      <Route path="/student" component={StudentDashboard} />
+      <Route path="/student/courses" component={StudentCourses} />
+      <Route path="/student/course/:id" component={StudentCourseView} />
+      <Route path="/test-student" component={StudentDashboard} />
 
       {/* 404 fallback */}
       <Route>

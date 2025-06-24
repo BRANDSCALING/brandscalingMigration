@@ -26,7 +26,7 @@ interface Course {
   createdAt: string;
 }
 
-export function StudentCourses() {
+export default function StudentCourses() {
   const [, navigate] = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterTrack, setFilterTrack] = useState("all");
