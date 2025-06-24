@@ -17,14 +17,15 @@ export default function Landing() {
 
       {/* Hero Section */}
       <BrandSection className="spacing-section relative overflow-hidden bg-gradient-to-br from-white via-gray-50 to-white">
-        {/* Background Video */}
+        {/* Background Video - Clear and Sharp */}
         <div className="absolute inset-0 z-0">
           <video
             autoPlay
             loop
             muted
             playsInline
-            className="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto transform -translate-x-1/2 -translate-y-1/2 object-cover opacity-100"
+            className="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto transform -translate-x-1/2 -translate-y-1/2 object-cover opacity-100 filter-none"
+            style={{ imageRendering: 'crisp-edges' }}
             onLoadedData={() => console.log('Background video loaded')}
             onError={(e) => {
               console.log('Background video failed to load:', e);
@@ -35,31 +36,30 @@ export default function Landing() {
             <source src="/logo-animation.mp4" type="video/mp4" />
             <source src="/uploads/logo-animation.mp4" type="video/mp4" />
           </video>
-          {/* Light overlay for text readability */}
-          <div className="absolute inset-0 bg-white/60"></div>
         </div>
         
         <div className="container-brandscaling text-center relative z-10">
           <div className="max-w-4xl mx-auto">
-            <h1 className="text-h1 text-strategic-black mb-6 leading-tight">
+            <h1 className="text-h1 text-strategic-black mb-6 leading-tight font-bold drop-shadow-sm">
               The World's 1st AI-Powered Business 
               <span className="gradient-brandscaling bg-clip-text text-transparent block">
                 Operating System
               </span>
             </h1>
-            <p className="text-body-large text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
-              Discover your Entrepreneurial DNA and scale from idea to 9-figures using proven methodologies and AI-powered guidance
+            <p className="text-body-large text-strategic-black mb-8 max-w-2xl mx-auto leading-relaxed font-medium">
+              Discover your <span className="text-architect font-bold">Entrepreneurial DNA</span> and scale from idea to 9-figures 
+              using proven <span className="text-alchemist font-bold">methodologies</span> and AI-powered guidance
             </p>
             
-            <div className="flex flex-col sm:flex-row justify-center gap-6 mb-12">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
               <Link href="/entrepreneurial-dna-quiz">
-                <Button size="lg" className="gradient-brandscaling text-white font-medium px-8 py-4 text-lg">
+                <Button size="lg" className="btn-cta-gradient text-white font-semibold px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all">
                   Discover Your E-DNA
                   <Brain className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
               <Link href="/courses">
-                <Button variant="outline" size="lg" className="border-architect-indigo text-architect-indigo hover:bg-architect-indigo hover:text-white px-8 py-4 text-lg">
+                <Button variant="outline" size="lg" className="border-2 border-scale-orange text-scale-orange hover:bg-scale-orange hover:text-white font-semibold px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all bg-white/95 backdrop-blur-sm">
                   Explore Learning Paths
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
