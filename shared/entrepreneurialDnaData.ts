@@ -100,7 +100,7 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
       D: { text: "I switch between confidence and confusion depending on the day.", type: 'undeclared', weight: 1 }
     }
   }
-  // Q7-12 will be dynamically loaded based on user's default type
+
 ];
 
 // DNA Subtypes - Using exact user specifications from attached documents
