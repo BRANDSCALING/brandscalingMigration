@@ -48,10 +48,14 @@ export function FileUpload({
         method: "POST",
         body: formData,
         credentials: "include",
+        headers: {
+          'x-admin-id': 'admin-dev-12345'
+        }
       });
 
       if (!response.ok) {
-        throw new Error("Upload failed");
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || "Upload failed");
       }
 
       const result = await response.json();
@@ -65,7 +69,7 @@ export function FileUpload({
       console.error("Upload error:", error);
       toast({ 
         title: "Upload failed", 
-        description: "Please try again",
+        description: error instanceof Error ? error.message : "Please try again",
         variant: "destructive" 
       });
     } finally {

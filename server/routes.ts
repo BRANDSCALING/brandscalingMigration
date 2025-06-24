@@ -498,6 +498,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+
+
   // Firebase Auth routes
   app.post('/api/auth/signup', async (req, res) => {
     try {
