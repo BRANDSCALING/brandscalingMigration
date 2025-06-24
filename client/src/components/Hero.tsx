@@ -19,16 +19,15 @@ export default function Hero({ title, subtitle, cta1, cta2 }: HeroProps) {
           loop
           muted
           playsInline
-          className="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto transform -translate-x-1/2 -translate-y-1/2 object-cover opacity-10"
+          className="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto transform -translate-x-1/2 -translate-y-1/2 object-cover opacity-5"
           onError={(e) => {
-            console.log('Video failed to load:', e);
-            // Hide video and show gradient background
+            console.log('Background video failed to load:', e);
             const target = e.target as HTMLVideoElement;
             target.style.display = 'none';
           }}
         >
-          <source src="/logo-loop.mp4" type="video/mp4" />
-          <source src="/attached_assets/Logo Loop_1750765292518.mov" type="video/mp4" />
+          <source src="/logo-animation.mp4" type="video/mp4" />
+          <source src="/uploads/logo-animation.mp4" type="video/mp4" />
         </video>
         {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-br from-white via-slate-50 to-purple-50"></div>
@@ -44,22 +43,26 @@ export default function Hero({ title, subtitle, cta1, cta2 }: HeroProps) {
               loop
               muted
               playsInline
-              className="w-full h-full object-contain rounded-full"
-              onLoad={() => console.log('Logo video loaded successfully')}
+              className="w-full h-full object-contain"
+              onLoadedData={() => console.log('Logo video loaded successfully')}
+              onCanPlay={() => console.log('Logo video can play')}
               onError={(e) => {
-                console.log('Logo video failed to load:', e);
-                // Fallback to brand icon
+                console.error('Logo video failed to load:', e);
+                // Show fallback immediately
                 const target = e.target as HTMLVideoElement;
                 target.style.display = 'none';
                 const fallback = target.nextElementSibling as HTMLElement;
-                if (fallback) fallback.style.display = 'flex';
+                if (fallback) {
+                  fallback.style.display = 'flex';
+                  fallback.classList.remove('hidden');
+                }
               }}
             >
-              <source src="/logo-loop.mp4" type="video/mp4" />
-              <source src="/attached_assets/Logo Loop_1750765292518.mov" type="video/mp4" />
+              <source src="/logo-animation.mp4" type="video/mp4" />
+              <source src="/uploads/logo-animation.mp4" type="video/mp4" />
             </video>
-            {/* Fallback brand icon */}
-            <div className="absolute inset-0 bg-gradient-to-r from-brand-purple to-brand-orange rounded-full items-center justify-center text-white font-bold text-4xl hidden">
+            {/* Fallback brand icon - show immediately for testing */}
+            <div className="absolute inset-0 bg-gradient-to-r from-brand-purple to-brand-orange rounded-full flex items-center justify-center text-white font-bold text-4xl">
               BS
             </div>
           </div>
