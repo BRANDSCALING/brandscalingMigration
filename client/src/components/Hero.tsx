@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
+import logoVideo from "@assets/Logo Loop_1750765292518.mov";
 
 interface HeroProps {
   title: string;
@@ -14,6 +15,33 @@ export default function Hero({ title, subtitle, cta1, cta2 }: HeroProps) {
     <section className="relative py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-white via-slate-50 to-purple-50">
       <div className="absolute inset-0 bg-brandscaling-gradient opacity-5"></div>
       <div className="relative max-w-7xl mx-auto text-center">
+        {/* Animated Logo Video */}
+        <div className="flex justify-center mb-8">
+          <div className="relative w-24 h-24 md:w-32 md:h-32">
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-contain"
+              onError={(e) => {
+                // Fallback to brand icon if video fails
+                const target = e.target as HTMLVideoElement;
+                target.style.display = 'none';
+                const fallback = target.nextElementSibling as HTMLElement;
+                if (fallback) fallback.style.display = 'flex';
+              }}
+            >
+              <source src={logoVideo} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+            {/* Fallback brand icon */}
+            <div className="absolute inset-0 bg-gradient-to-r from-brand-purple to-brand-orange rounded-full items-center justify-center text-white font-bold text-2xl hidden">
+              BS
+            </div>
+          </div>
+        </div>
+        
         <h1 className="text-4xl md:text-6xl font-bold text-brand-purple mb-6">
           {title}
         </h1>
