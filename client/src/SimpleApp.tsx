@@ -5,7 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Layout from "@/components/Layout";
 import EntrepreneurialDnaQuiz from "@/pages/EntrepreneurialDnaQuiz";
-import QuizResult from "@/pages/QuizResult";
+
 import Landing from "@/pages/Landing";
 
 // Now loading the actual quiz with your 20 questions

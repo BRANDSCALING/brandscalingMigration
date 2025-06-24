@@ -11,7 +11,7 @@ import Auth from "@/pages/Auth";
 import CoursesPage from "@/pages/Courses";
 import Community from "@/pages/Community";
 
-import QuizResult from "@/pages/QuizResult";
+
 import DeepQuiz from "@/pages/DeepQuiz";
 import EntrepreneurialDnaQuiz from "@/pages/EntrepreneurialDnaQuiz";
 import About from "@/pages/About";

@@ -13,20 +13,7 @@ import Stripe from "stripe";
 import { hasAccess, getAllowedCourses, courseDatabase, getUpgradeTarget } from './tierPermissions';
 import { uploadFields, uploadWorkbooks } from './upload';
 
-// Placeholder for authentic quiz scoring
-// Placeholder for authentic scoring logic - awaiting user specifications
-function calculateEntrepreneurialDnaScore(answers: Record<number, string>) {
-  return {
-    defaultType: 'Blurred Identity',
-    subtype: 'basic',
-    awarenessPercentage: 0,
-    architectScore: 0,
-    alchemistScore: 0,
-    blurredScore: 0,
-    undeclaredScore: 0,
-    awarenessScore: 0
-  };
-}
+
 
 // Initialize Stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -655,45 +642,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // No scoring logic implemented
       return res.status(501).json({ message: 'Quiz scoring not implemented' });
-      
-      // Try to save to database, but don't fail if unavailable
-      try {
-        let user = await storage.getUser(userId);
-        if (!user) {
-          const email = req.user?.email || `${userId}@quiz.com`;
-          user = await storage.upsertUser({
-            id: userId,
-            email: email,
-            firstName: 'Quiz',
-            lastName: 'Taker',
-            role: 'user',
-            accessTier: 'beginner'
-          });
-        }
-
-        await storage.saveEntrepreneurialDnaQuizResponse(
-          userId,
-          answers,
-          result.defaultType,
-          result.subtype,
-          result.awarenessPercentage,
-          {
-            architect: result.architectScore,
-            alchemist: result.alchemistScore,
-            blurred: result.blurredScore,
-            awareness: result.awarenessScore
-          }
-        );
-      } catch (dbError) {
-        console.warn('Database save failed, continuing with quiz results:', dbError);
-      }
-
-      res.json({
-        defaultType: result.defaultType,
-        subtype: result.subtype,
-        awarenessPercentage: result.awarenessPercentage,
-        canRetake: false
-      });
     } catch (error) {
       console.error("Error submitting Entrepreneurial DNA quiz:", error);
       res.status(500).json({ message: "Failed to submit quiz" });
