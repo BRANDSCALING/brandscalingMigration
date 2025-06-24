@@ -1,15 +1,14 @@
-// Entrepreneurial DNA Quiz Data - Enhanced System
-// Based on comprehensive subtype analysis
+// User's Exact Entrepreneurial DNA Quiz Data
 
 export interface QuizQuestion {
   id: number;
   text: string;
-  category: 'default_dna' | 'awareness' | 'validation';
+  category: 'default_dna';
   answers: {
-    A: { text: string; type: 'architect' | 'alchemist' | 'blurred' | 'undeclared'; weight: number };
-    B: { text: string; type: 'architect' | 'alchemist' | 'blurred' | 'undeclared'; weight: number };
-    C: { text: string; type: 'architect' | 'alchemist' | 'blurred' | 'undeclared'; weight: number };
-    D: { text: string; type: 'architect' | 'alchemist' | 'blurred' | 'undeclared'; weight: number };
+    A: { text: string; type: 'architect' | 'alchemist' | 'blurred' | 'neutral'; weight: number };
+    B: { text: string; type: 'architect' | 'alchemist' | 'blurred' | 'neutral'; weight: number };
+    C: { text: string; type: 'architect' | 'alchemist' | 'blurred' | 'neutral'; weight: number };
+    D: { text: string; type: 'architect' | 'alchemist' | 'blurred' | 'neutral'; weight: number };
   };
 }
 
@@ -31,9 +30,8 @@ export interface DNASubtype {
   };
 }
 
-// EXACT 6-Question Assessment - User's authentic questions only
+// User's Exact 6-Question DNA Assessment
 export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
-  // Q1-6: Default DNA Detection Block - EXACT questions as specified
   {
     id: 1,
     text: "You're going away for the weekend. How do you prepare the night before?",
@@ -42,7 +40,7 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
       A: { text: "I mentally run through what I need and pack once — essentials are covered.", type: 'architect', weight: 1 },
       B: { text: "I write a full list, check everything off, repack a few times, still feel uneasy.", type: 'alchemist', weight: 1 },
       C: { text: "I throw things in last minute and trust it'll be fine.", type: 'blurred', weight: 1 },
-      D: { text: "I pack, unpack, and get overwhelmed deciding what I even need.", type: 'undeclared', weight: 1 }
+      D: { text: "I pack, unpack, and get overwhelmed deciding what I even need.", type: 'neutral', weight: 1 }
     }
   },
   {
@@ -53,7 +51,7 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
       A: { text: "I'll express it — maybe now, maybe later — but it will come out", type: 'alchemist', weight: 1 },
       B: { text: "I won't say anything — they'll figure it out or I'll quietly move on.", type: 'architect', weight: 1 },
       C: { text: "I react suddenly, then second-guess if I was overdramatic.", type: 'blurred', weight: 1 },
-      D: { text: "I feel stuck about whether I should say something or not.", type: 'undeclared', weight: 1 }
+      D: { text: "I feel stuck about whether I should say something or not.", type: 'neutral', weight: 1 }
     }
   },
   {
@@ -64,7 +62,7 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
       A: { text: "I linger around and wait for someone to notice or invite me", type: 'blurred', weight: 1 },
       B: { text: "I act on how I feel — I might blend in or suddenly become the centre of attention.", type: 'alchemist', weight: 1 },
       C: { text: "I observe quietly, scan the room, and engage when it makes sense.", type: 'architect', weight: 1 },
-      D: { text: "I'm unsure how to show up — I feel pressure to act right.", type: 'undeclared', weight: 1 }
+      D: { text: "I'm unsure how to show up — I feel pressure to act right.", type: 'neutral', weight: 1 }
     }
   },
   {
@@ -72,7 +70,7 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
     text: "You've committed to waking up at 6am for a week. Day 3, you're exhausted. What happens?",
     category: 'default_dna',
     answers: {
-      A: { text: "I feel torn — I want to keep going but can't force myself either.", type: 'undeclared', weight: 1 },
+      A: { text: "I feel torn — I want to keep going but can't force myself either.", type: 'neutral', weight: 1 },
       B: { text: "I ask myself if the reason still matters — if not, I adjust without guilt.", type: 'alchemist', weight: 1 },
       C: { text: "I sleep in, feel bad, and try again tomorrow.", type: 'blurred', weight: 1 },
       D: { text: "I stick to it. Fatigue doesn't override commitment unless it's serious.", type: 'architect', weight: 1 }
@@ -86,7 +84,7 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
       A: { text: "If the result is strong, I'm satisfied — no need to change anything.", type: 'architect', weight: 1 },
       B: { text: "I immediately wonder how it could have been even better.", type: 'alchemist', weight: 1 },
       C: { text: "I feel good but uneasy — maybe I missed something important.", type: 'blurred', weight: 1 },
-      D: { text: "I can't tell if I'm happy or not — depends what others say.", type: 'undeclared', weight: 1 }
+      D: { text: "I can't tell if I'm happy or not — depends what others say.", type: 'neutral', weight: 1 }
     }
   },
   {
@@ -97,10 +95,9 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
       A: { text: "I need to see a path or example — otherwise I'm not sure it's achievable.", type: 'architect', weight: 1 },
       B: { text: "Even if no one's done it, I know it's possible — I just need the steps.", type: 'alchemist', weight: 1 },
       C: { text: "I doubt myself, but I still try in case it works out.", type: 'blurred', weight: 1 },
-      D: { text: "I switch between confidence and confusion depending on the day.", type: 'undeclared', weight: 1 }
+      D: { text: "I switch between confidence and confusion depending on the day.", type: 'neutral', weight: 1 }
     }
   }
-
 ];
 
 // DNA Subtypes - Using exact user specifications from attached documents
