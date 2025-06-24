@@ -10,6 +10,7 @@ interface AuthContextType {
   signUp: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   isAdmin: boolean;
+  isStudent: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -19,13 +20,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isStudent, setIsStudent] = useState(false);
 
   useEffect(() => {
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
-      checkAdminStatus(session?.user ?? null);
+      checkAuthStatus(session?.user ?? null);
       setLoading(false);
     });
 
@@ -34,7 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       async (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
-        checkAdminStatus(session?.user ?? null);
+        checkAuthStatus(session?.user ?? null);
         setLoading(false);
       }
     );
@@ -42,9 +44,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => subscription.unsubscribe();
   }, []);
 
-  const checkAdminStatus = async (user: User | null) => {
+  const checkAuthStatus = async (user: User | null) => {
     if (!user) {
       setIsAdmin(false);
+      setIsStudent(false);
+      
+      // Check for local student authentication
+      const studentId = localStorage.getItem('studentId');
+      const studentEmail = localStorage.getItem('studentEmail');
+      if (studentId && studentEmail) {
+        setIsStudent(true);
+        // Create a mock user object for student
+        setUser({
+          id: studentId,
+          email: studentEmail,
+          role: 'student'
+        } as any);
+      }
       return;
     }
 
