@@ -684,14 +684,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let user = await storage.getUser(userId);
       if (!user) {
         // Create user if doesn't exist (development mode fallback)
-        const email = req.user!.email || 'admin@brandscaling.com';
+        const email = req.user!.email || 'user@brandscaling.com';
         user = await storage.createUser({
           id: userId,
           email: email,
-          firstName: 'Admin',
-          lastName: 'User',
-          accessTier: 'mastermind',
-          role: 'admin'
+          firstName: 'User',
+          lastName: 'Test',
+          accessTier: 'beginner',
+          role: 'user'
         });
       }
       
