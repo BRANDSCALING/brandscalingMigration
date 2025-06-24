@@ -18,7 +18,9 @@ import {
   Brain,
   Lightbulb,
   Save,
-  RefreshCw
+  RefreshCw,
+  Eye,
+  ExternalLink
 } from 'lucide-react';
 import { BrandSection, BrandGradientText, BrandQuote, PersonalityMode, BrandSoundBites } from '@/components/BrandSystem';
 
@@ -58,6 +60,7 @@ interface UserWorkbookProgress {
 
 export default function InteractiveWorkbooks() {
   const [selectedWorkbook, setSelectedWorkbook] = useState<Workbook | null>(null);
+  const [selectedUploadedWorkbook, setSelectedUploadedWorkbook] = useState<any>(null);
   const [responses, setResponses] = useState<Record<string, string>>({});
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
@@ -259,6 +262,87 @@ export default function InteractiveWorkbooks() {
       default: return 'bg-gray-100 text-gray-800';
     }
   };
+
+  const handleViewWorkbook = (workbook: any) => {
+    setSelectedUploadedWorkbook(workbook);
+  };
+
+  const handleDownloadWorkbook = (workbook: any) => {
+    // Create a download link for the processed workbook
+    const link = document.createElement('a');
+    link.href = workbook.fileUrl;
+    link.download = workbook.filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleCloseUploadedWorkbook = () => {
+    setSelectedUploadedWorkbook(null);
+  };
+
+  // View uploaded workbook
+  if (selectedUploadedWorkbook) {
+    return (
+      <div className="min-h-screen bg-pure-white dark:bg-strategic-black">
+        <BrandSection spacing="large">
+          <div className="max-w-4xl mx-auto">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-8">
+              <div>
+                <h1 className="text-h2 font-bold text-strategic-black dark:text-pure-white">
+                  {selectedUploadedWorkbook.filename}
+                </h1>
+                <p className="text-body text-gray-600 dark:text-gray-300">
+                  Uploaded {new Date(selectedUploadedWorkbook.uploadedAt).toLocaleDateString()}
+                </p>
+              </div>
+              <Button onClick={handleCloseUploadedWorkbook} variant="outline">
+                Back to Workbooks
+              </Button>
+            </div>
+
+            {/* Workbook Content */}
+            <Card className="mb-8">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-3">
+                  <FileText className="h-6 w-6 text-scale-orange" />
+                  Processed Questions
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {selectedUploadedWorkbook.questions?.map((question: string, index: number) => (
+                    <div key={index} className="p-4 bg-gray-50 rounded-lg">
+                      <p className="font-medium text-gray-900">{question}</p>
+                      <div className="mt-2">
+                        <textarea
+                          className="w-full p-3 border rounded-lg resize-none focus:ring-2 focus:ring-scale-orange"
+                          rows={3}
+                          placeholder="Your response..."
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                
+                <div className="mt-6 flex gap-3">
+                  <Button className="btn-alchemist">
+                    <Save className="h-4 w-4 mr-2" />
+                    Save Progress
+                  </Button>
+                  <Button variant="outline" onClick={() => handleDownloadWorkbook(selectedUploadedWorkbook)}>
+                    <Download className="h-4 w-4 mr-2" />
+                    Download PDF
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </BrandSection>
+      </div>
+    );
+  }
 
   if (selectedWorkbook) {
     const currentQuestion = selectedWorkbook.questions[currentQuestionIndex];
@@ -464,11 +548,41 @@ export default function InteractiveWorkbooks() {
                   
                   {/* Workbooks from database */}
                   {workbookProgress?.map((wb: any) => (
-                    <div key={wb.id} className="flex items-center justify-between p-2 bg-gray-100 rounded">
-                      <span className="text-sm">{wb.filename}</span>
-                      <Badge variant={wb.status === 'completed' ? 'default' : 'outline'}>
-                        {wb.status === 'completed' ? 'Ready' : 'Processing...'}
-                      </Badge>
+                    <div key={wb.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border">
+                      <div className="flex items-center flex-1">
+                        <FileText className="h-5 w-5 text-scale-orange mr-3" />
+                        <div>
+                          <span className="text-sm font-medium">{wb.filename}</span>
+                          <p className="text-xs text-gray-500">
+                            Uploaded {new Date(wb.uploadedAt).toLocaleDateString()}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge variant={wb.status === 'completed' ? 'default' : 'outline'}>
+                          {wb.status === 'completed' ? 'Ready' : 'Processing...'}
+                        </Badge>
+                        {wb.status === 'completed' && (
+                          <div className="flex gap-1">
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              onClick={() => handleViewWorkbook(wb)}
+                            >
+                              <Eye className="h-4 w-4 mr-1" />
+                              View
+                            </Button>
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              onClick={() => handleDownloadWorkbook(wb)}
+                            >
+                              <Download className="h-4 w-4 mr-1" />
+                              Download
+                            </Button>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -517,27 +631,60 @@ export default function InteractiveWorkbooks() {
           ))}
         </div>
 
-        {/* Completed Workbooks */}
+        {/* Your Uploaded Workbooks Section */}
         {workbookProgress && workbookProgress.length > 0 && (
           <div className="mt-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Your Completed Workbooks</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {workbookProgress.map((progress: UserWorkbookProgress) => (
-                <Card key={progress.workbookId}>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Your Uploaded Workbooks</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {workbookProgress.map((wb: any) => (
+                <Card key={wb.id} className="hover:shadow-lg transition-shadow">
                   <CardHeader>
                     <CardTitle className="flex items-center justify-between">
-                      <span>Workbook Complete</span>
-                      <CheckCircle className="h-5 w-5 text-green-600" />
+                      <div className="flex items-center gap-3">
+                        <FileText className="h-5 w-5 text-scale-orange" />
+                        <span className="truncate">{wb.filename}</span>
+                      </div>
+                      <Badge variant={wb.status === 'completed' ? 'default' : 'secondary'}>
+                        {wb.status === 'completed' ? 'Ready' : 'Processing...'}
+                      </Badge>
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-gray-600 mb-4">
-                      Completed on {progress.completedAt?.toLocaleDateString()}
-                    </p>
-                    <Button className="w-full" variant="outline">
-                      <Download className="h-4 w-4 mr-2" />
-                      Download PDF
-                    </Button>
+                    <div className="space-y-3">
+                      <p className="text-sm text-gray-600 dark:text-gray-300">
+                        Uploaded {new Date(wb.uploadedAt).toLocaleDateString()}
+                      </p>
+                      {wb.status === 'completed' && wb.questions && (
+                        <p className="text-sm text-gray-600 dark:text-gray-300">
+                          {wb.questions.length} questions extracted
+                        </p>
+                      )}
+                      
+                      {wb.status === 'completed' ? (
+                        <div className="flex gap-2">
+                          <Button 
+                            onClick={() => handleViewWorkbook(wb)}
+                            className="flex-1"
+                            variant="outline"
+                          >
+                            <Eye className="h-4 w-4 mr-2" />
+                            View & Complete
+                          </Button>
+                          <Button 
+                            onClick={() => handleDownloadWorkbook(wb)}
+                            variant="outline"
+                            size="sm"
+                          >
+                            <Download className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2 text-sm text-gray-500">
+                          <RefreshCw className="h-4 w-4 animate-spin" />
+                          Processing your workbook...
+                        </div>
+                      )}
+                    </div>
                   </CardContent>
                 </Card>
               ))}
