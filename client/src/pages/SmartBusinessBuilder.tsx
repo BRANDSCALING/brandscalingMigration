@@ -45,70 +45,70 @@ const QUESTIONS = {
       id: 'idea',
       title: 'What is your business idea?',
       description: 'Describe your core business concept in concrete terms.',
-      placeholder: 'Example: A B2B SaaS platform that automates inventory management for retail chains.',
+      placeholder: '',
       tooltip: 'Be specific about the product/service and target market.'
     },
     {
       id: 'problem',
       title: 'What problem are you solving?',
       description: 'Define the exact problem your solution addresses.',
-      placeholder: 'Example: Retail stores lose $1.1 trillion annually due to poor inventory management.',
+      placeholder: '',
       tooltip: 'Quantify the problem with data where possible.'
     },
     {
       id: 'audience',
       title: 'Who is your target customer?',
       description: 'Define your ideal customer profile with specifics.',
-      placeholder: 'Example: Retail chain managers with 10-500 locations, $5M+ annual revenue.',
+      placeholder: '',
       tooltip: 'Include demographics, company size, and pain points.'
     },
     {
       id: 'timing',
       title: 'Why is now the right time?',
       description: 'What market conditions make this opportunity viable now?',
-      placeholder: 'Example: Post-COVID supply chain issues increased demand for automated solutions.',
+      placeholder: '',
       tooltip: 'Consider market trends, technology changes, or regulatory shifts.'
     },
     {
       id: 'offer',
       title: 'What is your core offering?',
       description: 'Describe your product/service and its key features.',
-      placeholder: 'Example: Cloud-based dashboard with real-time inventory tracking and predictive analytics.',
+      placeholder: '',
       tooltip: 'Focus on the main value proposition and deliverables.'
     },
     {
       id: 'monetization',
       title: 'How will you generate revenue?',
       description: 'Outline your pricing model and revenue streams.',
-      placeholder: 'Example: Monthly SaaS subscription: $299/location + $0.10 per transaction.',
+      placeholder: '',
       tooltip: 'Be specific about pricing structure and payment terms.'
     },
     {
       id: 'costs',
       title: 'What are your main cost drivers?',
       description: 'List the primary expenses to deliver your solution.',
-      placeholder: 'Example: Cloud hosting ($2K/month), development team ($15K/month), customer support.',
+      placeholder: '',
       tooltip: 'Include both fixed and variable costs.'
     },
     {
       id: 'differentiation',
       title: 'What makes you different from competitors?',
       description: 'Identify your unique competitive advantages.',
-      placeholder: 'Example: Only solution with AI-powered demand forecasting and 99.9% uptime SLA.',
+      placeholder: '',
       tooltip: 'Focus on features, performance, or business model differences.'
     },
     {
       id: 'obstacles',
       title: 'What are your main launch obstacles?',
       description: 'Identify the biggest barriers to getting started.',
-      placeholder: 'Example: Need $50K for initial development, acquiring first 10 pilot customers.',
+      placeholder: '',
       tooltip: 'Include funding, technical, regulatory, or market challenges.'
     },
     {
       id: 'support',
       title: 'What support do you need most?',
       description: 'Specify the help required to move forward.',
-      placeholder: 'Example: Technical co-founder, $100K seed funding, introductions to retail executives.',
+      placeholder: '',
       tooltip: 'Prioritize the most critical gaps in your current setup.'
     }
   ],

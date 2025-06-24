@@ -69,12 +69,6 @@ export default function InteractiveWorkbooks() {
 
   // Workbooks will be loaded from uploaded files - no mock data
   const mockWorkbooks: Workbook[] = [];
-          required: true,
-          dnaSpecific: 'architect'
-        },
-        {
-          id: 'optimization_priorities',
-          question: 'Rate the importance of optimizing different areas (1-10)',
           type: 'scale',
           required: true,
           dnaSpecific: 'architect'

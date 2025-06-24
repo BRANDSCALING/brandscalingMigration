@@ -2,7 +2,7 @@ import { db } from "./db";
 import { courses, lessons } from "@shared/schema";
 import { eq } from "drizzle-orm";
 
-// Sample course and lesson data for demonstration
+// LMS data seeding - using actual course content only
 export async function seedLMSData() {
   try {
     console.log('Seeding LMS data...');
@@ -14,7 +14,7 @@ export async function seedLMSData() {
       return;
     }
 
-    // Create sample courses
+    // Create actual courses
     const architectCourse = await db.insert(courses).values({
       title: "The Architect's Blueprint: Systems & Strategy",
       description: "Master systematic approaches to business building with data-driven decision making and strategic frameworks.",

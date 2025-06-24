@@ -255,12 +255,6 @@ export const DNA_SUBTYPES: Record<string, DNASubtype> = {
     nextSteps: 'Restore logical frameworks and structure'
   }
 };
-    operatingLoop: 'Thought → Emotion → Thought',
-    coreIdentity: 'You are the deep thinker, the system optimizer, the pattern master. You crave precision — but not just in action. In logic. In reasoning. In why. You observe everything. You spot gaps others overlook. Your perfectionism is methodical.',
-    oppositeAwareness: 'Alchemists confuse you — until they don\'t. You once dismissed their spontaneity as chaos… until you learned it holds truth you can\'t deduce, only feel. You\'re building emotional intelligence like a framework: with names, meanings, predictable reactions.',
-    edge: 'You don\'t just build — you optimize. You bring unparalleled depth, logic, foresight, and refinement. You tighten strategies. You catch inconsistencies. When you say it\'s solid, it usually is.',
-    risks: 'You may take too long to move — waiting for perfect data. You may default to isolation when overwhelmed by emotional noise. You may over-perfect when something just needs shipping.',
-    nextSteps: 'Build emotional fluency — not to become reactive, but to lead teams that don\'t think like you. Learn to ship MVPs before you\'re "ready." Remember: perfection is often built in public, not in isolation.',
     complement: {
       type: 'alchemist',
       name: 'The Magnetic Perfectionist',
