@@ -221,6 +221,35 @@ export class DatabaseStorage implements IStorage {
     return course;
   }
 
+  async getCoursesForStudent(userId: string): Promise<any[]> {
+    // Get user profile to check access tier
+    const user = await this.getUserProfile(userId);
+    const userTier = user?.accessTier || 'beginner';
+    
+    const allCourses = await db
+      .select()
+      .from(courses)
+      .where(eq(courses.isPublished, true))
+      .orderBy(desc(courses.createdAt));
+    
+    const coursesWithAccess = await Promise.all(
+      allCourses.map(async (course) => {
+        const hasAccess = this.checkTierAccess(userTier, course.accessTier as string);
+        const progressData = await this.getCourseProgress(userId, course.id);
+        
+        return {
+          ...course,
+          hasAccess,
+          progress: progressData.progress,
+          completedLessons: progressData.completedLessons,
+          totalLessons: progressData.totalLessons
+        };
+      })
+    );
+    
+    return coursesWithAccess;
+  }
+
   async getCourseWithLessons(courseId: number, userId: string): Promise<any> {
     const course = await this.getCourseById(courseId);
     if (!course) return null;

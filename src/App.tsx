@@ -26,6 +26,12 @@ import Leads from '../client/src/pages/admin/Leads';
 import EmailCampaigns from '../client/src/pages/admin/EmailCampaigns';
 import AdminSettings from '../client/src/pages/admin/AdminSettings';
 
+// Student pages
+import { StudentLayout } from '../client/src/layouts/StudentLayout';
+import { StudentDashboard } from '../client/src/pages/student/StudentDashboard';
+import { StudentCourses } from '../client/src/pages/student/StudentCourses';
+import { StudentCourseView } from '../client/src/pages/student/StudentCourseView';
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -36,7 +42,7 @@ const queryClient = new QueryClient({
 });
 
 function AppRoutes() {
-  const { user, loading, isAdmin } = useAuth();
+  const { user, loading, isAdmin, isStudent } = useAuth();
 
   if (loading) {
     return (
@@ -128,6 +134,32 @@ function AppRoutes() {
             <AdminLayout>
               <AdminSettings />
             </AdminLayout>
+          </Route>
+        </>
+      )}
+
+      {/* Student routes */}
+      {isStudent && (
+        <>
+          <Route path="/student">
+            <StudentLayout>
+              <StudentDashboard />
+            </StudentLayout>
+          </Route>
+          <Route path="/student/courses">
+            <StudentLayout>
+              <StudentCourses />
+            </StudentLayout>
+          </Route>
+          <Route path="/student/course/:id">
+            <StudentLayout>
+              <StudentCourseView />
+            </StudentLayout>
+          </Route>
+          <Route path="/test-student">
+            <StudentLayout>
+              <StudentDashboard />
+            </StudentLayout>
           </Route>
         </>
       )}
