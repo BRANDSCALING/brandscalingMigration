@@ -255,38 +255,6 @@ export const DNA_SUBTYPES: Record<string, DNASubtype> = {
     nextSteps: 'Restore logical frameworks and structure'
   }
 };
-  
-  // BLURRED IDENTITY SUBTYPES
-  'overthinker': {
-    id: 'overthinker',
-    name: 'The Overthinker',
-    emoji: '🌀',
-    category: 'blurred',
-    operatingLoop: 'Disrupted → Thought → Emotion → Thought → Delay → Overthink → Disengage',
-    coreIdentity: 'You are thoughtful, intelligent, and observant — but paralysed by indecision. You think of every angle. Every consequence. Every possible failure. You try to solve the whole puzzle before you\'ve placed the first piece.',
-    oppositeAwareness: 'You\'re not confused because you lack skill. You\'re confused because you never committed to one way of operating. You absorb the world like an Alchemist — but you try to solve it like an Architect.',
-    edge: 'You can see what others miss. You anticipate problems before they occur. You prepare, study, analyse, predict. You bring strategic foresight and emotional sensitivity.',
-    risks: 'You freeze before decisions. You second-guess after decisions. You play both mental chess and emotional poker — but never finish the game. You delay action because you haven\'t made peace with imperfection.',
-    nextSteps: 'You must choose a dominant operating system — and honour it fully. Are you emotion-first or logic-first? Pick one. Deepen it. Build awareness of the other, after you commit. Start imperfectly. Finish simply.'
-  },
-  
-  'performer': {
-    id: 'performer',
-    name: 'The Performer',
-    emoji: '🎭',
-    category: 'blurred',
-    operatingLoop: 'Performance → Validation → Emotional Overload → Doubt → Withdrawal → Reinvention',
-    coreIdentity: 'You are magnetic, expressive, adaptable. You lead with charisma and read the room better than most. But your inner identity is fragmented — and you\'ve been performing "versions" of success without alignment.',
-    oppositeAwareness: 'You fear being irrelevant, misunderstood, or invisible. So you shape-shift. You read the room and become what\'s needed. But when the room empties… you forget who you were before.',
-    edge: 'You can sell. You can energize. You can adapt. You\'re a born connector. You understand people instantly. You can speak to any audience — and often lead them, even when you don\'t feel ready.',
-    risks: 'You rely on charisma instead of clarity. You copy instead of committing. You burn energy keeping up a front — instead of building a foundation. You are exhausted not from doing too much — but from being too many.',
-    nextSteps: 'Choose your true default DNA. Not what looks good. Not what sells well. What feels like home. Are you emotion-first or logic-first? Which lens creates peace — not just performance?'
-  },
-  
-  'self-forsaker': {
-    id: 'self-forsaker',
-    name: 'The Self-Forsaker',
-    emoji: '🕳️',
     category: 'blurred',
     operatingLoop: 'Suppressed Emotion → Thought → Justification',
     coreIdentity: 'You are a high-functioning operator — but something always feels off. You act like an Architect, yet you were never one to begin with. You once led with intuition, emotion, and energetic presence — but somewhere along the way, you shut it down.',
