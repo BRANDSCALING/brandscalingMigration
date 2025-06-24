@@ -239,6 +239,7 @@ export default function EntrepreneurialDnaQuiz() {
   const [result, setResult] = useState<QuizResult | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [retakeInfo, setRetakeInfo] = useState<{ canRetake: boolean; nextRetakeDate?: string } | null>(null);
+  const [isCheckingEligibility, setIsCheckingEligibility] = useState(true);
 
   useEffect(() => {
     if (!user) {
@@ -249,6 +250,7 @@ export default function EntrepreneurialDnaQuiz() {
   }, [user, setLocation]);
 
   const checkRetakeEligibility = async () => {
+    setIsCheckingEligibility(true);
     try {
       const data = await apiRequest('GET', '/api/quiz/entrepreneurial-dna/eligibility');
       if (!data.canRetake) {
@@ -259,6 +261,8 @@ export default function EntrepreneurialDnaQuiz() {
       }
     } catch (error) {
       console.error('Error checking retake eligibility:', error);
+    } finally {
+      setIsCheckingEligibility(false);
     }
   };
 
