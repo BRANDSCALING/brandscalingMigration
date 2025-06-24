@@ -29,11 +29,7 @@ function SimpleRouter() {
   return (
     <Switch>
       <Route path="/entrepreneurial-dna-quiz" component={QuizPage} />
-      <Route path="/quiz/result">
-        <Layout>
-          <QuizResult />
-        </Layout>
-      </Route>
+
       <Route path="/">
         <Layout>
           <Landing />

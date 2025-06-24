@@ -316,9 +316,8 @@ export class DatabaseStorage implements IStorage {
     const course = await this.getCourseById(lesson.courseId);
     if (!course) return null;
     
-    // Get user's DNA type for personalized content
-    const dnaResult = await this.getLatestEntrepreneurialDnaQuizResponse(userId);
-    const dominantType = dnaResult?.defaultType || 'Undeclared';
+    // DNA personalization removed
+    const dominantType = 'Undeclared';
     
     // Check if lesson is completed
     const progressData = await this.getLessonProgress(userId, lesson.courseId, lessonId);
@@ -562,7 +561,7 @@ export class DatabaseStorage implements IStorage {
 
   async getPersonalizedDashboard(userId: string): Promise<any> {
     const user = await this.getUser(userId);
-    const dnaResult = await this.getLatestEntrepreneurialDnaQuizResponse(userId);
+    // DNA result functionality removed
     
     // Get user's courses with progress
     const coursesWithProgress = await this.getCoursesWithAccess(userId);
@@ -570,11 +569,8 @@ export class DatabaseStorage implements IStorage {
     // Get recent progress
     const recentProgress = await this.getUserProgress(userId);
     
-    // Get recommended courses based on DNA type
-    const dominantType = dnaResult?.defaultType?.toLowerCase() || 'undeclared';
-    const recommendedCourses = coursesWithProgress.filter(course => 
-      course.track === dominantType || course.track === 'both'
-    ).slice(0, 3);
+    // Get recommended courses - no DNA filtering
+    const recommendedCourses = coursesWithProgress.slice(0, 3);
     
     // Get next lessons
     const inProgressCourses = coursesWithProgress.filter(course => 
