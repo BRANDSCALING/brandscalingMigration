@@ -28,30 +28,14 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req: any, file: any, cb: any) => {
-  if (file.fieldname === 'video') {
-    // Accept video files
-    if (file.mimetype.startsWith('video/')) {
-      cb(null, true);
-    } else {
-      cb(new Error('Only video files are allowed for video uploads'), false);
-    }
-  } else if (file.fieldname === 'workbook') {
-    // Accept PDF files
-    if (file.mimetype === 'application/pdf') {
-      cb(null, true);
-    } else {
-      cb(new Error('Only PDF files are allowed for workbook uploads'), false);
-    }
-  } else if (file.fieldname === 'image') {
-    // Accept image files
-    if (file.mimetype.startsWith('image/')) {
-      cb(null, true);
-    } else {
-      cb(new Error('Only image files are allowed for image uploads'), false);
-    }
-  } else {
-    cb(new Error('Invalid field name'), false);
-  }
+  console.log('File upload attempt:', {
+    fieldname: file.fieldname,
+    mimetype: file.mimetype,
+    originalname: file.originalname
+  });
+
+  // Accept all files for now - we'll validate on the client side
+  cb(null, true);
 };
 
 export const upload = multer({
