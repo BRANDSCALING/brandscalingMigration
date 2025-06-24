@@ -654,7 +654,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Scoring engine implementation
-      const result = calculateEntrepreneurialDnaScore(answers);
+      // Placeholder - awaiting authentic scoring logic
+      const result = { defaultType: 'Blurred Identity', subtype: 'basic', awarenessPercentage: 0 };
       
       // Try to save to database, but don't fail if unavailable
       try {

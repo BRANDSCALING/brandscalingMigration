@@ -10,7 +10,7 @@ import { ENTREPRENEURIAL_DNA_QUESTIONS, DNA_SUBTYPES } from '@shared/entrepreneu
 
 // Fallback questions if import fails
 const QUIZ_QUESTIONS = ENTREPRENEURIAL_DNA_QUESTIONS;
-import DnaResultDisplay from '@/components/DnaResultDisplay';
+// Removed unauthorized DNA result display
 
 interface Question {
   id: number;
