@@ -31,6 +31,7 @@ import { StudentLayout } from './layouts/StudentLayout';
 import { StudentDashboard } from './pages/student/StudentDashboard';
 import { StudentCourses } from './pages/student/StudentCourses';
 import { StudentCourseView } from './pages/student/StudentCourseView';
+import TestPage from './pages/TestPage';
 
 
 
@@ -107,6 +108,9 @@ function AppRoutes() {
           <Community />
         </PublicLayout>
       </Route>
+      
+      {/* Test route */}
+      <Route path="/test" component={TestPage} />
       
       {/* Student routes */}
       <Route path="/student">

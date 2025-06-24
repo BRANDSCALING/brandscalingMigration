@@ -130,11 +130,22 @@ function Router() {
       <Route path="/dev-login" component={DevLogin} />
       <Route path="/admin-login" component={AdminLogin} />
 
-      {/* Student Route */}
-      <Route
-        path="/student"
-        component={StudentDashboard}
-      />
+      {/* Student Routes */}
+      <Route path="/student">
+        <Layout>
+          <StudentDashboard />
+        </Layout>
+      </Route>
+      <Route path="/student/courses">
+        <Layout>
+          <StudentCourses />
+        </Layout>
+      </Route>
+      <Route path="/student/course/:id">
+        <Layout>
+          <StudentCourseView />
+        </Layout>
+      </Route>
       <Route
         path="/workbooks"
         component={() => (
