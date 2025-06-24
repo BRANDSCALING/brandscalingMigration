@@ -67,15 +67,46 @@ export default function AdminCourses() {
     order: 1,
   });
 
-  // Fetch courses
+  // Fetch courses with admin authentication
   const { data: courses = [], isLoading: coursesLoading } = useQuery({
     queryKey: ["/api/admin/courses"],
+    queryFn: async () => {
+      return fetch("/api/admin/courses", {
+        method: "GET",
+        headers: {
+          "x-admin-id": "admin-dev-12345"
+        },
+        credentials: "include"
+      }).then(async (res) => {
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({ error: res.statusText }));
+          throw new Error(errorData.error || res.statusText);
+        }
+        return res.json();
+      });
+    },
     retry: false,
   });
 
-  // Fetch lessons for selected course
+  // Fetch lessons for selected course with admin authentication
   const { data: lessons = [], refetch: refetchLessons } = useQuery({
     queryKey: ["/api/admin/courses", selectedCourseForLessons?.id, "lessons"],
+    queryFn: async () => {
+      if (!selectedCourseForLessons) return [];
+      return fetch(`/api/admin/courses/${selectedCourseForLessons.id}/lessons`, {
+        method: "GET",
+        headers: {
+          "x-admin-id": "admin-dev-12345"
+        },
+        credentials: "include"
+      }).then(async (res) => {
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({ error: res.statusText }));
+          throw new Error(errorData.error || res.statusText);
+        }
+        return res.json();
+      });
+    },
     enabled: !!selectedCourseForLessons,
     retry: false,
   });
