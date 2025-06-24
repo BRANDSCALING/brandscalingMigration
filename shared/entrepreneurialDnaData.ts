@@ -255,15 +255,6 @@ export const DNA_SUBTYPES: Record<string, DNASubtype> = {
     nextSteps: 'Restore logical frameworks and structure'
   }
 };
-      description: 'Emotionally structured. Energetically aligned. Finishes what she starts — with perfection that feels right.'
-    }
-  },
-  
-  'ultimate-strategist': {
-    id: 'ultimate-strategist',
-    name: 'The Ultimate Strategist',
-    emoji: '🧊',
-    category: 'architect',
     operatingLoop: 'Thought → Emotion → Thought',
     coreIdentity: 'You are the most refined form of the Architect. You operate through crystal logic, silent clarity, and deliberate precision. You don\'t just solve — you solve for scale. You don\'t just build — you build quietly, sustainably, and flawlessly.',
     oppositeAwareness: 'You finally understand that you don\'t really understand the Alchemist — so they no longer frustrate you, but now inspire you. You\'ve learned to translate emotion into enough logic. You can read the energetic tone of a room and hold space when needed.',

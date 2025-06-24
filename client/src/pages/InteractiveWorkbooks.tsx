@@ -69,36 +69,6 @@ export default function InteractiveWorkbooks() {
 
   // Workbooks will be loaded from uploaded files - no mock data
   const mockWorkbooks: Workbook[] = [];
-        }
-      ]
-    },
-    {
-      id: 'alchemist-vision-alignment',
-      title: 'Vision & Purpose Alignment',
-      description: 'Connect deeply with your business purpose and emotional drivers',
-      category: 'Purpose',
-      difficulty: 'intermediate',
-      dnaTrack: 'alchemist',
-      estimatedTime: 40,
-      requiredTier: 'beginner',
-      questions: [
-        {
-          id: 'core_purpose',
-          question: 'What deeply drives you to build this business? Connect with your emotions.',
-          type: 'textarea',
-          required: true,
-          dnaSpecific: 'alchemist'
-        },
-        {
-          id: 'vision_clarity',
-          question: 'Describe your vision as if you\'re painting a vivid picture',
-          type: 'textarea',
-          required: true,
-          dnaSpecific: 'alchemist'
-        }
-      ]
-    }
-  ];
 
   const { data: userProfile } = useQuery({
     queryKey: ['/api/auth/user'],
