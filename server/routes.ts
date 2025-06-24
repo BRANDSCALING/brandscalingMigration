@@ -859,6 +859,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Upload workbook file
   app.post('/api/workbooks/upload', uploadWorkbooks.single('file'), async (req, res) => {
     try {
+      // Allow anonymous uploads for testing
       const userId = req.user?.uid || 'anonymous-user';
       const file = req.file;
       
@@ -878,15 +879,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Process the workbook immediately (simulate processing)
       setTimeout(async () => {
         try {
+          console.log(`Processing workbook ${uploadedWorkbook.id}...`);
           await storage.updateUploadedWorkbookStatus(
             uploadedWorkbook.id,
             'completed',
             ['Sample Question 1: What is your business goal?', 'Sample Question 2: Who is your target audience?']
           );
+          console.log(`Workbook ${uploadedWorkbook.id} processing complete`);
         } catch (error) {
           console.error('Error updating workbook status:', error);
         }
-      }, 2000);
+      }, 3000);
 
       res.json({
         success: true,

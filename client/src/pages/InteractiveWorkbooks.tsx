@@ -159,9 +159,10 @@ export default function InteractiveWorkbooks() {
     retry: false
   });
 
-  const { data: workbookProgress } = useQuery({
+  const { data: workbookProgress, refetch: refetchProgress } = useQuery({
     queryKey: ['/api/workbooks/progress'],
-    retry: false
+    retry: false,
+    refetchInterval: 2000 // Poll every 2 seconds
   });
 
   const generateWorkbookMutation = useMutation({
@@ -190,6 +191,7 @@ export default function InteractiveWorkbooks() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/workbooks/progress'] });
+      refetchProgress();
       setUploadedFiles([]);
     },
   });

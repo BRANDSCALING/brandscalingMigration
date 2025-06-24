@@ -494,18 +494,24 @@ export class DatabaseStorage implements IStorage {
   }
 
   async saveUploadedWorkbook(userId: string, filename: string, originalName: string, fileType: string, fileUrl: string): Promise<any> {
-    const [uploaded] = await db
-      .insert(uploadedWorkbooks)
-      .values({
-        userId,
-        filename,
-        originalName,
-        fileType,
-        fileUrl,
-        processingStatus: 'processing'
-      })
-      .returning();
-    return uploaded;
+    try {
+      const [uploaded] = await db
+        .insert(uploadedWorkbooks)
+        .values({
+          userId,
+          filename,
+          originalName,
+          fileType,
+          fileUrl,
+          processingStatus: 'processing'
+        })
+        .returning();
+      console.log('Saved workbook to database:', uploaded);
+      return uploaded;
+    } catch (error) {
+      console.error('Error saving workbook:', error);
+      throw error;
+    }
   }
 
   async updateUploadedWorkbookStatus(id: number, status: string, extractedQuestions?: string[]): Promise<any> {
