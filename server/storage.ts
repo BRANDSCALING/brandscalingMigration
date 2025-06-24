@@ -501,10 +501,39 @@ export class DatabaseStorage implements IStorage {
         filename,
         originalName,
         fileType,
-        fileUrl
+        fileUrl,
+        processingStatus: 'processing'
       })
       .returning();
     return uploaded;
+  }
+
+  async updateUploadedWorkbookStatus(id: number, status: string, extractedQuestions?: string[]): Promise<any> {
+    const [updated] = await db
+      .update(uploadedWorkbooks)
+      .set({
+        processingStatus: status,
+        extractedQuestions: extractedQuestions || null
+      })
+      .where(eq(uploadedWorkbooks.id, id))
+      .returning();
+    return updated;
+  }
+
+  async getUploadedWorkbook(id: number): Promise<any> {
+    const [workbook] = await db
+      .select()
+      .from(uploadedWorkbooks)
+      .where(eq(uploadedWorkbooks.id, id));
+    return workbook;
+  }
+
+  async getUserUploadedWorkbooks(userId: string): Promise<any[]> {
+    return await db
+      .select()
+      .from(uploadedWorkbooks)
+      .where(eq(uploadedWorkbooks.userId, userId))
+      .orderBy(desc(uploadedWorkbooks.createdAt));
   }
 
   private checkTierAccess(userTier: string, requiredTier: string): boolean {

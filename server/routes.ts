@@ -852,19 +852,70 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Upload workbook file
-  app.post('/api/workbooks/upload', async (req, res) => {
+  app.post('/api/workbooks/upload', uploadWorkbooks.single('file'), async (req, res) => {
     try {
       const userId = req.user?.uid || 'anonymous-user';
+      const file = req.file;
       
-      // Mock file processing for now
+      if (!file) {
+        return res.status(400).json({ error: 'No file uploaded' });
+      }
+
+      // Save uploaded workbook to database
+      const uploadedWorkbook = await storage.saveUploadedWorkbook(
+        userId,
+        file.filename,
+        file.originalname,
+        file.mimetype,
+        `/uploads/workbooks/${file.filename}`
+      );
+
+      // Process the workbook immediately (simulate processing)
+      setTimeout(async () => {
+        try {
+          await storage.updateUploadedWorkbookStatus(
+            uploadedWorkbook.id,
+            'completed',
+            ['Sample Question 1: What is your business goal?', 'Sample Question 2: Who is your target audience?']
+          );
+        } catch (error) {
+          console.error('Error updating workbook status:', error);
+        }
+      }, 2000);
+
       res.json({
         success: true,
-        message: 'File uploaded successfully. Processing will begin shortly.',
-        fileId: Date.now().toString()
+        message: 'File uploaded successfully. Processing has begun.',
+        fileId: uploadedWorkbook.id,
+        filename: file.originalname,
+        status: 'processing'
       });
     } catch (error) {
       console.error('Error uploading workbook:', error);
       res.status(500).json({ message: 'Failed to upload workbook' });
+    }
+  });
+
+  // Get workbook processing status
+  app.get('/api/workbooks/status/:fileId', async (req, res) => {
+    try {
+      const { fileId } = req.params;
+      const workbook = await storage.getUploadedWorkbook(parseInt(fileId));
+      
+      if (!workbook) {
+        return res.status(404).json({ error: 'Workbook not found' });
+      }
+
+      res.json({
+        id: workbook.id,
+        filename: workbook.originalName,
+        status: workbook.processingStatus,
+        questions: workbook.extractedQuestions || [],
+        uploadedAt: workbook.createdAt
+      });
+    } catch (error) {
+      console.error('Error getting workbook status:', error);
+      res.status(500).json({ message: 'Failed to get workbook status' });
     }
   });
 

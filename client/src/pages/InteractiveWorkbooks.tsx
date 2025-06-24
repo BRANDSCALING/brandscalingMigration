@@ -188,6 +188,10 @@ export default function InteractiveWorkbooks() {
       if (!response.ok) throw new Error('Failed to upload workbook');
       return response.json();
     },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/workbooks/progress'] });
+      setUploadedFiles([]);
+    },
   });
 
   const handleAnswerChange = (questionId: string, answer: string) => {
@@ -220,6 +224,14 @@ export default function InteractiveWorkbooks() {
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
+    
+    // Upload each file immediately
+    files.forEach(file => {
+      const formData = new FormData();
+      formData.append('file', file);
+      uploadWorkbookMutation.mutate(formData);
+    });
+    
     setUploadedFiles(prev => [...prev, ...files]);
   };
 
