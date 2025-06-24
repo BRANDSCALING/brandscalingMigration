@@ -254,39 +254,7 @@ export const DNA_SUBTYPES: Record<string, DNASubtype> = {
     risks: 'Lack of structure, emotional overwhelm',
     nextSteps: 'Restore logical frameworks and structure'
   }
-  
-  'magnetic-perfectionist': {
-    id: 'magnetic-perfectionist',
-    name: 'The Magnetic Perfectionist',
-    emoji: '🧠',
-    category: 'alchemist',
-    operatingLoop: 'Emotion → Thought → Emotion',
-    coreIdentity: 'You\'ve evolved past chaos. You\'ve become organised in your own intuitive way — with rhythms, internal rituals, and emotional deadlines. You don\'t move fast — you move precisely. You finish not because someone told you to, but because your energy demands resolution.',
-    oppositeAwareness: 'You respect systems — not because they\'re logical, but because you\'ve alchemised them into rhythm. You\'ve found a way to stay creative and consistent — not by copying Architects, but by organising your own energy.',
-    edge: 'You always finish what you start — not through pressure, but precision. You protect your energy by completing before burnout. You\'ve turned perfectionism into organised momentum.',
-    risks: 'You may over-own delivery and resist delegation. You rarely stop — and only rest when everything\'s perfect. You set the standard so high that you often walk alone.',
-    nextSteps: 'You don\'t need to loosen your standards — you need collaborators who match your delivery frequency. Protect your internal momentum with clear recovery rituals. Stop adapting to rigid workflows; your rhythm is the system.',
-    complement: {
-      type: 'architect',
-      name: 'The Internal Analyzer',
-      description: 'Strategic refiner. Pattern-mapper. Precision over speed.'
-    }
-  },
-  
-  'energetic-empath': {
-    id: 'energetic-empath',
-    name: 'The Energetic Empath',
-    emoji: '🌊',
-    category: 'alchemist',
-    operatingLoop: 'Emotion → Thought → Emotion',
-    coreIdentity: 'You don\'t just read energy — you radiate it. You walk into a room and people feel better. Your aura shifts atmospheres. You\'re emotionally generous, naturally magnetic, and intuitively in tune with what others need. But you also absorb just as much as you emit.',
-    oppositeAwareness: 'You feel everything — and you trust your gut above all else. You rarely see the need for logic until emotion fails you. You\'re learning to see through your own biases, to pause before reacting to energy, and to break emotional truth into clear choices.',
-    edge: 'Aura. You light up rooms and shift moods. Emotional leadership. You make people feel seen, safe, and sparked. Intuition. You sense motives, friction, truth — before words are said.',
-    risks: 'You over-identify with others\' energy. You bias decisions based on how someone feels — not what\'s true. You take on responsibility that isn\'t yours and burn out trying to carry everyone.',
-    nextSteps: 'Strategic boundaries that separate your state from theirs. Logic translators who can simplify your world without silencing your instincts. Filters — energetic, emotional, and operational.',
-    complement: {
-      type: 'architect',
-      name: 'The Master Strategist',
+};
       description: 'Clear, calm, and logic-led. Protects your energy by simplifying the world.'
     }
   },
