@@ -255,18 +255,6 @@ export const DNA_SUBTYPES: Record<string, DNASubtype> = {
     nextSteps: 'Restore logical frameworks and structure'
   }
 };
-    operatingLoop: 'Thought → Emotion → Thought',
-    coreIdentity: 'You are the most refined form of the Architect. You operate through crystal logic, silent clarity, and deliberate precision. You don\'t just solve — you solve for scale. You don\'t just build — you build quietly, sustainably, and flawlessly.',
-    oppositeAwareness: 'You finally understand that you don\'t really understand the Alchemist — so they no longer frustrate you, but now inspire you. You\'ve learned to translate emotion into enough logic. You can read the energetic tone of a room and hold space when needed.',
-    edge: 'You spot what others miss. You stay in control and calculate when others react. You think in frameworks. You move in phases. You win through long games. You are often the quietest in the room — and still the most respected.',
-    risks: 'You can isolate. You can over-control. You avoid asking for help — because others rarely meet your standards. You may over-index on logic and still forget that people don\'t move on precision alone.',
-    nextSteps: 'Build teams who can match your pace — or at least respect it. Learn to delegate without lowering standards. Let emotion inform your vision — not derail it. Practice finishing faster — not sloppier.',
-    complement: {
-      type: 'alchemist',
-      name: 'The Ultimate Alchemist',
-      description: 'Fire, aura, empathy, precision, magnetism — all in one. You build for scale. She ignites the future.'
-    }
-  },
   
   // BLURRED IDENTITY SUBTYPES
   'overthinker': {
