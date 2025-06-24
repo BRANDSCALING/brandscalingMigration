@@ -260,7 +260,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Apply auth middleware to all other API routes (except auth endpoint)
   app.use('/api', (req, res, next) => {
     // Skip auth middleware for already handled routes
-    if (req.path === '/auth/user' || req.path === '/auth/admin-login' || req.path === '/auth/student-login' || req.path === '/auth/student-signup' || req.path === '/dev/create-admin' || req.path === '/ai-agents/chat') {
+    if (req.path === '/auth/user' || req.path === '/auth/admin-login' || req.path === '/auth/student-login' || req.path === '/auth/student-signup' || req.path === '/dev/create-admin' || req.path === '/ai-agents/chat' || req.path === '/workbooks/upload' || req.path === '/workbooks/progress') {
       return next();
     }
     
