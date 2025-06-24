@@ -117,70 +117,70 @@ const QUESTIONS = {
       id: 'idea',
       title: 'What vision is calling to you?',
       description: 'Share the business idea that excites and energizes you.',
-      placeholder: 'Example: Creating a sanctuary where busy entrepreneurs can reconnect with their purpose.',
+      placeholder: '',
       tooltip: 'Describe what feels alive and meaningful to you.'
     },
     {
       id: 'problem',
       title: 'What pain are you here to heal?',
       description: 'What struggle or frustration do you feel called to address?',
-      placeholder: 'Example: Entrepreneurs burning out because they\'ve lost connection to their deeper why.',
+      placeholder: '',
       tooltip: 'Think about the emotional or spiritual impact of this problem.'
     },
     {
       id: 'audience',
       title: 'Who are you meant to serve?',
       description: 'Describe the people whose lives you want to transform.',
-      placeholder: 'Example: High-achieving entrepreneurs who feel successful but empty inside.',
+      placeholder: '',
       tooltip: 'Focus on the person behind the title - their hopes and fears.'
     },
     {
       id: 'timing',
       title: 'Why is this your moment?',
       description: 'What signs tell you this is the right time to step forward?',
-      placeholder: 'Example: The pandemic made people question what truly matters in business.',
+      placeholder: '',
       tooltip: 'Consider cultural shifts, personal readiness, or collective awakening.'
     },
     {
       id: 'offer',
       title: 'How will you create transformation?',
       description: 'Describe the experience or journey you\'ll guide people through.',
-      placeholder: 'Example: A 90-day immersive program combining business strategy with mindfulness practices.',
+      placeholder: '',
       tooltip: 'Think about the transformation, not just the deliverable.'
     },
     {
       id: 'monetization',
       title: 'How will abundance flow to you?',
       description: 'What feels aligned as an exchange for your gifts?',
-      placeholder: 'Example: $5,000 for the 90-day transformation journey, payment plans available.',
+      placeholder: '',
       tooltip: 'Price based on transformation value, not just time or materials.'
     },
     {
       id: 'costs',
       title: 'What energy and resources will you invest?',
       description: 'What will it take from you to deliver this work?',
-      placeholder: 'Example: Deep 1:1 time with clients, retreat venue costs, ongoing certification training.',
+      placeholder: '',
       tooltip: 'Consider emotional energy, time investment, and financial costs.'
     },
     {
       id: 'differentiation',
       title: 'What makes your approach uniquely yours?',
       description: 'What special perspective or gift do you bring?',
-      placeholder: 'Example: I combine 15 years of business success with shamanic healing practices.',
+      placeholder: '',
       tooltip: 'Think about your unique life experience and perspective.'
     },
     {
       id: 'obstacles',
       title: 'What fears or resistance are you facing?',
       description: 'What internal or external blocks might hold you back?',
-      placeholder: 'Example: Imposter syndrome about charging premium prices, fear of being too vulnerable.',
+      placeholder: '',
       tooltip: 'Include both practical challenges and inner resistance.'
     },
     {
       id: 'support',
       title: 'What support would feel most nourishing?',
       description: 'What help would allow you to show up fully in this work?',
-      placeholder: 'Example: A business mentor who understands spiritual entrepreneurship, marketing support.',
+      placeholder: '',
       tooltip: 'Think about what would make you feel held and supported.'
     }
   ]

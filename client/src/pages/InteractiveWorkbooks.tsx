@@ -69,9 +69,6 @@ export default function InteractiveWorkbooks() {
 
   // Workbooks will be loaded from uploaded files - no mock data
   const mockWorkbooks: Workbook[] = [];
-          type: 'scale',
-          required: true,
-          dnaSpecific: 'architect'
         }
       ]
     },

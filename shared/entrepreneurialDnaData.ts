@@ -255,9 +255,6 @@ export const DNA_SUBTYPES: Record<string, DNASubtype> = {
     nextSteps: 'Restore logical frameworks and structure'
   }
 };
-    complement: {
-      type: 'alchemist',
-      name: 'The Magnetic Perfectionist',
       description: 'Emotionally structured. Energetically aligned. Finishes what she starts — with perfection that feels right.'
     }
   },
