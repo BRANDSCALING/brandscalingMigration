@@ -446,14 +446,27 @@ export default function InteractiveWorkbooks() {
               </Button>
             </div>
             
-            {uploadedFiles.length > 0 && (
+            {(uploadedFiles.length > 0 || (workbookProgress && workbookProgress.length > 0)) && (
               <div className="mt-4">
                 <h4 className="font-medium mb-2">Uploaded Files:</h4>
                 <div className="space-y-2">
+                  {/* Recently uploaded files */}
                   {uploadedFiles.map((file, index) => (
-                    <div key={index} className="flex items-center justify-between p-2 bg-gray-100 rounded">
+                    <div key={`new-${index}`} className="flex items-center justify-between p-2 bg-gray-100 rounded">
                       <span className="text-sm">{file.name}</span>
-                      <Badge variant="outline">Pending Processing</Badge>
+                      <Badge variant="outline">
+                        {uploadWorkbookMutation.isPending ? 'Uploading...' : 'Processing...'}
+                      </Badge>
+                    </div>
+                  ))}
+                  
+                  {/* Workbooks from database */}
+                  {workbookProgress?.map((wb: any) => (
+                    <div key={wb.id} className="flex items-center justify-between p-2 bg-gray-100 rounded">
+                      <span className="text-sm">{wb.filename}</span>
+                      <Badge variant={wb.status === 'completed' ? 'default' : 'outline'}>
+                        {wb.status === 'completed' ? 'Ready' : 'Processing...'}
+                      </Badge>
                     </div>
                   ))}
                 </div>

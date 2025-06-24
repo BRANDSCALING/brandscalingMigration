@@ -11,7 +11,7 @@ import { resendClient } from "@shared/resendClient";
 import { z } from "zod";
 import Stripe from "stripe";
 import { hasAccess, getAllowedCourses, courseDatabase, getUpgradeTarget } from './tierPermissions';
-import { uploadFields } from './upload';
+import { uploadFields, uploadWorkbooks } from './upload';
 
 // Entrepreneurial DNA Quiz scoring engine
 function calculateEntrepreneurialDnaScore(answers: Record<number, string>) {
@@ -804,12 +804,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/workbooks/progress', async (req, res) => {
     try {
       const userId = req.user?.uid || 'anonymous-user';
-      if (userId === 'anonymous-user') {
-        return res.json([]);
-      }
       
-      const progress = await storage.getUserWorkbookProgress(userId);
-      res.json(progress);
+      // Get uploaded workbooks for this user
+      const uploadedWorkbooks = await storage.getUserUploadedWorkbooks(userId);
+      
+      res.json(uploadedWorkbooks.map((wb: any) => ({
+        id: wb.id,
+        filename: wb.originalName,
+        status: wb.processingStatus,
+        uploadedAt: wb.createdAt,
+        questions: wb.extractedQuestions || []
+      })));
     } catch (error) {
       console.error('Error fetching workbook progress:', error);
       res.status(500).json({ message: 'Failed to fetch workbook progress' });

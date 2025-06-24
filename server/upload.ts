@@ -51,3 +51,5 @@ export const uploadFields = upload.fields([
   { name: 'workbook', maxCount: 1 },
   { name: 'image', maxCount: 1 }
 ]);
+
+export const uploadWorkbooks = upload;
