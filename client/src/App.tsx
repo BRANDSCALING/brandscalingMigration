@@ -31,6 +31,7 @@ import AIAgents from "@/pages/AIAgents";
 import StudentDashboard from "@/pages/student/StudentDashboard";
 import InteractiveWorkbooks from "@/pages/InteractiveWorkbooks";
 import StudentCourses from "@/pages/student/StudentCourses";
+import StudentCourseView from "@/pages/student/StudentCourseView";
 import StudentWorkbooks from "@/pages/student/StudentWorkbooks";
 import StudentCommunity from "@/pages/student/StudentCommunity";
 
