@@ -255,15 +255,6 @@ export const DNA_SUBTYPES: Record<string, DNASubtype> = {
     nextSteps: 'Restore logical frameworks and structure'
   }
 };
-      description: 'Intuitive fire. Cultural instincts. Emotional magnetism. You bring form to their future.'
-    }
-  },
-  
-  'internal-analyzer': {
-    id: 'internal-analyzer',
-    name: 'The Internal Analyzer',
-    emoji: '🧩',
-    category: 'architect',
     operatingLoop: 'Thought → Emotion → Thought',
     coreIdentity: 'You are the deep thinker, the system optimizer, the pattern master. You crave precision — but not just in action. In logic. In reasoning. In why. You observe everything. You spot gaps others overlook. Your perfectionism is methodical.',
     oppositeAwareness: 'Alchemists confuse you — until they don\'t. You once dismissed their spontaneity as chaos… until you learned it holds truth you can\'t deduce, only feel. You\'re building emotional intelligence like a framework: with names, meanings, predictable reactions.',

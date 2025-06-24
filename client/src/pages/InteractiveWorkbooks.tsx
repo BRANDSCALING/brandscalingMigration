@@ -67,56 +67,8 @@ export default function InteractiveWorkbooks() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
 
-  // Mock data for demonstration
-  const mockWorkbooks: Workbook[] = [
-    {
-      id: 'business-model-canvas',
-      title: 'Business Model Canvas Workshop',
-      description: 'Comprehensive guide to creating your business model canvas with DNA-specific insights',
-      category: 'Strategy',
-      difficulty: 'intermediate',
-      dnaTrack: 'both',
-      estimatedTime: 45,
-      requiredTier: 'beginner',
-      questions: [
-        {
-          id: 'value_proposition',
-          question: 'What unique value does your business provide to customers?',
-          type: 'textarea',
-          required: true,
-          dnaSpecific: 'both'
-        },
-        {
-          id: 'customer_segments',
-          question: 'Who are your target customer segments?',
-          type: 'textarea',
-          required: true,
-          dnaSpecific: 'both'
-        },
-        {
-          id: 'approach_style',
-          question: 'How do you prefer to approach business planning?',
-          type: 'multiple_choice',
-          options: ['Systematic analysis', 'Intuitive exploration', 'Balanced approach'],
-          required: true,
-          dnaSpecific: 'both'
-        }
-      ]
-    },
-    {
-      id: 'architect-systems-design',
-      title: 'Systems & Process Design',
-      description: 'Structure your business operations with systematic frameworks',
-      category: 'Operations',
-      difficulty: 'advanced',
-      dnaTrack: 'architect',
-      estimatedTime: 60,
-      requiredTier: 'intermediate',
-      questions: [
-        {
-          id: 'current_processes',
-          question: 'Document your current business processes and identify inefficiencies',
-          type: 'textarea',
+  // Workbooks will be loaded from uploaded files - no mock data
+  const mockWorkbooks: Workbook[] = [];
           required: true,
           dnaSpecific: 'architect'
         },
