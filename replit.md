@@ -122,6 +122,7 @@ The Brandscaling Platform is a full-stack AI-powered business operating system t
 
 ```
 Changelog:
+- June 24, 2025. Logo video integration: Added animated logo video to Hero component with fallback to static logo for brand consistency
 - June 24, 2025. Phase 2 Complete: Student Course Content System fully functional - course browsing, filtering, DNA personalization, and course viewing with lesson management
 - June 24, 2025. Fixed routing issues and authentication context - student routes now properly accessible with DNA-based personalization 
 - June 24, 2025. Student course interface complete - professional UI with progress tracking, access control, and personalized recommendations
