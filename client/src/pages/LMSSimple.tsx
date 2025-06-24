@@ -81,15 +81,7 @@ export default function LMSSimple() {
     }
     
     import('@/lib/storage').then(({ safeStorage }) => {
-      const quizResult = safeStorage.getItem('quiz-result');
-      if (quizResult) {
-        try {
-          const result = JSON.parse(quizResult);
-          setSelectedMode(result.type?.toLowerCase() === 'alchemist' ? 'alchemist' : 'architect');
-        } catch (e) {
-          console.warn("Failed to parse quiz result", e);
-        }
-      }
+      // Quiz result parsing removed
     });
   }, [user]);
 

@@ -658,7 +658,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: 'Invalid quiz result' });
       }
       
-      await storage.upsertUserDnaResult(userId, result, percentages);
+      // DNA result storage removed
       res.json({ success: true, message: 'Quiz result saved' });
     } catch (error) {
       console.error("Error saving quiz result:", error);
