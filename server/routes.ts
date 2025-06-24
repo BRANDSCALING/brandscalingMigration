@@ -12,6 +12,7 @@ import { z } from "zod";
 import Stripe from "stripe";
 import { hasAccess, getAllowedCourses, courseDatabase, getUpgradeTarget } from './tierPermissions';
 import { uploadFields, uploadWorkbooks } from './upload';
+import { ENTREPRENEURIAL_DNA_QUESTIONS } from '@shared/entrepreneurialDnaData';
 
 
 
@@ -640,8 +641,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: 'Invalid answers provided - need exactly 6 answers' });
       }
 
-      // No scoring logic implemented
-      return res.status(501).json({ message: 'Quiz scoring not implemented' });
+      // Implement user's exact scoring logic
+      let architectCount = 0;
+      let alchemistCount = 0;
+      let blurredCount = 0;
+      let neutralCount = 0;
+
+      // Count each answer type
+      Object.entries(answers).forEach(([questionId, answerChoice]) => {
+        const question = ENTREPRENEURIAL_DNA_QUESTIONS.find(q => q.id === parseInt(questionId));
+        if (question && question.answers[answerChoice]) {
+          const answerType = question.answers[answerChoice].type;
+          switch (answerType) {
+            case 'architect':
+              architectCount++;
+              break;
+            case 'alchemist':
+              alchemistCount++;
+              break;
+            case 'blurred':
+              blurredCount++;
+              break;
+            case 'neutral':
+              neutralCount++;
+              break;
+          }
+        }
+      });
+
+      // Apply user's scoring rules
+      let defaultType = 'Blurred Identity';
+      if (architectCount >= 4) {
+        defaultType = 'Architect';
+      } else if (alchemistCount >= 4) {
+        defaultType = 'Alchemist';
+      }
+
+      res.json({
+        defaultType,
+        canRetake: false,
+        scores: {
+          architect: architectCount,
+          alchemist: alchemistCount,
+          blurred: blurredCount,
+          neutral: neutralCount
+        }
+      });
     } catch (error) {
       console.error("Error submitting Entrepreneurial DNA quiz:", error);
       res.status(500).json({ message: "Failed to submit quiz" });
