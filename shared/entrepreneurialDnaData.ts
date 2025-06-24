@@ -255,27 +255,6 @@ export const DNA_SUBTYPES: Record<string, DNASubtype> = {
     nextSteps: 'Restore logical frameworks and structure'
   }
 };
-    complement: {
-      type: 'alchemist',
-      name: 'The Energetic Empath',
-      description: 'A radiant force. Alchemist absorbs the room before they enter it — and brings emotional power that transforms.'
-    }
-  },
-  
-  'systemised-builder': {
-    id: 'systemised-builder',
-    name: 'The Systemised Builder',
-    emoji: '🧱',
-    category: 'architect',
-    operatingLoop: 'Thought → Emotion → Thought',
-    coreIdentity: 'You are the execution layer. The operator. The finisher. Where others ideate, you implement. Where they waffle, you work. You don\'t get distracted by flashy strategies — you want to know what works and repeat it.',
-    oppositeAwareness: 'You respect energy — but don\'t run on it. You value intuition — but don\'t trust it until it\'s proven. You know the Alchemist moves in waves — and it used to frustrate you. But you\'ve learned to stop asking them to be you.',
-    edge: 'You show up. You get it done. You repeat what works. You fix what breaks. You don\'t quit. You bring consistency to chaos. Simplicity to complexity. Motion to stuckness. Delivery to dreams.',
-    risks: 'You may over-index on action — and forget to zoom out. You might resist slowing down — even when speed creates errors. You sometimes value doing over designing — and build the wrong ladder, faster.',
-    nextSteps: 'Step back before you sprint. Let someone challenge the structure — before you reinforce it. Refine your "why" — so your "how" doesn\'t become robotic. Trust the right people — and delegate with precision, not paranoia.',
-    complement: {
-      type: 'alchemist',
-      name: 'The Visionary Oracle',
       description: 'Intuitive fire. Cultural instincts. Emotional magnetism. You bring form to their future.'
     }
   },
