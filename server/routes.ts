@@ -20,79 +20,87 @@ function calculateEntrepreneurialDnaScore(answers: Record<number, string>) {
   let blurredScore = 0;
   let undeclaredScore = 0;
   
-  // Q1-Q10: Determine Default DNA using enhanced scoring
-  for (let i = 1; i <= 10; i++) {
+  // Q1-Q6: Default DNA Detection using exact scoring logic
+  const questionMapping = {
+    1: { A: 'architect', B: 'alchemist', C: 'blurred', D: 'undeclared' },
+    2: { A: 'alchemist', B: 'architect', C: 'blurred', D: 'undeclared' },
+    3: { A: 'blurred', B: 'alchemist', C: 'architect', D: 'undeclared' },
+    4: { A: 'undeclared', B: 'alchemist', C: 'blurred', D: 'architect' },
+    5: { A: 'architect', B: 'alchemist', C: 'blurred', D: 'undeclared' },
+    6: { A: 'architect', B: 'alchemist', C: 'blurred', D: 'undeclared' }
+  };
+  
+  // Count scores for Q1-Q6
+  for (let i = 1; i <= 6; i++) {
     const answer = answers[i];
-    if (answer === 'A') architectScore++;
-    else if (answer === 'B') alchemistScore++;
-    else if (answer === 'C') blurredScore++;
-    else if (answer === 'D') undeclaredScore++;
+    const type = questionMapping[i][answer];
+    if (type === 'architect') architectScore++;
+    else if (type === 'alchemist') alchemistScore++;
+    else if (type === 'blurred') blurredScore++;
+    else if (type === 'undeclared') undeclaredScore++;
   }
   
-  // Determine default type and subtype
+  // Default DNA Logic: 4+ of same type = clear type, otherwise Blurred
   let defaultType: 'Architect' | 'Alchemist' | 'Blurred Identity';
-  let subtype: string;
-  
-  // Clear type requires 6+ out of 10 questions
-  if (architectScore >= 6) {
+  if (architectScore >= 4) {
     defaultType = 'Architect';
-    // Determine Architect subtype based on patterns
-    if (architectScore >= 8) {
-      subtype = 'ultimate-strategist';
-    } else if (blurredScore <= 1) {
-      subtype = 'master-strategist';
-    } else if (undeclaredScore <= 1) {
-      subtype = 'systemised-builder';
-    } else {
-      subtype = 'internal-analyzer';
-    }
-  } else if (alchemistScore >= 6) {
+  } else if (alchemistScore >= 4) {
     defaultType = 'Alchemist';
-    // Determine Alchemist subtype based on patterns
-    if (alchemistScore >= 8) {
-      subtype = 'ultimate-alchemist';
-    } else if (blurredScore <= 1) {
-      subtype = 'magnetic-perfectionist';
-    } else if (undeclaredScore <= 1) {
-      subtype = 'visionary-oracle';
-    } else {
-      subtype = 'energetic-empath';
-    }
   } else {
     defaultType = 'Blurred Identity';
-    // Determine Blurred subtype based on patterns
-    if (blurredScore >= undeclaredScore) {
-      if (architectScore > alchemistScore) {
-        subtype = 'self-betrayer'; // Origin Architect
-      } else {
-        subtype = 'performer';
-      }
-    } else {
-      if (alchemistScore > architectScore) {
-        subtype = 'self-forsaker'; // Origin Alchemist
-      } else {
-        subtype = 'overthinker';
-      }
-    }
   }
   
-  // Q11-Q20: Measure Opposite Mode Awareness
+  // Q7-Q12: Awareness scoring (dynamic based on default type)
   let awarenessScore = 0;
   
-  for (let i = 11; i <= 20; i++) {
+  // For Q7-Q12, count awareness points based on opposite type alignment
+  for (let i = 7; i <= 12; i++) {
     const answer = answers[i];
-    // Award awareness points for opposite mode answers
-    if (defaultType === 'Architect' && answer === 'B') {
-      awarenessScore += 1;
-    } else if (defaultType === 'Alchemist' && answer === 'A') {
-      awarenessScore += 1;
-    } else if (answer === 'C' || answer === 'D') {
-      awarenessScore += 0.5; // Partial awareness for mixed responses
+    if (answer === 'D') {
+      // "None of these" = 0 points
+      awarenessScore += 0;
+    } else if (defaultType === 'Architect') {
+      // Architect measuring Alchemist awareness: A,B,C = +1 each
+      if (['A', 'B', 'C'].includes(answer)) {
+        awarenessScore += 1;
+      }
+    } else if (defaultType === 'Alchemist') {
+      // Alchemist measuring Architect awareness: A,B,C = +1 each
+      if (['A', 'B', 'C'].includes(answer)) {
+        awarenessScore += 1;
+      }
+    } else if (defaultType === 'Blurred Identity') {
+      // Blurred: Q7-Q9 = Architect awareness, Q10-Q12 = Alchemist awareness
+      if (i <= 9 && ['A', 'B', 'C'].includes(answer)) {
+        awarenessScore += 1;
+      } else if (i >= 10 && ['A', 'B', 'C'].includes(answer)) {
+        awarenessScore += 1;
+      }
     }
   }
   
-  // Convert to percentage (0-100%)
-  const awarenessPercentage = Math.round((awarenessScore / 10) * 100);
+  // Convert awareness to percentage: 0=0%, 1=17%, 2=33%, 3=50%, 4=67%, 5=83%, 6=100%
+  const awarenessMapping = { 0: 0, 1: 17, 2: 33, 3: 50, 4: 67, 5: 83, 6: 100 };
+  const awarenessPercentage = awarenessMapping[Math.min(awarenessScore, 6)] || 0;
+  
+  // Determine subtype based on default type and awareness level
+  let subtype = 'basic';
+  if (defaultType === 'Architect') {
+    if (awarenessPercentage >= 83) subtype = 'ultimate-strategist';
+    else if (awarenessPercentage >= 67) subtype = 'master-strategist';
+    else if (awarenessPercentage >= 50) subtype = 'internal-analyzer';
+    else subtype = 'systemised-builder';
+  } else if (defaultType === 'Alchemist') {
+    if (awarenessPercentage >= 83) subtype = 'ultimate-alchemist';
+    else if (awarenessPercentage >= 67) subtype = 'magnetic-perfectionist';
+    else if (awarenessPercentage >= 50) subtype = 'energetic-empath';
+    else subtype = 'visionary-oracle';
+  } else {
+    if (awarenessPercentage >= 67) subtype = 'performer';
+    else if (awarenessPercentage >= 50) subtype = 'overthinker';
+    else if (awarenessPercentage >= 33) subtype = 'self-betrayer';
+    else subtype = 'self-forsaker';
+  }
   
   return {
     defaultType,
@@ -100,7 +108,8 @@ function calculateEntrepreneurialDnaScore(answers: Record<number, string>) {
     awarenessPercentage,
     architectScore,
     alchemistScore,
-    blurredScore: blurredScore + undeclaredScore,
+    blurredScore,
+    undeclaredScore,
     awarenessScore
   };
 }
@@ -726,7 +735,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { answers } = req.body;
       const userId = req.user?.uid || 'anonymous-user';
       
-      if (!answers || Object.keys(answers).length !== 20) {
+      if (!answers || Object.keys(answers).length !== 12) {
         return res.status(400).json({ message: 'Invalid answers provided' });
       }
 

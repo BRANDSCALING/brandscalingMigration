@@ -69,7 +69,7 @@ export default function EntrepreneurialDnaQuiz() {
     const answer = answers[currentQuestion];
     if (!answer) return;
 
-    if (currentQuestion < 20) {
+    if (currentQuestion < 12) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
       await submitQuiz();
@@ -266,7 +266,7 @@ export default function EntrepreneurialDnaQuiz() {
   }
 
   const currentQ = ENTREPRENEURIAL_DNA_QUESTIONS[currentQuestion - 1];
-  const progress = (currentQuestion / 20) * 100;
+  const progress = (currentQuestion / 12) * 100;
   const canProceed = answers[currentQuestion] !== undefined;
 
   return (
@@ -276,7 +276,7 @@ export default function EntrepreneurialDnaQuiz() {
           <div className="flex items-center justify-between mb-4">
             <h1 className="text-2xl font-bold">Entrepreneurial DNA Quiz™</h1>
             <span className="text-sm text-gray-600 dark:text-gray-400">
-              Question {currentQuestion} of 20
+              Question {currentQuestion} of 12
             </span>
           </div>
           <Progress value={progress} className="h-2" />
@@ -320,12 +320,12 @@ export default function EntrepreneurialDnaQuiz() {
               >
                 {isSubmitting ? (
                   <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                ) : currentQuestion === 20 ? (
+                ) : currentQuestion === 12 ? (
                   'Complete Quiz'
                 ) : (
                   'Next'
                 )}
-                {currentQuestion < 20 && <ArrowRight className="ml-2 h-4 w-4" />}
+                {currentQuestion < 12 && <ArrowRight className="ml-2 h-4 w-4" />}
               </Button>
             </div>
           </CardContent>

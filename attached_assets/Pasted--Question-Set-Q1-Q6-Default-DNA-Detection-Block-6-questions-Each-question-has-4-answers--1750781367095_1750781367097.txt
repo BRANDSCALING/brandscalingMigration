@@ -1,0 +1,278 @@
+ Question Set: Q1–Q6 (Default DNA Detection Block)
+	•	6 questions
+	•	Each question has 4 answers:
+	•	🟪 Architect
+	•	🟧 Alchemist
+	•	🔴 Blurred
+	•	⚪ Neutral
+	•	Tag each answer with type
+	•	Scoring logic:
+	•	4+ 🟪 → Architect
+	•	4+ 🟧 → Alchemist
+	•	<4 of either → Blurred Identity
+
+Default DNA Logic (Q1–Q6):
+•	Score by tally: most repeated type = default
+	Tiebreaker: Blurred
+
+Q1. You’re going away for the weekend. How do you prepare the night before?
+
+🟪A. I mentally run through what I need and pack once — essentials are covered.
+🟧B. I write a full list, check everything off, repack a few times, still feel uneasy.
+🔴C. I throw things in last minute and trust it’ll be fine.
+⚪D. I pack, unpack, and get overwhelmed deciding what I even need.
+
+⸻
+
+Q2. A close friend unintentionally hurts your feelings. How do you respond?
+
+🟧A. I’ll express it — maybe now, maybe later — but it will come out
+🟪B. I won’t say anything — they’ll figure it out or I’ll quietly move on.
+🔴C. I react suddenly, then second-guess if I was overdramatic.
+⚪D. I feel stuck about whether I should say something or not.
+
+⸻
+
+Q3. You walk into a room full of strangers. What do you do?
+
+🔴A. I linger around and wait for someone to notice or invite me
+🟧B. I act on how I feel — I might blend in or suddenly become the centre of attention.
+🟪C. I observe quietly, scan the room, and engage when it makes sense.
+⚪D. I’m unsure how to show up — I feel pressure to act right.
+
+⸻
+
+Q4. You’ve committed to waking up at 6am for a week. Day 3, you’re exhausted. What happens?
+
+⚪A. I feel torn — I want to keep going but can’t force myself either.
+🟧B. I ask myself if the reason still matters — if not, I adjust without guilt.
+🔴C. I sleep in, feel bad, and try again tomorrow.
+🟪D. I stick to it. Fatigue doesn’t override commitment unless it’s serious.
+⸻
+
+Q5. You’ve completed a project and it performs well. How do you feel about it?
+
+🟪A. If the result is strong, I’m satisfied — no need to change anything.
+🟧B. I immediately wonder how it could have been even better.
+🔴C. I feel good but uneasy — maybe I missed something important.
+D. I can’t tell if I’m happy or not — depends what others say.
+
+⸻
+
+Q6. You’re pursuing a goal no one else has achieved. How do you think about it?
+
+🔴C. I doubt myself, but I still try in case it works out.
+⚪D. I switch between confidence and confusion depending on the day.
+🟪A. I need to see a path or example — otherwise I’m not sure it’s achievable.
+🟧B. Even if no one’s done it, I know it’s possible — I just need the steps.
+
+⸻
+
+3. Question Set: Q7–Q12 (Awareness Block, Dynamically Loaded)
+	•	6 questions per user type (Architect / Alchemist/Blurred)
+	•	12 total awareness questions (3 sets):
+	•	Architect version (measuring Alchemist awareness)
+	•	Alchemist version (measuring Architect awareness)
+	•	Blurred version (Q7–9 Architect-style, Q10–12 Alchemist-style)
+	•	4 answers per question:
+	•	3 aligned to opposite DNA
+	•	1 opt-out (🟪 or 🟧 or 🔴 depending on user type)
+	•	Awareness scoring:
+	•	1 point per aligned answer
+	•	0 points for opt-out
+	•	Max 6 points
+	•	Awareness % ranges:
+	•	0 = 0%
+	•	1 = 17%
+	•	2 = 33%
+	•	3 = 50%
+	•	4 = 67%
+	•	5 = 83%
+	•	6 = 100%
+Q7–Q12 block , following the dynamic logic for awareness assessment:
+✅  Q7–Q12 Dynamic Awareness Logic for Architect and also Alchemist 
+
+🧭 Q7. You’re preparing for something two weeks away. What do you think is the best way to plan?
+(Shown if Default = Alchemist → measuring Architect awareness)
+
+•	🟪 I map out each phase and allocate time per task.
+•	🟪 I build in buffers and list dependencies before I start.
+•	🟪 I reverse-engineer the deadline to set milestones.
+•	🟧 None of these reflect how I would think or act. (Alchemist Default)
+
+🧭 Q7. You’re preparing for something two weeks away. What do you think is the best way to plan?
+(Shown if Default = Architect → measuring Alchemist awareness)
+
+•	🟧 I feel into what needs to happen and adjust flow daily.
+•	🟧 I follow inspiration but stay close to the end goal.
+•	🟧 I refine the plan repeatedly based on how it feels.
+•	🟪 None of these reflect how I would think or act. (Architect Default)
+
+
+🧭 Q7. You’re preparing for something two weeks away. What do you think is the best way to plan?
+(Shown if Default  Q1–Q6 = Blurred - measuring architect awareness)
+
+•	🟪 I map out each phase and allocate time per task.
+•	🟪 I build in buffers and list dependencies before I start.
+•	🟪 I reverse-engineer the deadline to set milestones.
+•	🔴 None of these reflect how I would think or act. (Alchemist = Dynamic opt-out / Blurred = Neutral opt-out)
+
+⸻
+
+🧭 Q8. Someone challenges your perspective in a group conversation. What’s the best way to respond?
+(Alchemist measuring Architect awareness)
+•	🟪 I ask questions to understand their viewpoint calmly.
+•	🟪 I pause and walk them through my structured reasoning.
+•	🟪 I respond logically, not emotionally, even if I disagree.
+•	🟧 None of these reflect how I would think or act.
+
+🧭 Q8. Someone challenges your perspective in a group conversation. What’s the best way to respond?
+(Architect measuring Alchemist awareness)
+•	🟧 I speak with passion about why it matters to me.
+•	🟧 I trust my intuition and share what I feel is true.
+•	🟧 I own my stance but allow room for emotional nuance.
+•	🟪 None of these reflect how I would think or act.
+
+🧭 Q8. Someone challenges your perspective in a group conversation. What’s the best way to respond?
+(Blurred measuring Architect awareness)
+•	🟪 I ask questions to understand their viewpoint calmly.
+•	🟪 I pause and walk them through my structured reasoning.
+•	🟪 I respond logically, not emotionally, even if I disagree.
+•	🔴 None of these reflect how I would think or act.
+
+
+⸻
+
+🧭 Q9. You’re working with someone who’s doing things “wrong.” What’s the best way to respond?
+(Alchemist → Architect awareness)
+•	🟪 I show them the correct system and explain why.
+•	🟪 I assess whether it’s a training or logic gap.
+•	🟪 I offer structured feedback with reasoning.
+•	🟧 None of these reflect how I would think or act.
+
+
+🧭 Q9. You’re working with someone who’s doing things “wrong.” What’s the best way to respond?
+(Architect → Alchemist awareness)
+•	🟧 I consider their approach before jumping in.
+•	🟧 I tune into the dynamic and adapt emotionally.
+•	🟧 If I care, I may just do it myself — out of frustration or love.
+•	🟪 None of these reflect how I would think or act.
+
+🧭 Q9. You’re working with someone who’s doing things “wrong.” What’s the best way to respond?
+(Blurred measuring Architect awareness)
+•	🟪 I show them the correct system and explain why.
+•	🟪 I assess whether it’s a training or logic gap.
+•	🟪 I offer structured feedback with reasoning.
+•	🔴 None of these reflect how I would think or act.
+⸻
+
+🧭 Q10. When pursuing a long-term goal (6–12 months), what’s the best way to stay on track?
+
+(Alchemist → Architect awareness)
+•	🟪 Set structured checkpoints and measurable metrics.
+•	🟪 Track time spent vs. outcome weekly.
+•	🟪 Use data to adjust pace and process.
+•	🟧 None of these reflect how I would think or act.
+
+
+🧭 Q10. When pursuing a long-term goal (6–12 months), what’s the best way to stay on track?
+
+(Architect → Alchemist awareness)
+•	🟧 Tap into emotional momentum to keep going.
+•	🟧 Build inspiration and energy into the journey.
+•	🟧 Use vision boards, journaling, or feeling-based check-ins.
+•	🟪 None of these reflect how I would think or act.
+
+
+🧭 Q10. When pursuing a long-term goal (6–12 months), what’s the best way to stay on track?
+(Shown if Default  Q1–Q6 = Blurred)
+•	🟧 Tap into emotional momentum to keep going.
+•	🟧 Build inspiration and energy into the journey.
+•	🟧 Use vision boards, journaling, or feeling-based check-ins.
+•	🔴 None of these reflect how I would think or act.
+
+
+⸻
+
+🧭 Q11. You’re training someone new. What’s the best way to teach them?
+
+(Alchemist → Architect awareness)
+•	🟪 Provide written SOPs and visual aids.
+•	🟪 Give structured tasks with feedback loops.
+•	🟪 Break the learning into logical stages.
+•	🟧 None of these reflect how I would think or act.
+
+🧭 Q11. You’re training someone new. What’s the best way to teach them?
+
+(Architect → Alchemist awareness)
+•	🟧 Guide them through the why behind the work.
+•	🟧 Adjust based on their energy and confidence.
+•	🟧 Let them learn by feeling through it, not just logic.
+•	🟪 None of these reflect how I would think or act.
+
+🧭 Q11. You’re training someone new. What’s the best way to teach them?
+(Blurred measuring Alchemist awareness)
+•	🟧 Guide them through the why behind the work.
+•	🟧 Adjust based on their energy and confidence.
+•	🟧 Let them learn by feeling through it, not just logic.
+•	🔴 None of these reflect how I would think or act.
+
+
+⸻
+
+🧭 Q12. When something doesn’t feel right but makes sense logically — what’s the best next step?
+
+(Alchemist → Architect awareness)
+•	🟪 Recheck data or assumptions to eliminate bias.
+•	🟪 Delay action until logic is fully sound.
+•	🟪 Trust the structure over feelings in this case.
+•	🟧 None of these reflect how I would think or act.
+
+🧭 Q12. When something doesn’t feel right but makes sense logically — what’s the best next step?
+
+(Architect → Alchemist awareness)
+•	🟧 Pause and reflect on what the resistance means.
+•	🟧 Trust that discomfort may signal misalignment.
+•	🟧 Explore intuition to uncover what’s missing.
+•	🟪 None of these reflect how I would think or act.
+
+🧭 Q12. When something doesn’t feel right but makes sense logically — what’s the best next step?
+(Blurred measuring Alchemist awareness)
+•	🟧 Pause and reflect on what the resistance means.	
+•	🟧 Trust that discomfort may signal misalignment.
+•	🟧 Explore intuition to uncover what’s missing.
+•	🔴 None of these reflect how I would think or act.
+
+ AWARENESS BLOCKS (Q7–Q12)
+
+Dynamic questions by default DNA. Each block includes 6 fixed questions. Opt-out is reversed depending on type.
+
+. If Default = Architect → Measure Alchemist Awareness
+•	🧭 Q7: 🟧🟧🟧🟪
+•	🧭 Q8: 🟧🟧🟧🟪
+•	🧭 Q9: 🟧🟧🟧🟪
+•	🧭 Q10: 🟧🟧🟧🟪
+•	🧭 Q11: 🟧🟧🟧🟪
+•	🧭 Q12: 🟧🟧🟧🟪
+
+. If Default = Alchemist → Measure Architect Awareness
+•	🧭 Q7: 🟪🟪🟪🟧
+•	🧭 Q8: 🟪🟪🟪🟧
+•	🧭 Q9: 🟪🟪🟪🟧
+•	🧭 Q10:🟪🟪🟪🟧
+•	🧭 Q11: 🟪🟪🟪🟧
+•	🧭 Q12: 🟪🟪🟪🟧
+
+. If Default = Blurred → Awareness Split
+•	Q7–Q9 = Architect Awareness (🟪🟪🟪🔴)
+•	Q10–Q12 = Alchemist Awareness (🟧🟧🟧🔴)
+
+
+Awareness Logic (Q7–Q12):
+•	+1 awareness point per correctly tagged answer
+•	Architect or Alchemist awareness max = 6
+•	Awareness Tiers:
+•	0–2 = Low
+•	3–4 = Medium
+•	5–6 = High
+⸻

@@ -31,9 +31,9 @@ export interface DNASubtype {
   };
 }
 
-// Enhanced 20-Question Assessment
+// Exact 12-Question Assessment as specified
 export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
-  // Q1-10: Default DNA Assessment
+  // Q1-6: Default DNA Detection Block
   {
     id: 1,
     text: "You're going away for the weekend. How do you prepare the night before?",
@@ -50,54 +50,54 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
     text: "A close friend unintentionally hurts your feelings. How do you respond?",
     category: 'default_dna',
     answers: {
-      A: { text: "I won't say anything — they'll figure it out or I'll quietly move on.", type: 'architect', weight: 1 },
-      B: { text: "I'll express it — maybe now, maybe later — but it will come out.", type: 'alchemist', weight: 1 },
+      A: { text: "I'll express it — maybe now, maybe later — but it will come out", type: 'alchemist', weight: 1 },
+      B: { text: "I won't say anything — they'll figure it out or I'll quietly move on.", type: 'architect', weight: 1 },
       C: { text: "I react suddenly, then second-guess if I was overdramatic.", type: 'blurred', weight: 1 },
       D: { text: "I feel stuck about whether I should say something or not.", type: 'undeclared', weight: 1 }
     }
   },
   {
     id: 3,
-    text: "You receive conflicting advice from two experts. What happens next?",
+    text: "You walk into a room full of strangers. What do you do?",
     category: 'default_dna',
     answers: {
-      A: { text: "I break it down logically, cross-check, and choose based on data.", type: 'architect', weight: 1 },
-      B: { text: "I filter through what aligns with my internal sense of truth and trust that.", type: 'alchemist', weight: 1 },
-      C: { text: "I spiral and delay the decision trying to weigh everything.", type: 'blurred', weight: 1 },
-      D: { text: "I follow the advice I emotionally prefer, even if it lacks clarity.", type: 'undeclared', weight: 1 }
+      A: { text: "I linger around and wait for someone to notice or invite me", type: 'blurred', weight: 1 },
+      B: { text: "I act on how I feel — I might blend in or suddenly become the centre of attention.", type: 'alchemist', weight: 1 },
+      C: { text: "I observe quietly, scan the room, and engage when it makes sense.", type: 'architect', weight: 1 },
+      D: { text: "I'm unsure how to show up — I feel pressure to act right.", type: 'undeclared', weight: 1 }
     }
   },
   {
     id: 4,
-    text: "You're asked to present to a room of strangers. Your immediate response?",
+    text: "You've committed to waking up at 6am for a week. Day 3, you're exhausted. What happens?",
     category: 'default_dna',
     answers: {
-      A: { text: "I prepare thoroughly, organize my thoughts, and deliver with confidence.", type: 'architect', weight: 1 },
-      B: { text: "I feel the energy of the room and speak from what emerges.", type: 'alchemist', weight: 1 },
-      C: { text: "I over-prepare but still feel uncertain about how it will go.", type: 'blurred', weight: 1 },
-      D: { text: "I avoid it or procrastinate until the last possible moment.", type: 'undeclared', weight: 1 }
+      A: { text: "I feel torn — I want to keep going but can't force myself either.", type: 'undeclared', weight: 1 },
+      B: { text: "I ask myself if the reason still matters — if not, I adjust without guilt.", type: 'alchemist', weight: 1 },
+      C: { text: "I sleep in, feel bad, and try again tomorrow.", type: 'blurred', weight: 1 },
+      D: { text: "I stick to it. Fatigue doesn't override commitment unless it's serious.", type: 'architect', weight: 1 }
     }
   },
   {
     id: 5,
-    text: "Your business partner wants to pivot strategy mid-project. How do you respond?",
+    text: "You've completed a project and it performs well. How do you feel about it?",
     category: 'default_dna',
     answers: {
-      A: { text: "I need to see the logic and data before making any changes.", type: 'architect', weight: 1 },
-      B: { text: "If it feels right and aligns with our vision, I'm open to it.", type: 'alchemist', weight: 1 },
-      C: { text: "I feel torn between sticking to the plan and embracing change.", type: 'blurred', weight: 1 },
-      D: { text: "I defer to whatever they think is best.", type: 'undeclared', weight: 1 }
+      A: { text: "If the result is strong, I'm satisfied — no need to change anything.", type: 'architect', weight: 1 },
+      B: { text: "I immediately wonder how it could have been even better.", type: 'alchemist', weight: 1 },
+      C: { text: "I feel good but uneasy — maybe I missed something important.", type: 'blurred', weight: 1 },
+      D: { text: "I can't tell if I'm happy or not — depends what others say.", type: 'undeclared', weight: 1 }
     }
   },
   {
     id: 6,
-    text: "When building your team, what matters most to you?",
+    text: "You're pursuing a goal no one else has achieved. How do you think about it?",
     category: 'default_dna',
     answers: {
-      A: { text: "Skills, track record, and ability to execute systematically.", type: 'architect', weight: 1 },
-      B: { text: "Energy, alignment with values, and cultural fit.", type: 'alchemist', weight: 1 },
-      C: { text: "A mix of both, but I struggle to prioritize which matters more.", type: 'blurred', weight: 1 },
-      D: { text: "Whoever is available and willing to help.", type: 'undeclared', weight: 1 }
+      A: { text: "I need to see a path or example — otherwise I'm not sure it's achievable.", type: 'architect', weight: 1 },
+      B: { text: "Even if no one's done it, I know it's possible — I just need the steps.", type: 'alchemist', weight: 1 },
+      C: { text: "I doubt myself, but I still try in case it works out.", type: 'blurred', weight: 1 },
+      D: { text: "I switch between confidence and confusion depending on the day.", type: 'undeclared', weight: 1 }
     }
   },
   {
