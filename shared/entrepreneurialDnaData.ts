@@ -255,40 +255,6 @@ export const DNA_SUBTYPES: Record<string, DNASubtype> = {
     nextSteps: 'Restore logical frameworks and structure'
   }
 };
-      description: 'Clear, calm, and logic-led. Protects your energy by simplifying the world.'
-    }
-  },
-  
-  'ultimate-alchemist': {
-    id: 'ultimate-alchemist',
-    name: 'The Ultimate Alchemist',
-    emoji: '🌪️',
-    category: 'alchemist',
-    operatingLoop: 'Emotion → Thought → Emotion',
-    coreIdentity: 'You are the fully expressed Alchemist. You carry the energy of the Visionary, the emotional insight of the Energetic Empath, the refinement of the Magnetic Perfectionist — and the clarity to wield it all with intent. You didn\'t stumble into your power. You earned it.',
-    oppositeAwareness: 'You don\'t just understand the Architect — you could teach them how their own system works. You see the loops. You speak both languages. You know how they execute. And still — you don\'t try to become them.',
-    edge: 'You feel what others can\'t see. You channel what others can\'t say. You move when the energy is unmistakable — not just when the calendar says go. You can command a room, heal a team, launch with fire, refine with excellence.',
-    risks: 'You may over-function emotionally — carrying burdens that aren\'t yours. Your energetic extremes can tip you into overexertion or quiet shutdown if not sustained with care.',
-    nextSteps: 'Let go of the pressure to build alone. Let your systems be built for you — not by you. Let your execution be supported — so your energy stays ignited. You need more space, more energetic insulation, more self-trust.',
-    complement: {
-      type: 'architect',
-      name: 'The Ultimate Strategist',
-      description: 'Silent precision, simplified clarity, master of delegation.'
-    }
-  },
-  
-  // ARCHITECT SUBTYPES
-  'master-strategist': {
-    id: 'master-strategist',
-    name: 'The Master Strategist',
-    emoji: '📊',
-    category: 'architect',
-    operatingLoop: 'Thought → Emotion → Thought',
-    coreIdentity: 'You\'re the master planner. You don\'t just solve problems — you build scalable solutions before problems even happen. You break down the big picture into clear, tangible moves. You forecast risks. You map contingencies. Your mind works like a blueprint engine.',
-    oppositeAwareness: 'You\'ve grown to respect the Alchemist — especially their ability to feel what\'s needed before logic confirms it. You no longer dismiss "vibe-based" decisions — you now filter them. You let intuitive input guide direction before applying your strategic model.',
-    edge: 'You simplify the complex. You bring order to chaos, clarity to ambition, and plans to vision. You don\'t just finish things — you finish the right things. You help others feel safe — not through emotion, but through certainty.',
-    risks: 'You may resist emotional input that doesn\'t have "evidence." You may delay action waiting for the path to be 100% defined. You may find it difficult to connect with people who speak in energy, not outcomes.',
-    nextSteps: 'Let emotion inform the vision — even if logic builds the path. Partner with people who ignite momentum — not just measurement. Let go of the idea that you must have every step before the first move.',
     complement: {
       type: 'alchemist',
       name: 'The Energetic Empath',
