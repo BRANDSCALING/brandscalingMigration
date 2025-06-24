@@ -69,6 +69,16 @@ function Router() {
         )}
       />
 
+      {/* Dashboard */}
+      <Route
+        path="/dashboard"
+        component={() => (
+          <Layout>
+            <Dashboard />
+          </Layout>
+        )}
+      />
+
       {/* Main Pages */}
       <Route
         path="/"
