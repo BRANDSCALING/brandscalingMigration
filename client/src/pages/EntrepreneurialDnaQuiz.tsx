@@ -6,6 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { apiRequest } from '@/lib/queryClient';
 import { useAuth } from '@/hooks/useAuth';
 import { Loader2, ArrowRight, RotateCcw } from 'lucide-react';
+import { ENTREPRENEURIAL_DNA_QUESTIONS, DNA_SUBTYPES } from '@shared/entrepreneurialDnaData';
 
 interface Question {
   id: number;
@@ -20,13 +21,14 @@ interface Question {
 
 interface QuizResult {
   defaultType: 'Architect' | 'Alchemist' | 'Blurred Identity';
+  subtype: string;
   awarenessPercentage: number;
   canRetake: boolean;
   nextRetakeDate?: string;
 }
 
-// Cache-busting key: v2.0-20questions
-const QUIZ_QUESTIONS: Question[] = [
+// Using enhanced question set from shared data
+const QUIZ_QUESTIONS = ENTREPRENEURIAL_DNA_QUESTIONS;
   {
     id: 1,
     text: "You're going away for the weekend. How do you prepare the night before?",

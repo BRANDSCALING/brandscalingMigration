@@ -678,6 +678,7 @@ export class DatabaseStorage implements IStorage {
     userId: string,
     answers: Record<number, string>,
     defaultType: string,
+    subtype: string,
     awarenessPercentage: number,
     scores: {
       architect: number;
@@ -695,6 +696,7 @@ export class DatabaseStorage implements IStorage {
         userId,
         answers,
         defaultType,
+        subtype,
         awarenessPercentage,
         architectScore: scores.architect,
         alchemistScore: scores.alchemist,
