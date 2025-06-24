@@ -24,8 +24,7 @@ export default function Landing() {
             loop
             muted
             playsInline
-            className="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto transform -translate-x-1/2 -translate-y-1/2 object-cover opacity-15 scale-110"
-            style={{ filter: 'blur(1px)' }}
+            className="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto transform -translate-x-1/2 -translate-y-1/2 object-cover opacity-60"
             onLoadedData={() => console.log('Background video loaded')}
             onError={(e) => {
               console.log('Background video failed to load:', e);
@@ -36,8 +35,8 @@ export default function Landing() {
             <source src="/logo-animation.mp4" type="video/mp4" />
             <source src="/uploads/logo-animation.mp4" type="video/mp4" />
           </video>
-          {/* Subtle overlay */}
-          <div className="absolute inset-0 bg-white/30"></div>
+          {/* Light overlay for text readability */}
+          <div className="absolute inset-0 bg-white/40"></div>
         </div>
         
         <div className="container-brandscaling text-center relative z-10">
