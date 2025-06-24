@@ -66,12 +66,9 @@ export default function EntrepreneurialDnaQuiz() {
   };
 
   const handleNext = async () => {
-    if (currentQuestion === 6) {
-      setIsProcessing(true);
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      setIsProcessing(false);
-    }
-    
+    const answer = answers[currentQuestion];
+    if (!answer) return;
+
     if (currentQuestion < 20) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
@@ -268,7 +265,7 @@ export default function EntrepreneurialDnaQuiz() {
     );
   }
 
-  const currentQ = QUIZ_QUESTIONS[currentQuestion - 1];
+  const currentQ = ENTREPRENEURIAL_DNA_QUESTIONS[currentQuestion - 1];
   const progress = (currentQuestion / 20) * 100;
   const canProceed = answers[currentQuestion] !== undefined;
 
@@ -292,7 +289,7 @@ export default function EntrepreneurialDnaQuiz() {
             </h2>
 
             <div className="space-y-4 mb-8">
-              {Object.entries(currentQ.answers).map(([key, text]) => (
+              {Object.entries(currentQ.answers).map(([key, answerObj]) => (
                 <button
                   key={key}
                   onClick={() => handleAnswer(currentQuestion, key as 'A' | 'B' | 'C' | 'D')}
@@ -303,7 +300,7 @@ export default function EntrepreneurialDnaQuiz() {
                   }`}
                 >
                   <span className="font-medium text-indigo-600 mr-3">{key}.</span>
-                  {text}
+                  {answerObj.text}
                 </button>
               ))}
             </div>
