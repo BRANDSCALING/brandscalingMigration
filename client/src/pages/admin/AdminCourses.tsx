@@ -83,7 +83,21 @@ export default function AdminCourses() {
   // Create course mutation
   const createCourseMutation = useMutation({
     mutationFn: async (courseData: any) => {
-      return await apiRequest("POST", "/api/admin/courses", courseData);
+      return fetch("/api/admin/courses", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-id": "admin-dev-12345"
+        },
+        credentials: "include",
+        body: JSON.stringify(courseData)
+      }).then(async (res) => {
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({ error: res.statusText }));
+          throw new Error(errorData.error || res.statusText);
+        }
+        return res.json();
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/courses"] });
@@ -91,15 +105,29 @@ export default function AdminCourses() {
       resetCourseForm();
       toast({ title: "Course created successfully" });
     },
-    onError: () => {
-      toast({ title: "Failed to create course", variant: "destructive" });
+    onError: (error) => {
+      toast({ title: "Failed to create course", description: error.message, variant: "destructive" });
     },
   });
 
   // Update course mutation
   const updateCourseMutation = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: any }) => {
-      return await apiRequest("PUT", `/api/admin/courses/${id}`, data);
+      return fetch(`/api/admin/courses/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-id": "admin-dev-12345"
+        },
+        credentials: "include",
+        body: JSON.stringify(data)
+      }).then(async (res) => {
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({ error: res.statusText }));
+          throw new Error(errorData.error || res.statusText);
+        }
+        return res.json();
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/courses"] });
@@ -108,29 +136,55 @@ export default function AdminCourses() {
       resetCourseForm();
       toast({ title: "Course updated successfully" });
     },
-    onError: () => {
-      toast({ title: "Failed to update course", variant: "destructive" });
+    onError: (error) => {
+      toast({ title: "Failed to update course", description: error.message, variant: "destructive" });
     },
   });
 
   // Delete course mutation
   const deleteCourseMutation = useMutation({
     mutationFn: async (id: number) => {
-      return await apiRequest("DELETE", `/api/admin/courses/${id}`);
+      return fetch(`/api/admin/courses/${id}`, {
+        method: "DELETE",
+        headers: {
+          "x-admin-id": "admin-dev-12345"
+        },
+        credentials: "include"
+      }).then(async (res) => {
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({ error: res.statusText }));
+          throw new Error(errorData.error || res.statusText);
+        }
+        return res.json();
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/courses"] });
       toast({ title: "Course deleted successfully" });
     },
-    onError: () => {
-      toast({ title: "Failed to delete course", variant: "destructive" });
+    onError: (error) => {
+      toast({ title: "Failed to delete course", description: error.message, variant: "destructive" });
     },
   });
 
   // Create lesson mutation
   const createLessonMutation = useMutation({
     mutationFn: async ({ courseId, lessonData }: { courseId: number; lessonData: any }) => {
-      return await apiRequest("POST", `/api/admin/courses/${courseId}/lessons`, lessonData);
+      return fetch(`/api/admin/courses/${courseId}/lessons`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-id": "admin-dev-12345"
+        },
+        credentials: "include",
+        body: JSON.stringify(lessonData)
+      }).then(async (res) => {
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({ error: res.statusText }));
+          throw new Error(errorData.error || res.statusText);
+        }
+        return res.json();
+      });
     },
     onSuccess: () => {
       refetchLessons();
@@ -138,15 +192,29 @@ export default function AdminCourses() {
       resetLessonForm();
       toast({ title: "Lesson created successfully" });
     },
-    onError: () => {
-      toast({ title: "Failed to create lesson", variant: "destructive" });
+    onError: (error) => {
+      toast({ title: "Failed to create lesson", description: error.message, variant: "destructive" });
     },
   });
 
   // Update lesson mutation
   const updateLessonMutation = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: any }) => {
-      return await apiRequest("PUT", `/api/admin/lessons/${id}`, data);
+      return fetch(`/api/admin/lessons/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-id": "admin-dev-12345"
+        },
+        credentials: "include",
+        body: JSON.stringify(data)
+      }).then(async (res) => {
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({ error: res.statusText }));
+          throw new Error(errorData.error || res.statusText);
+        }
+        return res.json();
+      });
     },
     onSuccess: () => {
       refetchLessons();
@@ -155,22 +223,34 @@ export default function AdminCourses() {
       resetLessonForm();
       toast({ title: "Lesson updated successfully" });
     },
-    onError: () => {
-      toast({ title: "Failed to update lesson", variant: "destructive" });
+    onError: (error) => {
+      toast({ title: "Failed to update lesson", description: error.message, variant: "destructive" });
     },
   });
 
   // Delete lesson mutation
   const deleteLessonMutation = useMutation({
     mutationFn: async (id: number) => {
-      return await apiRequest("DELETE", `/api/admin/lessons/${id}`);
+      return fetch(`/api/admin/lessons/${id}`, {
+        method: "DELETE",
+        headers: {
+          "x-admin-id": "admin-dev-12345"
+        },
+        credentials: "include"
+      }).then(async (res) => {
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({ error: res.statusText }));
+          throw new Error(errorData.error || res.statusText);
+        }
+        return res.json();
+      });
     },
     onSuccess: () => {
       refetchLessons();
       toast({ title: "Lesson deleted successfully" });
     },
-    onError: () => {
-      toast({ title: "Failed to delete lesson", variant: "destructive" });
+    onError: (error) => {
+      toast({ title: "Failed to delete lesson", description: error.message, variant: "destructive" });
     },
   });
 
