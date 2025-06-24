@@ -320,32 +320,7 @@ export const emailLogs = pgTable("email_logs", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-// DNA assessment results
-export const dnaResults = pgTable("dna_results", {
-  id: serial("id").primaryKey(),
-  userId: varchar("user_id").notNull().references(() => users.id).unique(),
-  result: varchar("result").notNull(), // Architect, Alchemist, Blurred Identity, Unfocused Potential
-  percentages: jsonb("percentages"), // Store detailed percentages
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
-
-// Entrepreneurial DNA Quiz responses
-export const entrepreneurialDnaQuizResponses = pgTable("entrepreneurial_dna_quiz_responses", {
-  id: serial("id").primaryKey(),
-  userId: varchar("user_id").notNull().references(() => users.id),
-  answers: jsonb("answers").notNull(), // Store all 20 answers
-  defaultType: varchar("default_type").notNull(), // Architect, Alchemist, Blurred Identity
-  awarenessPercentage: real("awareness_percentage").notNull(),
-  architectScore: integer("architect_score").notNull(),
-  alchemistScore: integer("alchemist_score").notNull(),
-  blurredScore: integer("blurred_score").notNull(),
-  awarenessScore: real("awareness_score").notNull(),
-  canRetake: boolean("can_retake").default(false),
-  nextRetakeDate: timestamp("next_retake_date"),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
+// Placeholder for authentic DNA assessment schema - awaiting user specifications
 
 // Workflow automation
 export const workflows = pgTable("workflows", {
@@ -585,10 +560,7 @@ export const insertQuizSchema = createInsertSchema(quizzes).omit({
   updatedAt: true,
 });
 
-// Removed unauthorized DNA result schema
-  id: true,
-  completedAt: true,
-});
+
 
 export const insertAiAgentSchema = createInsertSchema(aiAgents).omit({
   id: true,

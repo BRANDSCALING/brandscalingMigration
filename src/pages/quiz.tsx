@@ -1,1 +1,0 @@
-export { EntrepreneurialDnaQuiz as default } from '../../../client/src/pages/EntrepreneurialDnaQuiz';

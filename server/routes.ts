@@ -13,7 +13,7 @@ import Stripe from "stripe";
 import { hasAccess, getAllowedCourses, courseDatabase, getUpgradeTarget } from './tierPermissions';
 import { uploadFields, uploadWorkbooks } from './upload';
 
-// Entrepreneurial DNA Quiz scoring engine
+// Placeholder for authentic quiz scoring
 // Placeholder for authentic scoring logic - awaiting user specifications
 function calculateEntrepreneurialDnaScore(answers: Record<number, string>) {
   return {

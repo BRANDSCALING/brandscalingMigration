@@ -18,8 +18,7 @@ import {
   stripePurchases,
   payments,
   emailLogs,
-  dnaResults,
-  entrepreneurialDnaQuizResponses,
+
   businessModels,
   uploadedWorkbooks,
   type User,
@@ -111,8 +110,7 @@ export interface IStorage {
   }): Promise<void>;
   
   // DNA assessment
-  upsertUserDnaResult(userId: string, result: string, percentages?: any): Promise<void>;
-  getUserDnaResult(userId: string): Promise<any>;
+  // Placeholder for authentic DNA interface methods
   
   // User management
   getAllActiveUsers(): Promise<User[]>;
@@ -645,33 +643,7 @@ export class DatabaseStorage implements IStorage {
     await db.insert(emailLogs).values(emailData);
   }
 
-  // DNA assessment
-  async upsertUserDnaResult(userId: string, result: string, percentages?: any): Promise<void> {
-    await db
-      .insert(dnaResults)
-      .values({
-        userId,
-        result,
-        percentages,
-        updatedAt: new Date()
-      })
-      .onConflictDoUpdate({
-        target: dnaResults.userId,
-        set: {
-          result,
-          percentages,
-          updatedAt: new Date()
-        }
-      });
-  }
-
-  async getUserDnaResult(userId: string): Promise<any> {
-    const [result] = await db
-      .select()
-      .from(dnaResults)
-      .where(eq(dnaResults.userId, userId));
-    return result;
-  }
+  // Placeholder for authentic DNA methods - awaiting user specifications
 
   // Entrepreneurial DNA Quiz methods
   async saveEntrepreneurialDnaQuizResponse(

@@ -31,7 +31,7 @@ export interface DNASubtype {
   };
 }
 
-// EXACT 12-Question Assessment - NO placeholders, NO fake content
+// EXACT 6-Question Assessment - User's authentic questions only
 export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
   // Q1-6: Default DNA Detection Block - EXACT questions as specified
   {
