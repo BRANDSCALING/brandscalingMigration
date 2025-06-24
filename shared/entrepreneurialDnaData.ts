@@ -31,9 +31,9 @@ export interface DNASubtype {
   };
 }
 
-// Exact 12-Question Assessment as specified
+// EXACT 12-Question Assessment - NO placeholders, NO fake content
 export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
-  // Q1-6: Default DNA Detection Block
+  // Q1-6: Default DNA Detection Block - EXACT questions as specified
   {
     id: 1,
     text: "You're going away for the weekend. How do you prepare the night before?",
@@ -99,185 +99,161 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
       C: { text: "I doubt myself, but I still try in case it works out.", type: 'blurred', weight: 1 },
       D: { text: "I switch between confidence and confusion depending on the day.", type: 'undeclared', weight: 1 }
     }
-  },
-  {
-    id: 7,
-    text: "You notice your productivity has dropped significantly. What's your response?",
-    category: 'default_dna',
-    answers: {
-      A: { text: "I analyze what's changed and systematically address the root cause.", type: 'architect', weight: 1 },
-      B: { text: "I check in with my energy and emotional state first.", type: 'alchemist', weight: 1 },
-      C: { text: "I overthink all the possible reasons and feel stuck.", type: 'blurred', weight: 1 },
-      D: { text: "I hope it passes and try to push through.", type: 'undeclared', weight: 1 }
-    }
-  },
-  {
-    id: 8,
-    text: "Your ideal planning approach for a major launch is:",
-    category: 'default_dna',
-    answers: {
-      A: { text: "Detailed timeline, clear milestones, contingency plans.", type: 'architect', weight: 1 },
-      B: { text: "Vision-driven with space for creative flow and intuitive timing.", type: 'alchemist', weight: 1 },
-      C: { text: "I want structure but also flexibility, which often conflicts.", type: 'blurred', weight: 1 },
-      D: { text: "Whatever approach others suggest works fine.", type: 'undeclared', weight: 1 }
-    }
-  },
-  {
-    id: 9,
-    text: "In high-pressure moments, you typically:",
-    category: 'default_dna',
-    answers: {
-      A: { text: "Stay calm, focus on solutions, execute step by step.", type: 'architect', weight: 1 },
-      B: { text: "Trust my instincts and adapt quickly to what feels right.", type: 'alchemist', weight: 1 },
-      C: { text: "Feel overwhelmed switching between logic and emotion.", type: 'blurred', weight: 1 },
-      D: { text: "Freeze or avoid making decisions until pressure passes.", type: 'undeclared', weight: 1 }
-    }
-  },
-  {
-    id: 10,
-    text: "Your relationship with perfectionism is:",
-    category: 'default_dna',
-    answers: {
-      A: { text: "I refine until it meets clear standards, then ship.", type: 'architect', weight: 1 },
-      B: { text: "I perfect until it feels aligned, even if it takes longer.", type: 'alchemist', weight: 1 },
-      C: { text: "I get caught between good enough and perfect.", type: 'blurred', weight: 1 },
-      D: { text: "I either never finish or rush to avoid the pressure.", type: 'undeclared', weight: 1 }
-    }
-  },
-  
-  // Q11-20: Opposite Mode Awareness
-  {
-    id: 11,
-    text: "When working with someone who operates differently than you:",
-    category: 'awareness',
-    answers: {
-      A: { text: "I adapt my approach to complement their style.", type: 'architect', weight: 1 },
-      B: { text: "I stay true to my approach but create space for theirs.", type: 'alchemist', weight: 1 },
-      C: { text: "I try to blend both approaches but feel uncertain.", type: 'blurred', weight: 0.5 },
-      D: { text: "I default to copying their approach.", type: 'undeclared', weight: 0.5 }
-    }
-  },
-  {
-    id: 12,
-    text: "Your response to 'gut feelings' in business decisions:",
-    category: 'awareness',
-    answers: {
-      A: { text: "I validate them with data before acting.", type: 'architect', weight: 1 },
-      B: { text: "I trust them as primary guidance.", type: 'alchemist', weight: 1 },
-      C: { text: "I waffle between trusting and questioning them.", type: 'blurred', weight: 0.5 },
-      D: { text: "I ignore them and look for external validation.", type: 'undeclared', weight: 0.5 }
-    }
-  },
-  {
-    id: 13,
-    text: "In team meetings, you typically:",
-    category: 'awareness',
-    answers: {
-      A: { text: "Focus on outcomes and next steps.", type: 'architect', weight: 1 },
-      B: { text: "Tune into energy and group dynamics.", type: 'alchemist', weight: 1 },
-      C: { text: "Switch between both depending on the moment.", type: 'blurred', weight: 0.5 },
-      D: { text: "Stay quiet unless directly asked.", type: 'undeclared', weight: 0.5 }
-    }
-  },
-  {
-    id: 14,
-    text: "When someone challenges your ideas:",
-    category: 'awareness',
-    answers: {
-      A: { text: "I defend with logic and evidence.", type: 'architect', weight: 1 },
-      B: { text: "I check if their challenge resonates with my truth.", type: 'alchemist', weight: 1 },
-      C: { text: "I doubt myself and second-guess my original idea.", type: 'blurred', weight: 0.5 },
-      D: { text: "I immediately defer to their perspective.", type: 'undeclared', weight: 0.5 }
-    }
-  },
-  {
-    id: 15,
-    text: "Your preferred learning style:",
-    category: 'awareness',
-    answers: {
-      A: { text: "Structured courses, frameworks, step-by-step systems.", type: 'architect', weight: 1 },
-      B: { text: "Experiential learning, mentorship, intuitive exploration.", type: 'alchemist', weight: 1 },
-      C: { text: "I want both but often feel torn between approaches.", type: 'blurred', weight: 0.5 },
-      D: { text: "Whatever is recommended by others.", type: 'undeclared', weight: 0.5 }
-    }
-  },
-  {
-    id: 16,
-    text: "When delegating important tasks:",
-    category: 'awareness',
-    answers: {
-      A: { text: "I provide clear instructions and check progress systematically.", type: 'architect', weight: 1 },
-      B: { text: "I share the vision and trust them to find their way.", type: 'alchemist', weight: 1 },
-      C: { text: "I over-explain then worry I wasn't clear enough.", type: 'blurred', weight: 0.5 },
-      D: { text: "I avoid delegating important tasks.", type: 'undeclared', weight: 0.5 }
-    }
-  },
-  {
-    id: 17,
-    text: "Your relationship with business metrics and data:",
-    category: 'awareness',
-    answers: {
-      A: { text: "Essential for all decisions - I live by the numbers.", type: 'architect', weight: 1 },
-      B: { text: "Important context, but feeling and intuition lead.", type: 'alchemist', weight: 1 },
-      C: { text: "I want to use data but often feel overwhelmed by it.", type: 'blurred', weight: 0.5 },
-      D: { text: "I avoid looking at metrics unless forced to.", type: 'undeclared', weight: 0.5 }
-    }
-  },
-  {
-    id: 18,
-    text: "When your business isn't growing as expected:",
-    category: 'awareness',
-    answers: {
-      A: { text: "I analyze systems and optimize what's not working.", type: 'architect', weight: 1 },
-      B: { text: "I check my energy and alignment with the vision.", type: 'alchemist', weight: 1 },
-      C: { text: "I alternate between different strategies without clarity.", type: 'blurred', weight: 0.5 },
-      D: { text: "I blame external factors or bad timing.", type: 'undeclared', weight: 0.5 }
-    }
-  },
-  {
-    id: 19,
-    text: "Your approach to hiring and team building:",
-    category: 'awareness',
-    answers: {
-      A: { text: "Skill-based with clear role definitions and expectations.", type: 'architect', weight: 1 },
-      B: { text: "Values-aligned with room for individual expression.", type: 'alchemist', weight: 1 },
-      C: { text: "I want both but struggle to prioritize what matters most.", type: 'blurred', weight: 0.5 },
-      D: { text: "I hire whoever is available and seems competent.", type: 'undeclared', weight: 0.5 }
-    }
-  },
-  {
-    id: 20,
-    text: "Your long-term vision creation process:",
-    category: 'awareness',
-    answers: {
-      A: { text: "Strategic planning with clear milestones and measurable outcomes.", type: 'architect', weight: 1 },
-      B: { text: "Intuitive visioning based on feeling and possibility.", type: 'alchemist', weight: 1 },
-      C: { text: "I try to combine both but often feel conflicted.", type: 'blurred', weight: 0.5 },
-      D: { text: "I avoid long-term planning and focus on immediate needs.", type: 'undeclared', weight: 0.5 }
-    }
   }
+  // Q7-12 will be dynamically loaded based on user's default type
 ];
 
-// DNA Subtypes with complete profiles
+// DNA Subtypes - Using exact user specifications from attached documents
 export const DNA_SUBTYPES: Record<string, DNASubtype> = {
-  // ALCHEMIST SUBTYPES
+  // ALCHEMIST SUBTYPES (Emotion → Thought → Emotion)
   'visionary-oracle': {
     id: 'visionary-oracle',
     name: 'The Visionary Oracle',
     emoji: '🔥',
     category: 'alchemist',
     operatingLoop: 'Emotion → Thought → Emotion',
-    coreIdentity: 'You don\'t guess — you know. Trends, shifts, cultural energy — you feel them ahead of the curve. You have a gift for intuiting what\'s about to matter, often before it shows up in the market. You create with emotional boldness and speak with conviction, but struggle with follow-through.',
-    oppositeAwareness: 'You admire structure from afar — but up close, it feels suffocating. You crave the clarity and grounded execution of the Architect… yet resist their linear ways. You\'re learning to build rhythm without losing freedom.',
-    edge: 'You spot patterns before others do. You have a sixth sense for what\'s next. You attract collaborators, clients, and community. You lead with emotion and cultural instinct.',
-    risks: 'You procrastinate — waiting for the "perfect" moment. You get excited… then freeze. You avoid starting until it\'s perfect — which means you don\'t start. You burn bright… then burn out.',
-    nextSteps: 'You don\'t need a new idea — you need a clear priority. Prioritize MVPs over masterpieces. Build rituals that help you start early — not rush late. Create containers that feel emotionally congruent — not sterile.',
-    complement: {
-      type: 'architect',
-      name: 'The Systemised Builder',
-      description: 'Reliable executor. Systems-first. Finisher energy.'
-    }
+    coreIdentity: 'Sees the future, struggles to finish. Hyper-intuitive, sees trends before they emerge. Gets overwhelmed mid-build, rushes at the end, often burns out. Needs containers to complete vision.',
+    oppositeAwareness: 'Low awareness of Architect traits',
+    edge: 'Intuitive pattern recognition, cultural sensing',
+    risks: 'Procrastination, burnout, incomplete projects',
+    nextSteps: 'Build containers and systems for completion'
   },
+  'magnetic-perfectionist': {
+    id: 'magnetic-perfectionist', 
+    name: 'The Magnetic Perfectionist',
+    emoji: '🧠',
+    category: 'alchemist',
+    operatingLoop: 'Emotion → Thought → Emotion',
+    coreIdentity: 'Organised to deliver aligned perfection. Trained to finish what she starts. Creates emotional structure, not logic. Seeks refined perfection and can\'t deliver anything less.',
+    oppositeAwareness: 'Medium awareness of Architect traits',
+    edge: 'Emotional structure, consistent delivery',
+    risks: 'Over-ownership, impossibly high standards',
+    nextSteps: 'Find collaborators who match delivery frequency'
+  },
+  'energetic-empath': {
+    id: 'energetic-empath',
+    name: 'The Energetic Empath', 
+    emoji: '🌊',
+    category: 'alchemist',
+    operatingLoop: 'Emotion → Thought → Emotion',
+    coreIdentity: 'Heals with energy, absorbs with intensity. Radiates energy and uplifts others. Absorbs emotional weight, has high recharge needs. Needs clear logic to counter intuitive bias.',
+    oppositeAwareness: 'Medium awareness of Architect traits',
+    edge: 'Energy healing, emotional uplift',
+    risks: 'Emotional absorption, burnout from others\' energy',
+    nextSteps: 'Develop logical frameworks to balance intuition'
+  },
+  'ultimate-alchemist': {
+    id: 'ultimate-alchemist',
+    name: 'The Ultimate Alchemist',
+    emoji: '🌪️', 
+    category: 'alchemist',
+    operatingLoop: 'Emotion → Thought → Emotion',
+    coreIdentity: 'Carries every Alchemist gift — and full awareness of structure. Aura, empathy, vision, and organised precision. Has deep awareness of Architect mode, but doesn\'t execute like one. Chooses growth over all.',
+    oppositeAwareness: 'High awareness of Architect traits',
+    edge: 'Complete Alchemist gifts with structural awareness',
+    risks: 'Choosing growth over stability',
+    nextSteps: 'Balance growth impulses with sustainable systems'
+  },
+
+  // ARCHITECT SUBTYPES (Thought → Emotion → Thought)
+  'systemised-builder': {
+    id: 'systemised-builder',
+    name: 'The Systemised Builder',
+    emoji: '🧱',
+    category: 'architect', 
+    operatingLoop: 'Thought → Emotion → Thought',
+    coreIdentity: 'Hands-on executor, builds what others imagine. Needs clear instruction and trust. Doesn\'t over-control — works steadily. Complements Alchemists who need grounding and structure.',
+    oppositeAwareness: 'Low awareness of Alchemist traits',
+    edge: 'Steady execution, system building',
+    risks: 'Needs external direction, limited vision',
+    nextSteps: 'Partner with visionaries for direction'
+  },
+  'internal-analyzer': {
+    id: 'internal-analyzer',
+    name: 'The Internal Analyzer',
+    emoji: '🧩',
+    category: 'architect',
+    operatingLoop: 'Thought → Emotion → Thought', 
+    coreIdentity: 'Seeks perfection through systems. Data-obsessed, detail-led. Gets stuck in analysis loops. Needs Alchemist energy to spark momentum and emotionally calibrate decisions.',
+    oppositeAwareness: 'Medium awareness of Alchemist traits',
+    edge: 'Deep analysis, systematic perfection',
+    risks: 'Analysis paralysis, over-optimization',
+    nextSteps: 'Add emotional calibration to decision-making'
+  },
+  'master-strategist': {
+    id: 'master-strategist',
+    name: 'The Master Strategist', 
+    emoji: '📊',
+    category: 'architect',
+    operatingLoop: 'Thought → Emotion → Thought',
+    coreIdentity: 'Calm, calculated, high-trust leader. Leads through logic, excels at delegation and direction. Needs emotion to connect and inspire beyond just performance.',
+    oppositeAwareness: 'Medium awareness of Alchemist traits',
+    edge: 'Strategic leadership, logical delegation',
+    risks: 'Emotional disconnection, performance-only focus',
+    nextSteps: 'Integrate emotional connection into leadership'
+  },
+  'ultimate-strategist': {
+    id: 'ultimate-strategist',
+    name: 'The Ultimate Strategist',
+    emoji: '🧊',
+    category: 'architect',
+    operatingLoop: 'Thought → Emotion → Thought',
+    coreIdentity: 'Silent precision, simplified clarity, master of delegation. Constantly recalculates and optimises. Doesn\'t freeze — repositions. Outsources with speed and precision. Doesn\'t lead with emotion, but respects and protects it.',
+    oppositeAwareness: 'High awareness of Alchemist traits',
+    edge: 'Strategic precision with emotional respect',
+    risks: 'Over-optimization, emotional distance',
+    nextSteps: 'Balance efficiency with human connection'
+  },
+
+  // BLURRED IDENTITY SUBTYPES (Suppressed or Adapted Loops)
+  'overthinker': {
+    id: 'overthinker',
+    name: 'The Overthinker',
+    emoji: '🌀',
+    category: 'blurred',
+    operatingLoop: 'Suppressed or Adapted',
+    coreIdentity: 'Trapped between modes, frozen by options. Thinks like an Architect, feels like an Alchemist. Can\'t decide which loop to trust. Needs clarity of core identity and direction.',
+    oppositeAwareness: 'Medium awareness of both modes',
+    edge: 'Sees multiple perspectives',
+    risks: 'Decision paralysis, identity confusion',
+    nextSteps: 'Choose one primary operating mode'
+  },
+  'performer': {
+    id: 'performer',
+    name: 'The Performer',
+    emoji: '🎭',
+    category: 'blurred',
+    operatingLoop: 'Suppressed or Adapted',
+    coreIdentity: 'Acts like they have clarity — but hides confusion. Often excels outwardly while internally drifting. Highly adaptive. Needs to reconnect with authentic operating system.',
+    oppositeAwareness: 'High awareness of both modes',
+    edge: 'Adaptability, external success',
+    risks: 'Internal confusion, inauthentic performance',
+    nextSteps: 'Reconnect with authentic identity'
+  },
+  'self-forsaker': {
+    id: 'self-forsaker', 
+    name: 'The Self-Forsaker',
+    emoji: '🕳️',
+    category: 'blurred',
+    operatingLoop: 'Suppressed Emotion',
+    coreIdentity: 'Origin: Alchemist. Suppressed emotion, performs logic. Origin Alchemist who disconnected from emotional DNA due to pressure. Now performs logic — but feels deeply unfulfilled.',
+    oppositeAwareness: 'Low awareness - suppressed natural mode',
+    edge: 'Can perform logical tasks',
+    risks: 'Deep unfulfillment, disconnection from self',
+    nextSteps: 'Reconnect with emotional intelligence'
+  },
+  'self-betrayer': {
+    id: 'self-betrayer',
+    name: 'The Self-Betrayer', 
+    emoji: '🧩',
+    category: 'blurred',
+    operatingLoop: 'Abandoned Structure',
+    coreIdentity: 'Origin: Architect. Abandoned structure, floats in feelings. Origin Architect who traded logic for emotional acceptance. Feels everything but lacks clarity. Needs restoration of mental frameworks.',
+    oppositeAwareness: 'Low awareness - abandoned natural mode',
+    edge: 'Emotional sensitivity',
+    risks: 'Lack of structure, emotional overwhelm',
+    nextSteps: 'Restore logical frameworks and structure'
+  }
   
   'magnetic-perfectionist': {
     id: 'magnetic-perfectionist',
