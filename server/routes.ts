@@ -498,6 +498,70 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ===== STUDENT COURSE ACCESS API ENDPOINTS =====
+  
+  // Get courses available to student with access control
+  app.get("/api/student/courses", requireRole('student'), async (req, res) => {
+    try {
+      const userId = req.user.uid;
+      const courses = await storage.getCoursesForStudent(userId);
+      res.json(courses);
+    } catch (error) {
+      console.error('Error fetching student courses:', error);
+      res.status(500).json({ error: 'Failed to fetch courses' });
+    }
+  });
+
+  // Get specific course with lessons for student
+  app.get("/api/student/course/:id", requireRole('student'), async (req, res) => {
+    try {
+      const courseId = parseInt(req.params.id);
+      const userId = req.user.uid;
+      const course = await storage.getCourseWithLessons(courseId, userId);
+      
+      if (!course) {
+        return res.status(404).json({ error: 'Course not found' });
+      }
+      
+      res.json(course);
+    } catch (error) {
+      console.error('Error fetching course:', error);
+      res.status(500).json({ error: 'Failed to fetch course' });
+    }
+  });
+
+  // Mark lesson as complete for student
+  app.post("/api/student/lesson/:id/complete", requireRole('student'), async (req, res) => {
+    try {
+      const lessonId = parseInt(req.params.id);
+      const userId = req.user.uid;
+      
+      // Get lesson to find course ID
+      const lesson = await storage.getLessonById(lessonId);
+      if (!lesson) {
+        return res.status(404).json({ error: 'Lesson not found' });
+      }
+      
+      await storage.markLessonComplete(userId, lesson.courseId, lessonId, 'completed');
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Error marking lesson complete:', error);
+      res.status(500).json({ error: 'Failed to mark lesson complete' });
+    }
+  });
+
+  // Get student's DNA quiz result
+  app.get("/api/dna/latest", requireRole('student'), async (req, res) => {
+    try {
+      const userId = req.user.uid;
+      const dnaResult = await storage.getLatestEntrepreneurialDnaQuizResponse(userId);
+      res.json(dnaResult);
+    } catch (error) {
+      console.error('Error fetching DNA result:', error);
+      res.status(500).json({ error: 'Failed to fetch DNA result' });
+    }
+  });
+
 
 
   // Firebase Auth routes
