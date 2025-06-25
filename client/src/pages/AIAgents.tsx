@@ -124,7 +124,17 @@ export default function AIAgents() {
   }, [alchemistHistory]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    // Only scroll if we're in the chat area and messages exist
+    if (messagesEndRef.current) {
+      const chatContainer = messagesEndRef.current.closest('[data-chat-container]');
+      if (chatContainer) {
+        messagesEndRef.current.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'end',
+          inline: 'nearest'
+        });
+      }
+    }
   }, [architectMessages, alchemistMessages]);
 
   useEffect(() => {
@@ -328,7 +338,7 @@ export default function AIAgents() {
               </CardHeader>
               
               {/* Messages */}
-              <ScrollArea className="flex-1 p-4">
+              <ScrollArea className="flex-1 p-4" data-chat-container>
                 <div className="space-y-4">
                   {((activeAgent === 'architect' ? architectMessages : alchemistMessages).length === 0) && (
                     <div className="text-center py-8">
