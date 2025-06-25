@@ -54,6 +54,117 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Stripe checkout endpoints (public - must be before auth middleware)
+  app.post("/api/checkout/taster-day", async (req, res) => {
+    try {
+      if (!process.env.STRIPE_SECRET_KEY) {
+        throw new Error('Stripe secret key not configured');
+      }
+
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ["card"],
+        mode: "payment",
+        line_items: [
+          {
+            price_data: {
+              currency: "gbp",
+              unit_amount: 29700, // £297 in pence
+              product_data: {
+                name: "Taster Day Ticket",
+              },
+            },
+            quantity: 1,
+          },
+        ],
+        success_url: `${req.protocol}://${req.get('host')}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${req.protocol}://${req.get('host')}/checkout/cancelled`,
+        metadata: {
+          product: "taster-day",
+        },
+      });
+
+      res.status(200).json({ url: session.url });
+    } catch (error: any) {
+      console.error("Error creating taster day checkout session:", error);
+      res.status(500).json({ message: "Error creating checkout session: " + error.message });
+    }
+  });
+
+  app.post("/api/checkout/mastermind", async (req, res) => {
+    try {
+      if (!process.env.STRIPE_SECRET_KEY) {
+        throw new Error('Stripe secret key not configured');
+      }
+
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ["card"],
+        mode: "payment",
+        line_items: [
+          {
+            price_data: {
+              currency: "gbp",
+              unit_amount: 2400000, // £24,000 in pence
+              product_data: {
+                name: "Mastermind Access",
+              },
+            },
+            quantity: 1,
+          },
+        ],
+        success_url: `${req.protocol}://${req.get('host')}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${req.protocol}://${req.get('host')}/checkout/cancelled`,
+        metadata: {
+          product: "mastermind",
+        },
+      });
+
+      res.status(200).json({ url: session.url });
+    } catch (error: any) {
+      console.error("Error creating mastermind checkout session:", error);
+      res.status(500).json({ message: "Error creating checkout session: " + error.message });
+    }
+  });
+
+  // Stripe webhook endpoint (public - must be before auth middleware)
+  app.post("/api/stripe/webhook", express.raw({ type: 'application/json' }), async (req, res) => {
+    try {
+      if (!process.env.STRIPE_SECRET_KEY || !process.env.STRIPE_WEBHOOK_SECRET) {
+        throw new Error('Stripe keys not configured');
+      }
+
+      const sig = req.headers['stripe-signature'];
+      let event;
+
+      try {
+        event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+      } catch (err: any) {
+        console.error('Webhook signature verification failed:', err.message);
+        return res.status(400).send(`Webhook Error: ${err.message}`);
+      }
+
+      if (event.type === "checkout.session.completed") {
+        const session = event.data.object;
+        
+        const email = session.customer_details?.email;
+        const product = session.metadata?.product;
+        const stripeId = session.id;
+
+        if (email && product) {
+          try {
+            await updateUserAfterPurchase(email, product, stripeId);
+          } catch (updateError: any) {
+            console.error('Error updating user after purchase:', updateError);
+          }
+        }
+      }
+
+      res.json({ received: true });
+    } catch (error: any) {
+      console.error('Stripe webhook error:', error);
+      res.status(500).json({ error: 'Webhook processing failed' });
+    }
+  });
+
   // Development admin login endpoint
   app.post('/api/auth/admin-login', async (req, res) => {
     try {
@@ -2015,7 +2126,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Stripe webhook endpoint - raw body parsing for signature verification
+  // Stripe webhook endpoint - raw body parsing for signature verification (public endpoint)
   app.post("/api/stripe/webhook", express.raw({ type: 'application/json' }), async (req, res) => {
     try {
       if (!process.env.STRIPE_SECRET_KEY || !process.env.STRIPE_WEBHOOK_SECRET) {
