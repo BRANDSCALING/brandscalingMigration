@@ -594,6 +594,12 @@ export class DatabaseStorage implements IStorage {
 
   // AI conversation methods
   async saveAiConversation(userId: string, userMessage: string, assistantResponse: string, dnaType: string): Promise<void> {
+    // Skip saving conversations for anonymous users to avoid foreign key constraint errors
+    if (userId === 'anonymous-user') {
+      console.log('Skipping conversation save for anonymous user');
+      return;
+    }
+    
     const messages = [
       {
         role: 'user',
@@ -617,6 +623,11 @@ export class DatabaseStorage implements IStorage {
 
   async getRecentAiMessages(userId: string, limit: number = 10): Promise<any[]> {
     try {
+      // Return empty array for anonymous users
+      if (userId === 'anonymous-user') {
+        return [];
+      }
+      
       const conversations = await db
         .select()
         .from(aiConversations)
@@ -641,6 +652,11 @@ export class DatabaseStorage implements IStorage {
 
   async getAiConversationsByUser(userId: string, agentType?: string): Promise<any[]> {
     try {
+      // Return empty array for anonymous users
+      if (userId === 'anonymous-user') {
+        return [];
+      }
+      
       let query = db
         .select()
         .from(aiConversations)
