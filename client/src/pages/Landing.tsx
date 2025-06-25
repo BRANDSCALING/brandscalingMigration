@@ -284,8 +284,8 @@ export default function Landing() {
                   </li>
                 </ul>
                 
-                <Button className="w-full gradient-brandscaling text-white">
-                  Get Started
+                <Button className="w-full bg-gray-400 text-white cursor-not-allowed" disabled>
+                  Coming Soon
                 </Button>
               </CardContent>
             </Card>
@@ -318,9 +318,11 @@ export default function Landing() {
                   </li>
                 </ul>
                 
-                <Button className="w-full bg-scale-orange text-white hover:bg-orange-600">
-                  Apply Now
-                </Button>
+                <a href="https://brandscalingschoolforentrepreneurs.com/mastermind-landing-page" target="_blank" rel="noopener noreferrer" className="block">
+                  <Button className="w-full bg-scale-orange text-white hover:bg-orange-600">
+                    Apply Now
+                  </Button>
+                </a>
               </CardContent>
             </Card>
           </div>
