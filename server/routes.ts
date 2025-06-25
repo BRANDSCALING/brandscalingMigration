@@ -2153,7 +2153,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/ai-agents/chat-direct', async (req: any, res) => {
     try {
       const { message, agentType } = req.body;
-      const userId = req.user.uid;
+      const userId = req.user?.uid || 'anonymous-user';
       
       if (!message || !agentType) {
         return res.status(400).json({ error: 'Message and agent type are required' });

@@ -330,7 +330,7 @@ export default function AIAgents() {
               {/* Messages */}
               <ScrollArea className="flex-1 p-4">
                 <div className="space-y-4">
-                  {messages.length === 0 && (
+                  {((activeAgent === 'architect' ? architectMessages : alchemistMessages).length === 0) && (
                     <div className="text-center py-8">
                       <div className={`w-16 h-16 ${getAgentColor(activeAgent)} rounded-full flex items-center justify-center text-white mx-auto mb-4`}>
                         {getAgentIcon(activeAgent)}
@@ -350,7 +350,7 @@ export default function AIAgents() {
                     </div>
                   )}
                   
-                  {messages.map((msg) => (
+                  {(activeAgent === 'architect' ? architectMessages : alchemistMessages).map((msg) => (
                     <div key={msg.id} className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                       {msg.role === 'assistant' && (
                         <div className={`w-8 h-8 ${getAgentColor(activeAgent)} rounded-full flex items-center justify-center text-white flex-shrink-0`}>
