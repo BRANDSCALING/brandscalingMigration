@@ -206,6 +206,127 @@ export default function Landing() {
         </div>
       </BrandSection>
 
+      {/* Choose Your Growth Path Section */}
+      <BrandSection className="spacing-section bg-white">
+        <div className="container-brandscaling">
+          <div className="text-center mb-12">
+            <h2 className="text-h2 text-strategic-black mb-6">Choose Your Growth Path</h2>
+            <p className="text-body text-gray-600 max-w-2xl mx-auto">
+              From first idea to 8-figure scaling. All DNA-personalized. All step-by-step.
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {/* Entry Tier */}
+            <Card className="border-gray-200 hover:shadow-lg transition-all duration-300 relative">
+              <CardContent className="p-8">
+                <div className="text-center mb-6">
+                  <h3 className="text-2xl font-bold text-strategic-black mb-2">Entry</h3>
+                  <div className="text-4xl font-bold text-strategic-black mb-2">£99</div>
+                  <p className="text-gray-600 text-sm">Perfect for idea-stage entrepreneurs</p>
+                </div>
+                
+                <ul className="space-y-3 mb-8">
+                  <li className="flex items-center text-gray-700">
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-3 flex-shrink-0" />
+                    Idea-to-Launch Kit™
+                  </li>
+                  <li className="flex items-center text-gray-700">
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-3 flex-shrink-0" />
+                    Smart Business Builder™
+                  </li>
+                  <li className="flex items-center text-gray-700">
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-3 flex-shrink-0" />
+                    AI Mentor Access
+                  </li>
+                  <li className="flex items-center text-gray-700">
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-3 flex-shrink-0" />
+                    30-Day Launch Plan
+                  </li>
+                </ul>
+                
+                <Button className="w-full bg-strategic-black text-white hover:bg-gray-800">
+                  Get Started
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Expert Tier - Most Popular */}
+            <Card className="border-2 border-architect-indigo hover:shadow-xl transition-all duration-300 relative">
+              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                <span className="bg-architect-indigo text-white px-4 py-1 rounded-full text-sm font-medium">
+                  Most Popular
+                </span>
+              </div>
+              <CardContent className="p-8">
+                <div className="text-center mb-6">
+                  <h3 className="text-2xl font-bold text-strategic-black mb-2">Expert</h3>
+                  <div className="text-4xl font-bold text-strategic-black mb-2">£249</div>
+                  <p className="text-gray-600 text-sm">For growing businesses ready to scale</p>
+                </div>
+                
+                <ul className="space-y-3 mb-8">
+                  <li className="flex items-center text-gray-700">
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-3 flex-shrink-0" />
+                    Everything in Entry
+                  </li>
+                  <li className="flex items-center text-gray-700">
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-3 flex-shrink-0" />
+                    Magnetic Offer Builder™
+                  </li>
+                  <li className="flex items-center text-gray-700">
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-3 flex-shrink-0" />
+                    The Energetic Edge™
+                  </li>
+                  <li className="flex items-center text-gray-700">
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-3 flex-shrink-0" />
+                    Conversion Confidence Kit™
+                  </li>
+                </ul>
+                
+                <Button className="w-full gradient-brandscaling text-white">
+                  Get Started
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Elite Tier */}
+            <Card className="border-2 border-scale-orange hover:shadow-lg transition-all duration-300 relative">
+              <CardContent className="p-8">
+                <div className="text-center mb-6">
+                  <h3 className="text-2xl font-bold text-strategic-black mb-2">Elite</h3>
+                  <div className="text-4xl font-bold text-strategic-black mb-2">£20k</div>
+                  <p className="text-gray-600 text-sm">Complete scaling ecosystem + mastermind</p>
+                </div>
+                
+                <ul className="space-y-3 mb-8">
+                  <li className="flex items-center text-gray-700">
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-3 flex-shrink-0" />
+                    Full Course Vault Access
+                  </li>
+                  <li className="flex items-center text-gray-700">
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-3 flex-shrink-0" />
+                    Private Mastermind
+                  </li>
+                  <li className="flex items-center text-gray-700">
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-3 flex-shrink-0" />
+                    1:1 Strategy Sessions
+                  </li>
+                  <li className="flex items-center text-gray-700">
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-3 flex-shrink-0" />
+                    Direct Mentor Access
+                  </li>
+                </ul>
+                
+                <Button className="w-full bg-scale-orange text-white hover:bg-orange-600">
+                  Apply Now
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </BrandSection>
+
       {/* Recognition Section */}
       <BrandSection className="spacing-section bg-gray-50">
         <div className="container-brandscaling">
