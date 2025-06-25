@@ -619,12 +619,23 @@ export class DatabaseStorage implements IStorage {
       .limit(limit);
   }
 
-  async getAiConversationsByUser(userId: string): Promise<any[]> {
-    return await db
-      .select()
-      .from(aiConversations)
-      .where(eq(aiConversations.userId, userId))
-      .orderBy(aiConversations.createdAt);
+  async getAiConversationsByUser(userId: string, agentType?: string): Promise<any[]> {
+    try {
+      let query = db
+        .select()
+        .from(aiConversations)
+        .where(eq(aiConversations.userId, userId));
+      
+      if (agentType) {
+        query = query.where(eq(aiConversations.dnaType, agentType));
+      }
+      
+      const conversations = await query.orderBy(aiConversations.createdAt);
+      return conversations;
+    } catch (error) {
+      console.error('Error fetching AI conversations:', error);
+      return [];
+    }
   }
 
   // Email logging

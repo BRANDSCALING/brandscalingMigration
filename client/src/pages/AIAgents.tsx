@@ -56,39 +56,22 @@ export default function AIAgents() {
 
   const chatMutation = useMutation({
     mutationFn: async (data: { message: string; agentType: 'architect' | 'alchemist' }) => {
-      const response = await fetch('/api/ai-agents/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      return response.json();
+      return apiRequest('POST', '/api/ai-agents/chat-direct', data);
     },
-    onSuccess: (response) => {
-      const newMessage: Message = {
-        id: Date.now().toString(),
+    onSuccess: (response, variables) => {
+      const assistantMessage: Message = {
+        id: Date.now().toString() + '_assistant',
         role: 'assistant',
         content: response.response,
         timestamp: new Date(),
-        agentType: activeAgent
+        agentType: variables.agentType
       };
-      setMessages(prev => [...prev, newMessage]);
-    },
-    onError: (error) => {
-      const errorMessage: Message = {
-        id: Date.now().toString(),
-        role: 'assistant',
-        content: 'Sorry, I encountered an error. Please try again.',
-        timestamp: new Date(),
-        agentType: activeAgent
-      };
-      setMessages(prev => [...prev, errorMessage]);
+      
+      if (variables.agentType === 'architect') {
+        setArchitectMessages(prev => [...prev, assistantMessage]);
+      } else {
+        setAlchemistMessages(prev => [...prev, assistantMessage]);
+      }
     },
   });
 
@@ -100,20 +83,34 @@ export default function AIAgents() {
   // }, [user, authLoading, setLocation]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
-
-  useEffect(() => {
-    if (conversationHistory) {
-      setMessages(conversationHistory.map((msg: any) => ({
+    if (architectHistory?.length) {
+      const formattedMessages: Message[] = architectHistory.map((msg: any) => ({
         id: msg.id,
         role: msg.role,
         content: msg.content,
-        timestamp: new Date(msg.createdAt),
-        agentType: msg.dnaType
-      })));
+        timestamp: new Date(msg.timestamp || msg.createdAt),
+        agentType: 'architect'
+      }));
+      setArchitectMessages(formattedMessages);
     }
-  }, [conversationHistory]);
+  }, [architectHistory]);
+
+  useEffect(() => {
+    if (alchemistHistory?.length) {
+      const formattedMessages: Message[] = alchemistHistory.map((msg: any) => ({
+        id: msg.id,
+        role: msg.role,
+        content: msg.content,
+        timestamp: new Date(msg.timestamp || msg.createdAt),
+        agentType: 'alchemist'
+      }));
+      setAlchemistMessages(formattedMessages);
+    }
+  }, [alchemistHistory]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [architectMessages, alchemistMessages]);
 
   useEffect(() => {
     // Set default agent based on user's DNA type
@@ -139,7 +136,11 @@ export default function AIAgents() {
       agentType: activeAgent
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    if (activeAgent === 'architect') {
+      setArchitectMessages(prev => [...prev, userMessage]);
+    } else {
+      setAlchemistMessages(prev => [...prev, userMessage]);
+    }
     
     chatMutation.mutate({
       message: trimmedMessage,

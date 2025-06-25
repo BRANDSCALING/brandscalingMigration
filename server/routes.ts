@@ -13,6 +13,7 @@ import Stripe from "stripe";
 import { hasAccess, getAllowedCourses, courseDatabase, getUpgradeTarget } from './tierPermissions';
 import { uploadFields, uploadWorkbooks } from './upload';
 import { ENTREPRENEURIAL_DNA_QUESTIONS } from '@shared/entrepreneurialDnaData';
+import { chatWithAgent } from './aiAgent';
 
 
 
@@ -2146,7 +2147,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // AI Agents Integration Routes
+  // AI Agents Direct OpenAI Integration
+  
+  // Chat with AI agents using direct OpenAI API calls
+  app.post('/api/ai-agents/chat-direct', requireAuth, async (req: any, res) => {
+    try {
+      const { message, agentType } = req.body;
+      const userId = req.user.uid;
+      
+      if (!message || !agentType) {
+        return res.status(400).json({ error: 'Message and agent type are required' });
+      }
+
+      if (!['architect', 'alchemist'].includes(agentType)) {
+        return res.status(400).json({ error: 'Invalid agent type' });
+      }
+
+      // Get user's DNA type for personalization
+      const userDnaType = agentType === 'architect' ? 'Architect' : 'Alchemist';
+      
+      // Use the existing AI agent chat function with direct OpenAI
+      const responseText = await chatWithAgent(message, userDnaType, userId);
+
+      res.json({
+        response: responseText,
+        agentType: agentType,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Error communicating with AI agent:', error);
+      res.status(500).json({ 
+        error: 'Failed to communicate with AI agent',
+        response: 'I apologize, but I\'m temporarily unavailable. Please try again in a moment.'
+      });
+    }
+  });
+
+  // AI Agents Integration Routes (Legacy n8n webhook)
   
   // Chat with AI agents using n8n webhooks
   app.post('/api/ai-agents/chat', async (req, res) => {
