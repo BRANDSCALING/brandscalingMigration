@@ -1937,7 +1937,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Taster Day checkout session
+  // Taster Day checkout session (public endpoint)
   app.post("/api/checkout/taster-day", async (req, res) => {
     try {
       if (!process.env.STRIPE_SECRET_KEY) {
