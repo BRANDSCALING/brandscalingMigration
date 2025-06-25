@@ -261,10 +261,11 @@ export const aiAgents = pgTable("ai_agents", {
 export const aiConversations = pgTable("ai_conversations", {
   id: serial("id").primaryKey(),
   userId: varchar("user_id").notNull().references(() => users.id),
-  role: varchar("role").notNull(), // user, assistant
-  content: text("content").notNull(),
-  dnaType: varchar("dna_type"),
+  agentId: integer("agent_id"),
+  messages: jsonb("messages"), // array of message objects
+  role: varchar("role"), // agent type identifier
   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Interactive Workbooks

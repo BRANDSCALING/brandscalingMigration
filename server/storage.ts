@@ -594,29 +594,49 @@ export class DatabaseStorage implements IStorage {
 
   // AI conversation methods
   async saveAiConversation(userId: string, userMessage: string, assistantResponse: string, dnaType: string): Promise<void> {
-    await db.insert(aiConversations).values([
+    const messages = [
       {
-        userId,
         role: 'user',
         content: userMessage,
-        dnaType
+        timestamp: new Date().toISOString()
       },
       {
-        userId,
-        role: 'assistant',
+        role: 'assistant', 
         content: assistantResponse,
-        dnaType
+        timestamp: new Date().toISOString()
       }
-    ]);
+    ];
+    
+    await db.insert(aiConversations).values({
+      userId,
+      agentId: dnaType === 'architect' ? 1 : 2,
+      messages: messages,
+      role: dnaType
+    });
   }
 
   async getRecentAiMessages(userId: string, limit: number = 10): Promise<any[]> {
-    return await db
-      .select()
-      .from(aiConversations)
-      .where(eq(aiConversations.userId, userId))
-      .orderBy(desc(aiConversations.createdAt))
-      .limit(limit);
+    try {
+      const conversations = await db
+        .select()
+        .from(aiConversations)
+        .where(eq(aiConversations.userId, userId))
+        .orderBy(desc(aiConversations.createdAt))
+        .limit(limit);
+      
+      // Extract messages from the conversations
+      const allMessages = [];
+      for (const conv of conversations) {
+        if (conv.messages && Array.isArray(conv.messages)) {
+          allMessages.push(...conv.messages);
+        }
+      }
+      
+      return allMessages.slice(0, limit);
+    } catch (error) {
+      console.error('Error fetching recent AI messages:', error);
+      return [];
+    }
   }
 
   async getAiConversationsByUser(userId: string, agentType?: string): Promise<any[]> {
@@ -627,11 +647,27 @@ export class DatabaseStorage implements IStorage {
         .where(eq(aiConversations.userId, userId));
       
       if (agentType) {
-        query = query.where(eq(aiConversations.dnaType, agentType));
+        query = query.where(eq(aiConversations.role, agentType));
       }
       
       const conversations = await query.orderBy(aiConversations.createdAt);
-      return conversations;
+      
+      // Extract and flatten messages from all conversations
+      const allMessages = [];
+      for (const conv of conversations) {
+        if (conv.messages && Array.isArray(conv.messages)) {
+          const messagesWithId = conv.messages.map((msg, index) => ({
+            id: `${conv.id}-${index}`,
+            role: msg.role,
+            content: msg.content,
+            timestamp: msg.timestamp || conv.createdAt,
+            createdAt: conv.createdAt
+          }));
+          allMessages.push(...messagesWithId);
+        }
+      }
+      
+      return allMessages;
     } catch (error) {
       console.error('Error fetching AI conversations:', error);
       return [];
