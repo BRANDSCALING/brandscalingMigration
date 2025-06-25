@@ -33,7 +33,8 @@ export default function AIAgents() {
   const [, setLocation] = useLocation();
   const [activeAgent, setActiveAgent] = useState<'architect' | 'alchemist'>('architect');
   const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [architectMessages, setArchitectMessages] = useState<Message[]>([]);
+  const [alchemistMessages, setAlchemistMessages] = useState<Message[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
 
@@ -42,8 +43,16 @@ export default function AIAgents() {
     enabled: !!user,
   });
 
-  // Disable conversation history for now due to auth issues
-  const conversationHistory = null;
+  // Get separate conversation histories for each agent
+  const { data: architectHistory } = useQuery({
+    queryKey: ['/api/ai-conversations/architect'],
+    enabled: !!user,
+  });
+
+  const { data: alchemistHistory } = useQuery({
+    queryKey: ['/api/ai-conversations/alchemist'],
+    enabled: !!user,
+  });
 
   const chatMutation = useMutation({
     mutationFn: async (data: { message: string; agentType: 'architect' | 'alchemist' }) => {

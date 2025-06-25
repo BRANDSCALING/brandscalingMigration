@@ -2264,20 +2264,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get AI conversation history
-  app.get('/api/ai-conversations/:agentType?', requireAuth, async (req, res) => {
+  // Get AI conversation history (separated by agent)
+  app.get('/api/ai-conversations/:agentType?', requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user!.uid;
+      const userId = req.user.uid;
       const agentType = req.params.agentType;
       
-      const conversations = await storage.getAiConversationsByUser(userId);
+      const conversations = await storage.getAiConversationsByUser(userId, agentType);
       
-      // Filter by agent type if specified
-      const filteredConversations = agentType 
-        ? conversations.filter((conv: any) => conv.dnaType === agentType)
-        : conversations;
-      
-      res.json(filteredConversations);
+      res.json(conversations);
     } catch (error) {
       console.error('Error fetching AI conversations:', error);
       res.status(500).json({ error: 'Failed to fetch conversation history' });

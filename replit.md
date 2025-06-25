@@ -122,6 +122,7 @@ The Brandscaling Platform is a full-stack AI-powered business operating system t
 
 ```
 Changelog:
+- June 24, 2025. AI AGENTS SEPARATED: Fixed AI Advisors to have completely separate chat conversations (Architect vs Alchemist), replaced n8n webhook integration with direct OpenAI API calls, implemented independent conversation histories for each agent.
 - June 24, 2025. SCORING LOGIC IMPLEMENTED: Added user's exact scoring algorithm (4+ 🟪=Architect, 4+ 🟧=Alchemist, <4 either=Blurred Identity) with authentic type counting and result calculation. Quiz system now fully functional with user's specifications.
 - June 24, 2025. FINAL CLEANUP COMPLETE: Updated quiz system to user's exact type mapping specifications (🟪=architect, 🟧=alchemist, 🔴=blurred, ⚪=neutral), removed all DNA subtypes and unnecessary data, systematically deleted ALL fake/placeholder content throughout site. Quiz now contains only user's authentic 6 questions with exact type mappings. Zero unauthorized content remains.
 - June 24, 2025. CRITICAL FIX: Removed all placeholder/fake content from E-DNA quiz system and implemented user's exact Q1-Q6 questions with precise scoring logic (4+ = clear type, otherwise Blurred Identity)
