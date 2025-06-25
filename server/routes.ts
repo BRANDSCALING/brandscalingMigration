@@ -2149,8 +2149,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // AI Agents Direct OpenAI Integration
   
-  // Chat with AI agents using direct OpenAI API calls
-  app.post('/api/ai-agents/chat-direct', requireAuth, async (req: any, res) => {
+  // Chat with AI agents using direct OpenAI API calls (allow anonymous users)
+  app.post('/api/ai-agents/chat-direct', async (req: any, res) => {
     try {
       const { message, agentType } = req.body;
       const userId = req.user.uid;

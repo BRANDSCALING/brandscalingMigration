@@ -41,22 +41,37 @@ export default function AIAgents() {
   const { data: userDnaResult } = useQuery({
     queryKey: ['/api/dashboard'],
     enabled: !!user,
+    retry: false,
   });
 
-  // Get separate conversation histories for each agent
+  // Get separate conversation histories for each agent (only if authenticated)
   const { data: architectHistory } = useQuery({
     queryKey: ['/api/ai-conversations/architect'],
     enabled: !!user,
+    retry: false,
   });
 
   const { data: alchemistHistory } = useQuery({
     queryKey: ['/api/ai-conversations/alchemist'],
     enabled: !!user,
+    retry: false,
   });
 
   const chatMutation = useMutation({
     mutationFn: async (data: { message: string; agentType: 'architect' | 'alchemist' }) => {
-      return apiRequest('POST', '/api/ai-agents/chat-direct', data);
+      const response = await fetch('/api/ai-agents/chat-direct', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      return response.json();
     },
     onSuccess: (response, variables) => {
       const assistantMessage: Message = {
@@ -75,12 +90,12 @@ export default function AIAgents() {
     },
   });
 
-  // Remove authentication requirement for AI agents
-  // useEffect(() => {
-  //   if (!authLoading && !user) {
-  //     setLocation('/');
-  //   }
-  // }, [user, authLoading, setLocation]);
+  // Allow public access to AI agents page
+  useEffect(() => {
+    if (!authLoading && !user) {
+      console.log('User not authenticated, but allowing access to AI agents page');
+    }
+  }, [user, authLoading]);
 
   useEffect(() => {
     if (architectHistory?.length) {
@@ -158,6 +173,18 @@ export default function AIAgents() {
   };
 
   const dominantType = userDnaResult?.userDnaResult?.dominantType || 'Architect';
+
+  // Show loading state while auth is loading
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <Brain className="h-12 w-12 mx-auto mb-4 text-gray-400 animate-pulse" />
+          <p className="text-gray-600">Loading AI Agents...</p>
+        </div>
+      </div>
+    );
+  }
 
   const getAgentColor = (type: 'architect' | 'alchemist') => {
     return type === 'architect' ? 'bg-blue-600' : 'bg-red-500';
