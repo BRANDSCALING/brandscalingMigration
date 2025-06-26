@@ -79,17 +79,21 @@ export async function handleGhlWebhook(req: Request, res: Response) {
     // Log credential generation
     console.log(`Generated credentials for ${email}: ${password}`);
 
-    // Send welcome email with credentials
-    await sendCredentialEmail(email, password, accessTier);
-
+    // Instead of sending email directly, return credentials to GHL for workflow automation
     console.log(`User account created successfully for ${email} with ${accessTier} access`);
+    console.log(`Generated password for GHL workflow: ${password}`);
 
-    // Respond to GHL webhook
+    // Respond to GHL webhook with credentials for automation
     res.status(200).json({
       success: true,
-      message: 'Purchase processed and credentials sent',
+      message: 'Purchase processed and account created',
       userId: userId,
-      accessTier: accessTier
+      accessTier: accessTier,
+      loginCredentials: {
+        email: email,
+        password: password,
+        loginUrl: `${process.env.FRONTEND_URL || 'https://your-domain.com'}/signin`
+      }
     });
 
   } catch (error) {
