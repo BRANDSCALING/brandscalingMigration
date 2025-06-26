@@ -67,6 +67,7 @@ export default function EntrepreneurialDnaQuiz() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [retakeInfo, setRetakeInfo] = useState<{ canRetake: boolean; nextRetakeDate?: string } | null>(null);
   const [isCheckingEligibility, setIsCheckingEligibility] = useState(true);
+  const [quizCompleted, setQuizCompleted] = useState(false);
 
   // Debug logging for state changes
   useEffect(() => {
@@ -146,27 +147,18 @@ export default function EntrepreneurialDnaQuiz() {
       
       console.log('Processed result:', processedResult);
       
-      // Force a state update sequence to ensure results display
+      // Force immediate state update with new completion flag
+      console.log('Setting states immediately...');
+      setResult(processedResult);
+      setIsProcessing(false);
+      setShowResults(true);
+      setQuizCompleted(true);
+      console.log('States set - result:', processedResult, 'isProcessing:', false, 'showResults:', true, 'quizCompleted:', true);
+      
+      // Auto-redirect to appropriate dashboard after showing results
       setTimeout(() => {
-        console.log('Setting result state...');
-        setResult(processedResult);
-        
-        setTimeout(() => {
-          console.log('Setting processing to false...');
-          setIsProcessing(false);
-          
-          setTimeout(() => {
-            console.log('Setting showResults to true...');
-            setShowResults(true);
-            console.log('All states set - showResults: true, result:', processedResult);
-            
-            // Auto-redirect to appropriate dashboard after showing results
-            setTimeout(() => {
-              redirectToDashboard();
-            }, 5000); // 5 second delay to show results
-          }, 50);
-        }, 50);
-      }, 100);
+        redirectToDashboard();
+      }, 5000); // 5 second delay to show results
       
     } catch (error) {
       console.error('Error submitting quiz:', error);
@@ -230,6 +222,64 @@ export default function EntrepreneurialDnaQuiz() {
 
   if (!user) {
     return <div>Please log in to take the quiz.</div>;
+  }
+
+  // PRIORITY: Force results display if quiz is completed
+  if (quizCompleted && result) {
+    console.log('PRIORITY RENDER: Quiz completed, showing results immediately');
+    
+    const resultData = result;
+    const content = getResultContent(resultData.defaultType, resultData.awarenessPercentage);
+    
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4">
+        <div className="container mx-auto max-w-4xl py-8">
+          <Card className="shadow-xl">
+            <CardContent className="p-8">
+              <div className="text-center mb-8">
+                <CheckCircle className="h-16 w-16 mx-auto text-green-500 mb-4" />
+                <h1 className="text-3xl font-bold mb-2">Your Entrepreneurial DNA Results</h1>
+                <p className="text-gray-600 dark:text-gray-400">
+                  Discover your unique business building approach
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-8 mb-8">
+                <div>
+                  <h3 className="text-lg font-semibold mb-4">Your Default Type</h3>
+                  <div className="bg-indigo-100 dark:bg-indigo-900 rounded-lg p-4">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="font-medium">{resultData.defaultType}</span>
+                      <span className="text-indigo-600 font-bold">PRIMARY</span>
+                    </div>
+                    <Progress value={100} className="h-3" />
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-semibold mb-4">Opposite Type Awareness</h3>
+                  <div className="bg-green-100 dark:bg-green-900 rounded-lg p-4">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="font-medium">Awareness Level</span>
+                      <span className="text-green-600 font-bold">{resultData.awarenessPercentage}%</span>
+                    </div>
+                    <Progress value={resultData.awarenessPercentage} className="h-3" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="prose prose-lg max-w-none mb-8" dangerouslySetInnerHTML={{ __html: content }} />
+
+              <div className="text-center">
+                <Button onClick={redirectToDashboard} size="lg" className="px-8">
+                  Access Your Dashboard
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
   }
 
   if (retakeInfo && !retakeInfo.canRetake) {
