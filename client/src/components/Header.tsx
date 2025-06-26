@@ -2,14 +2,14 @@ import { Link } from "wouter";
 import { User, Infinity } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 export default function Header() {
   const { user, isAuthenticated } = useAuth();
   const [localUser, setLocalUser] = useState<any>(null);
   
   // Check for local student authentication
-  const checkAuthState = () => {
+  const checkAuthState = useCallback(() => {
     const studentId = localStorage.getItem('studentId');
     const studentEmail = localStorage.getItem('studentEmail');
     const adminId = sessionStorage.getItem('adminId');
@@ -28,12 +28,10 @@ export default function Header() {
         role: 'admin',
         accessTier: 'mastermind'
       });
-    } else if (user) {
-      setLocalUser(user);
     } else {
       setLocalUser(null);
     }
-  };
+  }, []);
 
   useEffect(() => {
     checkAuthState();
@@ -47,14 +45,18 @@ export default function Header() {
     
     // Custom event for localStorage.clear()
     const handleLocalStorageClear = () => {
+      console.log('Custom logout event received');
       checkAuthState();
     };
     
+    // Listen for multiple event types
     window.addEventListener('localStorageCleared', handleLocalStorageClear);
+    window.addEventListener('auth-logout', handleLocalStorageClear);
     
     return () => {
       window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener('localStorageCleared', handleLocalStorageClear);
+      window.removeEventListener('auth-logout', handleLocalStorageClear);
     };
   }, [user]);
 

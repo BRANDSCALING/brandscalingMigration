@@ -197,7 +197,7 @@ export default function StudentDashboard() {
                 localStorage.removeItem('studentEmail');
                 localStorage.clear();
                 // Dispatch custom event to notify Header component
-                window.dispatchEvent(new Event('localStorageCleared'));
+                window.dispatchEvent(new Event('auth-logout'));
                 setLocation('/');
               }}
               className="flex items-center space-x-2"
