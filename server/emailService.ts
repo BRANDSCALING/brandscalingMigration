@@ -57,7 +57,7 @@ export async function sendWelcomeCredentials(credentials: UserCredentials) {
     `;
 
     const result = await resend.emails.send({
-      from: 'Brandscaling <welcome@brandscaling.com>',
+      from: 'Brandscaling <onboarding@resend.dev>',
       to: [email],
       subject: `Welcome to Brandscaling - Your ${tierName} Access`,
       html: htmlContent,

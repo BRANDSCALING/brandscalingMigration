@@ -122,6 +122,8 @@ The Brandscaling Platform is a full-stack AI-powered business operating system t
 
 ```
 Changelog:
+- June 26, 2025. PURCHASE-TO-CREDENTIALS SYSTEM COMPLETE: Implemented full automated workflow where Entry (£49) and Elite (£20k) purchases automatically generate secure login credentials and send professional welcome emails via Resend. Removed signup functionality - users only receive accounts after purchase. Authentication system updated to sign-in only with purchase guidance.
+- June 26, 2025. PRICING UPDATED: Entry tier changed from £99 to £249 with "Today Only Special" £49 discount prominently displayed. Expert tier updated to £999. Complete visual styling with strikethrough original prices and green highlighting for special offers.
 - June 24, 2025. PRICING SECTION ADDED: Added "Choose Your Growth Path" pricing section to homepage between DNA quiz and recognition sections with Entry (£99), Expert (£249), and Elite (£20k) tiers featuring authentic program names and features.
 - June 24, 2025. AI AGENTS FUNCTIONAL: Fixed database schema mismatch for AI conversations, updated storage methods to match actual table structure, resolved "content column does not exist" errors. AI Agents now fully accessible from homepage buttons with working chat functionality.
 - June 24, 2025. AI AGENTS SEPARATED: Fixed AI Advisors to have completely separate chat conversations (Architect vs Alchemist), replaced n8n webhook integration with direct OpenAI API calls, implemented independent conversation histories for each agent.
