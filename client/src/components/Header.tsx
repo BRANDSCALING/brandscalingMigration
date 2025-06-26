@@ -9,7 +9,7 @@ export default function Header() {
   const [localUser, setLocalUser] = useState<any>(null);
   
   // Check for local student authentication
-  useEffect(() => {
+  const checkAuthState = () => {
     const studentId = localStorage.getItem('studentId');
     const studentEmail = localStorage.getItem('studentEmail');
     const adminId = sessionStorage.getItem('adminId');
@@ -33,6 +33,29 @@ export default function Header() {
     } else {
       setLocalUser(null);
     }
+  };
+
+  useEffect(() => {
+    checkAuthState();
+    
+    // Listen for storage changes
+    const handleStorageChange = () => {
+      checkAuthState();
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Custom event for localStorage.clear()
+    const handleLocalStorageClear = () => {
+      checkAuthState();
+    };
+    
+    window.addEventListener('localStorageCleared', handleLocalStorageClear);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('localStorageCleared', handleLocalStorageClear);
+    };
   }, [user]);
 
   const getDashboardLink = () => {

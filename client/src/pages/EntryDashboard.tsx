@@ -142,6 +142,8 @@ export default function EntryDashboard() {
               localStorage.removeItem('studentId');
               localStorage.removeItem('studentEmail');
               localStorage.clear();
+              // Dispatch custom event to notify Header component
+              window.dispatchEvent(new Event('localStorageCleared'));
               setLocation('/');
             }}
             className="flex items-center space-x-2"
