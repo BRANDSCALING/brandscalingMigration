@@ -7,8 +7,19 @@ export default function Header() {
   const { isAuthenticated, userProfile, logout } = useFirebaseAuth();
 
   const getDashboardLink = () => {
-    if (userProfile?.role === 'admin') return '/admin-login';
-    if (userProfile?.role === 'student') return '/student';
+    if (!isAuthenticated) return '/auth';
+    
+    if (userProfile?.role === 'admin') return '/admin';
+    
+    // Check access tier for students
+    if (userProfile?.role === 'student') {
+      const accessTier = userProfile?.accessTier;
+      if (accessTier === 'beginner' || accessTier === 'entry') {
+        return '/entry';
+      }
+      return '/student';
+    }
+    
     return '/auth';
   };
 
