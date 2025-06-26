@@ -34,6 +34,7 @@ import StudentCourses from "@/pages/student/StudentCourses";
 import StudentCourseView from "@/pages/student/StudentCourseView";
 import StudentWorkbooks from "@/pages/student/StudentWorkbooks";
 import StudentCommunity from "@/pages/student/StudentCommunity";
+import EntryDashboard from "@/pages/EntryDashboard";
 
 // Admin Modules
 import AdminLayout from "@/pages/admin/AdminLayout";
@@ -155,6 +156,13 @@ function Router() {
       <Route path="/student/course/:id">
         <Layout>
           <StudentCourseView />
+        </Layout>
+      </Route>
+      
+      {/* Entry Tier Routes */}
+      <Route path="/entry">
+        <Layout>
+          <EntryDashboard />
         </Layout>
       </Route>
       <Route

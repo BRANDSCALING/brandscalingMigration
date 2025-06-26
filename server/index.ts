@@ -41,6 +41,9 @@ app.use((req, res, next) => {
   try {
     const { seedLMSData } = await import("./seedData");
     await seedLMSData();
+    
+    const { seedEntryTierCourses } = await import("./entryTierCourses");
+    await seedEntryTierCourses();
   } catch (error) {
     console.log("LMS seeding skipped:", error.message);
   }
