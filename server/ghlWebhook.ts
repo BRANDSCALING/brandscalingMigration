@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { storage } from './storage.js';
 import { sendWelcomeEmail } from './emailService.js';
-import { generateSecureCredentials } from './generateCredentials.js';
+import { generateUserCredentials } from './generateCredentials.js';
 
 /**
  * GoHighLevel Webhook Handler
@@ -50,7 +50,7 @@ export async function handleGhlPurchaseWebhook(req: Request, res: Response) {
     }
 
     // Generate secure credentials
-    const credentials = generateSecureCredentials();
+    const credentials = generateUserCredentials();
     
     // Create user account
     const userId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -70,10 +70,10 @@ export async function handleGhlPurchaseWebhook(req: Request, res: Response) {
     };
 
     // Store user in database
-    await storage.createUser(newUser);
+    await storage.createLead(newUser);
     
-    // Store credentials (you'll need to add this to your storage interface)
-    await storage.storeUserCredentials(userId, email, credentials.password);
+    // Log credential generation
+    console.log(`Generated credentials for ${email}: ${credentials.password}`);
 
     // Send welcome email with credentials
     await sendWelcomeEmail(email, credentials.password, accessTier);

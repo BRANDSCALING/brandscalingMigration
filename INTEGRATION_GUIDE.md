@@ -15,18 +15,20 @@ The Brandscaling homepage buttons are configured to open your GHL landing pages:
 
 **Entry Tier (£49):**
 - Button: "Get Started" 
-- Links to: `https://your-ghl-landing-page.com/entry`
+- Links to: `https://your-ghl-entry-landing.com`
 
 **Elite Tier (£20k):**
 - Button: "Apply Now"
-- Links to: `https://your-ghl-landing-page.com/elite`
+- Links to: `https://your-ghl-elite-landing.com`
 
 ## GoHighLevel Setup
 
 ### 1. Landing Page URLs
 Update the button URLs in `/client/src/pages/Landing.tsx`:
-- Replace `https://your-ghl-landing-page.com/entry` with your actual Entry tier landing page
-- Replace `https://your-ghl-landing-page.com/elite` with your actual Elite tier landing page
+- Replace `https://your-ghl-entry-landing.com` with your actual Entry tier landing page
+- Replace `https://your-ghl-elite-landing.com` with your actual Elite tier landing page
+
+The buttons are already configured to open in new tabs when clicked.
 
 ### 2. Webhook Configuration
 Add this webhook URL to your GHL automation sequence:
