@@ -146,9 +146,13 @@ export default function EntrepreneurialDnaQuiz() {
       
       console.log('Processed result:', processedResult);
       
-      setResult(processedResult);
-      setIsProcessing(false);
-      setShowResults(true);
+      // Force a small delay to ensure state updates properly
+      setTimeout(() => {
+        setResult(processedResult);
+        setIsProcessing(false);
+        setShowResults(true);
+        console.log('State set - showResults: true, result:', processedResult);
+      }, 100);
       
       // Auto-redirect to appropriate dashboard after a delay
       setTimeout(() => {
