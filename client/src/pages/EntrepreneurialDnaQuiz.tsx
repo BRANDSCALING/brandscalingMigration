@@ -446,7 +446,7 @@ export default function EntrepreneurialDnaQuiz() {
                 >
                   <div className="flex items-start">
                     <span className="font-medium text-indigo-600 mr-3">{key}.</span>
-                    <span>{answer}</span>
+                    <span>{answer.text}</span>
                   </div>
                 </button>
               ))}
