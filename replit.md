@@ -122,6 +122,7 @@ The Brandscaling Platform is a full-stack AI-powered business operating system t
 
 ```
 Changelog:
+- June 26, 2025. GOHIGHLEVEL INTEGRATION COMPLETE: Connected Brandscaling platform with GoHighLevel landing pages and checkout system. Entry/Elite buttons now link to GHL pages, webhook endpoint handles purchase completion, automatic account creation and credential delivery via email. Complete purchase flow: Homepage → GHL Landing → Checkout → Webhook → Account + Email.
 - June 26, 2025. PURCHASE-TO-CREDENTIALS SYSTEM COMPLETE: Implemented full automated workflow where Entry (£49) and Elite (£20k) purchases automatically generate secure login credentials and send professional welcome emails via Resend. Removed signup functionality - users only receive accounts after purchase. Authentication system updated to sign-in only with purchase guidance.
 - June 26, 2025. PRICING UPDATED: Entry tier changed from £99 to £249 with "Today Only Special" £49 discount prominently displayed. Expert tier updated to £999. Complete visual styling with strikethrough original prices and green highlighting for special offers.
 - June 24, 2025. PRICING SECTION ADDED: Added "Choose Your Growth Path" pricing section to homepage between DNA quiz and recognition sections with Entry (£99), Expert (£249), and Elite (£20k) tiers featuring authentic program names and features.
