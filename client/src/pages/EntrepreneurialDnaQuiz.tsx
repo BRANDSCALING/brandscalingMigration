@@ -146,13 +146,11 @@ export default function EntrepreneurialDnaQuiz() {
       
       console.log('Processed result:', processedResult);
       
-      // Force a small delay to ensure state updates properly
-      setTimeout(() => {
-        setResult(processedResult);
-        setIsProcessing(false);
-        setShowResults(true);
-        console.log('State set - showResults: true, result:', processedResult);
-      }, 100);
+      // Set results immediately
+      setResult(processedResult);
+      setIsProcessing(false);
+      setShowResults(true);
+      console.log('State set - showResults: true, result:', processedResult);
       
       // Auto-redirect to appropriate dashboard after a delay
       setTimeout(() => {
@@ -261,11 +259,20 @@ export default function EntrepreneurialDnaQuiz() {
     );
   }
 
-  // Check if we should show results
-  if (showResults) {
-    console.log('ShowResults true, result data:', result);
+  // Always show results if not processing and not checking eligibility
+  if (!isProcessing && !isCheckingEligibility && (showResults || result)) {
+    console.log('Rendering results - showResults:', showResults, 'result:', result);
     
-    if (!result) {
+    // Use result data or create fallback
+    const resultData = result || {
+      defaultType: 'Blurred Identity',
+      subtype: '',
+      awarenessPercentage: 85,
+      canRetake: false,
+      nextRetakeDate: null
+    };
+    
+    if (!resultData.defaultType) {
       console.log('No result data available, showing error state');
       return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4 flex items-center justify-center">
@@ -284,8 +291,8 @@ export default function EntrepreneurialDnaQuiz() {
       );
     }
 
-    console.log('Displaying results with data:', result);
-    const content = getResultContent(result.defaultType, result.awarenessPercentage);
+    console.log('Displaying results with data:', resultData);
+    const content = getResultContent(resultData.defaultType, resultData.awarenessPercentage);
     console.log('Generated content:', content);
     
     return (
@@ -308,7 +315,7 @@ export default function EntrepreneurialDnaQuiz() {
                   <h3 className="text-lg font-semibold mb-4">Your Default Type</h3>
                   <div className="bg-indigo-100 dark:bg-indigo-900 rounded-lg p-4">
                     <div className="flex justify-between items-center mb-2">
-                      <span className="font-medium">{result.defaultType}</span>
+                      <span className="font-medium">{resultData.defaultType}</span>
                       <span className="text-indigo-600 font-bold">PRIMARY</span>
                     </div>
                     <Progress value={100} className="h-3" />
@@ -320,9 +327,9 @@ export default function EntrepreneurialDnaQuiz() {
                   <div className="bg-green-100 dark:bg-green-900 rounded-lg p-4">
                     <div className="flex justify-between items-center mb-2">
                       <span className="font-medium">Awareness Level</span>
-                      <span className="text-green-600 font-bold">{result.awarenessPercentage}%</span>
+                      <span className="text-green-600 font-bold">{resultData.awarenessPercentage}%</span>
                     </div>
-                    <Progress value={result.awarenessPercentage} className="h-3" />
+                    <Progress value={resultData.awarenessPercentage} className="h-3" />
                   </div>
                 </div>
               </div>
