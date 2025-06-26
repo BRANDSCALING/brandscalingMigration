@@ -223,10 +223,10 @@ export default function Landing() {
                 <div className="text-center mb-6">
                   <h3 className="text-2xl font-bold text-strategic-black mb-2">Entry</h3>
                   <div className="flex items-center justify-center gap-2 mb-2">
-                    <div className="text-2xl font-bold text-gray-400 line-through">£249</div>
+                    <div className="text-2xl font-bold text-gray-400 line-through">£499</div>
                     <div className="text-4xl font-bold text-green-600">£49</div>
                   </div>
-                  <p className="text-green-600 font-semibold text-sm mb-1">Today Only Special!</p>
+                  <p className="text-green-600 font-semibold text-sm mb-1">Today Only - Use Code: LAUNCH49</p>
                   <p className="text-gray-600 text-sm">Perfect for idea-stage entrepreneurs</p>
                 </div>
                 

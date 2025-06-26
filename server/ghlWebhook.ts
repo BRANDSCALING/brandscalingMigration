@@ -79,6 +79,12 @@ export async function handleGhlWebhook(req: Request, res: Response) {
     // Log credential generation
     console.log(`Generated credentials for ${email}: ${password}`);
 
+    // Increment discount code usage if applicable
+    if (discountCode && discountInfo?.valid) {
+      incrementDiscountCodeUsage(discountCode);
+      console.log(`Discount code ${discountCode} usage incremented`);
+    }
+
     // Instead of sending email directly, return credentials to GHL for workflow automation
     console.log(`User account created successfully for ${email} with ${accessTier} access`);
     console.log(`Generated password for GHL workflow: ${password}`);
@@ -89,6 +95,12 @@ export async function handleGhlWebhook(req: Request, res: Response) {
       message: 'Purchase processed and account created',
       userId: userId,
       accessTier: accessTier,
+      discountApplied: discountInfo ? {
+        code: discountCode,
+        discountAmount: discountInfo.discountAmount / 100, // Convert back to pounds
+        originalAmount: parseFloat(amount),
+        finalAmount: discountInfo.finalAmount / 100
+      } : null,
       loginCredentials: {
         email: email,
         password: password,
