@@ -173,23 +173,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Generate credentials
       const { generateUserCredentials } = await import("./generateCredentials");
-      const credentials = generateUserCredentials(email, product);
+      const credentials = generateUserCredentials();
+      const password = credentials.password;
 
       // Send welcome email
-      const { sendWelcomeCredentials } = await import("./emailService");
-      const emailResult = await sendWelcomeCredentials({
-        email: credentials.email,
-        password: credentials.password,
-        tier: credentials.tier as 'entry' | 'elite',
-        firstName: 'Test User'
-      });
+      const { sendCredentialEmail } = await import("./emailService");
+      const accessTier = product === 'elite' ? 'elite' : 'entry';
+      const emailResult = await sendCredentialEmail(email, password, accessTier);
 
       res.json({ 
         success: true, 
         message: "Purchase simulated and credentials sent",
         credentials: {
-          email: credentials.email,
-          tier: credentials.tier,
+          email: email,
+          tier: accessTier,
           userId: credentials.userId
         },
         emailId: emailResult.data?.id

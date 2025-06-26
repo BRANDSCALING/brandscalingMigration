@@ -10,7 +10,9 @@ export async function updateUserAfterPurchase(email: string, product: string, st
     const actualAmount = amount || (product === "mastermind" ? 2400000 : product === "taster-day" ? 29700 : 4900); // Default amounts in pence
 
     // Generate credentials for new user
-    const credentials = generateUserCredentials(email, product);
+    const credentials = generateUserCredentials();
+    const password = credentials.password;
+    const generatedUserId = credentials.userId;
 
     // Find user by email
     const [existingUser] = await db.select().from(users).where(eq(users.email, email));
@@ -57,13 +59,11 @@ export async function updateUserAfterPurchase(email: string, product: string, st
 
     // Send welcome email with credentials (for new users only)
     if (isNewUser) {
+      // Determine access tier
+      const accessTier = product === 'elite' ? 'elite' : 'entry';
+      
       try {
-        await sendWelcomeCredentials({
-          email: credentials.email,
-          password: credentials.password,
-          tier: credentials.tier as 'entry' | 'elite',
-          firstName: 'New User'
-        });
+        await sendCredentialEmail(email, password, accessTier);
         console.log(`Welcome email sent to ${email} for ${product} purchase`);
       } catch (emailError) {
         console.error('Failed to send welcome email:', emailError);

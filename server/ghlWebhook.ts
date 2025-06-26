@@ -77,10 +77,10 @@ export async function handleGhlWebhook(req: Request, res: Response) {
     });
     
     // Log credential generation
-    console.log(`Generated credentials for ${email}: ${credentials.password}`);
+    console.log(`Generated credentials for ${email}: ${password}`);
 
     // Send welcome email with credentials
-    await sendCredentialEmail(email, credentials.password, accessTier);
+    await sendCredentialEmail(email, password, accessTier);
 
     console.log(`User account created successfully for ${email} with ${accessTier} access`);
 
