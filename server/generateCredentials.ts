@@ -12,14 +12,11 @@ export function generatePassword(): string {
 }
 
 // Generate user credentials after purchase
-export function generateUserCredentials(email: string, product: string) {
+export function generateUserCredentials() {
   const password = generatePassword();
-  const tier = product === 'mastermind' ? 'elite' : 'entry';
   
   return {
-    email,
     password,
-    tier,
     userId: `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
   };
 }

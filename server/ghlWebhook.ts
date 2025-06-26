@@ -102,6 +102,8 @@ export async function handleGhlPurchaseWebhook(req: Request, res: Response) {
   }
 }
 
+export { handleGhlWebhook };
+
 /**
  * Webhook endpoint configuration for GoHighLevel
  * Add this URL to your GHL automation:

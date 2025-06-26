@@ -81,7 +81,7 @@ export async function testEmailService(testEmail: string) {
   };
   
   try {
-    const result = await sendWelcomeCredentials(testCredentials);
+    const result = await sendCredentialEmail(testCredentials.email, testCredentials.password, testCredentials.tier);
     console.log('Test email sent successfully to:', testEmail);
     return result;
   } catch (error) {

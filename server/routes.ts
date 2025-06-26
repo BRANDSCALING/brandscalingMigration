@@ -7,13 +7,13 @@ import { pool } from "./db";
 import { verifyFirebaseToken, requireAuth, requireRole, createUserProfile, getUserProfile, updateUserRole } from "./firebaseAuth";
 import { chatWithAgent } from "./aiAgent";
 import { updateUserAfterPurchase } from "./updateUserAfterPurchase";
+import { handleGhlWebhook } from "./ghlWebhook";
 import { resendClient } from "@shared/resendClient";
 import { z } from "zod";
 import Stripe from "stripe";
 import { hasAccess, getAllowedCourses, courseDatabase, getUpgradeTarget } from './tierPermissions';
 import { uploadFields, uploadWorkbooks } from './upload';
 import { ENTREPRENEURIAL_DNA_QUESTIONS } from '@shared/entrepreneurialDnaData';
-import { chatWithAgent } from './aiAgent';
 
 
 
@@ -25,6 +25,12 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 export async function registerRoutes(app: Express): Promise<Server> {
   // Serve uploaded files statically
   app.use('/uploads', express.static('public/uploads'));
+
+  // GoHighLevel webhook (public)
+  app.post("/api/webhook/ghl-purchase", (req, res) => {
+    console.log('GHL Webhook received:', req.body);
+    handleGhlWebhook(req, res);
+  });
 
   // Health check route (public)
   app.get("/api/health", async (req, res) => {
