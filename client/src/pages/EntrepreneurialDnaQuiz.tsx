@@ -147,28 +147,29 @@ export default function EntrepreneurialDnaQuiz() {
       
       console.log('Processed result:', processedResult);
       
-      // Force immediate state update with new completion flag
-      console.log('Setting states immediately...');
-      setResult(processedResult);
-      setIsProcessing(false);
-      setShowResults(true);
-      setQuizCompleted(true);
-      console.log('States set - result:', processedResult, 'isProcessing:', false, 'showResults:', true, 'quizCompleted:', true);
-      
-      // Auto-redirect to appropriate dashboard after showing results
+      // Use setTimeout to ensure state updates happen after current render cycle
       setTimeout(() => {
-        redirectToDashboard();
-      }, 5000); // 5 second delay to show results
+        setIsProcessing(false);
+        setIsSubmitting(false);
+        setResult(processedResult);
+        setShowResults(true);
+        setQuizCompleted(true);
+        console.log('States updated - showing results');
+        
+        // Auto-redirect to appropriate dashboard after showing results
+        setTimeout(() => {
+          redirectToDashboard();
+        }, 5000); // 5 second delay to show results
+      }, 100); // Small delay to ensure proper state transition
       
     } catch (error) {
       console.error('Error submitting quiz:', error);
       console.error('Error details:', JSON.stringify(error, null, 2));
       setIsProcessing(false);
+      setIsSubmitting(false);
       // Show user-friendly error message
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       alert(`Quiz submission failed: ${errorMessage}`);
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -220,13 +221,31 @@ export default function EntrepreneurialDnaQuiz() {
 
 
 
-  if (!user) {
-    return <div>Please log in to take the quiz.</div>;
+  // Check authentication from localStorage if useAuth doesn't find user
+  const studentId = localStorage.getItem('studentId');
+  const studentEmail = localStorage.getItem('studentEmail');
+  
+  if (!user && !studentId) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
+        <Card className="w-full max-w-md">
+          <CardContent className="p-8 text-center">
+            <h2 className="text-2xl font-bold mb-4">Authentication Required</h2>
+            <p className="text-gray-600 dark:text-gray-400 mb-4">
+              Please sign in to access the Entrepreneurial DNA Quiz.
+            </p>
+            <Button onClick={() => setLocation('/auth')} className="w-full">
+              Sign In
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
-  // PRIORITY: Force results display if quiz is completed
-  if (quizCompleted && result) {
-    console.log('PRIORITY RENDER: Quiz completed, showing results immediately');
+  // Show results if we have them and not processing
+  if (result && !isProcessing && !isCheckingEligibility) {
+    console.log('Showing quiz results:', result);
     
     const resultData = result;
     const content = getResultContent(resultData.defaultType, resultData.awarenessPercentage);
@@ -329,124 +348,6 @@ export default function EntrepreneurialDnaQuiz() {
     hasResult: !!result,
     resultData: result
   });
-
-  // Force results display if we have result data, regardless of other states
-  if (result && !isProcessing && !isCheckingEligibility) {
-    console.log('FORCE RENDERING RESULTS - result:', result);
-    
-    const resultData = result;
-    
-    if (!resultData.defaultType) {
-      console.log('No result data available, showing error state');
-      return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4 flex items-center justify-center">
-          <Card className="w-full max-w-md">
-            <CardContent className="p-8 text-center">
-              <h2 className="text-2xl font-bold mb-4">Something went wrong</h2>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">
-                We couldn't process your quiz results. Please try again.
-              </p>
-              <Button onClick={() => window.location.reload()}>
-                Retry Quiz
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      );
-    }
-
-    console.log('Displaying results with data:', resultData);
-    const content = getResultContent(resultData.defaultType, resultData.awarenessPercentage);
-    console.log('Generated content:', content);
-    
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4">
-        <div className="max-w-4xl mx-auto">
-          <Card className="mb-8">
-            <CardContent className="p-8">
-              <div className="text-center mb-8">
-                <h1 className="text-4xl font-bold text-indigo-600 mb-2">{content.title}</h1>
-                <p className="text-xl text-gray-600 dark:text-gray-400 mb-6">
-                  Your Entrepreneurial DNA™ Results
-                </p>
-                <p className="text-lg leading-relaxed max-w-3xl mx-auto">
-                  {content.description}
-                </p>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-8 mb-8">
-                <div>
-                  <h3 className="text-lg font-semibold mb-4">Your Default Type</h3>
-                  <div className="bg-indigo-100 dark:bg-indigo-900 rounded-lg p-4">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="font-medium">{resultData.defaultType}</span>
-                      <span className="text-indigo-600 font-bold">PRIMARY</span>
-                    </div>
-                    <Progress value={100} className="h-3" />
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="text-lg font-semibold mb-4">Opposite Type Awareness</h3>
-                  <div className="bg-green-100 dark:bg-green-900 rounded-lg p-4">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="font-medium">Awareness Level</span>
-                      <span className="text-green-600 font-bold">{resultData.awarenessPercentage}%</span>
-                    </div>
-                    <Progress value={resultData.awarenessPercentage} className="h-3" />
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-8 mb-8">
-                <div>
-                  <h3 className="text-lg font-semibold mb-4">Your Strengths</h3>
-                  <ul className="space-y-2">
-                    {content.strengths.map((strength, index) => (
-                      <li key={index} className="flex items-center">
-                        <div className="w-2 h-2 bg-indigo-600 rounded-full mr-3"></div>
-                        {strength}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div>
-                  <h3 className="text-lg font-semibold mb-4">Growth Opportunity</h3>
-                  <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-                    {content.growth}
-                  </p>
-                </div>
-              </div>
-
-              <div className="text-center space-y-4">
-                <Button 
-                  onClick={redirectToDashboard} 
-                  size="lg"
-                  className="mr-4"
-                >
-                  Access Your Dashboard
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-                <Button 
-                  variant="outline" 
-                  onClick={() => setLocation('/courses')}
-                >
-                  Explore All Courses
-                </Button>
-              </div>
-              
-              <div className="mt-4 text-center">
-                <p className="text-sm text-gray-500">
-                  Redirecting to your dashboard in 5 seconds...
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    );
-  }
 
   const currentQ = ENTREPRENEURIAL_DNA_QUESTIONS[currentQuestion - 1];
   const progress = (currentQuestion / QUIZ_QUESTIONS.length) * 100;
