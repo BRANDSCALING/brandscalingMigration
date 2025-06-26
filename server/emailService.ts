@@ -9,9 +9,9 @@ export interface UserCredentials {
   firstName?: string;
 }
 
-export async function sendWelcomeCredentials(credentials: UserCredentials) {
+export async function sendCredentialEmail(email: string, password: string, tier: string) {
   try {
-    const { email, password, tier, firstName = 'New User' } = credentials;
+    const firstName = 'New User';
     
     const tierName = tier === 'entry' ? 'Entry Tier' : 'Elite Tier';
     const loginUrl = `${process.env.FRONTEND_URL || 'http://localhost:5000'}/auth`;

@@ -249,7 +249,10 @@ export default function Landing() {
                   </li>
                 </ul>
                 
-                <Button className="w-full bg-strategic-black text-white hover:bg-gray-800">
+                <Button 
+                  className="w-full bg-strategic-black text-white hover:bg-gray-800"
+                  onClick={() => window.open('https://your-ghl-entry-landing.com', '_blank')}
+                >
                   Get Started
                 </Button>
               </CardContent>
@@ -322,11 +325,12 @@ export default function Landing() {
                   </li>
                 </ul>
                 
-                <a href="https://brandscalingschoolforentrepreneurs.com/mastermind-landing-page" target="_blank" rel="noopener noreferrer" className="block">
-                  <Button className="w-full bg-scale-orange text-white hover:bg-orange-600">
-                    Apply Now
-                  </Button>
-                </a>
+                <Button 
+                  className="w-full bg-scale-orange text-white hover:bg-orange-600"
+                  onClick={() => window.open('https://your-ghl-elite-landing.com', '_blank')}
+                >
+                  Apply Now
+                </Button>
               </CardContent>
             </Card>
           </div>

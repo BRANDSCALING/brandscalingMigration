@@ -15,9 +15,10 @@
 #### 1. Landing Page Setup
 - [ ] Create Entry tier landing page in GHL
 - [ ] Create Elite tier landing page in GHL  
-- [ ] Update button URLs in Landing.tsx:
-  - Replace `https://your-ghl-entry-landing.com`
-  - Replace `https://your-ghl-elite-landing.com`
+- [x] Updated button URLs in Landing.tsx (placeholders ready):
+  - Entry: `https://your-ghl-entry-landing.com`
+  - Elite: `https://your-ghl-elite-landing.com`
+- [ ] Replace placeholder URLs with actual GHL landing page URLs
 
 #### 2. Stripe Integration in GHL
 - [ ] Connect Stripe account to GHL

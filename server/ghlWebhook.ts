@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { storage } from './storage.js';
-import { sendWelcomeEmail } from './emailService.js';
+import { sendCredentialEmail } from './emailService.js';
 import { generateUserCredentials } from './generateCredentials.js';
 
 /**
@@ -69,14 +69,18 @@ export async function handleGhlPurchaseWebhook(req: Request, res: Response) {
       updatedAt: new Date()
     };
 
-    // Store user in database
-    await storage.createLead(newUser);
+    // Store user in database (using lead creation temporarily)
+    await storage.createLead({
+      email: email,
+      name: `${firstName || ''} ${lastName || ''}`.trim(),
+      addedByAdmin: 'GHL_WEBHOOK'
+    });
     
     // Log credential generation
     console.log(`Generated credentials for ${email}: ${credentials.password}`);
 
     // Send welcome email with credentials
-    await sendWelcomeEmail(email, credentials.password, accessTier);
+    await sendCredentialEmail(email, credentials.password, accessTier);
 
     console.log(`User account created successfully for ${email} with ${accessTier} access`);
 
