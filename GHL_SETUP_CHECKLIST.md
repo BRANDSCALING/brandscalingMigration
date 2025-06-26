@@ -1,126 +1,176 @@
 # GoHighLevel Setup Checklist
 
-## 🎯 Complete Integration Setup
+## Step-by-Step Integration Guide
 
-### ✅ Phase 1: Brandscaling Platform (COMPLETE)
-- [x] Purchase-to-credentials system implemented
-- [x] Email service configured with Resend
-- [x] Webhook endpoint created: `/api/webhook/ghl-purchase`
-- [x] Entry/Elite buttons link to GHL pages
-- [x] Signup functionality removed
-- [x] Auth page shows purchase guidance
+### Phase 1: Landing Page Setup
 
-### 🔧 Phase 2: GoHighLevel Configuration (YOUR NEXT STEPS)
+1. **Create Entry Tier Landing Page**
+   - Go to Sites → Landing Pages → Create New
+   - Name: "Brandscaling Entry - £49 Special"
+   - Include product details, testimonials, urgency elements
+   - Add Stripe checkout button for £49
 
-#### 1. Landing Page Setup
-- [ ] Create Entry tier landing page in GHL
-- [ ] Create Elite tier landing page in GHL  
-- [x] Updated button URLs in Landing.tsx (placeholders ready):
-  - Entry: `https://your-ghl-entry-landing.com`
-  - Elite: `https://your-ghl-elite-landing.com`
-- [ ] Replace placeholder URLs with actual GHL landing page URLs
+2. **Create Elite Tier Landing Page**
+   - Go to Sites → Landing Pages → Create New
+   - Name: "Brandscaling Elite - £20k Mastermind"
+   - Include premium positioning, exclusive benefits
+   - Add Stripe checkout button for £20,000
 
-#### 2. Stripe Integration in GHL
-- [ ] Connect Stripe account to GHL
-- [ ] Create Entry product (£49)
-- [ ] Create Elite product (£20k)
-- [ ] Set up checkout forms
+3. **Update Homepage Buttons**
+   - Replace current GHL links with your actual landing page URLs
+   - Test both buttons redirect correctly
 
-#### 3. Webhook Configuration
-- [ ] Add webhook URL to GHL automation: `https://your-brandscaling-domain.com/api/webhook/ghl-purchase`
-- [ ] Configure webhook to trigger after successful payment
-- [ ] Map webhook data fields (see required format below)
+### Phase 2: Stripe Integration
 
-### 📋 Required Webhook Data Format
+1. **Configure Stripe Products**
+   - Entry Tier: £49 one-time payment
+   - Elite Tier: £20,000 one-time payment
+   - Copy product IDs for webhook configuration
 
-Your GHL webhook must send this exact structure:
+2. **Set Up Stripe Webhooks**
+   - In Stripe Dashboard → Webhooks → Add endpoint
+   - URL: `https://your-domain.com/api/webhook/stripe`
+   - Events: `checkout.session.completed`
 
-```json
-{
-  "email": "customer@example.com",
-  "firstName": "John", 
-  "lastName": "Doe",
-  "product": "entry", // or "elite"
-  "amount": "49.00", // or "20000.00"
-  "orderId": "GHL_ORDER_123",
-  "customerId": "GHL_CUSTOMER_456"
-}
-```
+### Phase 3: GoHighLevel Automation Workflow
 
-### 🔄 Complete Flow Verification
+1. **Create New Automation**
+   - Go to Marketing → Workflows → Create New
+   - Name: "Brandscaling Purchase to Platform Access"
+   - Trigger: Purchase Completed (Stripe)
 
-1. **Customer Journey:**
+2. **Add Webhook Action**
+   - Add Action → Webhook
+   - Method: POST
+   - URL: `https://your-domain.com/api/webhook/ghl-purchase`
+   - Headers: `Content-Type: application/json`
+   - Body:
+   ```json
+   {
+     "email": "{{contact.email}}",
+     "firstName": "{{contact.first_name}}",
+     "lastName": "{{contact.last_name}}",
+     "product": "{{purchase.product_name}}",
+     "amount": "{{purchase.amount}}",
+     "orderId": "{{purchase.order_id}}",
+     "customerId": "{{contact.id}}"
+   }
    ```
-   Brandscaling Homepage → Click Entry/Elite → GHL Landing Page → GHL Checkout → Payment → Webhook → Account Creation → Email with Credentials
-   ```
 
-2. **Test the Flow:**
-   - Click Entry button → Lands on your GHL page ✓
-   - Complete purchase → Webhook fires ✓
-   - Check email → Credentials received ✓
-   - Login at /auth → Access granted ✓
+3. **Add Email Action After Webhook**
+   - Add Action → Send Email
+   - Template: Create welcome email template (see below)
+   - Delay: 2 minutes (allows webhook to process)
 
-### 🧪 Testing Commands
+### Phase 4: Email Template Creation
 
-Test webhook locally:
-```bash
-curl -X POST http://localhost:5000/api/webhook/ghl-purchase \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "test@example.com",
-    "firstName": "Test",
-    "lastName": "User", 
-    "product": "entry",
-    "amount": "49.00",
-    "orderId": "TEST_123",
-    "customerId": "TEST_456"
-  }'
+1. **Create Welcome Email Template**
+   - Go to Marketing → Templates → Email Templates
+   - Name: "Brandscaling Platform Welcome"
+   - Subject: "Your Brandscaling Platform Access is Ready!"
+
+2. **Email Template Content**
+```html
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+  <div style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); padding: 30px; text-align: center;">
+    <h1 style="color: white; margin: 0; font-size: 28px;">Welcome to Brandscaling!</h1>
+  </div>
+  
+  <div style="padding: 30px; background: #f8fafc;">
+    <h2 style="color: #1e40af;">Hi {{contact.first_name}},</h2>
+    
+    <p style="font-size: 16px; line-height: 1.6;">
+      Your <strong>{{webhook.accessTier}}</strong> tier access is now active!
+    </p>
+    
+    <div style="background: #e0f2fe; padding: 20px; border-radius: 8px; margin: 20px 0;">
+      <h3 style="color: #0369a1; margin-top: 0;">🔐 Your Login Details:</h3>
+      <p style="font-family: monospace; font-size: 14px; margin: 5px 0;">
+        <strong>Email:</strong> {{webhook.loginCredentials.email}}<br>
+        <strong>Password:</strong> {{webhook.loginCredentials.password}}<br>
+        <strong>Login URL:</strong> <a href="{{webhook.loginCredentials.loginUrl}}">{{webhook.loginCredentials.loginUrl}}</a>
+      </p>
+    </div>
+    
+    <div style="background: #f0f9ff; padding: 20px; border-radius: 8px;">
+      <h3 style="color: #0369a1; margin-top: 0;">Next Steps:</h3>
+      <ol style="color: #374151;">
+        <li>Click the login link above</li>
+        <li>Complete your Entrepreneurial DNA assessment</li>
+        <li>Access your personalized content</li>
+        <li>Start your transformation journey</li>
+      </ol>
+    </div>
+    
+    <div style="text-align: center; margin: 30px 0;">
+      <a href="{{webhook.loginCredentials.loginUrl}}" 
+         style="background: #1e40af; color: white; padding: 15px 30px; text-decoration: none; border-radius: 6px; font-weight: bold;">
+        Access Your Platform
+      </a>
+    </div>
+    
+    <p style="color: #6b7280; font-size: 14px;">
+      If you have any questions, reply to this email or contact our support team.
+    </p>
+  </div>
+  
+  <div style="background: #1f2937; padding: 20px; text-align: center;">
+    <p style="color: #9ca3af; margin: 0;">
+      Welcome to your transformation journey!<br>
+      <strong style="color: #e5e7eb;">The Brandscaling Team</strong>
+    </p>
+  </div>
+</div>
 ```
 
-Expected response:
-```json
-{
-  "success": true,
-  "message": "Purchase processed and credentials sent",
-  "userId": "user_xxx_xxx",
-  "accessTier": "entry"
-}
-```
+### Phase 5: Testing & Validation
 
-### 🚀 Go Live Steps
+1. **Test Entry Purchase Flow**
+   - Complete test purchase on Entry landing page
+   - Verify webhook receives correct data
+   - Check email is sent with correct credentials
+   - Test login with provided credentials
 
-1. Update button URLs with real GHL landing pages
-2. Deploy Brandscaling platform to production
-3. Update GHL webhook to production URL
-4. Test complete purchase flow
-5. Verify email delivery
-6. Monitor webhook logs
+2. **Test Elite Purchase Flow**
+   - Repeat process for Elite tier
+   - Verify higher access level is granted
 
-### 📞 Support & Troubleshooting
+### Phase 6: Platform Configuration
 
-**Common Issues:**
-- Webhook not receiving data → Check GHL automation triggers
-- Invalid product mapping → Ensure product field matches "entry" or "elite"
-- Email not sending → Verify Resend domain verification
-- User can't login → Check credentials generation logs
+**I need these details from you:**
 
-**Debug Logs Location:**
-- Server logs: Check console for "GHL Webhook received:" messages
-- Email logs: Check Resend dashboard for delivery status
-- User creation: Check database for new user records
+1. **Your Actual Domain**
+   - What's your production domain? (to replace `https://your-domain.com`)
 
-### ✨ What's Already Working
+2. **Product Mapping**
+   - What product names will Stripe send for Entry vs Elite?
+   - Should be "entry" and "elite" or different names?
 
-- ✅ Secure 12-character password generation
-- ✅ Professional welcome emails with credentials
-- ✅ Automatic user account creation
-- ✅ Tier-based access control
-- ✅ Sign-in only authentication (no signup)
-- ✅ Complete webhook endpoint ready for GHL
+3. **GHL Webhook URL**
+   - Confirm your webhook endpoint will be: `https://yourdomain.com/api/webhook/ghl-purchase`
 
-**Your platform is 100% ready for GoHighLevel integration. Just need to:**
-1. Create the GHL landing pages
-2. Update the button URLs
-3. Configure the webhook in GHL automation
+4. **Email Domain**
+   - What domain should welcome emails come from? (e.g., welcome@brandscaling.co.uk)
 
-The entire purchase-to-access system is fully functional!
+## Current Integration Status
+
+✅ **Platform Ready**: Webhook endpoint functional and tested
+✅ **Credential Generation**: Secure 12-character passwords created
+✅ **Response Format**: Returns all data needed for GHL automation
+✅ **Account Creation**: Users automatically added to platform database
+
+## What Happens Next
+
+Once you provide the domain and product details:
+1. I'll update the webhook URLs in your platform
+2. You'll configure the GHL automation with exact webhook URL
+3. We'll test end-to-end: Landing → Purchase → Webhook → Email → Login
+
+## Support During Setup
+
+If you encounter any issues:
+- Share screenshots of GHL automation setup
+- Provide error messages from webhook responses
+- Test with the curl commands I can provide for debugging
+
+Ready to proceed with your domain and product configuration details?
