@@ -5,7 +5,7 @@ import { Progress } from '@/components/ui/progress';
 import { Card, CardContent } from '@/components/ui/card';
 import { apiRequest } from '@/lib/queryClient';
 import { useAuth } from '@/hooks/useAuth';
-import { Loader2, ArrowRight, RotateCcw } from 'lucide-react';
+import { Loader2, ArrowRight, RotateCcw, CheckCircle } from 'lucide-react';
 import { ENTREPRENEURIAL_DNA_QUESTIONS, DNA_SUBTYPES } from '@shared/entrepreneurialDnaData';
 
 // Fallback questions if import fails
