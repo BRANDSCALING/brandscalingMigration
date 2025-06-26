@@ -861,10 +861,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Entrepreneurial DNA Quiz endpoints
   app.get('/api/quiz/entrepreneurial-dna/eligibility', async (req, res) => {
     try {
-      const userId = req.user?.uid || 'anonymous-user';
+      // Use the x-student-id header if available, otherwise try other auth methods
+      const studentId = req.headers['x-student-id'] as string;
+      const userId = studentId || req.user?.uid || 'anonymous-user';
+      
+      console.log('Checking quiz eligibility for user:', userId);
       
       try {
         const eligibility = await storage.checkEntrepreneurialDnaQuizEligibility(userId);
+        console.log('Eligibility result:', eligibility);
         res.json(eligibility);
       } catch (dbError) {
         console.warn('Database check failed, allowing quiz:', dbError);
@@ -885,7 +890,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
       
       const { answers } = req.body;
-      const userId = req.user?.uid || 'anonymous-user';
+      // Use the x-student-id header if available, otherwise try other auth methods
+      const studentId = req.headers['x-student-id'] as string;
+      const userId = studentId || req.user?.uid || 'anonymous-user';
       
       console.log('Processing answers:', answers);
       console.log('Answer count:', Object.keys(answers || {}).length);
@@ -943,18 +950,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
         result: defaultType
       });
 
-      res.json({
+      // Prepare result object
+      const quizResult = {
         defaultType,
         subtype: '',
         awarenessPercentage: 85,
-        canRetake: false,
-        nextRetakeDate: null,
         scores: {
           architect: architectCount,
           alchemist: alchemistCount,
           blurred: blurredCount,
           neutral: neutralCount
         }
+      };
+
+      // Save quiz result to database
+      try {
+        await storage.saveQuizResult(userId, quizResult);
+        console.log('Quiz result saved successfully');
+      } catch (saveError) {
+        console.error('Error saving quiz result:', saveError);
+        // Continue anyway - don't fail the response
+      }
+
+      // Calculate next retake date (30 days from now)
+      const nextRetakeDate = new Date();
+      nextRetakeDate.setDate(nextRetakeDate.getDate() + 30);
+
+      res.json({
+        ...quizResult,
+        canRetake: false,
+        nextRetakeDate: nextRetakeDate.toISOString()
       });
     } catch (error) {
       console.error("Error submitting Entrepreneurial DNA quiz:", error);

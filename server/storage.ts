@@ -609,6 +609,66 @@ export class DatabaseStorage implements IStorage {
     };
   }
 
+  // Quiz eligibility methods
+  async checkEntrepreneurialDnaQuizEligibility(userId: string): Promise<{ canRetake: boolean; nextRetakeDate?: string }> {
+    try {
+      // Get the most recent quiz result for this user
+      const [mostRecentResult] = await db
+        .select()
+        .from(quizResults)
+        .where(eq(quizResults.userId, userId))
+        .orderBy(desc(quizResults.createdAt))
+        .limit(1);
+
+      if (!mostRecentResult) {
+        // User has never taken the quiz
+        return { canRetake: true };
+      }
+
+      // Check if 30 days have passed since the last quiz
+      const lastQuizDate = new Date(mostRecentResult.createdAt);
+      const now = new Date();
+      const daysSinceLastQuiz = Math.floor((now.getTime() - lastQuizDate.getTime()) / (1000 * 60 * 60 * 24));
+      
+      if (daysSinceLastQuiz >= 30) {
+        return { canRetake: true };
+      } else {
+        // Calculate next retake date (30 days from last quiz)
+        const nextRetakeDate = new Date(lastQuizDate);
+        nextRetakeDate.setDate(nextRetakeDate.getDate() + 30);
+        
+        return { 
+          canRetake: false, 
+          nextRetakeDate: nextRetakeDate.toISOString() 
+        };
+      }
+    } catch (error) {
+      console.error('Error checking quiz eligibility:', error);
+      // Default to allowing quiz on error
+      return { canRetake: true };
+    }
+  }
+
+  async saveQuizResult(userId: string, result: any): Promise<void> {
+    try {
+      await db.insert(quizResults).values({
+        userId,
+        result: result.defaultType,
+        scores: {
+          architect: result.scores?.architect || 0,
+          alchemist: result.scores?.alchemist || 0,
+          blurred: result.scores?.blurred || 0,
+          neutral: result.scores?.neutral || 0
+        },
+        awarenessPercentage: result.awarenessPercentage || 85,
+        createdAt: new Date()
+      });
+    } catch (error) {
+      console.error('Error saving quiz result:', error);
+      throw error;
+    }
+  }
+
   // AI conversation methods
   async saveAiConversation(userId: string, userMessage: string, assistantResponse: string, dnaType: string): Promise<void> {
     // Skip saving conversations for anonymous users to avoid foreign key constraint errors
