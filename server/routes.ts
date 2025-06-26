@@ -54,6 +54,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+
+
   // Stripe checkout endpoints (public - must be before auth middleware)
   app.post("/api/checkout/taster-day", async (req, res) => {
     try {
@@ -122,6 +124,73 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.error("Error creating mastermind checkout session:", error);
       res.status(500).json({ message: "Error creating checkout session: " + error.message });
+    }
+  });
+
+  // Test email endpoint (development only)
+  app.post("/api/test/email", async (req, res) => {
+    try {
+      if (process.env.NODE_ENV !== 'development') {
+        return res.status(403).json({ error: "Test endpoint only available in development" });
+      }
+
+      const { email } = req.body;
+      if (!email) {
+        return res.status(400).json({ error: "Email is required" });
+      }
+
+      const { testEmailService } = await import("./emailService");
+      const result = await testEmailService(email);
+      
+      res.json({ 
+        success: true, 
+        message: "Test email sent successfully",
+        emailId: result.data?.id 
+      });
+    } catch (error) {
+      console.error("Error sending test email:", error);
+      res.status(500).json({ error: "Failed to send test email" });
+    }
+  });
+
+  // Simulate purchase endpoint (for testing without real payment)
+  app.post("/api/test/simulate-purchase", async (req, res) => {
+    try {
+      if (process.env.NODE_ENV !== 'development') {
+        return res.status(403).json({ error: "Test endpoint only available in development" });
+      }
+
+      const { email, product } = req.body;
+      if (!email || !product) {
+        return res.status(400).json({ error: "Email and product are required" });
+      }
+
+      // Generate credentials
+      const { generateUserCredentials } = await import("./generateCredentials");
+      const credentials = generateUserCredentials(email, product);
+
+      // Send welcome email
+      const { sendWelcomeCredentials } = await import("./emailService");
+      const emailResult = await sendWelcomeCredentials({
+        email: credentials.email,
+        password: credentials.password,
+        tier: credentials.tier as 'entry' | 'elite',
+        firstName: 'Test User'
+      });
+
+      res.json({ 
+        success: true, 
+        message: "Purchase simulated and credentials sent",
+        credentials: {
+          email: credentials.email,
+          tier: credentials.tier,
+          userId: credentials.userId
+        },
+        emailId: emailResult.data?.id
+      });
+    } catch (error) {
+      console.error("Error simulating purchase:", error);
+      res.status(500).json({ error: "Failed to simulate purchase" });
     }
   });
 
