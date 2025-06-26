@@ -44,8 +44,14 @@ export default function EntrepreneurialDnaQuiz() {
   const [isCheckingEligibility, setIsCheckingEligibility] = useState(true);
 
   useEffect(() => {
+    // Check if user is logged in first
+    if (!user) {
+      // Redirect to pricing section if not logged in
+      setLocation('/#pricing');
+      return;
+    }
     checkRetakeEligibility();
-  }, []);
+  }, [user]);
 
   const checkRetakeEligibility = async () => {
     setIsCheckingEligibility(true);

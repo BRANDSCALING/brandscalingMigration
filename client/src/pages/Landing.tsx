@@ -1,15 +1,30 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Link } from 'wouter';
+import { Link, useLocation } from 'wouter';
 import { ArrowRight, Brain, Building2, Users, TrendingUp, CheckCircle, Target, Zap } from 'lucide-react';
 import { BrandSection, PersonalityMode, BrandQuote } from '@/components/BrandSystem';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function Landing() {
   const [email, setEmail] = useState('');
+  const [, setLocation] = useLocation();
+  const { user } = useAuth();
 
   const handleQuizSubmit = () => {
     console.log('Submit email to Supabase and trigger GHL:', email);
+  };
+
+  const handleDnaQuizClick = () => {
+    if (!user) {
+      // Scroll to pricing section if not logged in
+      const pricingElement = document.getElementById('pricing');
+      if (pricingElement) {
+        pricingElement.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      setLocation('/entrepreneurial-dna-quiz');
+    }
   };
 
   return (
@@ -196,18 +211,20 @@ export default function Landing() {
               </div>
             </div>
 
-            <Link href="/entrepreneurial-dna-quiz">
-              <Button size="lg" className="gradient-brandscaling text-white font-medium px-12 py-6 text-xl">
-                Take Your DNA Quiz Now
-                <ArrowRight className="ml-3 h-6 w-6" />
-              </Button>
-            </Link>
+            <Button 
+              size="lg" 
+              className="gradient-brandscaling text-white font-medium px-12 py-6 text-xl"
+              onClick={handleDnaQuizClick}
+            >
+              Take Your DNA Quiz Now
+              <ArrowRight className="ml-3 h-6 w-6" />
+            </Button>
           </div>
         </div>
       </BrandSection>
 
       {/* Choose Your Growth Path Section */}
-      <BrandSection className="spacing-section bg-white">
+      <BrandSection id="pricing" className="spacing-section bg-white">
         <div className="container-brandscaling">
           <div className="text-center mb-12">
             <h2 className="text-h2 text-strategic-black mb-6">Choose Your Growth Path</h2>
