@@ -173,6 +173,23 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(courses).orderBy(asc(courses.id));
   }
 
+  async getCourseWithLessons(courseId: number): Promise<Course & { lessons: Lesson[] }> {
+    const [course] = await db.select().from(courses).where(eq(courses.id, courseId));
+    const courseLessons = await db.select().from(lessons).where(eq(lessons.courseId, courseId)).orderBy(asc(lessons.order));
+    return { ...course, lessons: courseLessons };
+  }
+
+  async getCoursesWithLessons(): Promise<(Course & { lessons: Lesson[] })[]> {
+    const allCourses = await db.select().from(courses).orderBy(asc(courses.id));
+    const coursesWithLessons = await Promise.all(
+      allCourses.map(async (course) => {
+        const courseLessons = await db.select().from(lessons).where(eq(lessons.courseId, course.id)).orderBy(asc(lessons.order));
+        return { ...course, lessons: courseLessons };
+      })
+    );
+    return coursesWithLessons;
+  }
+
   async createCourse(courseData: InsertCourse): Promise<Course> {
     const [course] = await db.insert(courses).values(courseData).returning();
     return course;
