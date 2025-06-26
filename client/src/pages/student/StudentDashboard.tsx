@@ -15,7 +15,8 @@ import {
   Play,
   FileText,
   ExternalLink,
-  Star
+  Star,
+  LogOut
 } from 'lucide-react';
 
 interface DashboardData {
@@ -170,21 +171,38 @@ export default function StudentDashboard() {
       {/* Header */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-6 py-8">
-          <div className="flex items-center space-x-4">
-            <Avatar className="h-16 w-16">
-              <AvatarImage src={user.profileImageUrl} />
-              <AvatarFallback className="text-lg">
-                {user.firstName?.[0]}{user.lastName?.[0]}
-              </AvatarFallback>
-            </Avatar>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">
-                Welcome back, {user.firstName}!
-              </h1>
-              <p className="text-gray-600">
-                {user.dominantType} • {user.readinessLevel} Level • {user.accessTier} Tier
-              </p>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <Avatar className="h-16 w-16">
+                <AvatarImage src={user.profileImageUrl} />
+                <AvatarFallback className="text-lg">
+                  {user.firstName?.[0]}{user.lastName?.[0]}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">
+                  Welcome back, {user.firstName}!
+                </h1>
+                <p className="text-gray-600">
+                  {user.dominantType} • {user.readinessLevel} Level • {user.accessTier} Tier
+                </p>
+              </div>
             </div>
+            
+            {/* Sign Out Button */}
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                localStorage.removeItem('studentId');
+                localStorage.removeItem('studentEmail');
+                localStorage.clear();
+                setLocation('/');
+              }}
+              className="flex items-center space-x-2"
+            >
+              <LogOut className="h-4 w-4" />
+              <span>Sign Out</span>
+            </Button>
           </div>
         </div>
       </div>

@@ -5,7 +5,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { useAuth } from '@/hooks/useAuth';
-import { BookOpen, Clock, CheckCircle, Lock, Trophy } from 'lucide-react';
+import { useLocation } from 'wouter';
+import { BookOpen, Clock, CheckCircle, Lock, Trophy, LogOut } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
 
 interface Course {
@@ -32,6 +33,7 @@ interface Lesson {
 export default function EntryDashboard() {
   const { user } = useAuth();
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+  const [, setLocation] = useLocation();
 
   // Fetch Entry tier courses
   const { data: courses = [], isLoading } = useQuery({
@@ -123,13 +125,30 @@ export default function EntryDashboard() {
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Welcome to Your Entry Dashboard
-          </h1>
-          <p className="text-gray-600">
-            Access your Entry tier courses. These courses are read-only and designed to give you foundational knowledge.
-          </p>
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              Welcome to Your Entry Dashboard
+            </h1>
+            <p className="text-gray-600">
+              Access your Entry tier courses. These courses are read-only and designed to give you foundational knowledge.
+            </p>
+          </div>
+          
+          {/* Sign Out Button */}
+          <Button 
+            variant="outline" 
+            onClick={() => {
+              localStorage.removeItem('studentId');
+              localStorage.removeItem('studentEmail');
+              localStorage.clear();
+              setLocation('/');
+            }}
+            className="flex items-center space-x-2"
+          >
+            <LogOut className="h-4 w-4" />
+            <span>Sign Out</span>
+          </Button>
         </div>
 
         {/* User Info */}
