@@ -928,6 +928,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         subtype: '',
         awarenessPercentage: 85,
         canRetake: false,
+        nextRetakeDate: null,
         scores: {
           architect: architectCount,
           alchemist: alchemistCount,

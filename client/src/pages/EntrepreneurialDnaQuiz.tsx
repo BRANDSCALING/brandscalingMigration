@@ -68,6 +68,18 @@ export default function EntrepreneurialDnaQuiz() {
   const [retakeInfo, setRetakeInfo] = useState<{ canRetake: boolean; nextRetakeDate?: string } | null>(null);
   const [isCheckingEligibility, setIsCheckingEligibility] = useState(true);
 
+  // Debug logging for state changes
+  useEffect(() => {
+    console.log('Quiz state changed:', {
+      isProcessing,
+      showResults,
+      result,
+      isSubmitting,
+      currentQuestion,
+      answersCount: Object.keys(answers).length
+    });
+  }, [isProcessing, showResults, result, isSubmitting, currentQuestion, answers]);
+
   useEffect(() => {
     // Check if user is logged in first
     if (!user) {
@@ -112,6 +124,7 @@ export default function EntrepreneurialDnaQuiz() {
 
   const submitQuiz = async () => {
     setIsSubmitting(true);
+    setIsProcessing(true);
     console.log('Starting quiz submission...');
     console.log('Current answers:', answers);
     console.log('Answer count:', Object.keys(answers).length);
@@ -121,7 +134,20 @@ export default function EntrepreneurialDnaQuiz() {
         answers
       });
       console.log('Quiz submission successful:', data);
-      setResult(data);
+      
+      // Ensure all required fields are present
+      const processedResult = {
+        defaultType: data.defaultType || 'Blurred Identity',
+        subtype: data.subtype || '',
+        awarenessPercentage: data.awarenessPercentage || 85,
+        canRetake: data.canRetake || false,
+        nextRetakeDate: data.nextRetakeDate || null
+      };
+      
+      console.log('Processed result:', processedResult);
+      
+      setResult(processedResult);
+      setIsProcessing(false);
       setShowResults(true);
       
       // Auto-redirect to appropriate dashboard after a delay
@@ -131,6 +157,7 @@ export default function EntrepreneurialDnaQuiz() {
     } catch (error) {
       console.error('Error submitting quiz:', error);
       console.error('Error details:', JSON.stringify(error, null, 2));
+      setIsProcessing(false);
       // Show user-friendly error message
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       alert(`Quiz submission failed: ${errorMessage}`);
@@ -230,8 +257,32 @@ export default function EntrepreneurialDnaQuiz() {
     );
   }
 
-  if (showResults && result) {
+  // Check if we should show results
+  if (showResults) {
+    console.log('ShowResults true, result data:', result);
+    
+    if (!result) {
+      console.log('No result data available, showing error state');
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4 flex items-center justify-center">
+          <Card className="w-full max-w-md">
+            <CardContent className="p-8 text-center">
+              <h2 className="text-2xl font-bold mb-4">Something went wrong</h2>
+              <p className="text-gray-600 dark:text-gray-400 mb-4">
+                We couldn't process your quiz results. Please try again.
+              </p>
+              <Button onClick={() => window.location.reload()}>
+                Retry Quiz
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      );
+    }
+
+    console.log('Displaying results with data:', result);
     const content = getResultContent(result.defaultType, result.awarenessPercentage);
+    console.log('Generated content:', content);
     
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4">
