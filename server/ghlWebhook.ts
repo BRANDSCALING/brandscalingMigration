@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { storage } from './storage.js';
 import { sendCredentialEmail } from './emailService.js';
 import { generateUserCredentials } from './generateCredentials.js';
+import { validateDiscountCode, incrementDiscountCodeUsage } from './discountCodes.js';
 
 /**
  * GoHighLevel Webhook Handler
@@ -19,7 +20,8 @@ export async function handleGhlWebhook(req: Request, res: Response) {
       product, 
       amount,
       orderId,
-      customerId 
+      customerId,
+      discountCode
     } = req.body;
 
     // Validate required fields
@@ -30,12 +32,34 @@ export async function handleGhlWebhook(req: Request, res: Response) {
       });
     }
 
+    // Validate discount code if provided
+    let discountInfo = null;
+    if (discountCode) {
+      const originalAmount = parseFloat(amount) * 100; // Convert to pence
+      const validation = validateDiscountCode(discountCode, product, originalAmount);
+      
+      if (!validation.valid) {
+        console.error(`Invalid discount code ${discountCode}: ${validation.error}`);
+        return res.status(400).json({
+          success: false,
+          error: `Discount code error: ${validation.error}`
+        });
+      }
+      
+      discountInfo = validation;
+      console.log(`Valid discount code ${discountCode} applied: £${validation.discountAmount / 100} off`);
+    }
+
     // Map product to access tier
     let accessTier: string;
     switch (product.toLowerCase()) {
       case 'entry':
       case 'entry-tier':
         accessTier = 'entry';
+        break;
+      case 'expert':
+      case 'expert-tier':
+        accessTier = 'expert';
         break;
       case 'elite':
       case 'elite-tier':

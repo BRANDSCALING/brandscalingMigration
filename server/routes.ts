@@ -32,6 +32,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
     handleGhlWebhook(req, res);
   });
 
+  // Discount validation endpoints
+  app.post("/api/validate-discount", async (req, res) => {
+    try {
+      const { validateDiscountCode } = await import('./discountCodes.js');
+      const { code, product, amount } = req.body;
+
+      if (!code || !product || !amount) {
+        return res.status(400).json({
+          success: false,
+          error: 'Missing required fields: code, product, amount'
+        });
+      }
+
+      const amountInPence = Math.round(parseFloat(amount) * 100);
+      const validation = validateDiscountCode(code, product, amountInPence);
+
+      if (validation.valid) {
+        res.json({
+          success: true,
+          valid: true,
+          discountAmount: validation.discountAmount / 100,
+          finalAmount: validation.finalAmount / 100,
+          savings: validation.discountAmount / 100
+        });
+      } else {
+        res.json({
+          success: true,
+          valid: false,
+          error: validation.error
+        });
+      }
+    } catch (error) {
+      console.error('Discount validation error:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Internal server error'
+      });
+    }
+  });
+
   // Health check route (public)
   app.get("/api/health", async (req, res) => {
     res.json({ status: "ok", timestamp: new Date().toISOString() });
