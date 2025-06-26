@@ -3,7 +3,7 @@ import { useFirebaseAuth } from '@/hooks/useFirebaseAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { useLocation, Link } from 'wouter';
@@ -253,13 +253,7 @@ export default function Auth() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Tabs defaultValue="signin" className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="signin">Sign In</TabsTrigger>
-                  <TabsTrigger value="signup">Join Platform</TabsTrigger>
-                </TabsList>
-
-              <TabsContent value="signin" className="space-y-6">
+              <div className="space-y-6">
                 <form onSubmit={handleSignIn} className="space-y-4">
                   <div>
                     <Label htmlFor="signin-email" className="text-strategic-black font-medium">
@@ -306,104 +300,26 @@ export default function Auth() {
                     {loading ? 'Signing in...' : 'Access Learning Dashboard'}
                   </Button>
                 </form>
-              </TabsContent>
+              </div>
 
-              <TabsContent value="signup" className="space-y-6">
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-                  <div className="flex items-start">
-                    <UserPlus className="h-5 w-5 text-blue-600 mt-0.5 mr-3 flex-shrink-0" />
-                    <div>
-                      <h4 className="text-sm font-medium text-blue-900">
-                        Student Registration
-                      </h4>
-                      <p className="text-xs text-blue-700 mt-1">
-                        Create your account to access personalized learning paths based on your Entrepreneurial DNA.
-                      </p>
-                    </div>
-                  </div>
+              {error && (
+                <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md">
+                  <p className="text-sm text-red-800">{error}</p>
                 </div>
-                
-                <form onSubmit={handleSignUp} className="space-y-4">
-                  <div>
-                    <Label htmlFor="signup-email" className="text-strategic-black font-medium">
-                      Email Address
-                    </Label>
-                    <Input
-                      id="signup-email"
-                      type="email"
-                      value={signUpEmail}
-                      onChange={(e) => setSignUpEmail(e.target.value)}
-                      placeholder="your.email@example.com"
-                      className="mt-1"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="signup-password" className="text-strategic-black font-medium">
-                      Create Password
-                    </Label>
-                    <div className="relative mt-1">
-                      <Input
-                        id="signup-password"
-                        type={showPassword ? "text" : "password"}
-                        value={signUpPassword}
-                        onChange={(e) => setSignUpPassword(e.target.value)}
-                        placeholder="Create a secure password"
-                        className="pr-10"
-                        required
-                      />
-                      <button
-                        type="button"
-                        className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
-                        {showPassword ? (
-                          <EyeOff className="h-4 w-4 text-gray-400" />
-                        ) : (
-                          <Eye className="h-4 w-4 text-gray-400" />
-                        )}
-                      </button>
-                    </div>
-                  </div>
-                  <div>
-                    <Label htmlFor="confirm-password" className="text-strategic-black font-medium">
-                      Confirm Password
-                    </Label>
-                    <Input
-                      id="confirm-password"
-                      type="password"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      placeholder="Confirm your password"
-                      className="mt-1"
-                      required
-                    />
-                  </div>
-                  <Button type="submit" className="w-full btn-alchemist" disabled={loading}>
-                    {loading ? 'Creating account...' : 'Join Brandscaling Platform'}
-                  </Button>
-                </form>
-              </TabsContent>
-            </Tabs>
+              )}
 
-            {error && (
-              <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md">
-                <p className="text-sm text-red-800">{error}</p>
+              <div className="mt-6 pt-6 border-t border-gray-200">
+                <div className="text-center">
+                  <p className="text-sm text-gray-600 mb-2">
+                    Looking for admin access?
+                  </p>
+                  <Link href="/admin-login">
+                    <Button variant="outline" size="sm" className="border-architect-indigo text-architect-indigo hover:bg-architect-indigo hover:text-white">
+                      Admin Portal
+                    </Button>
+                  </Link>
+                </div>
               </div>
-            )}
-
-            <div className="mt-6 pt-6 border-t border-gray-200">
-              <div className="text-center">
-                <p className="text-sm text-gray-600 mb-2">
-                  Looking for admin access?
-                </p>
-                <Link href="/admin-login">
-                  <Button variant="outline" size="sm" className="border-architect-indigo text-architect-indigo hover:bg-architect-indigo hover:text-white">
-                    Admin Portal
-                  </Button>
-                </Link>
-              </div>
-            </div>
           </CardContent>
         </Card>
         </BrandSection>
