@@ -10,7 +10,6 @@ import { ENTREPRENEURIAL_DNA_QUESTIONS, DNA_SUBTYPES } from '@shared/entrepreneu
 
 // Fallback questions if import fails
 const QUIZ_QUESTIONS = ENTREPRENEURIAL_DNA_QUESTIONS;
-// Removed unauthorized DNA result display
 
 interface Question {
   id: number;
@@ -22,6 +21,32 @@ interface Question {
     D: string;
   };
 }
+
+// Function to get result content based on DNA type
+const getResultContent = (type: string, awarenessPercentage: number) => {
+  switch (type) {
+    case 'Architect':
+      return {
+        title: 'The Architect',
+        description: 'You approach business with systematic thinking, strategic planning, and structured execution. You excel at building frameworks, analyzing data, and creating scalable systems.'
+      };
+    case 'Alchemist':
+      return {
+        title: 'The Alchemist',
+        description: 'You bring intuitive creativity, emotional intelligence, and innovative problem-solving to business. You excel at seeing opportunities others miss and inspiring transformational change.'
+      };
+    case 'Blurred Identity':
+      return {
+        title: 'Blurred Identity',
+        description: 'Your entrepreneurial approach combines elements of both Architect and Alchemist, or you may benefit from further self-discovery to clarify your dominant operating style.'
+      };
+    default:
+      return {
+        title: 'Entrepreneurial DNA',
+        description: 'Your unique entrepreneurial profile has been identified. Continue exploring your strengths and growth areas.'
+      };
+  }
+};
 
 interface QuizResult {
   defaultType: 'Architect' | 'Alchemist' | 'Blurred Identity';
@@ -87,10 +112,15 @@ export default function EntrepreneurialDnaQuiz() {
 
   const submitQuiz = async () => {
     setIsSubmitting(true);
+    console.log('Starting quiz submission...');
+    console.log('Current answers:', answers);
+    console.log('Answer count:', Object.keys(answers).length);
+    
     try {
       const data = await apiRequest('POST', '/api/quiz/entrepreneurial-dna/submit', {
         answers
       });
+      console.log('Quiz submission successful:', data);
       setResult(data);
       setShowResults(true);
       

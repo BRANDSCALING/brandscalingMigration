@@ -858,10 +858,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/quiz/entrepreneurial-dna/submit', async (req, res) => {
     try {
+      console.log('Quiz submission received:', {
+        body: req.body,
+        headers: req.headers,
+        user: req.user
+      });
+      
       const { answers } = req.body;
       const userId = req.user?.uid || 'anonymous-user';
       
+      console.log('Processing answers:', answers);
+      console.log('Answer count:', Object.keys(answers || {}).length);
+      
       if (!answers || Object.keys(answers).length < 6) {
+        console.log('Invalid answers - need exactly 6, got:', Object.keys(answers || {}).length);
         return res.status(400).json({ message: 'Invalid answers provided - need exactly 6 answers' });
       }
 
@@ -873,9 +883,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Count each answer type
       Object.entries(answers).forEach(([questionId, answerChoice]) => {
+        console.log(`Processing Q${questionId}: ${answerChoice}`);
         const question = ENTREPRENEURIAL_DNA_QUESTIONS.find(q => q.id === parseInt(questionId));
-        if (question && question.answers[answerChoice]) {
-          const answerType = question.answers[answerChoice].type;
+        if (question && question.answers[answerChoice as keyof typeof question.answers]) {
+          const answerType = question.answers[answerChoice as keyof typeof question.answers].type;
+          console.log(`Q${questionId} type: ${answerType}`);
           switch (answerType) {
             case 'architect':
               architectCount++;
@@ -890,6 +902,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
               neutralCount++;
               break;
           }
+        } else {
+          console.log(`Question ${questionId} not found or invalid answer ${answerChoice}`);
         }
       });
 
@@ -901,8 +915,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         defaultType = 'Alchemist';
       }
 
+      console.log('Final scores:', {
+        architect: architectCount,
+        alchemist: alchemistCount,
+        blurred: blurredCount,
+        neutral: neutralCount,
+        result: defaultType
+      });
+
       res.json({
         defaultType,
+        subtype: '',
+        awarenessPercentage: 85,
         canRetake: false,
         scores: {
           architect: architectCount,
