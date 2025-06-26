@@ -2,7 +2,7 @@ import { db } from "./db";
 import { users, payments } from "@shared/schema";
 import { eq } from "drizzle-orm";
 import { generateUserCredentials } from "./generateCredentials";
-import { sendWelcomeCredentials } from "./emailService";
+import { sendCredentialEmail } from "./emailService";
 
 export async function updateUserAfterPurchase(email: string, product: string, stripeId: string, amount?: number) {
   try {

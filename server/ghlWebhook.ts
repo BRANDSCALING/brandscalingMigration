@@ -7,7 +7,7 @@ import { generateUserCredentials } from './generateCredentials.js';
  * GoHighLevel Webhook Handler
  * Processes purchase completions from GHL and creates user accounts
  */
-export async function handleGhlPurchaseWebhook(req: Request, res: Response) {
+export async function handleGhlWebhook(req: Request, res: Response) {
   try {
     console.log('GHL Webhook received:', JSON.stringify(req.body, null, 2));
     
@@ -51,10 +51,10 @@ export async function handleGhlPurchaseWebhook(req: Request, res: Response) {
 
     // Generate secure credentials
     const credentials = generateUserCredentials();
+    const password = credentials.password;
+    const userId = credentials.userId;
     
-    // Create user account
-    const userId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    
+    // Create user account  
     const newUser = {
       id: userId,
       email: email,
@@ -102,7 +102,7 @@ export async function handleGhlPurchaseWebhook(req: Request, res: Response) {
   }
 }
 
-export { handleGhlWebhook };
+
 
 /**
  * Webhook endpoint configuration for GoHighLevel

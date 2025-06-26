@@ -89,3 +89,6 @@ export async function testEmailService(testEmail: string) {
     throw error;
   }
 }
+
+// Export alias for backwards compatibility  
+export const sendWelcomeCredentials = sendCredentialEmail;
