@@ -394,7 +394,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     // Skip auth middleware for public routes
     const publicPaths = ['/auth/user', '/auth/admin-login', '/auth/student-login', '/auth/student-signup', '/dev/create-admin', '/ai-agents/chat', '/workbooks/upload', '/workbooks/progress', '/workbooks/status', '/quiz/entrepreneurial-dna/submit', '/quiz/entrepreneurial-dna/eligibility', '/test/email', '/test/simulate-purchase'];
     
-    if (publicPaths.some(path => req.path === `/api${path}` || req.path.startsWith(`/api${path}`))) {
+    if (publicPaths.some(path => req.path === path || req.path.startsWith(path))) {
       // Set anonymous user for workbook and quiz routes
       if (req.path.startsWith('/workbooks') || req.path.includes('/quiz/')) {
         req.user = { uid: `anonymous-${Date.now()}`, email: 'anonymous@quiz.com', role: 'user' };
