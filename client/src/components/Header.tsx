@@ -1,19 +1,48 @@
 import { Link } from "wouter";
 import { User, Infinity } from "lucide-react";
-import { useFirebaseAuth } from "@/hooks/useFirebaseAuth";
+import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
 
 export default function Header() {
-  const { isAuthenticated, userProfile, logout } = useFirebaseAuth();
+  const { user, isAuthenticated } = useAuth();
+  const [localUser, setLocalUser] = useState<any>(null);
+  
+  // Check for local student authentication
+  useEffect(() => {
+    const studentId = localStorage.getItem('studentId');
+    const studentEmail = localStorage.getItem('studentEmail');
+    const adminId = sessionStorage.getItem('adminId');
+    
+    if (studentId && studentEmail) {
+      setLocalUser({
+        id: studentId,
+        email: studentEmail,
+        role: 'student',
+        accessTier: 'beginner'
+      });
+    } else if (adminId) {
+      setLocalUser({
+        id: adminId,
+        email: 'admin@brandscaling.com',
+        role: 'admin',
+        accessTier: 'mastermind'
+      });
+    } else if (user) {
+      setLocalUser(user);
+    } else {
+      setLocalUser(null);
+    }
+  }, [user]);
 
   const getDashboardLink = () => {
-    if (!isAuthenticated) return '/auth';
+    if (!localUser) return '/auth';
     
-    if (userProfile?.role === 'admin') return '/admin';
+    if (localUser.role === 'admin') return '/admin';
     
     // Check access tier for students
-    if (userProfile?.role === 'student') {
-      const accessTier = userProfile?.accessTier;
+    if (localUser.role === 'student') {
+      const accessTier = localUser.accessTier;
       if (accessTier === 'beginner' || accessTier === 'entry') {
         return '/entry';
       }
