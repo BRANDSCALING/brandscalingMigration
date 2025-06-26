@@ -579,6 +579,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get courses with lessons (public endpoint for Entry tier preview)
+  app.get("/api/courses/with-lessons", async (req, res) => {
+    try {
+      const courses = await storage.getAllCourses();
+      const coursesWithLessons = await Promise.all(
+        courses.map(async (course) => {
+          const lessons = await storage.getCourseWithLessons(course.id);
+          return {
+            ...course,
+            lessons: lessons.lessons || []
+          };
+        })
+      );
+      res.json(coursesWithLessons);
+    } catch (error) {
+      console.error('Error fetching courses with lessons:', error);
+      res.status(500).json({ error: 'Failed to fetch courses with lessons' });
+    }
+  });
+
   // ===== ADMIN COURSE MANAGEMENT API ENDPOINTS =====
   
   // Get all courses (admin only)

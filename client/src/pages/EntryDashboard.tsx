@@ -25,6 +25,9 @@ interface Lesson {
   courseId: number;
   title: string;
   description: string;
+  architectContent?: string;
+  alchemistContent?: string;
+  sharedContent?: string;
   requiredTier: string;
   order: number;
   isPublished: boolean;
@@ -35,10 +38,10 @@ export default function EntryDashboard() {
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [, setLocation] = useLocation();
 
-  // Fetch Entry tier courses
+  // Fetch Entry tier courses with lessons
   const { data: courses = [], isLoading } = useQuery({
-    queryKey: ['/api/courses'],
-    queryFn: () => apiRequest('GET', '/api/courses'),
+    queryKey: ['/api/courses/with-lessons'],
+    queryFn: () => apiRequest('GET', '/api/courses/with-lessons'),
     select: (data: Course[]) => data.filter(course => 
       course.accessTier === 'beginner' && course.isPublished
     ),
@@ -93,7 +96,7 @@ export default function EntryDashboard() {
                 {selectedCourse.lessons?.map((lesson, index) => (
                   <Card key={lesson.id} className="border-l-4 border-l-blue-500">
                     <CardContent className="pt-4">
-                      <div className="flex items-start justify-between">
+                      <div className="flex items-start justify-between mb-4">
                         <div className="flex-1">
                           <h3 className="font-semibold mb-2">{lesson.title}</h3>
                           <p className="text-gray-600 text-sm mb-3">{lesson.description}</p>
@@ -102,7 +105,31 @@ export default function EntryDashboard() {
                             <span>Module {index + 1}</span>
                           </div>
                         </div>
-                        <Lock className="h-5 w-5 text-gray-400 mt-1" />
+                        <Badge variant="outline" className="text-xs">
+                          Preview
+                        </Badge>
+                      </div>
+                      
+                      {/* Show lesson content preview */}
+                      <div className="bg-gray-50 rounded-lg p-4 border">
+                        <h4 className="font-medium text-sm mb-2 text-gray-700">Lesson Content Preview:</h4>
+                        <div className="text-sm text-gray-600 space-y-2">
+                          {lesson.sharedContent && (
+                            <p className="leading-relaxed">{lesson.sharedContent}</p>
+                          )}
+                          {lesson.architectContent && (
+                            <div className="mt-3">
+                              <span className="font-medium text-blue-600">For Architects:</span>
+                              <p className="text-gray-600 mt-1">{lesson.architectContent}</p>
+                            </div>
+                          )}
+                          {lesson.alchemistContent && (
+                            <div className="mt-3">
+                              <span className="font-medium text-amber-600">For Alchemists:</span>
+                              <p className="text-gray-600 mt-1">{lesson.alchemistContent}</p>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
