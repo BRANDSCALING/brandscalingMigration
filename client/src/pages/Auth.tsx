@@ -77,11 +77,11 @@ export default function Auth() {
       
       toast({
         title: "Welcome Back!",
-        description: "Logged into your student dashboard."
+        description: "Redirecting to your Entrepreneurial DNA Quiz."
       });
       
-      // Redirect to student dashboard
-      setLocation('/student');
+      // Redirect directly to quiz after login
+      setLocation('/entrepreneurial-dna-quiz');
     } catch (error: any) {
       toast({
         title: "Login Failed",
@@ -144,11 +144,11 @@ export default function Auth() {
       
       toast({
         title: "Student Account Created!",
-        description: "Welcome to Brandscaling. Redirecting to your dashboard..."
+        description: "Welcome to Brandscaling. Let's discover your Entrepreneurial DNA!"
       });
       
-      // Redirect to student dashboard
-      setLocation('/student');
+      // Redirect directly to quiz after signup
+      setLocation('/entrepreneurial-dna-quiz');
     } catch (error: any) {
       toast({
         title: "Registration Failed",

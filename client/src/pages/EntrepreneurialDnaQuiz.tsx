@@ -93,6 +93,11 @@ export default function EntrepreneurialDnaQuiz() {
       });
       setResult(data);
       setShowResults(true);
+      
+      // Auto-redirect to appropriate dashboard after a delay
+      setTimeout(() => {
+        redirectToDashboard();
+      }, 5000); // 5 second delay to show results
     } catch (error) {
       console.error('Error submitting quiz:', error);
       console.error('Error details:', JSON.stringify(error, null, 2));
@@ -101,6 +106,36 @@ export default function EntrepreneurialDnaQuiz() {
       alert(`Quiz submission failed: ${errorMessage}`);
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const redirectToDashboard = async () => {
+    // Check user's access tier from localStorage or API
+    const studentId = localStorage.getItem('studentId');
+    if (studentId) {
+      try {
+        // Fetch user data to determine access tier
+        const userData = await apiRequest('GET', '/api/auth/user');
+        if (userData && userData.accessTier) {
+          // Route based on access tier
+          if (userData.accessTier === 'beginner' || userData.accessTier === 'entry') {
+            setLocation('/entry');
+          } else if (userData.role === 'admin') {
+            setLocation('/admin');
+          } else {
+            setLocation('/student');
+          }
+        } else {
+          // Default to entry dashboard for students without specific tier
+          setLocation('/entry');
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        // Default to entry dashboard on error
+        setLocation('/entry');
+      }
+    } else {
+      setLocation('/auth');
     }
   };
 
@@ -140,7 +175,7 @@ export default function EntrepreneurialDnaQuiz() {
                 You can retake the Entrepreneurial DNA Quiz™ in {daysLeft} days.
               </p>
             </div>
-            <Button onClick={() => setLocation('/dashboard')} className="w-full">
+            <Button onClick={redirectToDashboard} className="w-full">
               Return to Dashboard
             </Button>
           </CardContent>
@@ -230,19 +265,25 @@ export default function EntrepreneurialDnaQuiz() {
 
               <div className="text-center space-y-4">
                 <Button 
-                  onClick={() => setLocation('/courses')} 
+                  onClick={redirectToDashboard} 
                   size="lg"
                   className="mr-4"
                 >
-                  Explore Your Learning Path
+                  Access Your Dashboard
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
                 <Button 
                   variant="outline" 
-                  onClick={() => setLocation('/dashboard')}
+                  onClick={() => setLocation('/courses')}
                 >
-                  Return to Dashboard
+                  Explore All Courses
                 </Button>
+              </div>
+              
+              <div className="mt-4 text-center">
+                <p className="text-sm text-gray-500">
+                  Redirecting to your dashboard in 5 seconds...
+                </p>
               </div>
             </CardContent>
           </Card>
