@@ -332,6 +332,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           firstName: 'Munawar',
           lastName: 'Abbasi',
           accessTier: 'beginner'
+        },
+        { 
+          email: 'sarah.testing@brandscaling.com', 
+          password: 'testing123',
+          firstName: 'Sarah',
+          lastName: 'Johnson',
+          accessTier: 'beginner'
         }
         // Add more test students here as needed
       ];
