@@ -54,7 +54,7 @@ const QuizContainer = () => {
       case 1:
         return (
           <DefaultDNABlock 
-            onComplete={(dna) => {
+            onComplete={(dna: DNAType) => {
               updateQuizState({ defaultDNA: dna });
               nextBlock();
             }}
@@ -65,7 +65,7 @@ const QuizContainer = () => {
         return (
           <AwarenessBlock 
             defaultDNA={quizState.defaultDNA!}
-            onComplete={(score) => {
+            onComplete={(score: number) => {
               updateQuizState({ awarenessScore: score });
               nextBlock();
             }}
@@ -75,7 +75,7 @@ const QuizContainer = () => {
       case 3:
         return (
           <PathChoiceBlock 
-            onComplete={(path) => {
+            onComplete={(path: PathType) => {
               updateQuizState({ pathChoice: path });
               nextBlock();
             }}
@@ -86,7 +86,7 @@ const QuizContainer = () => {
           <SubtypeBlock 
             defaultDNA={quizState.defaultDNA!}
             pathChoice={quizState.pathChoice!}
-            onComplete={(subtype, progress) => {
+            onComplete={(subtype: SubtypeType, progress: number) => {
               updateQuizState({ subtype, subtypeProgress: progress });
               nextBlock();
             }}

@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
+import { useLocation } from 'wouter';
+import { useToast } from '@/hooks/use-toast';
+import { apiRequest } from '@/lib/queryClient';
 import { QuizState } from './QuizContainer';
 
 interface Props {
@@ -10,6 +13,74 @@ interface Props {
 
 const ResultsPage: React.FC<Props> = ({ quizState }) => {
   const { defaultDNA, awarenessScore, subtype, subtypeProgress } = quizState;
+  const [, setLocation] = useLocation();
+  const { toast } = useToast();
+
+  // Submit quiz results to backend and handle redirect
+  useEffect(() => {
+    const submitQuizResults = async () => {
+      try {
+        const studentId = localStorage.getItem('studentId');
+        if (!studentId) {
+          toast({
+            title: "Authentication Error",
+            description: "Please log in to save results.",
+            variant: "destructive"
+          });
+          setLocation('/auth');
+          return;
+        }
+
+        // Submit comprehensive quiz results
+        await apiRequest('POST', '/api/quiz/submit', {
+          quizId: 1,
+          answers: quizState.answers,
+          result: {
+            defaultDNA,
+            awarenessScore,
+            pathChoice: quizState.pathChoice,
+            subtype,
+            subtypeProgress
+          },
+          score: awarenessScore
+        });
+
+        // Store result for immediate access
+        localStorage.setItem('quizResult', JSON.stringify({
+          type: defaultDNA?.toLowerCase(),
+          subtype,
+          awarenessScore,
+          subtypeProgress,
+          timestamp: new Date().toISOString()
+        }));
+
+        toast({
+          title: "Results Saved!",
+          description: "Your Entrepreneurial DNA analysis is complete.",
+        });
+
+        // Auto-redirect after 5 seconds
+        setTimeout(() => {
+          const accessTier = localStorage.getItem('accessTier') || 'entry';
+          if (accessTier === 'entry') {
+            setLocation('/entry');
+          } else {
+            setLocation('/student');
+          }
+        }, 5000);
+
+      } catch (error: any) {
+        console.error('Quiz submission error:', error);
+        toast({
+          title: "Submission Failed",
+          description: error.message || "Failed to save results.",
+          variant: "destructive"
+        });
+      }
+    };
+
+    submitQuizResults();
+  }, [quizState, setLocation, toast, defaultDNA, awarenessScore, subtype, subtypeProgress]);
 
   const getAwarenessLevel = (score: number) => {
     if (score === 6) return 70;
@@ -139,6 +210,31 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
             </CardContent>
           </Card>
         )}
+
+        {/* Redirect Notice */}
+        <Card className="border-2 border-blue-200 bg-blue-50">
+          <CardContent className="p-6 text-center">
+            <h3 className="text-lg font-semibold text-blue-800 mb-2">
+              Redirecting to Your Dashboard
+            </h3>
+            <p className="text-blue-700 mb-4">
+              You'll be automatically redirected to your personalized dashboard in 5 seconds.
+            </p>
+            <Button 
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+              onClick={() => {
+                const accessTier = localStorage.getItem('accessTier') || 'entry';
+                if (accessTier === 'entry') {
+                  setLocation('/entry');
+                } else {
+                  setLocation('/student');
+                }
+              }}
+            >
+              Access Dashboard Now
+            </Button>
+          </CardContent>
+        </Card>
 
         {/* Action Buttons */}
         <div className="flex justify-center space-x-4 pt-6">
