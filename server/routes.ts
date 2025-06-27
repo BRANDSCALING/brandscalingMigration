@@ -324,8 +324,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { email, password } = req.body;
       
-      // For development: allow any email/password combination for students
-      if (password.length >= 6) {
+      // Check for specific test student credentials
+      const validStudents = [
+        { 
+          email: 'munawarrasoolabbasi@gmail.com', 
+          password: '123456',
+          firstName: 'Munawar',
+          lastName: 'Abbasi',
+          accessTier: 'beginner'
+        }
+        // Add more test students here as needed
+      ];
+      
+      const studentMatch = validStudents.find(student => 
+        student.email === email && student.password === password
+      );
+      
+      if (studentMatch) {
+        // Return specific student data for matched credentials
+        const studentUser = {
+          id: `student-${studentMatch.email.replace(/[@.]/g, '-')}`,
+          email: studentMatch.email,
+          firstName: studentMatch.firstName,
+          lastName: studentMatch.lastName,
+          role: "student",
+          accessTier: studentMatch.accessTier,
+          profileImageUrl: null,
+          stripeCustomerId: null,
+          stripeSubscriptionId: null,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        };
+        
+        res.json({ user: studentUser, message: "Student login successful" });
+      } else if (password.length >= 6) {
+        // For development: allow any other email/password combination for students
         const studentUser = {
           id: `student-${Date.now()}`,
           email: email,
