@@ -292,6 +292,23 @@ const SubtypeBlock: React.FC<Props> = ({ defaultDNA, pathChoice, onComplete, rec
 
   const questions = getSubtypeQuestions(defaultDNA, pathChoice);
 
+  // Add error handling for empty questions array
+  if (!questions || questions.length === 0) {
+    return (
+      <div className="p-8 text-center">
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">
+          Configuration Error
+        </h2>
+        <p className="text-gray-600 mb-4">
+          No questions found for DNA type: {defaultDNA}, Path: {pathChoice}
+        </p>
+        <Button onClick={() => window.location.reload()}>
+          Restart Quiz
+        </Button>
+      </div>
+    );
+  }
+
   const handleAnswer = (option: { text: string; subtype: SubtypeType }) => {
     const questionId = questions[currentQuestion].id;
     const newAnswers = { ...answers, [questionId]: option.subtype };

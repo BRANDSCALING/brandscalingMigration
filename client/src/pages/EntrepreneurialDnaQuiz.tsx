@@ -181,6 +181,7 @@ export default function EntrepreneurialDnaQuiz() {
           <ValidationBlock
             subtype={quizState.subtype!}
             onComplete={handleValidationComplete}
+            recordAnswer={recordAnswer}
           />
         );
       case 'results':
