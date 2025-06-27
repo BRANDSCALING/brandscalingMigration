@@ -24,13 +24,13 @@ export default function EntrepreneurialDnaQuiz() {
           return;
         }
 
-        const response = await apiRequest('GET', '/api/quiz/eligibility');
-        setCanTakeQuiz(response.canTake);
+        const response = await apiRequest('GET', '/api/quiz/entrepreneurial-dna/eligibility');
+        setCanTakeQuiz(response.canRetake);
         
-        if (!response.canTake) {
+        if (!response.canRetake) {
           toast({
             title: "Quiz Restriction",
-            description: `You can retake the quiz on ${new Date(response.nextEligibleDate).toLocaleDateString()}`,
+            description: `You can retake the quiz on ${new Date(response.nextRetakeDate).toLocaleDateString()}`,
             variant: "destructive"
           });
           
