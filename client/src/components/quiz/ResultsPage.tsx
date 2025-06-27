@@ -241,13 +241,28 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
         {/* Blurred Identity Special Section */}
         {defaultDNA === 'Blurred' && (
           <Card className="border-2 border-red-200 bg-red-50">
-            <CardContent className="p-6 text-center">
-              <h3 className="text-xl font-bold text-red-800 mb-4">7-Day Identity Reset</h3>
-              <p className="text-red-700 mb-4">
-                Discover your true entrepreneurial identity with our focused clarity program.
-              </p>
-              <Button className="bg-red-600 hover:bg-red-700 text-white">
-                Start Identity Reset
+            <CardContent className="p-6">
+              <h3 className="text-xl font-bold text-red-800 mb-4">
+                🔄 You've Been Operating in a Blurred Loop
+              </h3>
+              <div className="space-y-4 text-red-700">
+                <p>
+                  Your Entrepreneurial DNA is currently blurred. You've likely adapted patterns that don't belong to you.
+                  Your core identity is still there — but it's fogged by overthinking, over-adapting, or emotional burnout.
+                </p>
+                <p className="font-semibold italic">
+                  "You're not broken. You've just been blurred."
+                </p>
+                <div className="bg-white p-4 rounded-lg border border-red-200">
+                  <h4 className="font-semibold mb-2">Reset Mission: Find Your True Default</h4>
+                  <p className="text-sm">
+                    You're entering the 7-Day Identity Reset — a structured path to help you find your default DNA.
+                    This isn't about guessing your type. It's about experiencing both Architect and Alchemist rhythms — and seeing what finally feels like home.
+                  </p>
+                </div>
+              </div>
+              <Button className="bg-red-600 hover:bg-red-700 text-white mt-4">
+                Start 7-Day Identity Reset
               </Button>
             </CardContent>
           </Card>
