@@ -6,12 +6,24 @@ import { useLocation } from 'wouter';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 
+export type DNAType = 'Architect' | 'Alchemist' | 'Blurred' | 'Neutral';
+export type PathType = 'architect' | 'alchemist';
+export type SubtypeType = string;
+
+export interface QuizState {
+  currentStage: string;
+  answers: Record<string, string>;
+  dnaType?: DNAType;
+  pathType?: PathType;
+  subtype?: SubtypeType;
+}
+
 interface Question {
   id: string;
   text: string;
   options: {
     text: string;
-    type: 'Architect' | 'Alchemist' | 'Blurred' | 'Neutral';
+    type: DNAType;
   }[];
 }
 
@@ -33,7 +45,7 @@ const questions: Question[] = [
       { text: 'I address it directly but kindly, focusing on moving forward together.', type: 'Architect' },
       { text: 'I overthink it endlessly, unsure whether to say something or let it go.', type: 'Blurred' },
       { text: 'I trust our connection and let it naturally resolve without making it heavy.', type: 'Alchemist' },
-      { text: 'I withdraw and wait for them to notice, hoping they'll figure it out.', type: 'Blurred' }
+      { text: 'I withdraw and wait for them to notice, hoping they will figure it out.', type: 'Blurred' }
     ]
   },
   {
@@ -73,7 +85,7 @@ const questions: Question[] = [
       { text: 'Building efficient systems and achieving measurable, sustainable growth.', type: 'Architect' },
       { text: 'Proving myself worthy and avoiding the fear of failure or judgment.', type: 'Blurred' },
       { text: 'Creating meaningful impact and following my passion and purpose.', type: 'Alchemist' },
-      { text: 'Trying to meet everyone else's expectations while losing sight of my own.', type: 'Blurred' }
+      { text: 'Trying to meet everyone else expectations while losing sight of my own.', type: 'Blurred' }
     ]
   }
 ];
