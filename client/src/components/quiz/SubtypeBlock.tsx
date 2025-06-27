@@ -274,6 +274,137 @@ const getSubtypeQuestions = (defaultDNA: DNAType, pathChoice: PathType): Questio
     ];
   }
 
+  // Handle Blurred DNA type - these users need different questions to help clarify their type
+  if (defaultDNA === 'Blurred' && pathChoice === 'Early') {
+    return [
+      {
+        id: 'Q13',
+        text: "When you have a new business idea, what's your first instinct?",
+        options: [
+          { text: 'I start mapping out the systems and processes needed to make it work', subtype: 'Internal Analyzer' },
+          { text: 'I get excited about the vision and start sharing it with others', subtype: 'Visionary Oracle' },
+          { text: 'I focus on understanding the problem deeply before building anything', subtype: 'Master Strategist' },
+          { text: 'I want to start building something tangible right away', subtype: 'Systemised Builder' }
+        ]
+      },
+      {
+        id: 'Q14',
+        text: "How do you prefer to make important business decisions?",
+        options: [
+          { text: 'I trust my gut feelings and intuitive insights', subtype: 'Visionary Oracle' },
+          { text: 'I analyze all the data and create systematic frameworks', subtype: 'Internal Analyzer' },
+          { text: 'I consider the strategic implications and long-term impact', subtype: 'Master Strategist' },
+          { text: 'I test small experiments and build based on what works', subtype: 'Systemised Builder' }
+        ]
+      },
+      {
+        id: 'Q15',
+        text: "What energizes you most about entrepreneurship?",
+        options: [
+          { text: 'Creating innovative solutions that didn\'t exist before', subtype: 'Visionary Oracle' },
+          { text: 'Building efficient systems that scale', subtype: 'Systemised Builder' },
+          { text: 'Solving complex strategic challenges', subtype: 'Master Strategist' },
+          { text: 'Understanding and optimizing how everything connects', subtype: 'Internal Analyzer' }
+        ]
+      },
+      {
+        id: 'Q16',
+        text: "When facing a major business challenge, you typically:",
+        options: [
+          { text: 'Step back and analyze the root causes systematically', subtype: 'Internal Analyzer' },
+          { text: 'Look for creative, unconventional solutions', subtype: 'Visionary Oracle' },
+          { text: 'Focus on the strategic repositioning needed', subtype: 'Master Strategist' },
+          { text: 'Build practical solutions piece by piece', subtype: 'Systemised Builder' }
+        ]
+      },
+      {
+        id: 'Q17',
+        text: "Your ideal business outcome would be:",
+        options: [
+          { text: 'A perfectly optimized system that runs smoothly', subtype: 'Systemised Builder' },
+          { text: 'A breakthrough innovation that transforms an industry', subtype: 'Visionary Oracle' },
+          { text: 'A strategically positioned company with clear competitive advantage', subtype: 'Master Strategist' },
+          { text: 'A business model that makes logical sense in every aspect', subtype: 'Internal Analyzer' }
+        ]
+      },
+      {
+        id: 'Q18',
+        text: "When working with others, you naturally:",
+        options: [
+          { text: 'Inspire them with possibilities and bigger vision', subtype: 'Visionary Oracle' },
+          { text: 'Help them understand the logical structure of what we\'re building', subtype: 'Internal Analyzer' },
+          { text: 'Guide them toward strategic clarity and focus', subtype: 'Master Strategist' },
+          { text: 'Show them practical steps and systems to follow', subtype: 'Systemised Builder' }
+        ]
+      }
+    ];
+  }
+
+  if (defaultDNA === 'Blurred' && pathChoice === 'Developed') {
+    return [
+      {
+        id: 'Q13',
+        text: "Looking at your business experience, what has been your strongest pattern?",
+        options: [
+          { text: 'Building and refining systems that deliver consistent results', subtype: 'Ultimate Strategist' },
+          { text: 'Creating breakthrough innovations and inspiring teams', subtype: 'Visionary Oracle' },
+          { text: 'Making strategic decisions that positioned us ahead of competition', subtype: 'Master Strategist' },
+          { text: 'Understanding complex business dynamics and optimizing them', subtype: 'Internal Analyzer' }
+        ]
+      },
+      {
+        id: 'Q14',
+        text: "When scaling your business, what feels most natural to you?",
+        options: [
+          { text: 'Designing processes and systems that others can follow', subtype: 'Systemised Builder' },
+          { text: 'Maintaining the vision while empowering others to execute', subtype: 'Visionary Oracle' },
+          { text: 'Strategic planning and positioning for sustainable growth', subtype: 'Master Strategist' },
+          { text: 'Analyzing performance data and optimizing every component', subtype: 'Internal Analyzer' }
+        ]
+      },
+      {
+        id: 'Q15',
+        text: "Your team relies on you most for:",
+        options: [
+          { text: 'Clear strategic direction and decision-making frameworks', subtype: 'Master Strategist' },
+          { text: 'Innovative thinking and breakthrough solutions', subtype: 'Visionary Oracle' },
+          { text: 'Systematic approaches and operational excellence', subtype: 'Ultimate Strategist' },
+          { text: 'Deep analysis and logical problem-solving', subtype: 'Internal Analyzer' }
+        ]
+      },
+      {
+        id: 'Q16',
+        text: "When you reflect on your business growth, you're most proud of:",
+        options: [
+          { text: 'The efficient systems and processes we\'ve built', subtype: 'Systemised Builder' },
+          { text: 'The innovative solutions we\'ve created', subtype: 'Visionary Oracle' },
+          { text: 'The strategic positioning we\'ve achieved', subtype: 'Master Strategist' },
+          { text: 'How well we understand and optimize our business model', subtype: 'Internal Analyzer' }
+        ]
+      },
+      {
+        id: 'Q17',
+        text: "In crisis situations, your natural response is to:",
+        options: [
+          { text: 'Analyze the situation thoroughly before taking action', subtype: 'Internal Analyzer' },
+          { text: 'Find creative solutions others haven\'t considered', subtype: 'Visionary Oracle' },
+          { text: 'Refocus on strategic priorities and adjust course', subtype: 'Master Strategist' },
+          { text: 'Implement systematic solutions to stabilize operations', subtype: 'Ultimate Strategist' }
+        ]
+      },
+      {
+        id: 'Q18',
+        text: "Your long-term vision for your business centers on:",
+        options: [
+          { text: 'Revolutionary impact and industry transformation', subtype: 'Visionary Oracle' },
+          { text: 'Sustainable competitive advantage through strategic positioning', subtype: 'Master Strategist' },
+          { text: 'Optimized operations that scale efficiently', subtype: 'Ultimate Strategist' },
+          { text: 'Deep understanding and mastery of our market dynamics', subtype: 'Internal Analyzer' }
+        ]
+      }
+    ];
+  }
+
   // Default fallback
   return [];
 };
