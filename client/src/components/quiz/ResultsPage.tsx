@@ -6,6 +6,7 @@ import { useLocation } from 'wouter';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { QuizState } from './QuizContainer';
+import { PROFILE_DESCRIPTIONS, DNA_LOOP_DESCRIPTIONS } from './ProfileData';
 
 interface Props {
   quizState: QuizState;
@@ -91,10 +92,13 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
     return 20;
   };
 
-  const getSubtypeIcon = (subtype: string) => {
-    if (subtype?.includes('Strategist') || subtype?.includes('Builder') || subtype?.includes('Analyzer')) return '🧠';
-    if (subtype?.includes('Oracle') || subtype?.includes('Perfectionist') || subtype?.includes('Empath') || subtype?.includes('Alchemist')) return '✨';
-    return '🔄';
+  const getProfileData = (subtype: string) => {
+    return PROFILE_DESCRIPTIONS[subtype as keyof typeof PROFILE_DESCRIPTIONS] || {
+      description: "Unique entrepreneurial profile",
+      icon: "🔄",
+      edge: [],
+      risks: []
+    };
   };
 
   const getEvolutionPath = (dnaType: string) => {
@@ -128,11 +132,21 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
                 {defaultDNA}
               </div>
             </div>
-            <p className="text-gray-600">
-              {defaultDNA === 'Architect' && 'You operate through logic, systems, and structured thinking.'}
-              {defaultDNA === 'Alchemist' && 'You operate through intuition, vision, and transformational energy.'}
-              {defaultDNA === 'Blurred' && 'You show characteristics of both types and may benefit from clarity work.'}
-            </p>
+            <div className="space-y-3">
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <p className="font-semibold text-gray-700 mb-2">
+                  Loop Format: {DNA_LOOP_DESCRIPTIONS[defaultDNA || 'Blurred'].format}
+                </p>
+                <p className="text-gray-600 text-sm">
+                  {DNA_LOOP_DESCRIPTIONS[defaultDNA || 'Blurred'].description}
+                </p>
+              </div>
+              <p className="text-gray-600">
+                {defaultDNA === 'Architect' && 'You lead with logic. Your actions are structured, paced, and intentionally sequenced. You prioritize clarity, frameworks, and long-range planning over emotional flux.'}
+                {defaultDNA === 'Alchemist' && 'You lead with emotion first. Your decisions come from a felt sense of alignment — not efficiency, pressure, or logic. You move in rhythm, guided by internal resonance.'}
+                {defaultDNA === 'Blurred' && 'Your core identity is still there — but it\'s fogged by overthinking, over-adapting, or emotional burnout. You need the 7-Day Identity Reset to find your true default.'}
+              </p>
+            </div>
           </CardContent>
         </Card>
 
@@ -158,24 +172,52 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
         </Card>
 
         {/* Subtype */}
-        <Card className="border-2 border-green-200">
-          <CardContent className="p-6">
-            <div className="flex items-center mb-4">
-              <span className="text-3xl mr-3">{getSubtypeIcon(subtype || '')}</span>
-              <div>
-                <h3 className="text-xl font-bold text-gray-800">Your Subtype</h3>
-                <p className="text-lg font-semibold text-green-600">{subtype}</p>
+        {subtype && (
+          <Card className="border-2 border-green-200">
+            <CardContent className="p-6">
+              <div className="flex items-center mb-4">
+                <span className="text-3xl mr-3">{getProfileData(subtype).icon}</span>
+                <div>
+                  <h3 className="text-xl font-bold text-gray-800">Your Subtype</h3>
+                  <p className="text-lg font-semibold text-green-600">{subtype}</p>
+                </div>
               </div>
-            </div>
-            <div className="mb-4">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-sm font-medium">Subtype Progress</span>
-                <span className="text-lg font-bold">{subtypeProgress}%</span>
+              
+              <div className="mb-6">
+                <p className="text-gray-700 italic mb-4">"{getProfileData(subtype).description}"</p>
+                <p className="text-gray-600">{getProfileData(subtype).longDescription}</p>
               </div>
-              <Progress value={subtypeProgress} className="w-full h-3" />
-            </div>
-          </CardContent>
-        </Card>
+
+              <div className="mb-4">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium">Subtype Progress</span>
+                  <span className="text-lg font-bold">{subtypeProgress}%</span>
+                </div>
+                <Progress value={subtypeProgress} className="w-full h-3" />
+              </div>
+
+              {/* Edge & Risks */}
+              <div className="grid md:grid-cols-2 gap-6 mt-6">
+                <div>
+                  <h4 className="font-semibold text-green-700 mb-2">Your Edge</h4>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    {getProfileData(subtype).edge.map((item, index) => (
+                      <li key={index}>• {item}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-red-700 mb-2">Risks & Blind Spots</h4>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    {getProfileData(subtype).risks.map((item, index) => (
+                      <li key={index}>• {item}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Evolution Path */}
         <Card className="border-2 border-yellow-200">
