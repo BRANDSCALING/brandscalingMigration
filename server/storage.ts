@@ -654,14 +654,18 @@ export class DatabaseStorage implements IStorage {
       await db.insert(quizResults).values({
         quizId: 1, // Entrepreneurial DNA Quiz ID
         userId,
-        result: result.defaultType,
-        scores: {
-          architect: result.scores?.architect || 0,
-          alchemist: result.scores?.alchemist || 0,
-          blurred: result.scores?.blurred || 0,
-          neutral: result.scores?.neutral || 0
+        answers: result.answers || {},
+        score: result.scores?.architect || 0,
+        results: {
+          defaultType: result.defaultType,
+          scores: {
+            architect: result.scores?.architect || 0,
+            alchemist: result.scores?.alchemist || 0,
+            blurred: result.scores?.blurred || 0,
+            neutral: result.scores?.neutral || 0
+          },
+          awarenessPercentage: result.awarenessPercentage || 85
         },
-        awarenessPercentage: result.awarenessPercentage || 85,
         createdAt: new Date()
       });
     } catch (error) {

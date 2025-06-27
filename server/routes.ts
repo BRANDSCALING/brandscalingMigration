@@ -953,6 +953,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         defaultType,
         subtype: '',
         awarenessPercentage: 85,
+        answers: answers,
         scores: {
           architect: architectCount,
           alchemist: alchemistCount,
