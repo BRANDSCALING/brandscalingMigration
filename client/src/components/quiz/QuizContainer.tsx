@@ -7,7 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 
 export type DNAType = 'Architect' | 'Alchemist' | 'Blurred' | 'Neutral';
-export type PathType = 'architect' | 'alchemist';
+export type PathType = 'Early' | 'Developed';
 export type SubtypeType = string;
 
 export interface QuizState {
@@ -16,6 +16,9 @@ export interface QuizState {
   dnaType?: DNAType;
   pathType?: PathType;
   subtype?: SubtypeType;
+  defaultDNA?: DNAType;
+  awarenessScore?: number;
+  subtypeProgress?: number;
 }
 
 interface Question {
