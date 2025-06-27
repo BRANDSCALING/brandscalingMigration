@@ -32,18 +32,9 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
           return;
         }
 
-        // Submit comprehensive quiz results
-        await apiRequest('POST', '/api/quiz/submit', {
-          quizId: 1,
-          answers: quizState.answers,
-          result: {
-            defaultDNA,
-            awarenessScore,
-            pathChoice: quizState.pathChoice,
-            subtype,
-            subtypeProgress
-          },
-          score: awarenessScore
+        // Submit comprehensive quiz results to correct endpoint
+        await apiRequest('POST', '/api/quiz/entrepreneurial-dna/submit', {
+          answers: quizState.answers
         });
 
         // Store result for immediate access

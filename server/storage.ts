@@ -652,6 +652,7 @@ export class DatabaseStorage implements IStorage {
   async saveQuizResult(userId: string, result: any): Promise<void> {
     try {
       await db.insert(quizResults).values({
+        quizId: 1, // Entrepreneurial DNA Quiz ID
         userId,
         result: result.defaultType,
         scores: {

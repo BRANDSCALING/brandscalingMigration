@@ -908,29 +908,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let blurredCount = 0;
       let neutralCount = 0;
 
-      // Count each answer type
+      // Count each answer type - direct mapping since we know the answer types
       Object.entries(answers).forEach(([questionId, answerChoice]) => {
-        console.log(`Processing Q${questionId}: ${answerChoice}`);
-        const question = ENTREPRENEURIAL_DNA_QUESTIONS.find(q => q.id === parseInt(questionId));
-        if (question && question.answers[answerChoice as keyof typeof question.answers]) {
-          const answerType = question.answers[answerChoice as keyof typeof question.answers].type;
-          console.log(`Q${questionId} type: ${answerType}`);
-          switch (answerType) {
-            case 'architect':
-              architectCount++;
-              break;
-            case 'alchemist':
-              alchemistCount++;
-              break;
-            case 'blurred':
-              blurredCount++;
-              break;
-            case 'neutral':
-              neutralCount++;
-              break;
-          }
-        } else {
-          console.log(`Question ${questionId} not found or invalid answer ${answerChoice}`);
+        console.log(`Processing ${questionId}: ${answerChoice}`);
+        
+        // Direct type mapping based on your authentic quiz logic
+        const answerType = answerChoice as string;
+        switch (answerType.toLowerCase()) {
+          case 'architect':
+            architectCount++;
+            break;
+          case 'alchemist':
+            alchemistCount++;
+            break;
+          case 'blurred':
+            blurredCount++;
+            break;
+          case 'neutral':
+            neutralCount++;
+            break;
+          default:
+            console.log(`Unknown answer type: ${answerType}`);
         }
       });
 
