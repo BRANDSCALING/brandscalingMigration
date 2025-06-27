@@ -51,16 +51,6 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
           description: "Your Entrepreneurial DNA analysis is complete.",
         });
 
-        // Auto-redirect after 5 seconds
-        setTimeout(() => {
-          const accessTier = localStorage.getItem('accessTier') || 'entry';
-          if (accessTier === 'entry') {
-            setLocation('/entry');
-          } else {
-            setLocation('/student');
-          }
-        }, 5000);
-
       } catch (error: any) {
         console.error('Quiz submission error:', error);
         toast({
@@ -259,17 +249,17 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
           </Card>
         )}
 
-        {/* Redirect Notice */}
-        <Card className="border-2 border-blue-200 bg-blue-50">
+        {/* Dashboard Access */}
+        <Card className="border-2 border-green-200 bg-green-50">
           <CardContent className="p-6 text-center">
-            <h3 className="text-lg font-semibold text-blue-800 mb-2">
-              Redirecting to Your Dashboard
+            <h3 className="text-lg font-semibold text-green-800 mb-2">
+              Ready to Continue Your Journey?
             </h3>
-            <p className="text-blue-700 mb-4">
-              You'll be automatically redirected to your personalized dashboard in 5 seconds.
+            <p className="text-green-700 mb-4">
+              Access your personalized dashboard to explore courses, tools, and resources tailored to your Entrepreneurial DNA.
             </p>
             <Button 
-              className="bg-blue-600 hover:bg-blue-700 text-white"
+              className="bg-green-600 hover:bg-green-700 text-white"
               onClick={() => {
                 const accessTier = localStorage.getItem('accessTier') || 'entry';
                 if (accessTier === 'entry') {
@@ -279,7 +269,7 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
                 }
               }}
             >
-              Access Dashboard Now
+              Go to My Dashboard
             </Button>
           </CardContent>
         </Card>
