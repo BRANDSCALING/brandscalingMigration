@@ -122,6 +122,7 @@ The Brandscaling Platform is a full-stack AI-powered business operating system t
 
 ```
 Changelog:
+- June 27, 2025. ENTRY TIER LINK UPDATED: Connected Entry tier "Get Started" button to Launch Kit landing page (https://launch-kit-uk-blueprint.lovable.app/) for direct purchase flow integration.
 - June 26, 2025. ENHANCED AUTHENTICATION FLOW: Implemented seamless login-to-quiz-to-dashboard flow. After login/signup, users are redirected directly to Entrepreneurial DNA Quiz. After completing quiz, users are automatically redirected to appropriate dashboard based on their access tier (Entry tier → /entry, other students → /student, admins → /admin). Added 5-second delay on quiz results with automatic redirect and manual dashboard access button.
 - June 26, 2025. SIGNOUT FUNCTIONALITY ADDED: Added sign out buttons to both Student Dashboard and Entry Dashboard. Users can now properly log out from their respective dashboards with clean localStorage clearing and homepage redirect.
 - June 26, 2025. ENTRY TIER ACCESS SYSTEM COMPLETE: Added "pricing" ID to pricing section for direct navigation. Created Entry tier course access system with 4 specific courses (Idea-to-Launch Kit™, Smart Business Builder™, AI Mentor Access, 30-Day Launch Plan). Built dedicated Entry Dashboard with read-only course access at /entry route. Updated authentication flow so logged-in users clicking login icon redirect to appropriate dashboard based on tier (Entry tier → /entry, other students → /student, admins → /admin).

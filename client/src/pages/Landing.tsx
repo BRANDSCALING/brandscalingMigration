@@ -268,7 +268,7 @@ export default function Landing() {
                 
                 <Button 
                   className="w-full bg-strategic-black text-white hover:bg-gray-800"
-                  onClick={() => window.open('https://your-ghl-entry-landing.com', '_blank')}
+                  onClick={() => window.open('https://launch-kit-uk-blueprint.lovable.app/', '_blank')}
                 >
                   Get Started
                 </Button>
