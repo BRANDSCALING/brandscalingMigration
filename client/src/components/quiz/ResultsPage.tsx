@@ -76,9 +76,15 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
   const getProfileData = (subtype: string) => {
     return PROFILE_DESCRIPTIONS[subtype as keyof typeof PROFILE_DESCRIPTIONS] || {
       description: "Unique entrepreneurial profile",
-      icon: "🔄",
+      icon: "",
       edge: [],
-      risks: []
+      risks: [],
+      longDescription: "",
+      complement: "",
+      milestoneTracker: {},
+      growthMission: { title: "", text: "" },
+      complementaryOpposite: { name: "", whereYouStruggle: {}, whereTheyStruggle: {} },
+      whatYouNeedNext: []
     };
   };
 
@@ -152,52 +158,247 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
           </CardContent>
         </Card>
 
-        {/* Subtype */}
+        {/* Section 4: Subtype */}
         {subtype && (
           <Card className="border-2 border-green-200">
             <CardContent className="p-6">
-              <div className="flex items-center mb-4">
-                <span className="text-3xl mr-3">{getProfileData(subtype).icon}</span>
-                <div>
-                  <h3 className="text-xl font-bold text-gray-800">Your Subtype</h3>
-                  <p className="text-lg font-semibold text-green-600">{subtype}</p>
-                </div>
-              </div>
+              <h3 className="text-xl font-bold text-gray-800 mb-4">[4] Your Subtype: {subtype}</h3>
               
               <div className="mb-6">
+                <h4 className="font-semibold mb-2">Snapshot Line:</h4>
                 <p className="text-gray-700 italic mb-4">"{getProfileData(subtype).description}"</p>
-                <p className="text-gray-600">{getProfileData(subtype).longDescription}</p>
               </div>
 
-              <div className="mb-4">
+              <div className="mb-6">
+                <h4 className="font-semibold mb-2">Subtype Mastery:</h4>
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-medium">Subtype Progress</span>
-                  <span className="text-lg font-bold">{subtypeProgress}%</span>
+                  <span className="text-sm">Based on Q1-Q22 + behavioral indicators</span>
+                  <span className="text-lg font-bold">{subtypeProgress || 30}%</span>
                 </div>
-                <Progress value={subtypeProgress} className="w-full h-3" />
+                <Progress value={subtypeProgress || 30} className="w-full h-3" />
               </div>
 
-              {/* Edge & Risks */}
-              <div className="grid md:grid-cols-2 gap-6 mt-6">
-                <div>
-                  <h4 className="font-semibold text-green-700 mb-2">Your Edge</h4>
-                  <ul className="text-sm text-gray-600 space-y-1">
-                    {getProfileData(subtype).edge.map((item, index) => (
-                      <li key={index}>• {item}</li>
-                    ))}
-                  </ul>
+              {/* Ultimate Subtype Unlock */}
+              <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded">
+                <h4 className="font-semibold mb-2">Ultimate Subtype Unlock:</h4>
+                <p className="text-sm text-gray-700">Available after LMS course completion + milestone behaviors</p>
+              </div>
+
+              {/* Subtype Snapshot */}
+              <div className="mb-6">
+                <h4 className="font-semibold mb-3">Subtype Snapshot:</h4>
+                <div className="space-y-2 text-sm">
+                  <p>• You operate in surges of insight and inspiration</p>
+                  <p>• You lead with fast-vision and non-verbal clarity</p>
+                  <p>• You move when energy strikes — not when the calendar says to</p>
+                  <p>• You complete only if the final version "feels" like the vision</p>
                 </div>
-                <div>
-                  <h4 className="font-semibold text-red-700 mb-2">Risks & Blind Spots</h4>
-                  <ul className="text-sm text-gray-600 space-y-1">
-                    {getProfileData(subtype).risks.map((item, index) => (
-                      <li key={index}>• {item}</li>
-                    ))}
-                  </ul>
-                </div>
+              </div>
+
+              {/* Core Identity Paragraph */}
+              <div className="mb-6">
+                <h4 className="font-semibold mb-3">Core Identity Paragraph:</h4>
+                <p className="text-gray-700 text-sm leading-relaxed">{getProfileData(subtype).longDescription}</p>
               </div>
             </CardContent>
           </Card>
+        )}
+
+        {/* Section 5: Opposite Mode Awareness */}
+        <Card className="border-2 border-purple-200">
+          <CardContent className="p-6">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">[5] Opposite Mode Awareness</h3>
+            
+            <div className="mb-4">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm font-medium">Opposite Mode Awareness:</span>
+                <span className="text-lg font-bold">50%</span>
+              </div>
+              <Progress value={50} className="w-full h-3" />
+            </div>
+
+            <p className="text-gray-700 text-sm mb-4">
+              You're starting to appreciate the power of structured execution — even if you resist it. 
+              You admire clarity, consistency, and follow-through in others, but you're learning that 
+              imitation drains you. Integration doesn't mean copying — it means building structures 
+              that protect your vision. As your awareness of the Architect style deepens, so does your 
+              ability to manifest your ideas at scale. You're not meant to become an Architect — 
+              you're meant to hire or partner with one.
+            </p>
+          </Card>
+        )}
+
+        {/* Section 6: Your Edge */}
+        <Card className="border-2 border-green-200">
+          <CardContent className="p-6">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">[6] Your Edge</h3>
+            <ul className="space-y-2 text-sm text-gray-700">
+              {getProfileData(subtype).edge.map((item, index) => (
+                <li key={index}>• {item}</li>
+              ))}
+            </ul>
+          </CardContent>
+        )}
+
+        {/* Section 7: Risks & Blind Spots */}
+        <Card className="border-2 border-red-200">
+          <CardContent className="p-6">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">[7] Risks & Blind Spots</h3>
+            <ul className="space-y-2 text-sm text-gray-700">
+              {getProfileData(subtype).risks.map((item, index) => (
+                <li key={index}>• {item}</li>
+              ))}
+            </ul>
+            
+            <div className="mt-6 p-4 bg-gray-50 border border-gray-200 rounded">
+              <h4 className="font-semibold mb-2">Mini Reflection:</h4>
+              <p className="text-sm text-gray-700">You're not scattered — you're nonlinear.</p>
+              <p className="text-sm text-gray-700">You're not inconsistent — you're resonance-led.</p>
+            </div>
+          </CardContent>
+        )}
+
+        {/* Section 8: What You Need Next */}
+        <Card className="border-2 border-blue-200">
+          <CardContent className="p-6">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">[8] What You Need Next</h3>
+            <ul className="space-y-2 text-sm text-gray-700">
+              <li>• Build scaffolding for your vision, not walls</li>
+              <li>• Create MVPs that reflect essence, not polish</li>
+              <li>• Protect idea surges with buffer zones and rest</li>
+              <li>• Co-create with those who can simplify your sparks</li>
+              <li>• Build backward from resonance, not just roadmap</li>
+            </ul>
+          </CardContent>
+        )}
+
+        {/* Section 9: CTA: Your Growth Mission */}
+        <Card className="border-2 border-yellow-200">
+          <CardContent className="p-6">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">[9] CTA: Your Growth Mission</h3>
+            <h4 className="font-semibold mb-2">Title: "Build the Future Without Burning Out"</h4>
+            
+            <div className="mb-4">
+              <h5 className="font-medium mb-2">Mission Text:</h5>
+              <p className="text-gray-700 text-sm">Your ideas don't need containment — they need intelligent containers.</p>
+              <p className="text-gray-700 text-sm">Build systems that hold your frequency without dimming it.</p>
+              <p className="text-gray-700 text-sm">You're not meant to scale by grinding — you're meant to expand through alignment.</p>
+              <p className="text-gray-700 text-sm font-semibold">Let's build it your way — for real this time.</p>
+            </div>
+          </CardContent>
+        )}
+
+        {/* Section 10: Best Complementary Opposite Subtype */}
+        <Card className="border-2 border-indigo-200">
+          <CardContent className="p-6">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">[10] Best Complementary Opposite Subtype</h3>
+            <h4 className="font-semibold mb-4">Best Support: The Systemised Builder</h4>
+            
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <h5 className="font-medium mb-2">Where You Struggle | They Lead With</h5>
+                <div className="space-y-2 text-sm">
+                  <div className="border-b pb-1">
+                    <span className="text-gray-600">Emotional burnout</span>
+                    <span className="text-gray-800 ml-2">| Steady, predictable execution</span>
+                  </div>
+                  <div className="border-b pb-1">
+                    <span className="text-gray-600">Over-ideation</span>
+                    <span className="text-gray-800 ml-2">| MVP delivery and sequencing</span>
+                  </div>
+                  <div className="border-b pb-1">
+                    <span className="text-gray-600">Missed timing</span>
+                    <span className="text-gray-800 ml-2">| Operational discipline</span>
+                  </div>
+                  <div className="border-b pb-1">
+                    <span className="text-gray-600">Perfection paralysis</span>
+                    <span className="text-gray-800 ml-2">| Ship-before-perfect logic</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <h5 className="font-medium mb-2">Where They Struggle | You Lead With</h5>
+                <div className="space-y-2 text-sm">
+                  <div className="border-b pb-1">
+                    <span className="text-gray-600">Over-structuring</span>
+                    <span className="text-gray-800 ml-2">| Energetic innovation and iteration</span>
+                  </div>
+                  <div className="border-b pb-1">
+                    <span className="text-gray-600">Emotional disconnect</span>
+                    <span className="text-gray-800 ml-2">| Resonance and creative magnetism</span>
+                  </div>
+                  <div className="border-b pb-1">
+                    <span className="text-gray-600">Routine burnout</span>
+                    <span className="text-gray-800 ml-2">| Passion, empathy, and vision</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="mt-4 p-3 bg-indigo-50 border border-indigo-200 rounded">
+              <p className="text-sm font-semibold">Closing Line:</p>
+              <p className="text-sm text-gray-700">Together? You build what sparks "want" scales.</p>
+            </div>
+          </CardContent>
+        )}
+
+        {/* Section 11: Final Empowerment Remark */}
+        <Card className="border-2 border-green-300">
+          <CardContent className="p-6">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">[11] Final Empowerment Remark</h3>
+            
+            <div className="space-y-4">
+              <p className="text-gray-700">You don't need to be both.</p>
+              <p className="text-gray-700">You need to become the ultimate version of your DNA type — and that's exactly what you're doing.</p>
+              <p className="text-gray-700 font-semibold">You are The Visionary Oracle.</p>
+              <p className="text-gray-700">Now go finish building what only you could begin.</p>
+            </div>
+          </CardContent>
+        )}
+
+        {/* Section 12: Milestone Tracker */}
+        <Card className="border-2 border-teal-200">
+          <CardContent className="p-6">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">[12] Milestone Tracker</h3>
+            
+            <div className="space-y-3">
+              <div className="flex justify-between items-center p-2 border-b">
+                <span className="text-sm font-medium">Milestone</span>
+                <span className="text-sm font-medium">Status</span>
+              </div>
+              
+              <div className="flex justify-between items-center p-2">
+                <span className="text-sm">Finishing without burnout</span>
+                <span className="text-green-600 text-sm">✓ Complete</span>
+              </div>
+              
+              <div className="flex justify-between items-center p-2">
+                <span className="text-sm">Energy-first project planning</span>
+                <span className="text-green-600 text-sm">✓ Complete</span>
+              </div>
+              
+              <div className="flex justify-between items-center p-2">
+                <span className="text-sm">Aligned systems that mirror your rhythm</span>
+                <span className="text-green-600 text-sm">✓ Complete</span>
+              </div>
+              
+              <div className="flex justify-between items-center p-2">
+                <span className="text-sm">Delegation without disruption</span>
+                <span className="text-yellow-600 text-sm">↻ In Progress</span>
+              </div>
+              
+              <div className="flex justify-between items-center p-2">
+                <span className="text-sm">Rhythmic recovery integration</span>
+                <span className="text-yellow-600 text-sm">↻ In Progress</span>
+              </div>
+              
+              <div className="flex justify-between items-center p-2">
+                <span className="text-sm">Protecting vision through collaboration</span>
+                <span className="text-yellow-600 text-sm">↻ In Progress</span>
+              </div>
+            </div>
+          </CardContent>
         )}
 
         {/* Evolution Path */}

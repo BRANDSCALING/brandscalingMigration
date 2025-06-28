@@ -6,7 +6,7 @@ export const PROFILE_DESCRIPTIONS = {
     edge: ["Strategic foresight", "Calm decision-making under pressure", "Systemic clarity and scalable frameworks", "Pattern recognition that simplifies chaos"],
     risks: ["Avoidance of emotional confrontation", "Delayed action due to overplanning", "Isolation from team or creative partners"],
     complement: "Visionary Oracle",
-    icon: "🎯"
+    icon: ""
   },
   'Systemised Builder': {
     description: "You don't chase momentum — you build it, brick by brick.",
@@ -14,7 +14,7 @@ export const PROFILE_DESCRIPTIONS = {
     edge: ["Consistent follow-through", "Execution without burnout", "Clarity in chaos", "High-quality delivery"],
     risks: ["Over-control of process", "Bottlenecking due to solo task-loading", "Resistance to flow-based collaboration"],
     complement: "Magnetic Perfectionist",
-    icon: "🔧"
+    icon: ""
   },
   'Internal Analyzer': {
     description: "You don't just want to get it right — you need to know why it's right.",
@@ -22,7 +22,7 @@ export const PROFILE_DESCRIPTIONS = {
     edge: ["Unparalleled depth, logic, foresight", "Operational excellence", "Design precision", "Intellectual rigour"],
     risks: ["Taking too long to move", "Over-perfecting when something needs shipping", "Isolation when overwhelmed"],
     complement: "Magnetic Perfectionist",
-    icon: "🧩"
+    icon: ""
   },
   'Ultimate Architect': {
     description: "You don't move often — but when you do, everything moves with you.",
@@ -30,17 +30,50 @@ export const PROFILE_DESCRIPTIONS = {
     edge: ["High-speed pattern recognition", "Strategic MVP execution", "Frameworks that scale under pressure", "Calm clarity in complex spaces"],
     risks: ["May overcalculate and miss fast windows", "May under-communicate due to assumed clarity", "May resist collaborative chaos"],
     complement: "Ultimate Alchemist",
-    icon: "🏗️"
+    icon: ""
   },
 
   // Alchemist Subtypes
   'Visionary Oracle': {
     description: "You don't build what exists — you channel what's never been seen.",
     longDescription: "The Visionary Oracle doesn't follow trends — they download them from the future. Your ideas come fast, fully formed, and breathtaking — but building them often feels like working backwards.",
-    edge: ["Wildly original visions", "Rapid-fire downloads", "Intuitive understanding of future needs", "Creative magnetism"],
-    risks: ["Stalling after idea surge fades", "Overwhelm from trying to build alone", "Perfection paralysis"],
+    edge: ["Wildly original visions no one else can see", "Rapid-fire downloads that spark entirely new systems", "Intuitive understanding of future customer needs", "Emotional resonance that makes ideas feel alive", "Creative magnetism that attracts collaborators"],
+    risks: ["Stalling after the idea surge fades", "Overwhelm from trying to build alone", "Emotional burnout from systems that feel restrictive", "Perfection paralysis if the execution doesn't match the vision", "Withdrawing when misunderstood or rushed"],
     complement: "Systemised Builder",
-    icon: "🔮"
+    icon: "",
+    milestoneTracker: {
+      "Finishing without burnout": "complete",
+      "Energy-first project planning": "complete", 
+      "Aligned systems that mirror your rhythm": "complete",
+      "Delegation without disruption": "in-progress",
+      "Rhythmic recovery integration": "in-progress",
+      "Protecting vision through collaboration": "in-progress"
+    },
+    growthMission: {
+      title: "Build the Future Without Burning Out",
+      text: "Your ideas don't need containment — they need intelligent containers. Build systems that hold your frequency without dimming it. You're not meant to scale by grinding — you're meant to expand through alignment. Let's build it your way — for real this time."
+    },
+    complementaryOpposite: {
+      name: "The Systemised Builder",
+      whereYouStruggle: {
+        "Emotional burnout": "Steady, predictable execution",
+        "Over-ideation": "MVP delivery and sequencing", 
+        "Missed timing": "Operational discipline",
+        "Perfection paralysis": "Ship-before-perfect logic"
+      },
+      whereTheyStruggle: {
+        "Over-structuring": "Energetic innovation and iteration",
+        "Emotional disconnect": "Resonance and creative magnetism", 
+        "Routine burnout": "Passion, empathy, and vision"
+      }
+    },
+    whatYouNeedNext: [
+      "Build scaffolding for your vision, not walls",
+      "Create MVPs that reflect essence, not polish",
+      "Protect idea surges with buffer zones and rest",
+      "Co-create with those who can simplify your sparks",
+      "Build backward from resonance, not just roadmap"
+    ]
   },
   'Magnetic Perfectionist': {
     description: "You don't polish to impress — you refine until it feels right.",
@@ -48,7 +81,7 @@ export const PROFILE_DESCRIPTIONS = {
     edge: ["Emotional refinement", "Polished delivery that feels felt", "Natural taste for alignment", "Creative authority"],
     risks: ["Stalling when something isn't aligned", "Over-tweaking past usefulness", "Hiding behind the work"],
     complement: "Internal Analyzer",
-    icon: "✨"
+    icon: ""
   },
   'Energetic Empath': {
     description: "You don't push to progress — you feel your way forward.",
@@ -56,7 +89,7 @@ export const PROFILE_DESCRIPTIONS = {
     edge: ["Deep intuitive intelligence", "Natural energetic alignment", "Sensitive creation that resonates", "Vision that speaks to undercurrent"],
     risks: ["Taking on others' emotional weight", "Stopping when overwhelmed", "Avoiding structure", "Losing clarity in noisy environments"],
     complement: "Systemised Builder",
-    icon: "💫"
+    icon: ""
   },
   'Ultimate Alchemist': {
     description: "You don't just follow energy — you master it, systemise it, and scale it.",
@@ -64,7 +97,7 @@ export const PROFILE_DESCRIPTIONS = {
     edge: ["Energy + logic harmony", "Emotional attunement and structural control", "Ability to lead intuitive teams", "Deep internal rhythm with flexible structure"],
     risks: ["Returning to burnout loops when pressured", "Defaulting into helper mode", "Holding emotional weight for others"],
     complement: "Ultimate Architect",
-    icon: "⚡"
+    icon: ""
   },
 
   // Blurred Identity Subtypes
@@ -74,7 +107,7 @@ export const PROFILE_DESCRIPTIONS = {
     edge: ["High analytical capacity", "Pattern recognition", "Adaptability"],
     risks: ["Loop switching leads to burnout", "Identity erosion", "Delayed action causes misalignment"],
     complement: "Reset Journey",
-    icon: "🌀"
+    icon: ""
   },
   'Performer': {
     description: "You don't feel clear — because you've been too busy playing a role to hear yourself.",
@@ -82,7 +115,7 @@ export const PROFILE_DESCRIPTIONS = {
     edge: ["Adaptability", "Social intelligence", "Performance capability"],
     risks: ["Validation addiction", "Emotional manipulation patterns", "Burnout from inauthentic energy"],
     complement: "Reset Journey",
-    icon: "🎭"
+    icon: ""
   },
   'Self-Forsaker': {
     description: "You don't feel clear — because you've been trained to override your truth.",
@@ -90,7 +123,7 @@ export const PROFILE_DESCRIPTIONS = {
     edge: ["Mastered logical thinking", "Structure and systems", "High achievement capability"],
     risks: ["Emotional numbness", "Identity disconnection", "Loss of trust in emotional compass"],
     complement: "Reset Journey",
-    icon: "🚫"
+    icon: ""
   },
   'Self-Betrayer': {
     description: "You don't feel clear — because you've been trained to distrust your clarity.",
@@ -98,7 +131,7 @@ export const PROFILE_DESCRIPTIONS = {
     edge: ["Emotional attunement", "Expressive capability", "Reactive intelligence"],
     risks: ["Emotional over-attachment", "Avoidance of structure", "Identity instability", "Constant need for validation"],
     complement: "Reset Journey",
-    icon: "💔"
+    icon: ""
   }
 };
 
