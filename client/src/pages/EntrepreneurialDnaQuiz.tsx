@@ -78,15 +78,15 @@ export default function EntrepreneurialDnaQuiz() {
   const handleNext = () => {
     // Check if we need to show analysis screens after specific question blocks
     if (currentQuestionIndex === 5) { // After Q6 - Default DNA Detection
-      setAnalysisType('default');
-      setShowAnalysis(true);
-      return;
-    } else if (currentQuestionIndex === 11) { // After Q12 - Awareness Block
       setAnalysisType('awareness');
       setShowAnalysis(true);
       return;
-    } else if (currentQuestionIndex === 17) { // After Q18 - Subtype Block
+    } else if (currentQuestionIndex === 11) { // After Q12 - Awareness Block
       setAnalysisType('subtype');
+      setShowAnalysis(true);
+      return;
+    } else if (currentQuestionIndex === 17) { // After Q18 - Subtype Block
+      setAnalysisType('validation');
       setShowAnalysis(true);
       return;
     }
@@ -141,62 +141,15 @@ export default function EntrepreneurialDnaQuiz() {
     setCurrentQuestionIndex(prev => prev + 1);
   };
 
-  const getAnalysisContent = () => {
-    switch (analysisType) {
-      case 'default':
-        return {
-          title: "Analysing Default DNA",
-          description: "Processing your core entrepreneurial patterns...",
-          icon: "🧬"
-        };
-      case 'awareness':
-        return {
-          title: "Analysing Awareness of the Opposite",
-          description: "Evaluating your understanding of alternative approaches...",
-          icon: "🔄"
-        };
-      case 'subtype':
-        return {
-          title: "Analysing Subtype",
-          description: "Determining your specific entrepreneurial subtype...",
-          icon: "🎯"
-        };
-      default:
-        return {
-          title: "Processing",
-          description: "Analysing your responses...",
-          icon: "⚡"
-        };
-    }
-  };
+
 
   // Show analysis screen
   if (showAnalysis) {
-    const analysisContent = getAnalysisContent();
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 flex items-center justify-center p-6">
-        <Card className="w-full max-w-2xl">
-          <CardContent className="pt-12 pb-8">
-            <div className="text-center space-y-6">
-              <div className="text-6xl mb-4">{analysisContent.icon}</div>
-              <h2 className="text-3xl font-bold text-gray-800">{analysisContent.title}</h2>
-              <p className="text-lg text-gray-600">{analysisContent.description}</p>
-              <div className="flex justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
-              </div>
-              <div className="pt-8">
-                <Button 
-                  onClick={handleAnalysisContinue}
-                  size="lg"
-                  className="px-8 py-3"
-                >
-                  Continue
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <AnalysisBlock 
+        stage={analysisType}
+        onContinue={handleAnalysisContinue}
+      />
     );
   }
 
