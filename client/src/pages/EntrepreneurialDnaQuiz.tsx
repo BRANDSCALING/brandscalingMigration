@@ -20,7 +20,7 @@ export default function EntrepreneurialDnaQuiz() {
   const [showAnalysis, setShowAnalysis] = useState(false);
   const [analysisType, setAnalysisType] = useState<'awareness' | 'subtype' | 'validation'>('awareness');
   const [defaultDnaType, setDefaultDnaType] = useState<'architect' | 'alchemist' | 'blurred' | null>(null);
-  const [dynamicQuestions, setDynamicQuestions] = useState(ENTREPRENEURIAL_DNA_QUESTIONS);
+  const [questions] = useState(ENTREPRENEURIAL_DNA_QUESTIONS.slice(0, 22)); // Use only Q1-Q22
   const [quizState, setQuizState] = useState<QuizState>({
     currentStage: 'results',
     answers: {},
@@ -84,7 +84,7 @@ export default function EntrepreneurialDnaQuiz() {
 
     for (let i = 1; i <= 6; i++) {
       const answer = answersQ1ToQ6[i];
-      const question = dynamicQuestions.find(q => q.id === i);
+      const question = questions.find(q => q.id === i);
       if (question && answer) {
         const answerData = question.answers[answer as keyof typeof question.answers];
         if (answerData.type === 'architect') {
@@ -102,46 +102,26 @@ export default function EntrepreneurialDnaQuiz() {
   };
 
   const handleNext = () => {
-    // After Q6 - Calculate DEFAULT DNA and generate dynamic subtype questions
-    if (currentQuestionIndex === 5) {
-      const defaultType = calculateDefaultDnaType(answers);
-      setDefaultDnaType(defaultType);
-      
-      // Generate dynamic subtype questions based on DEFAULT DNA type
-      const subtypeQuestions = getDynamicSubtypeQuestions(defaultType);
-      const baseQuestions = ENTREPRENEURIAL_DNA_QUESTIONS.slice(0, 6); // Q1-Q6
-      const awarenessQuestions = ENTREPRENEURIAL_DNA_QUESTIONS.slice(8, 12); // Q9-Q12 (awareness)
-      const pathChoiceQuestions = ENTREPRENEURIAL_DNA_QUESTIONS.slice(12, 18); // Q13-Q18 (path choice)
-      const validationQuestions = ENTREPRENEURIAL_DNA_QUESTIONS.slice(18, 22); // Q19-Q22 (validation)
-      
-      // Combine: Q1-Q6 + Dynamic Subtype Q7-Q14 + Awareness Q15-Q18 + Path Choice Q19-Q24 + Validation Q25-Q28
-      const newQuestionSet = [
-        ...baseQuestions,
-        ...subtypeQuestions, // Q7-Q14 (8 dynamic questions)
-        ...awarenessQuestions, // Q15-Q18
-        ...pathChoiceQuestions, // Q19-Q24
-        ...validationQuestions // Q25-Q28
-      ];
-      
-      setDynamicQuestions(newQuestionSet);
+    // Show analysis blocks at specific intervals
+    if (currentQuestionIndex === 5) { // After Q6
       setAnalysisType('awareness');
       setShowAnalysis(true);
       return;
-    } else if (currentQuestionIndex === 13) { // After Q14 (subtype detection complete)
+    } else if (currentQuestionIndex === 11) { // After Q12
       setAnalysisType('subtype');
       setShowAnalysis(true);
       return;
-    } else if (currentQuestionIndex === 17) { // After Q18 (awareness complete)
+    } else if (currentQuestionIndex === 17) { // After Q18
       setAnalysisType('validation');
       setShowAnalysis(true);
       return;
     }
 
-    if (currentQuestionIndex < dynamicQuestions.length - 1) {
+    if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(prev => prev + 1);
     } else {
-      // All questions completed, calculate results
-      calculateResults();
+      // All 22 questions completed, calculate results
+      submitQuiz();
     }
   };
 
@@ -238,8 +218,8 @@ export default function EntrepreneurialDnaQuiz() {
   }
 
   // Get current question
-  const currentQuestion = dynamicQuestions[currentQuestionIndex];
-  const progress = ((currentQuestionIndex + 1) / dynamicQuestions.length) * 100;
+  const currentQuestion = questions[currentQuestionIndex];
+  const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
   const currentAnswer = answers[currentQuestion.id];
 
   return (
@@ -258,7 +238,7 @@ export default function EntrepreneurialDnaQuiz() {
             {/* Progress */}
             <div className="mb-4">
               <div className="flex justify-between text-sm text-gray-600 mb-2">
-                <span>Question {currentQuestionIndex + 1} of {ENTREPRENEURIAL_DNA_QUESTIONS.length}</span>
+                <span>Question {currentQuestionIndex + 1} of {questions.length}</span>
                 <span>{Math.round(progress)}% Complete</span>
               </div>
               <Progress value={progress} className="h-2" />
