@@ -171,13 +171,13 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
   // BLOCK 3: Q13-Q18 Path Choice Questions - Your Authentic Questions
   {
     id: 13,
-    text: "When you envision your ideal business environment, what feels most authentic to you?",
+    text: "When you feel most 'in your element' as an entrepreneur, what's usually happening?",
     category: 'subtype',
     answers: {
-      A: { text: "A structured operation with clear systems and predictable outcomes", type: 'architect', weight: 1 },
-      B: { text: "A dynamic environment where innovation and inspiration drive daily decisions", type: 'alchemist', weight: 1 },
-      C: { text: "A balanced approach that adapts based on what the situation requires", type: 'neutral', weight: 1 },
-      D: { text: "I'm not sure - I see value in different approaches depending on circumstances", type: 'blurred', weight: 1 }
+      A: { text: "I'm building systems that work predictably and efficiently", type: 'architect', weight: 1 },
+      B: { text: "I'm following my instincts and everything flows naturally", type: 'alchemist', weight: 1 },
+      C: { text: "I'm adapting fluidly between different approaches as needed", type: 'neutral', weight: 1 },
+      D: { text: "I'm not sure - I feel pulled between different ways of working", type: 'blurred', weight: 1 }
     }
   },
   {
@@ -282,6 +282,13 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
     }
   }
 ];
+
+// DNA Loop Descriptions for Results Page
+export const DNA_LOOP_DESCRIPTIONS = {
+  'Architect': "Your DNA loop operates through systematic analysis → strategic planning → structured execution → measurable results. You thrive on creating frameworks that others can follow and building sustainable systems.",
+  'Alchemist': "Your DNA loop flows through intuitive sensing → creative visioning → adaptive action → meaningful transformation. You excel at reading energy, following instincts, and creating authentic change.",
+  'Blurred Identity': "Your DNA loop shifts between analytical and intuitive approaches without clear consistency. This creates internal conflict but also potential for balanced perspective once you choose your primary operating system."
+};
 
 // DNA Subtypes - Using exact user specifications from attached documents
 export const DNA_SUBTYPES: Record<string, DNASubtype> = {
