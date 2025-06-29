@@ -5,7 +5,7 @@ import { apiRequest } from '@/lib/queryClient';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { ENTREPRENEURIAL_DNA_QUESTIONS } from '@/../../shared/entrepreneurialDnaData';
+import { ENTREPRENEURIAL_DNA_QUESTIONS, getDynamicSubtypeQuestions } from '@/../../shared/entrepreneurialDnaData';
 import ResultsPage from '@/components/quiz/ResultsPage';
 import AnalysisBlock from '@/components/quiz/AnalysisBlock';
 import { DNAType, QuizState } from '@/components/quiz/QuizContainer';
@@ -19,6 +19,8 @@ export default function EntrepreneurialDnaQuiz() {
   const [showResults, setShowResults] = useState(false);
   const [showAnalysis, setShowAnalysis] = useState(false);
   const [analysisType, setAnalysisType] = useState<'awareness' | 'subtype' | 'validation'>('awareness');
+  const [defaultDnaType, setDefaultDnaType] = useState<'architect' | 'alchemist' | 'blurred' | null>(null);
+  const [dynamicQuestions, setDynamicQuestions] = useState(ENTREPRENEURIAL_DNA_QUESTIONS);
   const [quizState, setQuizState] = useState<QuizState>({
     currentStage: 'results',
     answers: {},
@@ -75,23 +77,67 @@ export default function EntrepreneurialDnaQuiz() {
     }));
   };
 
+  // Calculate DEFAULT DNA type from Q1-Q6 answers
+  const calculateDefaultDnaType = (answersQ1ToQ6: Record<number, string>): 'architect' | 'alchemist' | 'blurred' => {
+    let architectScore = 0;
+    let alchemistScore = 0;
+
+    for (let i = 1; i <= 6; i++) {
+      const answer = answersQ1ToQ6[i];
+      const question = dynamicQuestions.find(q => q.id === i);
+      if (question && answer) {
+        const answerData = question.answers[answer as keyof typeof question.answers];
+        if (answerData.type === 'architect') {
+          architectScore++;
+        } else if (answerData.type === 'alchemist') {
+          alchemistScore++;
+        }
+      }
+    }
+
+    // Apply exact scoring rule: 4+ = clear type, <4 either = Blurred Identity
+    if (architectScore >= 4) return 'architect';
+    if (alchemistScore >= 4) return 'alchemist';
+    return 'blurred';
+  };
+
   const handleNext = () => {
-    // Check if we need to show analysis screens after specific question blocks
-    if (currentQuestionIndex === 5) { // After Q6 - Default DNA Detection
+    // After Q6 - Calculate DEFAULT DNA and generate dynamic subtype questions
+    if (currentQuestionIndex === 5) {
+      const defaultType = calculateDefaultDnaType(answers);
+      setDefaultDnaType(defaultType);
+      
+      // Generate dynamic subtype questions based on DEFAULT DNA type
+      const subtypeQuestions = getDynamicSubtypeQuestions(defaultType);
+      const baseQuestions = ENTREPRENEURIAL_DNA_QUESTIONS.slice(0, 6); // Q1-Q6
+      const awarenessQuestions = ENTREPRENEURIAL_DNA_QUESTIONS.slice(8, 12); // Q9-Q12 (awareness)
+      const pathChoiceQuestions = ENTREPRENEURIAL_DNA_QUESTIONS.slice(12, 18); // Q13-Q18 (path choice)
+      const validationQuestions = ENTREPRENEURIAL_DNA_QUESTIONS.slice(18, 22); // Q19-Q22 (validation)
+      
+      // Combine: Q1-Q6 + Dynamic Subtype Q7-Q14 + Awareness Q15-Q18 + Path Choice Q19-Q24 + Validation Q25-Q28
+      const newQuestionSet = [
+        ...baseQuestions,
+        ...subtypeQuestions, // Q7-Q14 (8 dynamic questions)
+        ...awarenessQuestions, // Q15-Q18
+        ...pathChoiceQuestions, // Q19-Q24
+        ...validationQuestions // Q25-Q28
+      ];
+      
+      setDynamicQuestions(newQuestionSet);
       setAnalysisType('awareness');
       setShowAnalysis(true);
       return;
-    } else if (currentQuestionIndex === 11) { // After Q12 - Awareness Block
+    } else if (currentQuestionIndex === 13) { // After Q14 (subtype detection complete)
       setAnalysisType('subtype');
       setShowAnalysis(true);
       return;
-    } else if (currentQuestionIndex === 17) { // After Q18 - Subtype Block
+    } else if (currentQuestionIndex === 17) { // After Q18 (awareness complete)
       setAnalysisType('validation');
       setShowAnalysis(true);
       return;
     }
 
-    if (currentQuestionIndex < ENTREPRENEURIAL_DNA_QUESTIONS.length - 1) {
+    if (currentQuestionIndex < dynamicQuestions.length - 1) {
       setCurrentQuestionIndex(prev => prev + 1);
     } else {
       // All questions completed, calculate results
@@ -192,8 +238,8 @@ export default function EntrepreneurialDnaQuiz() {
   }
 
   // Get current question
-  const currentQuestion = ENTREPRENEURIAL_DNA_QUESTIONS[currentQuestionIndex];
-  const progress = ((currentQuestionIndex + 1) / ENTREPRENEURIAL_DNA_QUESTIONS.length) * 100;
+  const currentQuestion = dynamicQuestions[currentQuestionIndex];
+  const progress = ((currentQuestionIndex + 1) / dynamicQuestions.length) * 100;
   const currentAnswer = answers[currentQuestion.id];
 
   return (
