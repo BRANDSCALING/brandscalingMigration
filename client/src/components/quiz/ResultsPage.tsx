@@ -286,7 +286,7 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
               <p className="text-gray-700 text-sm font-semibold">Let's build it your way — for real this time.</p>
             </div>
           </CardContent>
-        )}
+        </Card>
 
         {/* Section 10: Best Complementary Opposite Subtype */}
         <Card className="border-2 border-indigo-200">
@@ -341,7 +341,7 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
               <p className="text-sm text-gray-700">Together? You build what sparks "want" scales.</p>
             </div>
           </CardContent>
-        )}
+        </Card>
 
         {/* Section 11: Final Empowerment Remark */}
         <Card className="border-2 border-green-300">
@@ -355,7 +355,7 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
               <p className="text-gray-700">Now go finish building what only you could begin.</p>
             </div>
           </CardContent>
-        )}
+        </Card>
 
         {/* Section 12: Milestone Tracker */}
         <Card className="border-2 border-teal-200">
@@ -399,7 +399,7 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
               </div>
             </div>
           </CardContent>
-        )}
+        </Card>
 
         {/* Evolution Path */}
         <Card className="border-2 border-yellow-200">
