@@ -964,19 +964,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const answer = question.answers[answerKey];
           
           if (answer) {
-            switch (answer.type) {
-              case 'architect':
-                architectCount++;
-                break;
-              case 'alchemist':
-                alchemistCount++;
-                break;
-              case 'blurred':
-                blurredCount++;
-                break;
-              case 'neutral':
-                neutralCount++;
-                break;
+            // Handle Q19-Q22 validation questions with subtype-specific scoring
+            if (questionNumber >= 19 && questionNumber <= 22) {
+              // For validation questions, map subtype IDs to main DNA types
+              const subtypeToMainType: {[key: string]: string} = {
+                'energetic-empath': 'alchemist',
+                'visionary-oracle': 'alchemist', 
+                'magnetic-perfectionist': 'alchemist',
+                'ultimate-alchemist': 'alchemist',
+                'master-strategist': 'architect',
+                'systemised-builder': 'architect',
+                'internal-analyzer': 'architect',
+                'ultimate-strategist': 'architect'
+              };
+              
+              const mainType = subtypeToMainType[answer.type] || answer.type;
+              switch (mainType) {
+                case 'architect':
+                  architectCount++;
+                  break;
+                case 'alchemist':
+                  alchemistCount++;
+                  break;
+                case 'blurred':
+                  blurredCount++;
+                  break;
+                case 'neutral':
+                  neutralCount++;
+                  break;
+              }
+            } else {
+              // Handle Q1-Q18 questions with direct type mapping
+              switch (answer.type) {
+                case 'architect':
+                  architectCount++;
+                  break;
+                case 'alchemist':
+                  alchemistCount++;
+                  break;
+                case 'blurred':
+                  blurredCount++;
+                  break;
+                case 'neutral':
+                  neutralCount++;
+                  break;
+              }
             }
           } else {
             console.log(`Invalid answer choice: ${answerKey} for question ${questionId}`);

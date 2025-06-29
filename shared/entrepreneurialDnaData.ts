@@ -236,49 +236,49 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
     }
   },
 
-  // BLOCK 4: Q19-Q22 Validation Questions
+  // BLOCK 4: Q19-Q22 Validation Questions - Authentic User Questions
   {
     id: 19,
-    text: "How often do you feel like your authentic self when leading?",
+    text: "You're given a blank room and asked to design it however you want — no deadline, no instructions, just freedom. What do you naturally do first?",
     category: 'validation',
     answers: {
-      A: { text: "Often - this feels mostly right", type: 'architect', weight: 1 },
-      B: { text: "Sometimes - depends on the situation", type: 'alchemist', weight: 1 },
-      C: { text: "Rarely - I often feel like I'm performing", type: 'blurred', weight: 1 },
-      D: { text: "Never - I don't know who my authentic self is", type: 'neutral', weight: 1 }
+      A: { text: "I stand in the space and feel what it needs. Then I begin placing things intuitively.", type: 'energetic-empath', weight: 1 },
+      B: { text: "I imagine the finished look instantly, then begin collecting images or pieces to match the vision.", type: 'visionary-oracle', weight: 1 },
+      C: { text: "I begin sketching it out in a step-by-step plan so I don't waste energy.", type: 'ultimate-alchemist', weight: 1 },
+      D: { text: "I overthink each decision and delay starting until I'm sure it'll look right.", type: 'magnetic-perfectionist', weight: 1 }
     }
   },
   {
     id: 20,
-    text: "When others describe your leadership style, do they see the real you?",
+    text: "Think back to your school years. How did you usually approach a long homework assignment?",
     category: 'validation',
     answers: {
-      A: { text: "Absolutely - they see the real me", type: 'architect', weight: 1 },
-      B: { text: "Mostly - with some adjustments for context", type: 'alchemist', weight: 1 },
-      C: { text: "Sometimes - I adapt depending on who I'm with", type: 'blurred', weight: 1 },
-      D: { text: "Rarely - I feel like I'm always adjusting", type: 'neutral', weight: 1 }
+      A: { text: "I waited until inspiration hit, then worked in a creative sprint.", type: 'visionary-oracle', weight: 1 },
+      B: { text: "I wrote and rewrote sections until it was perfect — even if it was last minute.", type: 'magnetic-perfectionist', weight: 1 },
+      C: { text: "I mapped the sections, added energy when I felt aligned, and adjusted as I went.", type: 'ultimate-alchemist', weight: 1 },
+      D: { text: "I needed to be alone, clear the space, and feel right before even beginning.", type: 'energetic-empath', weight: 1 }
     }
   },
   {
     id: 21,
-    text: "How connected do you feel to your natural operating style?",
+    text: "When asked to clean your room or organise your space as a child, what best describes your approach?",
     category: 'validation',
     answers: {
-      A: { text: "Very connected - I know how I naturally operate", type: 'architect', weight: 1 },
-      B: { text: "Somewhat connected - I'm still figuring it out", type: 'alchemist', weight: 1 },
-      C: { text: "Rarely - only in specific contexts", type: 'blurred', weight: 1 },
-      D: { text: "Disconnected - I feel lost about my natural style", type: 'neutral', weight: 1 }
+      A: { text: "I did it in one big emotional burst — the chaos would build until I had to act.", type: 'visionary-oracle', weight: 1 },
+      B: { text: "I made a plan or system first, then tackled it piece by piece.", type: 'ultimate-alchemist', weight: 1 },
+      C: { text: "I felt overwhelmed unless the mood or energy felt right.", type: 'energetic-empath', weight: 1 },
+      D: { text: "I cleaned while imagining how I wanted it to look when done — I needed to see it first.", type: 'magnetic-perfectionist', weight: 1 }
     }
   },
   {
     id: 22,
-    text: "When you think about your current business approach, how does it feel?",
+    text: "You're learning a new skill (e.g., cooking, driving, drawing). Which learning pattern is most natural for you?",
     category: 'validation',
     answers: {
-      A: { text: "Fully aligned - this is exactly how I want to operate", type: 'architect', weight: 1 },
-      B: { text: "Mostly aligned - minor adjustments needed", type: 'alchemist', weight: 1 },
-      C: { text: "Somewhat misaligned - something feels off", type: 'blurred', weight: 1 },
-      D: { text: "Completely misaligned - this doesn't feel like me", type: 'neutral', weight: 1 }
+      A: { text: "I research first, then repeat steps until it feels mastered.", type: 'magnetic-perfectionist', weight: 1 },
+      B: { text: "I learn by doing — I just start and fix mistakes as I go.", type: 'visionary-oracle', weight: 1 },
+      C: { text: "I learn when I feel connected to what I'm doing — if the energy's off, I can't focus.", type: 'energetic-empath', weight: 1 },
+      D: { text: "I see the end result in my head first, then I try to recreate it immediately.", type: 'ultimate-alchemist', weight: 1 }
     }
   }
 ];

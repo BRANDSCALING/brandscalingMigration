@@ -15,46 +15,46 @@ interface Question {
 }
 
 const getValidationQuestions = (subtype: SubtypeType): Question[] => {
-  // Return the authentic Q19-Q22 validation questions from user's data
+  // Authentic Q19-Q22 validation questions from user's document
   return [
     {
       id: 'Q19',
-      text: 'How often do you feel like your authentic self when leading?',
+      text: 'You\'re given a blank room and asked to design it however you want — no deadline, no instructions, just freedom. What do you naturally do first?',
       options: [
-        { text: 'Often - this feels mostly right', subtype: 'architect', insight: 'Strong alignment' },
-        { text: 'Sometimes - depends on the situation', subtype: 'alchemist', insight: 'Good alignment' },
-        { text: 'Rarely - I often feel like I\'m performing', subtype: 'blurred', insight: 'Moderate alignment' },
-        { text: 'Never - I don\'t know who my authentic self is', subtype: 'neutral', insight: 'Low alignment' }
+        { text: 'I stand in the space and feel what it needs. Then I begin placing things intuitively.', subtype: 'energetic-empath', insight: 'Energetic Empath — feels into spaces, acts through sensation' },
+        { text: 'I imagine the finished look instantly, then begin collecting images or pieces to match the vision.', subtype: 'visionary-oracle', insight: 'Visionary Oracle — downloads the final vision and works backwards' },
+        { text: 'I begin sketching it out in a step-by-step plan so I don\'t waste energy.', subtype: 'ultimate-alchemist', insight: 'Ultimate Alchemist — structures flow with internal precision' },
+        { text: 'I overthink each decision and delay starting until I\'m sure it\'ll look right.', subtype: 'magnetic-perfectionist', insight: 'Magnetic Perfectionist — delays due to fear of imperfection' }
       ]
     },
     {
       id: 'Q20',
-      text: 'When others describe your leadership style, do they see the real you?',
+      text: 'Think back to your school years. How did you usually approach a long homework assignment?',
       options: [
-        { text: 'Absolutely - they see the real me', subtype: 'architect', insight: 'Strong recognition' },
-        { text: 'Mostly - with some adjustments for context', subtype: 'alchemist', insight: 'Good recognition' },
-        { text: 'Sometimes - I adapt depending on who I\'m with', subtype: 'blurred', insight: 'Moderate recognition' },
-        { text: 'Rarely - I feel like I\'m always adjusting', subtype: 'neutral', insight: 'Low recognition' }
+        { text: 'I waited until inspiration hit, then worked in a creative sprint.', subtype: 'visionary-oracle', insight: 'Visionary Oracle — creative bursts, last-minute momentum' },
+        { text: 'I wrote and rewrote sections until it was perfect — even if it was last minute.', subtype: 'magnetic-perfectionist', insight: 'Magnetic Perfectionist — perfection loops, emotional control' },
+        { text: 'I mapped the sections, added energy when I felt aligned, and adjusted as I went.', subtype: 'ultimate-alchemist', insight: 'Ultimate Alchemist — adaptive logic-meets-flow structure' },
+        { text: 'I needed to be alone, clear the space, and feel right before even beginning.', subtype: 'energetic-empath', insight: 'Energetic Empath — energetic prep required before action' }
       ]
     },
     {
       id: 'Q21',
-      text: 'How connected do you feel to your natural operating style?',
+      text: 'When asked to clean your room or organise your space as a child, what best describes your approach?',
       options: [
-        { text: 'Very connected - I know how I naturally operate', subtype: 'architect', insight: 'Full authenticity' },
-        { text: 'Somewhat connected - I\'m still figuring it out', subtype: 'alchemist', insight: 'Mostly authentic' },
-        { text: 'Rarely - only in specific contexts', subtype: 'blurred', insight: 'Contextual suppression' },
-        { text: 'Disconnected - I feel lost about my natural style', subtype: 'neutral', insight: 'Regular suppression' }
+        { text: 'I did it in one big emotional burst — the chaos would build until I had to act.', subtype: 'visionary-oracle', insight: 'Visionary Oracle — energetic surges over consistency' },
+        { text: 'I made a plan or system first, then tackled it piece by piece.', subtype: 'ultimate-alchemist', insight: 'Ultimate Alchemist — structured, system-led even in small tasks' },
+        { text: 'I felt overwhelmed unless the mood or energy felt right.', subtype: 'energetic-empath', insight: 'Energetic Empath — needs emotional/environmental alignment' },
+        { text: 'I cleaned while imagining how I wanted it to look when done — I needed to see it first.', subtype: 'magnetic-perfectionist', insight: 'Magnetic Perfectionist — vision-led, highly visual control' }
       ]
     },
     {
       id: 'Q22',
-      text: 'When you think about your current business approach, how does it feel?',
+      text: 'You\'re learning a new skill (e.g., cooking, driving, drawing). Which learning pattern is most natural for you?',
       options: [
-        { text: 'Fully aligned - this is exactly how I want to operate', subtype: 'architect', insight: 'Perfect alignment' },
-        { text: 'Mostly aligned - minor adjustments needed', subtype: 'alchemist', insight: 'Good alignment' },
-        { text: 'Somewhat misaligned - something feels off', subtype: 'blurred', insight: 'Moderate alignment' },
-        { text: 'Completely misaligned - this doesn\'t feel like me', subtype: 'neutral', insight: 'Poor alignment' }
+        { text: 'I research first, then repeat steps until it feels mastered.', subtype: 'magnetic-perfectionist', insight: 'Magnetic Perfectionist — emotional control through repetition' },
+        { text: 'I learn by doing — I just start and fix mistakes as I go.', subtype: 'visionary-oracle', insight: 'Visionary Oracle — action-led, intuitive fixer' },
+        { text: 'I learn when I feel connected to what I\'m doing — if the energy\'s off, I can\'t focus.', subtype: 'energetic-empath', insight: 'Energetic Empath — emotionally attuned learning rhythm' },
+        { text: 'I see the end result in my head first, then I try to recreate it immediately.', subtype: 'ultimate-alchemist', insight: 'Ultimate Alchemist — blends vision + logic execution' }
       ]
     }
   ];
