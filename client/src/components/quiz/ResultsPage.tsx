@@ -124,23 +124,40 @@ const ResultsPageNew: React.FC<Props> = ({ quizState }) => {
       </div>
 
       <div className="max-w-4xl mx-auto px-6 py-8 space-y-8">
-        {/* Main Result Card */}
-        <Card className="p-8 bg-gradient-to-r from-purple-600 to-indigo-600 text-white border-0 shadow-xl">
-          <div className="text-center space-y-4">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-white/20 rounded-full mb-4">
-              <Brain className="w-10 h-10" />
-            </div>
-            <h2 className="text-3xl font-bold">Your Entrepreneurial DNA Result</h2>
-            <div className="space-y-2">
-              <p className="text-xl opacity-90">Your Default DNA: {defaultDNA || 'Processing...'}</p>
-              {subtype && <p className="text-2xl font-bold">Your Sub-DNA: {subtype}</p>}
-            </div>
-            {subtype && (
-              <div className="bg-white/10 rounded-lg p-4 mt-6">
-                <p className="text-lg font-medium mb-2">1-line energetic resonance:</p>
-                <p className="text-xl italic">"{getProfileData(subtype).snapshotLine || 'You channel what has never been seen before.'}"</p>
+        {/* Main Result Card - Matching Reference Design */}
+        <Card className="overflow-hidden border-0 shadow-2xl rounded-2xl">
+          <div className="bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-700 px-8 py-12 text-white relative">
+            <div className="text-center space-y-6">
+              {/* DNA Icon - matching reference */}
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 rounded-full">
+                <Brain className="w-8 h-8" />
               </div>
-            )}
+              
+              {/* Main Title */}
+              <h2 className="text-3xl font-bold tracking-tight">Your Entrepreneurial DNA Result</h2>
+              
+              {/* DNA Type Information */}
+              <div className="space-y-3">
+                <p className="text-xl font-medium opacity-95">
+                  Your Default DNA: {defaultDNA || 'Processing...'}
+                </p>
+                {subtype && (
+                  <p className="text-2xl font-bold">
+                    Your Sub-DNA: {subtype}
+                  </p>
+                )}
+              </div>
+              
+              {/* 1-line energetic resonance - matching reference layout */}
+              {subtype && (
+                <div className="mt-8 space-y-3">
+                  <p className="text-lg font-medium opacity-90">1-line energetic resonance:</p>
+                  <p className="text-xl italic font-light leading-relaxed">
+                    "{getProfileData(subtype).snapshotLine || 'You channel what has never been seen before.'}"
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
         </Card>
 
