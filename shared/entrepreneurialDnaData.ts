@@ -357,7 +357,7 @@ export const DNA_SUBTYPES: Record<string, DNASubtype> = {
   'visionary-oracle': {
     id: 'visionary-oracle',
     name: 'The Visionary Oracle',
-    emoji: '🔥',
+    emoji: '',
     category: 'alchemist',
     operatingLoop: 'Emotion → Thought → Emotion',
     coreIdentity: 'Sees the future, struggles to finish. Hyper-intuitive, sees trends before they emerge. Gets overwhelmed mid-build, rushes at the end, often burns out. Needs containers to complete vision.',
@@ -369,7 +369,7 @@ export const DNA_SUBTYPES: Record<string, DNASubtype> = {
   'magnetic-perfectionist': {
     id: 'magnetic-perfectionist', 
     name: 'The Magnetic Perfectionist',
-    emoji: '🧠',
+    emoji: '',
     category: 'alchemist',
     operatingLoop: 'Emotion → Thought → Emotion',
     coreIdentity: 'Organised to deliver aligned perfection. Trained to finish what she starts. Creates emotional structure, not logic. Seeks refined perfection and can\'t deliver anything less.',
@@ -381,7 +381,7 @@ export const DNA_SUBTYPES: Record<string, DNASubtype> = {
   'energetic-empath': {
     id: 'energetic-empath',
     name: 'The Energetic Empath', 
-    emoji: '🌊',
+    emoji: '',
     category: 'alchemist',
     operatingLoop: 'Emotion → Thought → Emotion',
     coreIdentity: 'Heals with energy, absorbs with intensity. Radiates energy and uplifts others. Absorbs emotional weight, has high recharge needs. Needs clear logic to counter intuitive bias.',
@@ -393,7 +393,7 @@ export const DNA_SUBTYPES: Record<string, DNASubtype> = {
   'ultimate-alchemist': {
     id: 'ultimate-alchemist',
     name: 'The Ultimate Alchemist',
-    emoji: '🌪️', 
+    emoji: '', 
     category: 'alchemist',
     operatingLoop: 'Emotion → Thought → Emotion',
     coreIdentity: 'Carries every Alchemist gift — and full awareness of structure. Aura, empathy, vision, and organised precision. Has deep awareness of Architect mode, but doesn\'t execute like one. Chooses growth over all.',
@@ -407,7 +407,7 @@ export const DNA_SUBTYPES: Record<string, DNASubtype> = {
   'systemised-builder': {
     id: 'systemised-builder',
     name: 'The Systemised Builder',
-    emoji: '🧱',
+    emoji: '',
     category: 'architect', 
     operatingLoop: 'Thought → Emotion → Thought',
     coreIdentity: 'Hands-on executor, builds what others imagine. Needs clear instruction and trust. Doesn\'t over-control — works steadily. Complements Alchemists who need grounding and structure.',
@@ -419,7 +419,7 @@ export const DNA_SUBTYPES: Record<string, DNASubtype> = {
   'internal-analyzer': {
     id: 'internal-analyzer',
     name: 'The Internal Analyzer',
-    emoji: '🧩',
+    emoji: '',
     category: 'architect',
     operatingLoop: 'Thought → Emotion → Thought', 
     coreIdentity: 'Seeks perfection through systems. Data-obsessed, detail-led. Gets stuck in analysis loops. Needs Alchemist energy to spark momentum and emotionally calibrate decisions.',
@@ -431,7 +431,7 @@ export const DNA_SUBTYPES: Record<string, DNASubtype> = {
   'master-strategist': {
     id: 'master-strategist',
     name: 'The Master Strategist', 
-    emoji: '📊',
+    emoji: '',
     category: 'architect',
     operatingLoop: 'Thought → Emotion → Thought',
     coreIdentity: 'Calm, calculated, high-trust leader. Leads through logic, excels at delegation and direction. Needs emotion to connect and inspire beyond just performance.',
@@ -443,7 +443,7 @@ export const DNA_SUBTYPES: Record<string, DNASubtype> = {
   'ultimate-strategist': {
     id: 'ultimate-strategist',
     name: 'The Ultimate Strategist',
-    emoji: '🧊',
+    emoji: '',
     category: 'architect',
     operatingLoop: 'Thought → Emotion → Thought',
     coreIdentity: 'Silent precision, simplified clarity, master of delegation. Constantly recalculates and optimises. Doesn\'t freeze — repositions. Outsources with speed and precision. Doesn\'t lead with emotion, but respects and protects it.',
@@ -457,7 +457,7 @@ export const DNA_SUBTYPES: Record<string, DNASubtype> = {
   'overthinker': {
     id: 'overthinker',
     name: 'The Overthinker',
-    emoji: '🌀',
+    emoji: '',
     category: 'blurred',
     operatingLoop: 'Suppressed or Adapted',
     coreIdentity: 'Trapped between modes, frozen by options. Thinks like an Architect, feels like an Alchemist. Can\'t decide which loop to trust. Needs clarity of core identity and direction.',
@@ -469,7 +469,7 @@ export const DNA_SUBTYPES: Record<string, DNASubtype> = {
   'performer': {
     id: 'performer',
     name: 'The Performer',
-    emoji: '🎭',
+    emoji: '',
     category: 'blurred',
     operatingLoop: 'Suppressed or Adapted',
     coreIdentity: 'Acts like they have clarity — but hides confusion. Often excels outwardly while internally drifting. Highly adaptive. Needs to reconnect with authentic operating system.',
