@@ -7,7 +7,7 @@ import { useLocation } from 'wouter';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { QuizState } from './QuizContainer';
-import { PROFILE_DESCRIPTIONS, DNA_LOOP_DESCRIPTIONS } from './ProfileData';
+import { DNA_SUBTYPES } from '@/../../shared/entrepreneurialDnaData';
 import { CheckCircle, Clock, Lightbulb, Target, Zap, Users, Brain, Star } from 'lucide-react';
 
 interface Props {
@@ -53,63 +53,31 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
   }, [quizState]);
 
   const getProfileData = (subtype: string) => {
-    // Use authentic subtype data from shared schema
-    const subtypeData = {
-      'visionary-oracle': {
-        snapshotLine: "Generates visions, leads through creative breakthroughs.",
-        snapshot: ["Channels fresh perspectives", "Acts through inspiration"],
-        longDescription: "Generates visions, leads through creative breakthroughs. Channels fresh perspectives, acts through inspiration. Works in energy surges, needs buffer zones for idea protection.",
-        edge: ["Creative breakthrough generation", "Fresh perspective channeling"],
-        risks: ["Energy surge burnout", "Idea protection challenges"],
-        oppositeAwareness: "You admire structured systems but resist rigid implementation. You're learning to build containers that protect your vision rather than constrain it.",
-        nextSteps: ["Build scaffolding for your vision, not walls", "Create MVPs that reflect essence, not polish", "Protect idea surges with buffer zones"]
-      },
-      'magnetic-perfectionist': {
-        snapshotLine: "Organised to deliver aligned perfection.",
-        snapshot: ["Trained to finish what she starts", "Creates emotional structure, not logic"],
-        longDescription: "Organised to deliver aligned perfection. Trained to finish what she starts. Creates emotional structure, not logic. Seeks refined perfection and can't deliver anything less.",
-        edge: ["Emotional structure", "Consistent delivery"],
-        risks: ["Over-ownership", "Impossibly high standards"],
-        oppositeAwareness: "You appreciate logical frameworks but lead through emotional precision. Structure serves your standards, not the other way around.",
-        nextSteps: ["Find collaborators who match delivery frequency", "Create emotional structure systems", "Balance perfectionism with progress"]
-      },
-      'energetic-empath': {
-        snapshotLine: "Heals with energy, absorbs with intensity.",
-        snapshot: ["Radiates energy and uplifts others", "Absorbs emotional weight, has high recharge needs"],
-        longDescription: "Heals with energy, absorbs with intensity. Radiates energy and uplifts others. Absorbs emotional weight, has high recharge needs. Needs clear logic to counter intuitive bias.",
-        edge: ["Energy healing", "Emotional uplift"],
-        risks: ["Emotional absorption", "Burnout from others' energy"],
-        oppositeAwareness: "You need logical frameworks to balance your intuitive nature. Clear systems help you manage your empathic abilities without overwhelm.",
-        nextSteps: ["Develop logical frameworks to balance intuition", "Create energy protection boundaries", "Build sustainable recharge systems"]
-      },
-      'ultimate-alchemist': {
-        snapshotLine: "Mastery through energy and systematic execution.",
-        snapshot: ["Energy mastery with systematic precision", "Advanced integration of intuitive and logical approaches"],
-        longDescription: "Masters energy-based leadership while maintaining systematic execution. Integrates intuitive insights with structured implementation. Demonstrates advanced entrepreneurial capacity through balanced approach.",
-        edge: ["Energy mastery with systematic execution", "Advanced integration capabilities"],
-        risks: ["Complexity management challenges", "Balance maintenance pressure"],
-        oppositeAwareness: "You leverage both intuitive and systematic approaches effectively, creating comprehensive business solutions.",
-        nextSteps: ["Optimize energy-system integration", "Develop advanced execution frameworks"]
-      },
-      'master-strategist': {
-        snapshotLine: "Calm, calculated, high-trust leader.",
-        snapshot: ["Leads through logic, excels at delegation", "Needs emotion to connect and inspire"],
-        longDescription: "Calm, calculated, high-trust leader. Leads through logic, excels at delegation and direction. Needs emotion to connect and inspire beyond just performance.",
-        edge: ["Strategic leadership", "Logical delegation"],
-        risks: ["Emotional disconnection", "Performance-only focus"],
-        oppositeAwareness: "You're learning to integrate emotional connection into your leadership while maintaining strategic clarity.",
-        nextSteps: ["Integrate emotional connection into leadership", "Balance strategic clarity with human connection"]
-      }
-    };
+    // Use your authentic DNA_SUBTYPES data
+    const subtypeInfo = DNA_SUBTYPES[subtype];
     
-    return subtypeData[subtype] || {
-      snapshotLine: "Developing entrepreneurial clarity.",
-      snapshot: [],
-      longDescription: "Your authentic entrepreneurial profile is being refined based on your assessment responses.",
-      edge: [],
-      risks: [],
-      oppositeAwareness: "Developing awareness of complementary operating styles.",
-      nextSteps: ["Continue authentic entrepreneurial development"]
+    if (!subtypeInfo) {
+      return {
+        snapshotLine: "Developing entrepreneurial clarity.",
+        snapshot: [],
+        longDescription: "Your authentic entrepreneurial profile is being refined based on your assessment responses.",
+        edge: [],
+        risks: [],
+        oppositeAwareness: "Developing awareness of complementary operating styles.",
+        nextSteps: ["Continue authentic entrepreneurial development"]
+      };
+    }
+
+    return {
+      snapshotLine: subtypeInfo.coreIdentity.split('.')[0] + '.',
+      snapshot: [subtypeInfo.coreIdentity.split('.')[0], subtypeInfo.operatingLoop],
+      longDescription: subtypeInfo.coreIdentity,
+      edge: [subtypeInfo.edge],
+      risks: [subtypeInfo.risks],
+      oppositeAwareness: subtypeInfo.oppositeAwareness,
+      nextSteps: [subtypeInfo.nextSteps],
+      emoji: subtypeInfo.emoji,
+      name: subtypeInfo.name
     };
   };
 
