@@ -13,68 +13,19 @@ interface Question {
   }[];
 }
 
-const questions: Question[] = [
-  {
-    id: 'Q1',
-    text: "You're going away for the weekend. How do you prepare the night before?",
-    options: [
-      { text: 'I mentally run through what I need and pack once — essentials are covered.', type: 'Architect' },
-      { text: 'I write a full list, check everything off, repack a few times, still feel uneasy.', type: 'Blurred' },
-      { text: "I throw things in last minute and trust it'll be fine.", type: 'Alchemist' },
-      { text: 'I pack, unpack, and get overwhelmed deciding what I even need.', type: 'Blurred' }
-    ]
-  },
-  {
-    id: 'Q2',
-    text: 'A close friend unintentionally hurts your feelings. How do you respond?',
-    options: [
-      { text: "I won't say anything — they'll figure it out or I'll quietly move on.", type: 'Architect' },
-      { text: "I'll express it — maybe now, maybe later — but it will come out.", type: 'Alchemist' },
-      { text: 'I react suddenly, then second-guess if I was overdramatic.', type: 'Blurred' },
-      { text: 'I feel stuck about whether I should say something or not.', type: 'Blurred' }
-    ]
-  },
-  {
-    id: 'Q3',
-    text: 'You walk into a room full of strangers. What do you do?',
-    options: [
-      { text: 'I observe quietly, scan the room, and engage when it makes strategic sense.', type: 'Architect' },
-      { text: 'I tune into the energy — I might light up the room or stay quiet, depending how I feel.', type: 'Alchemist' },
-      { text: "I pause and wait for someone to approach — I'm not sure how to show up.", type: 'Neutral' },
-      { text: "I keep switching between acting confident and feeling unsure — I want to be seen but don't know how.", type: 'Blurred' }
-    ]
-  },
-  {
-    id: 'Q4',
-    text: "You've committed to waking up at 6am for a week. Day 3, you're exhausted. What happens?",
-    options: [
-      { text: "I stick to it. Fatigue doesn't override commitment unless it's serious.", type: 'Architect' },
-      { text: 'I ask myself if the reason still matters — if not, I adjust without guilt.', type: 'Alchemist' },
-      { text: 'I sleep in, feel bad, and try again tomorrow.', type: 'Neutral' },
-      { text: "I feel torn — I want to keep going but can't force myself either.", type: 'Blurred' }
-    ]
-  },
-  {
-    id: 'Q5',
-    text: "You've completed a project and it performs well. How do you feel about it?",
-    options: [
-      { text: "If the result is strong, I'm satisfied — no need to change anything.", type: 'Architect' },
-      { text: 'I immediately wonder how it could have been even better.', type: 'Alchemist' },
-      { text: 'I feel good but uneasy — maybe I missed something important.', type: 'Blurred' },
-      { text: "I can't tell if I'm happy or not — depends what others say.", type: 'Blurred' }
-    ]
-  },
-  {
-    id: 'Q6',
-    text: "You're pursuing a goal no one else has achieved. How do you think about it?",
-    options: [
-      { text: "I need to see a path or example — otherwise I'm not sure it's achievable.", type: 'Architect' },
-      { text: "Even if no one's done it, I know it's possible — I just need the steps.", type: 'Alchemist' },
-      { text: 'I doubt myself, but I still try in case it works out.', type: 'Blurred' },
-      { text: 'I switch between confidence and confusion depending on the day.', type: 'Blurred' }
-    ]
-  }
-];
+import { ENTREPRENEURIAL_DNA_QUESTIONS } from '@/../../shared/entrepreneurialDnaData';
+
+// Use only your authentic Q1-Q6 questions for default DNA detection
+const questions: Question[] = ENTREPRENEURIAL_DNA_QUESTIONS.slice(0, 6).map(q => ({
+  id: `Q${q.id}`,
+  text: q.text,
+  options: [
+    { text: q.answers.A.text, type: q.answers.A.type === 'architect' ? 'Architect' : q.answers.A.type === 'alchemist' ? 'Alchemist' : q.answers.A.type === 'blurred' ? 'Blurred' : 'Neutral' },
+    { text: q.answers.B.text, type: q.answers.B.type === 'architect' ? 'Architect' : q.answers.B.type === 'alchemist' ? 'Alchemist' : q.answers.B.type === 'blurred' ? 'Blurred' : 'Neutral' },
+    { text: q.answers.C.text, type: q.answers.C.type === 'architect' ? 'Architect' : q.answers.C.type === 'alchemist' ? 'Alchemist' : q.answers.C.type === 'blurred' ? 'Blurred' : 'Neutral' },
+    { text: q.answers.D.text, type: q.answers.D.type === 'architect' ? 'Architect' : q.answers.D.type === 'alchemist' ? 'Alchemist' : q.answers.D.type === 'blurred' ? 'Blurred' : 'Neutral' }
+  ]
+}));
 
 interface Props {
   onComplete: (dna: DNAType) => void;

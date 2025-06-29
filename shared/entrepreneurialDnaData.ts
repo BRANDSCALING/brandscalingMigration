@@ -3,7 +3,7 @@
 export interface QuizQuestion {
   id: number;
   text: string;
-  category: 'default_dna';
+  category: 'default_dna' | 'awareness' | 'subtype' | 'validation';
   answers: {
     A: { text: string; type: 'architect' | 'alchemist' | 'blurred' | 'neutral'; weight: number };
     B: { text: string; type: 'architect' | 'alchemist' | 'blurred' | 'neutral'; weight: number };
@@ -30,17 +30,18 @@ export interface DNASubtype {
   };
 }
 
-// User's Exact 6-Question DNA Assessment
+// Your Authentic Q1-Q22 Entrepreneurial DNA Assessment
 export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
+  // BLOCK 1: Q1-Q6 Default DNA Detection
   {
     id: 1,
     text: "You're going away for the weekend. How do you prepare the night before?",
     category: 'default_dna',
     answers: {
       A: { text: "I mentally run through what I need and pack once — essentials are covered.", type: 'architect', weight: 1 },
-      B: { text: "I write a full list, check everything off, repack a few times, still feel uneasy.", type: 'alchemist', weight: 1 },
-      C: { text: "I throw things in last minute and trust it'll be fine.", type: 'blurred', weight: 1 },
-      D: { text: "I pack, unpack, and get overwhelmed deciding what I even need.", type: 'neutral', weight: 1 }
+      B: { text: "I write a full list, check everything off, repack a few times, still feel uneasy.", type: 'blurred', weight: 1 },
+      C: { text: "I throw things in last minute and trust it'll be fine.", type: 'alchemist', weight: 1 },
+      D: { text: "I pack, unpack, and get overwhelmed deciding what I even need.", type: 'blurred', weight: 1 }
     }
   },
   {
@@ -48,10 +49,10 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
     text: "A close friend unintentionally hurts your feelings. How do you respond?",
     category: 'default_dna',
     answers: {
-      A: { text: "I'll express it — maybe now, maybe later — but it will come out", type: 'alchemist', weight: 1 },
-      B: { text: "I won't say anything — they'll figure it out or I'll quietly move on.", type: 'architect', weight: 1 },
+      A: { text: "I won't say anything — they'll figure it out or I'll quietly move on.", type: 'architect', weight: 1 },
+      B: { text: "I'll express it — maybe now, maybe later — but it will come out.", type: 'alchemist', weight: 1 },
       C: { text: "I react suddenly, then second-guess if I was overdramatic.", type: 'blurred', weight: 1 },
-      D: { text: "I feel stuck about whether I should say something or not.", type: 'neutral', weight: 1 }
+      D: { text: "I feel stuck about whether I should say something or not.", type: 'blurred', weight: 1 }
     }
   },
   {
@@ -59,10 +60,10 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
     text: "You walk into a room full of strangers. What do you do?",
     category: 'default_dna',
     answers: {
-      A: { text: "I linger around and wait for someone to notice or invite me", type: 'blurred', weight: 1 },
-      B: { text: "I act on how I feel — I might blend in or suddenly become the centre of attention.", type: 'alchemist', weight: 1 },
-      C: { text: "I observe quietly, scan the room, and engage when it makes sense.", type: 'architect', weight: 1 },
-      D: { text: "I'm unsure how to show up — I feel pressure to act right.", type: 'neutral', weight: 1 }
+      A: { text: "I observe quietly, scan the room, and engage when it makes strategic sense.", type: 'architect', weight: 1 },
+      B: { text: "I tune into the energy — I might light up the room or stay quiet, depending how I feel.", type: 'alchemist', weight: 1 },
+      C: { text: "I pause and wait for someone to approach — I'm not sure how to show up.", type: 'neutral', weight: 1 },
+      D: { text: "I keep switching between acting confident and feeling unsure — I want to be seen but don't know how.", type: 'blurred', weight: 1 }
     }
   },
   {
@@ -70,10 +71,10 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
     text: "You've committed to waking up at 6am for a week. Day 3, you're exhausted. What happens?",
     category: 'default_dna',
     answers: {
-      A: { text: "I feel torn — I want to keep going but can't force myself either.", type: 'neutral', weight: 1 },
+      A: { text: "I stick to it. Fatigue doesn't override commitment unless it's serious.", type: 'architect', weight: 1 },
       B: { text: "I ask myself if the reason still matters — if not, I adjust without guilt.", type: 'alchemist', weight: 1 },
-      C: { text: "I sleep in, feel bad, and try again tomorrow.", type: 'blurred', weight: 1 },
-      D: { text: "I stick to it. Fatigue doesn't override commitment unless it's serious.", type: 'architect', weight: 1 }
+      C: { text: "I sleep in, feel bad, and try again tomorrow.", type: 'neutral', weight: 1 },
+      D: { text: "I feel torn — I want to keep going but can't force myself either.", type: 'blurred', weight: 1 }
     }
   },
   {
@@ -84,7 +85,7 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
       A: { text: "If the result is strong, I'm satisfied — no need to change anything.", type: 'architect', weight: 1 },
       B: { text: "I immediately wonder how it could have been even better.", type: 'alchemist', weight: 1 },
       C: { text: "I feel good but uneasy — maybe I missed something important.", type: 'blurred', weight: 1 },
-      D: { text: "I can't tell if I'm happy or not — depends what others say.", type: 'neutral', weight: 1 }
+      D: { text: "I can't tell if I'm happy or not — depends what others say.", type: 'blurred', weight: 1 }
     }
   },
   {
@@ -95,7 +96,189 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
       A: { text: "I need to see a path or example — otherwise I'm not sure it's achievable.", type: 'architect', weight: 1 },
       B: { text: "Even if no one's done it, I know it's possible — I just need the steps.", type: 'alchemist', weight: 1 },
       C: { text: "I doubt myself, but I still try in case it works out.", type: 'blurred', weight: 1 },
-      D: { text: "I switch between confidence and confusion depending on the day.", type: 'neutral', weight: 1 }
+      D: { text: "I switch between confidence and confusion depending on the day.", type: 'blurred', weight: 1 }
+    }
+  },
+  
+  // BLOCK 2: Q7-Q12 Awareness Block (Dynamic based on Default DNA)
+  {
+    id: 7,
+    text: "You're about to launch a new offer in 2 weeks. How would your opposite decide what to focus on first?",
+    category: 'awareness',
+    answers: {
+      A: { text: "Identify the core bottlenecks and map out the sequence to remove them", type: 'architect', weight: 1 },
+      B: { text: "Get clear on the emotional pull behind the offer so it feels exciting to build", type: 'alchemist', weight: 1 },
+      C: { text: "Jump between setup, content, and branding — depending on what feels most urgent", type: 'blurred', weight: 1 },
+      D: { text: "Ask others what they think should happen first and go with consensus", type: 'neutral', weight: 1 }
+    }
+  },
+  {
+    id: 8,
+    text: "A peer gives you tough feedback on your recent launch. How would your opposite respond?",
+    category: 'awareness',
+    answers: {
+      A: { text: "Break down the feedback, sort it into categories, and adjust where it makes sense", type: 'architect', weight: 1 },
+      B: { text: "Reflect on whether there's emotional truth in the feedback, not just facts", type: 'alchemist', weight: 1 },
+      C: { text: "Get defensive or withdraw from sharing in future launches", type: 'blurred', weight: 1 },
+      D: { text: "Say thank you, then try to adjust only the parts you agree with emotionally", type: 'neutral', weight: 1 }
+    }
+  },
+  {
+    id: 9,
+    text: "You've brought on a new team member who isn't delivering as expected. How would your opposite handle it?",
+    category: 'awareness',
+    answers: {
+      A: { text: "Review expectations, pinpoint where the breakdown occurred, and restructure their workflow", type: 'architect', weight: 1 },
+      B: { text: "Talk openly about how the dynamic feels and whether something is misaligned", type: 'alchemist', weight: 1 },
+      C: { text: "Overcompensate by taking on their tasks and quietly hoping they improve", type: 'blurred', weight: 1 },
+      D: { text: "Give vague feedback while focusing on keeping morale high", type: 'neutral', weight: 1 }
+    }
+  },
+  {
+    id: 10,
+    text: "A long-term partnership feels exciting but unclear. How would your opposite approach the next step?",
+    category: 'awareness',
+    answers: {
+      A: { text: "Clarify objectives, roles, and measurable outcomes before committing", type: 'architect', weight: 1 },
+      B: { text: "Explore how aligned it feels and notice what isn't being said", type: 'alchemist', weight: 1 },
+      C: { text: "Say yes quickly, then figure it out as they go", type: 'blurred', weight: 1 },
+      D: { text: "Wait to see how things evolve and trust it will clarify naturally", type: 'neutral', weight: 1 }
+    }
+  },
+  {
+    id: 11,
+    text: "A team member keeps missing deadlines. How would your opposite handle this?",
+    category: 'awareness',
+    answers: {
+      A: { text: "Set up a review system to track accountability and outline next steps", type: 'architect', weight: 1 },
+      B: { text: "Check in to understand what's going on behind the scenes", type: 'alchemist', weight: 1 },
+      C: { text: "Avoid confrontation and work around them instead", type: 'blurred', weight: 1 },
+      D: { text: "Assume they need more motivation and give them a pep talk", type: 'neutral', weight: 1 }
+    }
+  },
+  {
+    id: 12,
+    text: "You just wrapped a high-revenue campaign. What would your opposite focus on next?",
+    category: 'awareness',
+    answers: {
+      A: { text: "Break down what worked and rebuild the system for repeatability", type: 'architect', weight: 1 },
+      B: { text: "Pause to reflect on alignment before starting anything else", type: 'alchemist', weight: 1 },
+      C: { text: "Start planning a new direction without reviewing results", type: 'blurred', weight: 1 },
+      D: { text: "Celebrate with the team and move on instinctively", type: 'neutral', weight: 1 }
+    }
+  },
+
+  // BLOCK 3: Q13-Q20 Subtype Detection for Architects
+  {
+    id: 13,
+    text: "You've just had an idea you're excited about, but you're not sure how to begin. What's your first move?",
+    category: 'subtype',
+    answers: {
+      A: { text: "Creating breakthrough innovations and inspiring teams", type: 'architect', weight: 1 },
+      B: { text: "I outline the steps from A to Z and start mapping the tools or systems I'd need", type: 'architect', weight: 1 },
+      C: { text: "I write down everything I'd want it to include — even if I don't know how I'll get there yet", type: 'architect', weight: 1 },
+      D: { text: "I pause to define the real problem it solves before I do anything else", type: 'architect', weight: 1 }
+    }
+  },
+  {
+    id: 14,
+    text: "When leading a team, what comes most naturally to you?",
+    category: 'subtype',
+    answers: {
+      A: { text: "Maintaining the vision while empowering others to execute", type: 'architect', weight: 1 },
+      B: { text: "Getting hands-on to ensure quality and consistency", type: 'architect', weight: 1 },
+      C: { text: "Deep analysis to optimize team performance", type: 'architect', weight: 1 },
+      D: { text: "Calm delegation with clear accountability systems", type: 'architect', weight: 1 }
+    }
+  },
+  {
+    id: 15,
+    text: "What's your greatest strength in business?",
+    category: 'subtype',
+    answers: {
+      A: { text: "Innovative thinking and breakthrough solutions", type: 'architect', weight: 1 },
+      B: { text: "Reliable execution and systematic building", type: 'architect', weight: 1 },
+      C: { text: "Deep analysis and strategic optimization", type: 'architect', weight: 1 },
+      D: { text: "Strategic precision with emotional intelligence", type: 'architect', weight: 1 }
+    }
+  },
+  {
+    id: 16,
+    text: "When you reflect on your biggest business wins, what stands out?",
+    category: 'subtype',
+    answers: {
+      A: { text: "The innovative solutions we've created", type: 'architect', weight: 1 },
+      B: { text: "The systems and processes we built", type: 'architect', weight: 1 },
+      C: { text: "The strategic insights that drove success", type: 'architect', weight: 1 },
+      D: { text: "The optimized outcomes we achieved", type: 'architect', weight: 1 }
+    }
+  },
+  {
+    id: 17,
+    text: "When facing a complex business challenge, your instinct is to:",
+    category: 'subtype',
+    answers: {
+      A: { text: "Find creative solutions others haven't considered", type: 'architect', weight: 1 },
+      B: { text: "Break it down into manageable, actionable steps", type: 'architect', weight: 1 },
+      C: { text: "Research all angles before making any moves", type: 'architect', weight: 1 },
+      D: { text: "Simplify the problem to its essential components", type: 'architect', weight: 1 }
+    }
+  },
+  {
+    id: 18,
+    text: "What drives your long-term business vision?",
+    category: 'subtype',
+    answers: {
+      A: { text: "Revolutionary impact and industry transformation", type: 'architect', weight: 1 },
+      B: { text: "Building something solid and dependable", type: 'architect', weight: 1 },
+      C: { text: "Creating the most efficient and optimized solution", type: 'architect', weight: 1 },
+      D: { text: "Sustainable competitive advantage through strategic positioning", type: 'architect', weight: 1 }
+    }
+  },
+
+  // BLOCK 4: Q19-Q22 Validation Questions
+  {
+    id: 19,
+    text: "How often do you feel like your authentic self when leading?",
+    category: 'validation',
+    answers: {
+      A: { text: "Often - this feels mostly right", type: 'architect', weight: 1 },
+      B: { text: "Sometimes - depends on the situation", type: 'alchemist', weight: 1 },
+      C: { text: "Rarely - I often feel like I'm performing", type: 'blurred', weight: 1 },
+      D: { text: "Never - I don't know who my authentic self is", type: 'neutral', weight: 1 }
+    }
+  },
+  {
+    id: 20,
+    text: "When others describe your leadership style, do they see the real you?",
+    category: 'validation',
+    answers: {
+      A: { text: "Absolutely - they see the real me", type: 'architect', weight: 1 },
+      B: { text: "Mostly - with some adjustments for context", type: 'alchemist', weight: 1 },
+      C: { text: "Sometimes - I adapt depending on who I'm with", type: 'blurred', weight: 1 },
+      D: { text: "Rarely - I feel like I'm always adjusting", type: 'neutral', weight: 1 }
+    }
+  },
+  {
+    id: 21,
+    text: "How connected do you feel to your natural operating style?",
+    category: 'validation',
+    answers: {
+      A: { text: "Very connected - I know how I naturally operate", type: 'architect', weight: 1 },
+      B: { text: "Somewhat connected - I'm still figuring it out", type: 'alchemist', weight: 1 },
+      C: { text: "Rarely - only in specific contexts", type: 'blurred', weight: 1 },
+      D: { text: "Disconnected - I feel lost about my natural style", type: 'neutral', weight: 1 }
+    }
+  },
+  {
+    id: 22,
+    text: "When you think about your current business approach, how does it feel?",
+    category: 'validation',
+    answers: {
+      A: { text: "Fully aligned - this is exactly how I want to operate", type: 'architect', weight: 1 },
+      B: { text: "Mostly aligned - minor adjustments needed", type: 'alchemist', weight: 1 },
+      C: { text: "Somewhat misaligned - something feels off", type: 'blurred', weight: 1 },
+      D: { text: "Completely misaligned - this doesn't feel like me", type: 'neutral', weight: 1 }
     }
   }
 ];
