@@ -5,10 +5,10 @@ export interface QuizQuestion {
   text: string;
   category: 'default_dna' | 'awareness' | 'subtype' | 'validation';
   answers: {
-    A: { text: string; type: 'architect' | 'alchemist' | 'blurred' | 'neutral'; weight: number };
-    B: { text: string; type: 'architect' | 'alchemist' | 'blurred' | 'neutral'; weight: number };
-    C: { text: string; type: 'architect' | 'alchemist' | 'blurred' | 'neutral'; weight: number };
-    D: { text: string; type: 'architect' | 'alchemist' | 'blurred' | 'neutral'; weight: number };
+    A: { text: string; type: 'architect' | 'alchemist' | 'blurred' | 'neutral' | 'master-strategist' | 'systemised-builder' | 'internal-analyzer' | 'ultimate-strategist' | 'visionary-oracle' | 'magnetic-perfectionist' | 'energetic-empath' | 'ultimate-alchemist' | 'overthinker' | 'performer' | 'self-forsaker' | 'self-betrayer'; weight: number };
+    B: { text: string; type: 'architect' | 'alchemist' | 'blurred' | 'neutral' | 'master-strategist' | 'systemised-builder' | 'internal-analyzer' | 'ultimate-strategist' | 'visionary-oracle' | 'magnetic-perfectionist' | 'energetic-empath' | 'ultimate-alchemist' | 'overthinker' | 'performer' | 'self-forsaker' | 'self-betrayer'; weight: number };
+    C: { text: string; type: 'architect' | 'alchemist' | 'blurred' | 'neutral' | 'master-strategist' | 'systemised-builder' | 'internal-analyzer' | 'ultimate-strategist' | 'visionary-oracle' | 'magnetic-perfectionist' | 'energetic-empath' | 'ultimate-alchemist' | 'overthinker' | 'performer' | 'self-forsaker' | 'self-betrayer'; weight: number };
+    D: { text: string; type: 'architect' | 'alchemist' | 'blurred' | 'neutral' | 'master-strategist' | 'systemised-builder' | 'internal-analyzer' | 'ultimate-strategist' | 'visionary-oracle' | 'magnetic-perfectionist' | 'energetic-empath' | 'ultimate-alchemist' | 'overthinker' | 'performer' | 'self-forsaker' | 'self-betrayer'; weight: number };
   };
 }
 
@@ -100,29 +100,100 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
     }
   },
   
-  // BLOCK 2: Q7-Q12 Awareness Block (Dynamic based on Default DNA)
+  // BLOCK 2: Q7-Q14 Dynamic Subtype Detection (8 questions based on Default DNA type)
+  // These questions dynamically show different answer options based on user's DEFAULT DNA type
   {
     id: 7,
-    text: "You're about to launch a new offer in 2 weeks. How would your opposite decide what to focus on first?",
-    category: 'awareness',
+    text: "When planning a major project, what's your natural first step?",
+    category: 'subtype',
     answers: {
-      A: { text: "Identify the core bottlenecks and map out the sequence to remove them", type: 'architect', weight: 1 },
-      B: { text: "Get clear on the emotional pull behind the offer so it feels exciting to build", type: 'alchemist', weight: 1 },
-      C: { text: "Jump between setup, content, and branding — depending on what feels most urgent", type: 'blurred', weight: 1 },
-      D: { text: "Ask others what they think should happen first and go with consensus", type: 'neutral', weight: 1 }
+      // For ARCHITECT DNA: Master Strategist, Systemised Builder, Internal Analyzer, Ultimate Strategist
+      A: { text: "Create a comprehensive master plan with all components mapped out", type: 'master-strategist', weight: 1 },
+      B: { text: "Build systematic processes and workflows that can be repeated", type: 'systemised-builder', weight: 1 },
+      C: { text: "Analyze all potential risks and failure points internally first", type: 'internal-analyzer', weight: 1 },
+      D: { text: "Develop the ultimate strategic framework that others can follow", type: 'ultimate-strategist', weight: 1 }
     }
   },
   {
     id: 8,
-    text: "A peer gives you tough feedback on your recent launch. How would your opposite respond?",
-    category: 'awareness',
+    text: "When facing a complex problem, how do you naturally approach it?",
+    category: 'subtype',
     answers: {
-      A: { text: "Break down the feedback, sort it into categories, and adjust where it makes sense", type: 'architect', weight: 1 },
-      B: { text: "Reflect on whether there's emotional truth in the feedback, not just facts", type: 'alchemist', weight: 1 },
-      C: { text: "Get defensive or withdraw from sharing in future launches", type: 'blurred', weight: 1 },
-      D: { text: "Say thank you, then try to adjust only the parts you agree with emotionally", type: 'neutral', weight: 1 }
+      // For ARCHITECT DNA: Master Strategist, Systemised Builder, Internal Analyzer, Ultimate Strategist
+      A: { text: "Design an overarching strategy that addresses all interconnected elements", type: 'master-strategist', weight: 1 },
+      B: { text: "Break it into repeatable steps and create systems to handle each part", type: 'systemised-builder', weight: 1 },
+      C: { text: "Study it deeply and internally before taking any external action", type: 'internal-analyzer', weight: 1 },
+      D: { text: "Develop the most sophisticated solution that becomes the gold standard", type: 'ultimate-strategist', weight: 1 }
     }
   },
+  {
+    id: 9,
+    text: "Your business needs to scale quickly. What's your instinctive focus?",
+    category: 'subtype',
+    answers: {
+      A: { text: "Create strategic partnerships and leverage existing market positions", type: 'master-strategist', weight: 1 },
+      B: { text: "Systematize operations so growth doesn't break existing processes", type: 'systemised-builder', weight: 1 },
+      C: { text: "Analyze capacity constraints and optimize before expanding", type: 'internal-analyzer', weight: 1 },
+      D: { text: "Build the ultimate scalable framework others will want to replicate", type: 'ultimate-strategist', weight: 1 }
+    }
+  },
+  {
+    id: 10,
+    text: "When teaching others your methods, you naturally tend to:",
+    category: 'subtype',
+    answers: {
+      A: { text: "Share the strategic thinking behind why decisions were made", type: 'master-strategist', weight: 1 },
+      B: { text: "Create step-by-step systems they can follow independently", type: 'systemised-builder', weight: 1 },
+      C: { text: "Help them develop their own analytical thinking skills", type: 'internal-analyzer', weight: 1 },
+      D: { text: "Provide the ultimate comprehensive framework for mastery", type: 'ultimate-strategist', weight: 1 }
+    }
+  },
+  {
+    id: 11,
+    text: "During a high-pressure deadline, your strength shows up as:",
+    category: 'subtype',
+    answers: {
+      A: { text: "Coordinating multiple moving parts with strategic oversight", type: 'master-strategist', weight: 1 },
+      B: { text: "Following proven systems that maintain quality under pressure", type: 'systemised-builder', weight: 1 },
+      C: { text: "Thoroughly analyzing what truly needs to be done versus busy work", type: 'internal-analyzer', weight: 1 },
+      D: { text: "Delivering exceptional results that exceed expectations", type: 'ultimate-strategist', weight: 1 }
+    }
+  },
+  {
+    id: 12,
+    text: "Your ideal team role naturally gravitates toward:",
+    category: 'subtype',
+    answers: {
+      A: { text: "Strategic leadership that guides overall direction and decisions", type: 'master-strategist', weight: 1 },
+      B: { text: "Operations management that ensures smooth, systematic execution", type: 'systemised-builder', weight: 1 },
+      C: { text: "Research and analysis that informs better decision-making", type: 'internal-analyzer', weight: 1 },
+      D: { text: "Excellence driving that sets new standards for performance", type: 'ultimate-strategist', weight: 1 }
+    }
+  },
+  {
+    id: 13,
+    text: "When evaluating a business opportunity, you first:",
+    category: 'subtype',
+    answers: {
+      A: { text: "Assess the strategic positioning and competitive landscape", type: 'master-strategist', weight: 1 },
+      B: { text: "Determine if it fits into your existing systems and processes", type: 'systemised-builder', weight: 1 },
+      C: { text: "Analyze the underlying fundamentals and potential risks", type: 'internal-analyzer', weight: 1 },
+      D: { text: "Evaluate if it can become best-in-class within its category", type: 'ultimate-strategist', weight: 1 }
+    }
+  },
+  {
+    id: 14,
+    text: "Your natural communication style in business tends to be:",
+    category: 'subtype',
+    answers: {
+      A: { text: "Strategic and big-picture focused with clear directional guidance", type: 'master-strategist', weight: 1 },
+      B: { text: "Systematic and process-oriented with actionable steps", type: 'systemised-builder', weight: 1 },
+      C: { text: "Thoughtful and analytical with well-researched insights", type: 'internal-analyzer', weight: 1 },
+      D: { text: "Comprehensive and excellence-driven with detailed frameworks", type: 'ultimate-strategist', weight: 1 }
+    }
+  },
+  
+  // BLOCK 3: Q15-Q18 Awareness Block (Dynamic based on Default DNA)
   {
     id: 9,
     text: "You've brought on a new team member who isn't delivering as expected. How would your opposite handle it?",
@@ -292,6 +363,153 @@ export const DNA_LOOP_DESCRIPTIONS = {
 };
 
 // Helper function to get profile data for a given subtype
+// Function to generate dynamic subtype questions based on DEFAULT DNA type
+export function getDynamicSubtypeQuestions(defaultDnaType: 'architect' | 'alchemist' | 'blurred'): QuizQuestion[] {
+  const baseQuestions = ENTREPRENEURIAL_DNA_QUESTIONS.filter(q => q.category === 'subtype');
+  
+  return baseQuestions.map(question => {
+    if (defaultDnaType === 'architect') {
+      // Return as-is - already configured for Architect subtypes
+      return question;
+    } else if (defaultDnaType === 'alchemist') {
+      // Replace with Alchemist subtype options
+      return {
+        ...question,
+        answers: {
+          A: { text: getAlchemistAnswerText(question.id, 'A'), type: 'visionary-oracle', weight: 1 },
+          B: { text: getAlchemistAnswerText(question.id, 'B'), type: 'magnetic-perfectionist', weight: 1 },
+          C: { text: getAlchemistAnswerText(question.id, 'C'), type: 'energetic-empath', weight: 1 },
+          D: { text: getAlchemistAnswerText(question.id, 'D'), type: 'ultimate-alchemist', weight: 1 }
+        }
+      };
+    } else if (defaultDnaType === 'blurred') {
+      // Replace with Blurred subtype options
+      return {
+        ...question,
+        answers: {
+          A: { text: getBlurredAnswerText(question.id, 'A'), type: 'overthinker', weight: 1 },
+          B: { text: getBlurredAnswerText(question.id, 'B'), type: 'performer', weight: 1 },
+          C: { text: getBlurredAnswerText(question.id, 'C'), type: 'self-forsaker', weight: 1 },
+          D: { text: getBlurredAnswerText(question.id, 'D'), type: 'self-betrayer', weight: 1 }
+        }
+      };
+    }
+    return question;
+  });
+}
+
+// Alchemist subtype answer texts
+function getAlchemistAnswerText(questionId: number, option: string): string {
+  const alchemistAnswers: Record<number, Record<string, string>> = {
+    7: {
+      A: "Envision the transformational impact and connect with the deeper purpose",
+      B: "Perfect every detail to create something truly exceptional",
+      C: "Feel into what the audience needs and let that guide the approach",
+      D: "Channel pure creative energy to manifest something unprecedented"
+    },
+    8: {
+      A: "See the bigger picture and identify innovative breakthrough solutions",
+      B: "Refine and perfect the approach until it meets the highest standards",
+      C: "Tune into the emotional energy and respond with empathy and understanding",
+      D: "Transform the challenge into an opportunity for creative mastery"
+    },
+    9: {
+      A: "Focus on visionary leadership that inspires others to join the mission",
+      B: "Perfect the core offering until it becomes irresistibly attractive",
+      C: "Build authentic connections and community around shared values",
+      D: "Leverage creative innovation to disrupt and lead the market"
+    },
+    10: {
+      A: "Share inspiring visions and help them see new possibilities",
+      B: "Guide them toward excellence through refined, polished methods",
+      C: "Connect emotionally and help them find their own authentic path",
+      D: "Transmit mastery through immersive, transformational experiences"
+    },
+    11: {
+      A: "Maintain visionary clarity while orchestrating creative solutions",
+      B: "Execute with precision and attention to every critical detail",
+      C: "Stay emotionally centered while supporting and energizing the team",
+      D: "Channel intense focus into breakthrough creative solutions"
+    },
+    12: {
+      A: "Visionary leadership that sets inspiring direction and possibilities",
+      B: "Quality assurance that ensures excellence in every deliverable",
+      C: "People development that nurtures and empowers team potential",
+      D: "Innovation driving that pushes boundaries and creates breakthroughs"
+    },
+    13: {
+      A: "Evaluate the visionary potential and transformational impact",
+      B: "Assess whether it can be executed with exceptional quality standards",
+      C: "Consider the human element and authentic value it provides",
+      D: "Determine if it offers opportunity for creative mastery and innovation"
+    },
+    14: {
+      A: "Visionary and inspirational with transformational possibilities",
+      B: "Polished and refined with attention to excellence and quality",
+      C: "Authentic and empathetic with genuine care for people's needs",
+      D: "Dynamic and innovative with creative mastery and breakthrough thinking"
+    }
+  };
+  
+  return alchemistAnswers[questionId]?.[option] || "";
+}
+
+// Blurred subtype answer texts
+function getBlurredAnswerText(questionId: number, option: string): string {
+  const blurredAnswers: Record<number, Record<string, string>> = {
+    7: {
+      A: "Get caught in analysis paralysis trying to consider every possible angle",
+      B: "Focus on what will make me look competent and successful to others",
+      C: "Put everyone else's needs first and lose sight of my own priorities",
+      D: "Go against my natural instincts to prove I can be different"
+    },
+    8: {
+      A: "Overthink every possible solution until I'm paralyzed by options",
+      B: "Present a confident front while internally doubting my capabilities",
+      C: "Sacrifice my own approach to keep others comfortable and happy",
+      D: "Force myself into a style that doesn't feel authentic or natural"
+    },
+    9: {
+      A: "Get overwhelmed by all the moving parts and struggle to prioritize",
+      B: "Focus on external metrics that make the business look impressive",
+      C: "Prioritize team harmony over necessary business decisions",
+      D: "Reject my natural approach and try to scale like someone else would"
+    },
+    10: {
+      A: "Overexplain everything because I'm not sure what's actually important",
+      B: "Focus on appearing knowledgeable rather than ensuring they understand",
+      C: "Give away all my knowledge freely without considering my own boundaries",
+      D: "Teach in a way that contradicts my natural communication style"
+    },
+    11: {
+      A: "Second-guess every decision and get stuck in planning loops",
+      B: "Maintain appearances while internally feeling overwhelmed and stressed",
+      C: "Exhaust myself taking care of everyone else's pressure and deadlines",
+      D: "Force myself to work in ways that drain my energy and effectiveness"
+    },
+    12: {
+      A: "Research and planning that often leads to overthinking without action",
+      B: "Public-facing roles that showcase success but may lack substance",
+      C: "Support and service that puts team needs above strategic direction",
+      D: "Contrarian positions that go against my natural strengths and preferences"
+    },
+    13: {
+      A: "Get lost in researching every possible risk and never make a decision",
+      B: "Evaluate how it will make me appear successful and credible to others",
+      C: "Consider everyone else's opinions and lose track of my own judgment",
+      D: "Automatically resist if it aligns with my natural preferences or strengths"
+    },
+    14: {
+      A: "Hesitant and uncertain with excessive qualifiers and second-guessing",
+      B: "Polished and impressive but potentially lacking authentic depth",
+      C: "Accommodating and selfless often at the expense of clear direction",
+      D: "Contrarian and resistant to approaches that would naturally suit me"
+    }
+  };
+  
+  return blurredAnswers[questionId]?.[option] || "";
+}
+
 export function getProfileData(subtypeId: string) {
   return DNA_SUBTYPES[subtypeId] || null;
 }
