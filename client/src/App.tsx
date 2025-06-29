@@ -61,14 +61,7 @@ function Router() {
           </Layout>
         )}
       />
-      <Route
-        path="/quiz/result"
-        component={() => (
-          <Layout>
-            <QuizResult />
-          </Layout>
-        )}
-      />
+
 
       {/* Dashboard */}
       <Route

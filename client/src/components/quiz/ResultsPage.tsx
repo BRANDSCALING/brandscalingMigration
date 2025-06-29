@@ -19,22 +19,16 @@ const ResultsPageNew: React.FC<Props> = ({ quizState }) => {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
 
-  // Submit quiz results to backend and handle redirect
+  // Submit quiz results to backend in background (non-blocking)
   useEffect(() => {
     const submitQuizResults = async () => {
       try {
         const studentId = localStorage.getItem('studentId');
         if (!studentId) {
-          toast({
-            title: "Authentication Error",
-            description: "Please log in to save results.",
-            variant: "destructive"
-          });
-          setLocation('/auth');
-          return;
+          return; // Skip submission if not authenticated, but still show results
         }
 
-        // Submit comprehensive quiz results to correct endpoint
+        // Submit comprehensive quiz results to correct endpoint (non-blocking)
         await apiRequest('POST', '/api/quiz/entrepreneurial-dna/submit', {
           answers: quizState.answers
         });
@@ -48,23 +42,15 @@ const ResultsPageNew: React.FC<Props> = ({ quizState }) => {
           timestamp: new Date().toISOString()
         }));
 
-        toast({
-          title: "Results Saved!",
-          description: "Your quiz results have been saved to your profile."
-        });
-
       } catch (error: any) {
         console.error('Error submitting quiz results:', error);
-        toast({
-          title: "Save Failed",
-          description: "Could not save results. Please try again.",
-          variant: "destructive"
-        });
+        // Don't show error toast to avoid disrupting results display
       }
     };
 
+    // Run submission in background without blocking results display
     submitQuizResults();
-  }, [quizState, toast, setLocation]);
+  }, [quizState]);
 
   const getProfileData = (subtype: string) => {
     // Use authentic subtype data from shared schema
@@ -191,7 +177,7 @@ const ResultsPageNew: React.FC<Props> = ({ quizState }) => {
                 <div className="mt-8 space-y-3">
                   <p className="text-lg font-medium opacity-90">1-line energetic resonance:</p>
                   <p className="text-xl italic font-light leading-relaxed">
-                    "{getProfileData(subtype).snapshotLine || 'You channel what has never been seen before.'}"
+                    "{getProfileData(subtype).snapshotLine || 'Entrepreneurial insight processing.'}"
                   </p>
                 </div>
               )}
