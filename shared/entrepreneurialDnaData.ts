@@ -171,68 +171,68 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
   // BLOCK 3: Q13-Q18 Path Choice Questions - Your Authentic Questions
   {
     id: 13,
-    text: "When you feel most 'in your element' as an entrepreneur, what's usually happening?",
+    text: "You've just had an idea you're excited about, but you're not sure how to begin. What's your first move?",
     category: 'subtype',
     answers: {
-      A: { text: "I'm building systems that work predictably and efficiently", type: 'architect', weight: 1 },
-      B: { text: "I'm following my instincts and everything flows naturally", type: 'alchemist', weight: 1 },
-      C: { text: "I'm adapting fluidly between different approaches as needed", type: 'neutral', weight: 1 },
-      D: { text: "I'm not sure - I feel pulled between different ways of working", type: 'blurred', weight: 1 }
+      A: { text: "I outline the steps from A to Z and start mapping the tools or systems I'd need to deliver it properly.", type: 'architect', weight: 1 },
+      B: { text: "I journal or voice-note to capture everything while the emotion is fresh.", type: 'alchemist', weight: 1 },
+      C: { text: "I've mapped a dozen possible routes and can't tell which is best.", type: 'blurred', weight: 1 },
+      D: { text: "I find practical ways to test the core concept quickly.", type: 'neutral', weight: 1 }
     }
   },
   {
     id: 14,
-    text: "How do you naturally approach making important business decisions?",
+    text: "You've written a rough outline for a course or product. What do you naturally do next?",
     category: 'subtype',
     answers: {
-      A: { text: "I analyze data, create frameworks, and follow proven methodologies", type: 'architect', weight: 1 },
-      B: { text: "I trust my intuition and consider the human impact of each choice", type: 'alchemist', weight: 1 },
-      C: { text: "I combine analytical thinking with creative insights", type: 'neutral', weight: 1 },
-      D: { text: "I often second-guess myself and struggle to commit to one approach", type: 'blurred', weight: 1 }
+      A: { text: "I check if each part connects logically and improve the structure before building anything.", type: 'architect', weight: 1 },
+      B: { text: "I open up a tool and start creating the first few sections to see how it feels in action.", type: 'alchemist', weight: 1 },
+      C: { text: "I obsessively replay what I could've done better, even if the launch succeeded.", type: 'blurred', weight: 1 },
+      D: { text: "I make a checklist of every component and start working through it step-by-step.", type: 'neutral', weight: 1 }
     }
   },
   {
     id: 15,
-    text: "What energizes you most about entrepreneurship?",
+    text: "You've sketched out a new service or program. A friend asks you, 'How will it work?' What do you instinctively describe first?",
     category: 'subtype',
     answers: {
-      A: { text: "Building efficient systems that create consistent, scalable results", type: 'architect', weight: 1 },
-      B: { text: "Transforming lives and creating meaningful impact through innovative solutions", type: 'alchemist', weight: 1 },
-      C: { text: "The variety of challenges and opportunities to grow in different areas", type: 'neutral', weight: 1 },
-      D: { text: "I find different aspects energizing but also overwhelming at times", type: 'blurred', weight: 1 }
+      A: { text: "The logic behind the framework — why each part exists and how it links to the bigger picture.", type: 'architect', weight: 1 },
+      B: { text: "The reason I'm offering it and what kind of transformation it's built to deliver.", type: 'alchemist', weight: 1 },
+      C: { text: "I worry I won't see it through once the emotional high fades.", type: 'blurred', weight: 1 },
+      D: { text: "I say, 'Let me show you'—then pull up a mock-up or system to demonstrate.", type: 'neutral', weight: 1 }
     }
   },
   {
     id: 16,
-    text: "When planning a new project, what's your natural starting point?",
+    text: "You've joined a mastermind group, and they're brainstorming ways to improve their businesses. What's your natural way of contributing?",
     category: 'subtype',
     answers: {
-      A: { text: "Define clear objectives, create detailed timelines, and establish success metrics", type: 'architect', weight: 1 },
-      B: { text: "Envision the transformation it will create and let passion guide the planning", type: 'alchemist', weight: 1 },
-      C: { text: "Start with the big picture, then break it down into manageable steps", type: 'neutral', weight: 1 },
-      D: { text: "I often feel paralyzed by all the possibilities and struggle to begin", type: 'blurred', weight: 1 }
+      A: { text: "I ask focused questions to help them think better, and naturally start outlining the structure for them.", type: 'architect', weight: 1 },
+      B: { text: "I stay quiet until I've listened deeply, then share a clear plan or observation that changes the direction.", type: 'alchemist', weight: 1 },
+      C: { text: "I'm refining your first product or offer. What kind of pressure do you feel most?", type: 'blurred', weight: 1 },
+      D: { text: "I start drawing on the whiteboard — mapping steps, bottlenecks, or a better way to do things.", type: 'neutral', weight: 1 }
     }
   },
   {
     id: 17,
-    text: "How do you prefer to learn and develop new business skills?",
+    text: "You've got a notebook full of business ideas. What's your natural approach to choosing which one to act on?",
     category: 'subtype',
     answers: {
-      A: { text: "Through structured courses, proven frameworks, and systematic practice", type: 'architect', weight: 1 },
-      B: { text: "Through experimentation, mentorship, and following my curiosity", type: 'alchemist', weight: 1 },
-      C: { text: "Through a mix of formal learning and hands-on experience", type: 'neutral', weight: 1 },
-      D: { text: "I start many learning paths but struggle to maintain consistent progress", type: 'blurred', weight: 1 }
+      A: { text: "I ask myself which idea is easiest to explain to others — if I can map it cleanly, I know I'll build it well.", type: 'architect', weight: 1 },
+      B: { text: "I compare them logically — which one solves the biggest problem, and which has the most potential to scale?", type: 'alchemist', weight: 1 },
+      C: { text: "You've made progress but still feel uneasy launching. What best describes the hesitation?", type: 'blurred', weight: 1 },
+      D: { text: "I test parts of a few ideas to see which one feels smooth to build and execute.", type: 'neutral', weight: 1 }
     }
   },
   {
     id: 18,
-    text: "What's your relationship with business planning and strategy?",
+    text: "A friend asks for help turning their business idea into something real. You agree. What's your instinctive first step?",
     category: 'subtype',
     answers: {
-      A: { text: "I thrive on detailed planning and strategic frameworks that guide execution", type: 'architect', weight: 1 },
-      B: { text: "I prefer flexible planning that leaves room for inspiration and pivots", type: 'alchemist', weight: 1 },
-      C: { text: "I appreciate planning but stay open to adjusting based on new insights", type: 'neutral', weight: 1 },
-      D: { text: "I struggle with planning - I either over-plan or wing it completely", type: 'blurred', weight: 1 }
+      A: { text: "I start mapping the entire process into systems — I want everything running smoothly early on.", type: 'architect', weight: 1 },
+      B: { text: "I ask them to describe their end goal in one sentence, then figure out how to reverse-engineer it from there.", type: 'alchemist', weight: 1 },
+      C: { text: "You're given full freedom to shape your business however you want. What's your first move?", type: 'blurred', weight: 1 },
+      D: { text: "I offer to help set up the first few tools or tech pieces to get things moving.", type: 'neutral', weight: 1 }
     }
   },
 
