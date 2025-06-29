@@ -209,7 +209,7 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
     answers: {
       A: { text: "I ask focused questions to help them think better, and naturally start outlining the structure for them.", type: 'architect', weight: 1 },
       B: { text: "I stay quiet until I've listened deeply, then share a clear plan or observation that changes the direction.", type: 'alchemist', weight: 1 },
-      C: { text: "I'm refining your first product or offer. What kind of pressure do you feel most?", type: 'blurred', weight: 1 },
+      C: { text: "I feel like I have to get every detail just right before it goes out.", type: 'blurred', weight: 1 },
       D: { text: "I start drawing on the whiteboard — mapping steps, bottlenecks, or a better way to do things.", type: 'neutral', weight: 1 }
     }
   },
@@ -220,7 +220,7 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
     answers: {
       A: { text: "I ask myself which idea is easiest to explain to others — if I can map it cleanly, I know I'll build it well.", type: 'architect', weight: 1 },
       B: { text: "I compare them logically — which one solves the biggest problem, and which has the most potential to scale?", type: 'alchemist', weight: 1 },
-      C: { text: "You've made progress but still feel uneasy launching. What best describes the hesitation?", type: 'blurred', weight: 1 },
+      C: { text: "I keep spotting emotional gaps between what I feel and what I've built.", type: 'blurred', weight: 1 },
       D: { text: "I test parts of a few ideas to see which one feels smooth to build and execute.", type: 'neutral', weight: 1 }
     }
   },
@@ -231,7 +231,7 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
     answers: {
       A: { text: "I start mapping the entire process into systems — I want everything running smoothly early on.", type: 'architect', weight: 1 },
       B: { text: "I ask them to describe their end goal in one sentence, then figure out how to reverse-engineer it from there.", type: 'alchemist', weight: 1 },
-      C: { text: "You're given full freedom to shape your business however you want. What's your first move?", type: 'blurred', weight: 1 },
+      C: { text: "I take a methodical approach and break it down into research, design, and execution phases.", type: 'blurred', weight: 1 },
       D: { text: "I offer to help set up the first few tools or tech pieces to get things moving.", type: 'neutral', weight: 1 }
     }
   },

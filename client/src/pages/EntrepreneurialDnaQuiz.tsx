@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { ENTREPRENEURIAL_DNA_QUESTIONS } from '@/../../shared/entrepreneurialDnaData';
 import ResultsPage from '@/components/quiz/ResultsPage';
+import AnalysisBlock from '@/components/quiz/AnalysisBlock';
 import { DNAType, QuizState } from '@/components/quiz/QuizContainer';
 
 export default function EntrepreneurialDnaQuiz() {
@@ -17,7 +18,7 @@ export default function EntrepreneurialDnaQuiz() {
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [showResults, setShowResults] = useState(false);
   const [showAnalysis, setShowAnalysis] = useState(false);
-  const [analysisType, setAnalysisType] = useState<'default' | 'awareness' | 'subtype'>('default');
+  const [analysisType, setAnalysisType] = useState<'awareness' | 'subtype' | 'validation'>('awareness');
   const [quizState, setQuizState] = useState<QuizState>({
     currentStage: 'results',
     answers: {},
