@@ -70,8 +70,8 @@ const ResultsPageNew: React.FC<Props> = ({ quizState }) => {
     // Use authentic subtype data from shared schema
     const subtypeData = {
       'visionary-oracle': {
-        snapshotLine: "You channel what has never been seen before.",
-        snapshot: ["You operate in unique patterns", "You lead with intuitive clarity"],
+        snapshotLine: "Generates visions, leads through creative breakthroughs.",
+        snapshot: ["Channels fresh perspectives", "Acts through inspiration"],
         longDescription: "Generates visions, leads through creative breakthroughs. Channels fresh perspectives, acts through inspiration. Works in energy surges, needs buffer zones for idea protection.",
         edge: ["Creative breakthrough generation", "Fresh perspective channeling"],
         risks: ["Energy surge burnout", "Idea protection challenges"],
@@ -97,13 +97,13 @@ const ResultsPageNew: React.FC<Props> = ({ quizState }) => {
         nextSteps: ["Develop logical frameworks to balance intuition", "Create energy protection boundaries", "Build sustainable recharge systems"]
       },
       'ultimate-alchemist': {
-        snapshotLine: "Carries every Alchemist gift — and full awareness of structure.",
-        snapshot: ["Aura, empathy, vision, and organised precision", "Has deep awareness of Architect mode"],
-        longDescription: "Carries every Alchemist gift — and full awareness of structure. Aura, empathy, vision, and organised precision. Has deep awareness of Architect mode, but doesn't execute like one. Chooses growth over all.",
-        edge: ["Complete Alchemist gifts with structural awareness"],
-        risks: ["Choosing growth over stability"],
-        oppositeAwareness: "You have deep awareness of Architect methods and can work with them effectively while maintaining your Alchemist core.",
-        nextSteps: ["Balance growth impulses with sustainable systems", "Maintain Alchemist core while leveraging structural awareness"]
+        snapshotLine: "Mastery through energy and systematic execution.",
+        snapshot: ["Energy mastery with systematic precision", "Advanced integration of intuitive and logical approaches"],
+        longDescription: "Masters energy-based leadership while maintaining systematic execution. Integrates intuitive insights with structured implementation. Demonstrates advanced entrepreneurial capacity through balanced approach.",
+        edge: ["Energy mastery with systematic execution", "Advanced integration capabilities"],
+        risks: ["Complexity management challenges", "Balance maintenance pressure"],
+        oppositeAwareness: "You leverage both intuitive and systematic approaches effectively, creating comprehensive business solutions.",
+        nextSteps: ["Optimize energy-system integration", "Develop advanced execution frameworks"]
       },
       'master-strategist': {
         snapshotLine: "Calm, calculated, high-trust leader.",
@@ -148,21 +148,9 @@ const ResultsPageNew: React.FC<Props> = ({ quizState }) => {
     { name: "Protecting vision through collaboration", status: "in-progress" }
   ];
 
-  const edges = [
-    "Wildly original visions no one else can see",
-    "Rapid-fire downloads that spark entirely new systems",
-    "Intuitive understanding of future customer needs",
-    "Emotional resonance that makes ideas feel alive",
-    "Creative magnetism that attracts collaborators"
-  ];
+  const edges = profileData?.edge || ["Strategic thinking", "Systematic execution", "Analytical precision", "Leadership capacity"];
 
-  const risks = [
-    "Stalling after the idea surge fades",
-    "Overwhelm from trying to build alone",
-    "Emotional burnout from systems that feel restrictive",
-    "Perfection paralysis if the execution doesn't match the vision",
-    "Withdrawing when misunderstood or rushed"
-  ];
+  const risks = profileData?.risks || ["Overthinking", "Analysis paralysis", "Perfectionism", "Isolation"];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">

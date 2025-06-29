@@ -35,10 +35,10 @@ export const PROFILE_DESCRIPTIONS = {
 
   // Alchemist Subtypes
   'Visionary Oracle': {
-    description: "You don't build what exists — you channel what's never been seen.",
-    longDescription: "The Visionary Oracle doesn't follow trends — they download them from the future. Your ideas come fast, fully formed, and breathtaking — but building them often feels like working backwards.",
-    edge: ["Wildly original visions no one else can see", "Rapid-fire downloads that spark entirely new systems", "Intuitive understanding of future customer needs", "Emotional resonance that makes ideas feel alive", "Creative magnetism that attracts collaborators"],
-    risks: ["Stalling after the idea surge fades", "Overwhelm from trying to build alone", "Emotional burnout from systems that feel restrictive", "Perfection paralysis if the execution doesn't match the vision", "Withdrawing when misunderstood or rushed"],
+    description: "Generates visions, leads through creative breakthroughs.",
+    longDescription: "Generates visions, leads through creative breakthroughs. Channels fresh perspectives, acts through inspiration. Works in energy surges, needs buffer zones for idea protection.",
+    edge: ["Creative breakthrough generation", "Fresh perspective channeling", "Energy-based innovation", "Inspirational leadership"],
+    risks: ["Energy surge burnout", "Idea protection challenges", "Overwhelm from building alone", "Vision-execution gap stress"],
     complement: "Systemised Builder",
     icon: "",
     milestoneTracker: {
@@ -50,8 +50,8 @@ export const PROFILE_DESCRIPTIONS = {
       "Protecting vision through collaboration": "in-progress"
     },
     growthMission: {
-      title: "Build the Future Without Burning Out",
-      text: "Your ideas don't need containment — they need intelligent containers. Build systems that hold your frequency without dimming it. You're not meant to scale by grinding — you're meant to expand through alignment. Let's build it your way — for real this time."
+      title: "Scale Through Vision and Structure",
+      text: "Your creative breakthroughs are your competitive advantage. Build sustainable systems that support your energy surges rather than drain them. Focus on creating frameworks that amplify your vision while protecting your innovative capacity."
     },
     complementaryOpposite: {
       name: "The Systemised Builder",
@@ -68,11 +68,11 @@ export const PROFILE_DESCRIPTIONS = {
       }
     },
     whatYouNeedNext: [
-      "Build scaffolding for your vision, not walls",
-      "Create MVPs that reflect essence, not polish",
-      "Protect idea surges with buffer zones and rest",
-      "Co-create with those who can simplify your sparks",
-      "Build backward from resonance, not just roadmap"
+      "Develop sustainable systems for creative breakthroughs",
+      "Build energy-supporting operational frameworks", 
+      "Create buffer zones to protect innovative capacity",
+      "Partner with execution-focused collaborators",
+      "Establish rhythm-based planning processes"
     ]
   },
   'Magnetic Perfectionist': {
