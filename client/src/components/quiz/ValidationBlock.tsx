@@ -19,7 +19,7 @@ const getValidationQuestions = (subtype: SubtypeType): Question[] => {
   return [
     {
       id: 'Q19',
-      text: `As a ${subtype}, how often do you find yourself in your natural flow state?`,
+      text: `How often do you find yourself in your natural entrepreneurial flow state?`,
       options: [
         { text: 'Almost always - this resonates completely', subtype: subtype, insight: 'Strong alignment' },
         { text: 'Often - this feels mostly right', subtype: subtype, insight: 'Good alignment' },
@@ -29,7 +29,7 @@ const getValidationQuestions = (subtype: SubtypeType): Question[] => {
     },
     {
       id: 'Q20',
-      text: `When others describe your ${subtype} traits, do you recognize yourself?`,
+      text: `When others describe your entrepreneurial traits, do you recognize yourself?`,
       options: [
         { text: 'Absolutely - they see the real me', subtype: subtype, insight: 'Strong recognition' },
         { text: 'Mostly - with some variations', subtype: subtype, insight: 'Good recognition' },

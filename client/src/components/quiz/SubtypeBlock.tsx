@@ -494,7 +494,7 @@ const SubtypeBlock: React.FC<Props> = ({ defaultDNA, pathChoice, onComplete, rec
     <div className="p-8">
       <CardHeader className="text-center pb-6">
         <CardTitle className="text-2xl font-bold text-gray-800 mb-2">
-          {defaultDNA} • {pathChoice === 'Early' ? 'Early-stage' : 'Developed'} Entrepreneur
+          Subtype Assessment
         </CardTitle>
         <div className="mb-4">
           <Progress value={progress} className="w-full h-2" />

@@ -270,8 +270,6 @@ const AwarenessBlock: React.FC<Props> = ({ defaultDNA, onComplete, recordAnswer 
   };
 
   const progress = ((currentQuestion + 1) / questions.length) * 100;
-  const oppositeType = defaultDNA === 'Architect' ? 'Alchemist' : 
-                      defaultDNA === 'Alchemist' ? 'Architect' : 'Opposite';
 
   if (isAnalyzing) {
     return (
@@ -279,9 +277,9 @@ const AwarenessBlock: React.FC<Props> = ({ defaultDNA, onComplete, recordAnswer 
         <div className="mb-8">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <h2 className="text-2xl font-bold text-gray-800 mb-2">
-            Detecting awareness levels of the opposite…
+            Analyzing your awareness levels…
           </h2>
-          <p className="text-gray-600">Analyzing your understanding of {oppositeType} mode</p>
+          <p className="text-gray-600">Processing your entrepreneurial awareness</p>
         </div>
       </CardContent>
     );
@@ -291,7 +289,7 @@ const AwarenessBlock: React.FC<Props> = ({ defaultDNA, onComplete, recordAnswer 
     <div className="p-8">
       <CardHeader className="text-center pb-6">
         <CardTitle className="text-2xl font-bold text-gray-800 mb-2">
-          Understanding Your Opposite: {oppositeType}
+          Awareness Assessment
         </CardTitle>
         <div className="mb-4">
           <Progress value={progress} className="w-full h-2" />
