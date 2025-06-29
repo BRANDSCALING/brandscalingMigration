@@ -1175,9 +1175,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       nextRetakeDate.setDate(nextRetakeDate.getDate() + 30);
 
       res.json({
-        ...quizResult,
+        dnaType: defaultType,
+        subtype: subtype,
+        awarenessPercentage: awarenessPercentage,
+        answers: answers,
+        scores: {
+          architect: architectCount,
+          alchemist: alchemistCount,
+          blurred: blurredCount,
+          neutral: neutralCount
+        },
         canRetake: false,
-        nextRetakeDate: nextRetakeDate.toISOString()
+        nextRetakeDate: nextRetakeDate.toISOString(),
+        insights: null
       });
     } catch (error) {
       console.error("Error submitting Entrepreneurial DNA quiz:", error);
