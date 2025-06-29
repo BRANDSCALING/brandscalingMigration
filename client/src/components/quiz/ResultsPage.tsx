@@ -100,13 +100,13 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
 
   return (
     <div className="p-8">
-      <CardHeader className="text-center pb-8">
-        <CardTitle className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-4">
+      <div className="text-center pb-8">
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-4">
           Your Entrepreneurial DNA Results
-        </CardTitle>
-      </CardHeader>
+        </h1>
+      </div>
 
-      <CardContent className="space-y-8">
+      <div className="space-y-8">
         {/* Default DNA Result */}
         <Card className="border-2 border-purple-200">
           <CardContent className="p-6">
@@ -225,8 +225,8 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
               ability to manifest your ideas at scale. You're not meant to become an Architect — 
               you're meant to hire or partner with one.
             </p>
-          </Card>
-        )}
+          </CardContent>
+        </Card>
 
         {/* Section 6: Your Edge */}
         <Card className="border-2 border-green-200">
@@ -238,7 +238,7 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
               ))}
             </ul>
           </CardContent>
-        )}
+        </Card>
 
         {/* Section 7: Risks & Blind Spots */}
         <Card className="border-2 border-red-200">
@@ -256,7 +256,7 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
               <p className="text-sm text-gray-700">You're not inconsistent — you're resonance-led.</p>
             </div>
           </CardContent>
-        )}
+        </Card>
 
         {/* Section 8: What You Need Next */}
         <Card className="border-2 border-blue-200">
@@ -270,7 +270,7 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
               <li>• Build backward from resonance, not just roadmap</li>
             </ul>
           </CardContent>
-        )}
+        </Card>
 
         {/* Section 9: CTA: Your Growth Mission */}
         <Card className="border-2 border-yellow-200">
@@ -484,7 +484,7 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
             Get Full Report
           </Button>
         </div>
-      </CardContent>
+      </div>
     </div>
   );
 };
