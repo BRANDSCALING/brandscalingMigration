@@ -948,27 +948,72 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let blurredCount = 0;
       let neutralCount = 0;
 
-      // Count each answer type - direct mapping since we know the answer types
+      // Your exact Q1-Q6 answer mappings
+      const questionMappings = {
+        'Q1': {
+          'A': 'architect',  // "I mentally run through what I need and pack once — essentials are covered."
+          'B': 'alchemist',  // "I write a full list, check everything off, repack a few times, still feel uneasy."
+          'C': 'blurred',    // "I throw things in last minute and trust it'll be fine."
+          'D': 'neutral'     // "I pack, unpack, and get overwhelmed deciding what I even need."
+        },
+        'Q2': {
+          'A': 'alchemist',  // "I'll express it — maybe now, maybe later — but it will come out"
+          'B': 'architect',  // "I won't say anything — they'll figure it out or I'll quietly move on."
+          'C': 'blurred',    // "I react suddenly, then second-guess if I was overdramatic."
+          'D': 'neutral'     // "I feel stuck about whether I should say something or not."
+        },
+        'Q3': {
+          'A': 'blurred',    // "I linger around and wait for someone to notice or invite me"
+          'B': 'alchemist',  // "I act on how I feel — I might blend in or suddenly become the centre of attention."
+          'C': 'architect',  // "I observe quietly, scan the room, and engage when it makes sense."
+          'D': 'neutral'     // "I'm unsure how to show up — I feel pressure to act right."
+        },
+        'Q4': {
+          'A': 'neutral',    // "I feel torn — I want to keep going but can't force myself either."
+          'B': 'alchemist',  // "I ask myself if the reason still matters — if not, I adjust without guilt."
+          'C': 'blurred',    // "I sleep in, feel bad, and try again tomorrow."
+          'D': 'architect'   // "I stick to it. Fatigue doesn't override commitment unless it's serious."
+        },
+        'Q5': {
+          'A': 'architect',  // "If the result is strong, I'm satisfied — no need to change anything."
+          'B': 'alchemist',  // "I immediately wonder how it could have been even better."
+          'C': 'blurred',    // "I feel good but uneasy — maybe I missed something important."
+          'D': 'neutral'     // "I can't tell if I'm happy or not — depends what others say."
+        },
+        'Q6': {
+          'A': 'architect',  // "I need to see a path or example — otherwise I'm not sure it's achievable."
+          'B': 'alchemist',  // "Even if no one's done it, I know it's possible — I just need the steps."
+          'C': 'blurred',    // "I doubt myself, but I still try in case it works out."
+          'D': 'neutral'     // "I switch between confidence and confusion depending on the day."
+        }
+      };
+
+      // Count answers using your exact mappings
       Object.entries(answers).forEach(([questionId, answerChoice]) => {
         console.log(`Processing ${questionId}: ${answerChoice}`);
         
-        // Direct type mapping based on your authentic quiz logic
-        const answerType = answerChoice as string;
-        switch (answerType.toLowerCase()) {
-          case 'architect':
-            architectCount++;
-            break;
-          case 'alchemist':
-            alchemistCount++;
-            break;
-          case 'blurred':
-            blurredCount++;
-            break;
-          case 'neutral':
-            neutralCount++;
-            break;
-          default:
-            console.log(`Unknown answer type: ${answerType}`);
+        const questionKey = questionId.toUpperCase();
+        const answerKey = (answerChoice as string).toUpperCase();
+        
+        if (questionMappings[questionKey] && questionMappings[questionKey][answerKey]) {
+          const answerType = questionMappings[questionKey][answerKey];
+          
+          switch (answerType) {
+            case 'architect':
+              architectCount++;
+              break;
+            case 'alchemist':
+              alchemistCount++;
+              break;
+            case 'blurred':
+              blurredCount++;
+              break;
+            case 'neutral':
+              neutralCount++;
+              break;
+          }
+        } else {
+          console.log(`Invalid question/answer combination: ${questionKey}/${answerKey}`);
         }
       });
 
