@@ -236,7 +236,75 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
     }
   },
 
-  // BLOCK 4: Q19-Q22 Validation Questions - Authentic User Questions
+  // BLOCK 4: Q13-Q18 Path Choice Questions - Your Authentic Questions
+  {
+    id: 13,
+    text: "When you envision your ideal business environment, what feels most authentic to you?",
+    category: 'pathChoice',
+    answers: {
+      A: { text: "A structured operation with clear systems and predictable outcomes", type: 'architect', weight: 1 },
+      B: { text: "A dynamic environment where innovation and inspiration drive daily decisions", type: 'alchemist', weight: 1 },
+      C: { text: "A balanced approach that adapts based on what the situation requires", type: 'neutral', weight: 1 },
+      D: { text: "I'm not sure - I see value in different approaches depending on circumstances", type: 'blurred', weight: 1 }
+    }
+  },
+  {
+    id: 14,
+    text: "How do you naturally approach making important business decisions?",
+    category: 'pathChoice',
+    answers: {
+      A: { text: "I analyze data, create frameworks, and follow proven methodologies", type: 'architect', weight: 1 },
+      B: { text: "I trust my intuition and consider the human impact of each choice", type: 'alchemist', weight: 1 },
+      C: { text: "I combine analytical thinking with creative insights", type: 'neutral', weight: 1 },
+      D: { text: "I often second-guess myself and struggle to commit to one approach", type: 'blurred', weight: 1 }
+    }
+  },
+  {
+    id: 15,
+    text: "What energizes you most about entrepreneurship?",
+    category: 'pathChoice',
+    answers: {
+      A: { text: "Building efficient systems that create consistent, scalable results", type: 'architect', weight: 1 },
+      B: { text: "Transforming lives and creating meaningful impact through innovative solutions", type: 'alchemist', weight: 1 },
+      C: { text: "The variety of challenges and opportunities to grow in different areas", type: 'neutral', weight: 1 },
+      D: { text: "I find different aspects energizing but also overwhelming at times", type: 'blurred', weight: 1 }
+    }
+  },
+  {
+    id: 16,
+    text: "When planning a new project, what's your natural starting point?",
+    category: 'pathChoice',
+    answers: {
+      A: { text: "Define clear objectives, create detailed timelines, and establish success metrics", type: 'architect', weight: 1 },
+      B: { text: "Envision the transformation it will create and let passion guide the planning", type: 'alchemist', weight: 1 },
+      C: { text: "Start with the big picture, then break it down into manageable steps", type: 'neutral', weight: 1 },
+      D: { text: "I often feel paralyzed by all the possibilities and struggle to begin", type: 'blurred', weight: 1 }
+    }
+  },
+  {
+    id: 17,
+    text: "How do you prefer to learn and develop new business skills?",
+    category: 'pathChoice',
+    answers: {
+      A: { text: "Through structured courses, proven frameworks, and systematic practice", type: 'architect', weight: 1 },
+      B: { text: "Through experimentation, mentorship, and following my curiosity", type: 'alchemist', weight: 1 },
+      C: { text: "Through a mix of formal learning and hands-on experience", type: 'neutral', weight: 1 },
+      D: { text: "I start many learning paths but struggle to maintain consistent progress", type: 'blurred', weight: 1 }
+    }
+  },
+  {
+    id: 18,
+    text: "What's your relationship with business planning and strategy?",
+    category: 'pathChoice',
+    answers: {
+      A: { text: "I thrive on detailed planning and strategic frameworks that guide execution", type: 'architect', weight: 1 },
+      B: { text: "I prefer flexible planning that leaves room for inspiration and pivots", type: 'alchemist', weight: 1 },
+      C: { text: "I appreciate planning but stay open to adjusting based on new insights", type: 'neutral', weight: 1 },
+      D: { text: "I struggle with planning - I either over-plan or wing it completely", type: 'blurred', weight: 1 }
+    }
+  },
+
+  // BLOCK 5: Q19-Q22 Validation Questions - Your Authentic Questions
   {
     id: 19,
     text: "You're given a blank room and asked to design it however you want — no deadline, no instructions, just freedom. What do you naturally do first?",
