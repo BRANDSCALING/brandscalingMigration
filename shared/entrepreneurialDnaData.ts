@@ -168,71 +168,71 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
     }
   },
 
-  // BLOCK 3: Q13-Q20 Subtype Detection for Architects
+  // BLOCK 3: Q7-Q12 Subtype Detection - Your Authentic Questions
   {
-    id: 13,
-    text: "You've just had an idea you're excited about, but you're not sure how to begin. What's your first move?",
+    id: 7,
+    text: "Looking at your business experience, what has been your strongest pattern?",
     category: 'subtype',
     answers: {
-      A: { text: "Creating breakthrough innovations and inspiring teams", type: 'architect', weight: 1 },
-      B: { text: "I outline the steps from A to Z and start mapping the tools or systems I'd need", type: 'architect', weight: 1 },
-      C: { text: "I write down everything I'd want it to include — even if I don't know how I'll get there yet", type: 'architect', weight: 1 },
-      D: { text: "I pause to define the real problem it solves before I do anything else", type: 'architect', weight: 1 }
+      A: { text: "Building and refining systems that deliver consistent results", type: 'architect', weight: 1 },
+      B: { text: "Creating breakthrough innovations and inspiring teams", type: 'alchemist', weight: 1 },
+      C: { text: "Making strategic decisions that positioned us ahead of competition", type: 'architect', weight: 1 },
+      D: { text: "Understanding complex business dynamics and optimizing them", type: 'architect', weight: 1 }
     }
   },
   {
-    id: 14,
-    text: "When leading a team, what comes most naturally to you?",
+    id: 8,
+    text: "You're leading a high-pressure project with tight deadlines. Your natural tendency is to:",
     category: 'subtype',
     answers: {
-      A: { text: "Maintaining the vision while empowering others to execute", type: 'architect', weight: 1 },
-      B: { text: "Getting hands-on to ensure quality and consistency", type: 'architect', weight: 1 },
-      C: { text: "Deep analysis to optimize team performance", type: 'architect', weight: 1 },
-      D: { text: "Calm delegation with clear accountability systems", type: 'architect', weight: 1 }
+      A: { text: "Break everything into clear phases and delegate systematically", type: 'architect', weight: 1 },
+      B: { text: "Rally the team around a compelling vision and keep energy high", type: 'alchemist', weight: 1 },
+      C: { text: "Focus on the critical path and remove bottlenecks efficiently", type: 'architect', weight: 1 },
+      D: { text: "Analyze what could go wrong and build contingencies", type: 'architect', weight: 1 }
     }
   },
   {
-    id: 15,
-    text: "What's your greatest strength in business?",
+    id: 9,
+    text: "When you think about scaling your business, what excites you most?",
     category: 'subtype',
     answers: {
-      A: { text: "Innovative thinking and breakthrough solutions", type: 'architect', weight: 1 },
-      B: { text: "Reliable execution and systematic building", type: 'architect', weight: 1 },
-      C: { text: "Deep analysis and strategic optimization", type: 'architect', weight: 1 },
-      D: { text: "Strategic precision with emotional intelligence", type: 'architect', weight: 1 }
+      A: { text: "Building repeatable systems that work without you", type: 'architect', weight: 1 },
+      B: { text: "Amplifying the positive impact on people's lives", type: 'alchemist', weight: 1 },
+      C: { text: "Achieving market leadership through strategic positioning", type: 'architect', weight: 1 },
+      D: { text: "Optimizing operations to maximum efficiency", type: 'architect', weight: 1 }
     }
   },
   {
-    id: 16,
-    text: "When you reflect on your biggest business wins, what stands out?",
+    id: 10,
+    text: "A major client gives you critical feedback about your service. Your first instinct is to:",
     category: 'subtype',
     answers: {
-      A: { text: "The innovative solutions we've created", type: 'architect', weight: 1 },
-      B: { text: "The systems and processes we built", type: 'architect', weight: 1 },
+      A: { text: "Document it systematically and improve the process", type: 'architect', weight: 1 },
+      B: { text: "Connect with them personally to understand the deeper need", type: 'alchemist', weight: 1 },
+      C: { text: "Assess if this represents a broader strategic issue", type: 'architect', weight: 1 },
+      D: { text: "Analyze the root cause and optimize the solution", type: 'architect', weight: 1 }
+    }
+  },
+  {
+    id: 11,
+    text: "You're designing a new offering for your market. What drives your decisions?",
+    category: 'subtype',
+    answers: {
+      A: { text: "How efficiently it can be delivered at scale", type: 'architect', weight: 1 },
+      B: { text: "How meaningfully it serves people's transformation", type: 'alchemist', weight: 1 },
+      C: { text: "How strategically it positions us in the market", type: 'architect', weight: 1 },
+      D: { text: "How perfectly it solves the core problem", type: 'architect', weight: 1 }
+    }
+  },
+  {
+    id: 12,
+    text: "When you reflect on your greatest business wins, what stands out?",
+    category: 'subtype',
+    answers: {
+      A: { text: "The systems and processes we built", type: 'architect', weight: 1 },
+      B: { text: "The lives and businesses we transformed", type: 'alchemist', weight: 1 },
       C: { text: "The strategic insights that drove success", type: 'architect', weight: 1 },
       D: { text: "The optimized outcomes we achieved", type: 'architect', weight: 1 }
-    }
-  },
-  {
-    id: 17,
-    text: "When facing a complex business challenge, your instinct is to:",
-    category: 'subtype',
-    answers: {
-      A: { text: "Find creative solutions others haven't considered", type: 'architect', weight: 1 },
-      B: { text: "Break it down into manageable, actionable steps", type: 'architect', weight: 1 },
-      C: { text: "Research all angles before making any moves", type: 'architect', weight: 1 },
-      D: { text: "Simplify the problem to its essential components", type: 'architect', weight: 1 }
-    }
-  },
-  {
-    id: 18,
-    text: "What drives your long-term business vision?",
-    category: 'subtype',
-    answers: {
-      A: { text: "Revolutionary impact and industry transformation", type: 'architect', weight: 1 },
-      B: { text: "Building something solid and dependable", type: 'architect', weight: 1 },
-      C: { text: "Creating the most efficient and optimized solution", type: 'architect', weight: 1 },
-      D: { text: "Sustainable competitive advantage through strategic positioning", type: 'architect', weight: 1 }
     }
   },
 

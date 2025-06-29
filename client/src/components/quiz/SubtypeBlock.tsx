@@ -33,7 +33,7 @@ const getSubtypeQuestions = (defaultDNA: DNAType, pathChoice: PathType): Questio
 interface SubtypeBlockProps {
   defaultDNA: DNAType;
   pathChoice: PathType;
-  onComplete: (subtype: SubtypeType) => void;
+  onComplete: (subtype: SubtypeType, subtypeProgress: number) => void;
   recordAnswer: (questionId: string, answer: string) => void;
 }
 
@@ -83,7 +83,8 @@ const SubtypeBlock: React.FC<SubtypeBlockProps> = ({
           subtypeCounts[a[0] as SubtypeType] > subtypeCounts[b[0] as SubtypeType] ? a : b
         )[0] as SubtypeType;
 
-        onComplete(dominantSubtype);
+        const subtypeProgress = Math.round((Object.values(newAnswers).length / questions.length) * 100);
+        onComplete(dominantSubtype, subtypeProgress);
       }, 2000);
     }
   };
