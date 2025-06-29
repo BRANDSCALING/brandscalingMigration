@@ -20,10 +20,10 @@ const getSubtypeQuestions = (defaultDNA: DNAType, pathChoice: PathType): Questio
         id: 'Q13',
         text: "You've just had an idea you're excited about, but you're not sure how to begin. What's your first move?",
         options: [
-          { text: 'I outline the steps from A to Z and start mapping the tools or systems I\'d need to deliver it properly.', subtype: 'Internal Analyzer' },
-          { text: 'I write down everything I\'d want it to include — even if I don\'t know how I\'ll get there yet.', subtype: 'Systemised Builder' },
-          { text: 'I sketch out a basic version and start testing how it might work.', subtype: 'Ultimate Strategist' },
-          { text: 'I pause to define the real problem it solves before I do anything else.', subtype: 'Master Strategist' }
+          { text: 'I outline the steps from A to Z and start mapping the tools or systems I\'d need to deliver it properly.', subtype: 'internal-analyzer' },
+          { text: 'I write down everything I\'d want it to include — even if I don\'t know how I\'ll get there yet.', subtype: 'systemised-builder' },
+          { text: 'I sketch out a basic version and start testing how it might work.', subtype: 'ultimate-strategist' },
+          { text: 'I pause to define the real problem it solves before I do anything else.', subtype: 'master-strategist' }
         ]
       },
       {

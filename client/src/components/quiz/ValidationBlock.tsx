@@ -15,46 +15,46 @@ interface Question {
 }
 
 const getValidationQuestions = (subtype: SubtypeType): Question[] => {
-  // Default fallback questions for all subtypes
+  // Return the authentic Q19-Q22 validation questions from user's data
   return [
     {
       id: 'Q19',
-      text: `How often do you find yourself in your natural entrepreneurial flow state?`,
+      text: 'How often do you feel like your authentic self when leading?',
       options: [
-        { text: 'Almost always - this resonates completely', subtype: subtype, insight: 'Strong alignment' },
-        { text: 'Often - this feels mostly right', subtype: subtype, insight: 'Good alignment' },
-        { text: 'Sometimes - partially accurate', subtype: subtype, insight: 'Moderate alignment' },
-        { text: 'Rarely - this doesn\'t feel like me', subtype: subtype, insight: 'Low alignment' }
+        { text: 'Often - this feels mostly right', subtype: 'architect', insight: 'Strong alignment' },
+        { text: 'Sometimes - depends on the situation', subtype: 'alchemist', insight: 'Good alignment' },
+        { text: 'Rarely - I often feel like I\'m performing', subtype: 'blurred', insight: 'Moderate alignment' },
+        { text: 'Never - I don\'t know who my authentic self is', subtype: 'neutral', insight: 'Low alignment' }
       ]
     },
     {
       id: 'Q20',
-      text: `When others describe your entrepreneurial traits, do you recognize yourself?`,
+      text: 'When others describe your leadership style, do they see the real you?',
       options: [
-        { text: 'Absolutely - they see the real me', subtype: subtype, insight: 'Strong recognition' },
-        { text: 'Mostly - with some variations', subtype: subtype, insight: 'Good recognition' },
-        { text: 'Somewhat - mixed recognition', subtype: subtype, insight: 'Moderate recognition' },
-        { text: 'Not really - feels disconnected', subtype: subtype, insight: 'Low recognition' }
+        { text: 'Absolutely - they see the real me', subtype: 'architect', insight: 'Strong recognition' },
+        { text: 'Mostly - with some adjustments for context', subtype: 'alchemist', insight: 'Good recognition' },
+        { text: 'Sometimes - I adapt depending on who I\'m with', subtype: 'blurred', insight: 'Moderate recognition' },
+        { text: 'Rarely - I feel like I\'m always adjusting', subtype: 'neutral', insight: 'Low recognition' }
       ]
     },
     {
       id: 'Q21',
-      text: 'Do you ever suppress or hide aspects of your natural entrepreneurial style?',
+      text: 'How connected do you feel to your natural operating style?',
       options: [
-        { text: 'Never - I\'m authentic in all situations', subtype: subtype, insight: 'Full authenticity' },
-        { text: 'Rarely - only in specific contexts', subtype: subtype, insight: 'Mostly authentic' },
-        { text: 'Sometimes - when it feels necessary', subtype: subtype, insight: 'Contextual suppression' },
-        { text: 'Often - I feel pressure to conform', subtype: subtype, insight: 'Regular suppression' }
+        { text: 'Very connected - I know how I naturally operate', subtype: 'architect', insight: 'Full authenticity' },
+        { text: 'Somewhat connected - I\'m still figuring it out', subtype: 'alchemist', insight: 'Mostly authentic' },
+        { text: 'Rarely - only in specific contexts', subtype: 'blurred', insight: 'Contextual suppression' },
+        { text: 'Disconnected - I feel lost about my natural style', subtype: 'neutral', insight: 'Regular suppression' }
       ]
     },
     {
       id: 'Q22',
-      text: 'How aligned do you feel between your inner entrepreneur and outer actions?',
+      text: 'When you think about your current business approach, how does it feel?',
       options: [
-        { text: 'Completely aligned - no internal conflict', subtype: subtype, insight: 'Full alignment' },
-        { text: 'Mostly aligned - minor adjustments needed', subtype: subtype, insight: 'Good alignment' },
-        { text: 'Somewhat aligned - working on integration', subtype: subtype, insight: 'Moderate alignment' },
-        { text: 'Misaligned - significant gaps exist', subtype: subtype, insight: 'Low alignment' }
+        { text: 'Fully aligned - this is exactly how I want to operate', subtype: 'architect', insight: 'Perfect alignment' },
+        { text: 'Mostly aligned - minor adjustments needed', subtype: 'alchemist', insight: 'Good alignment' },
+        { text: 'Somewhat misaligned - something feels off', subtype: 'blurred', insight: 'Moderate alignment' },
+        { text: 'Completely misaligned - this doesn\'t feel like me', subtype: 'neutral', insight: 'Poor alignment' }
       ]
     }
   ];
