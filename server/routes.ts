@@ -979,14 +979,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       if (architectCount >= 4) {
         defaultType = 'Architect';
-        subtype = 'Master Strategist'; // Default architect subtype
+        // Architect subtypes: Master Strategist, Systemised Builder, Internal Analyzer, Ultimate Strategist
+        const architectSubtypes = ['Master Strategist', 'Systemised Builder', 'Internal Analyzer', 'Ultimate Strategist'];
+        subtype = architectSubtypes[Math.floor(Math.random() * architectSubtypes.length)];
         awarenessPercentage = 60;
       } else if (alchemistCount >= 4) {
         defaultType = 'Alchemist';
-        subtype = 'Visionary Oracle'; // Default alchemist subtype
+        // Alchemist subtypes: Visionary Oracle, Magnetic Perfectionist, Energetic Empath, Ultimate Alchemist
+        const alchemistSubtypes = ['Visionary Oracle', 'Magnetic Perfectionist', 'Energetic Empath', 'Ultimate Alchemist'];
+        subtype = alchemistSubtypes[Math.floor(Math.random() * alchemistSubtypes.length)];
         awarenessPercentage = 50;
+      } else {
+        // Blurred DNA subtypes: Overthinker, Performer, Self-Forsaker, Self-Betrayer
+        const blurredSubtypes = ['Overthinker', 'Performer', 'Self-Forsaker', 'Self-Betrayer'];
+        subtype = blurredSubtypes[Math.floor(Math.random() * blurredSubtypes.length)];
+        awarenessPercentage = 20;
       }
-      // Blurred DNA types should NOT have subtypes
 
       console.log('Final scores:', {
         architect: architectCount,
