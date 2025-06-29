@@ -5,7 +5,7 @@ import { apiRequest } from '@/lib/queryClient';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { ENTREPRENEURIAL_DNA_QUESTIONS, getDynamicSubtypeQuestions } from '@/../../shared/entrepreneurialDnaData';
+import { ENTREPRENEURIAL_DNA_QUESTIONS } from '@/../../shared/entrepreneurialDnaData';
 import ResultsPage from '@/components/quiz/ResultsPage';
 import AnalysisBlock from '@/components/quiz/AnalysisBlock';
 import { DNAType, QuizState } from '@/components/quiz/QuizContainer';
@@ -121,7 +121,7 @@ export default function EntrepreneurialDnaQuiz() {
       setCurrentQuestionIndex(prev => prev + 1);
     } else {
       // All 22 questions completed, calculate results
-      submitQuiz();
+      calculateResults();
     }
   };
 
@@ -300,7 +300,7 @@ export default function EntrepreneurialDnaQuiz() {
               disabled={!currentAnswer}
               className="bg-purple-600 hover:bg-purple-700"
             >
-              {currentQuestionIndex === ENTREPRENEURIAL_DNA_QUESTIONS.length - 1 ? 'Complete Quiz' : 'Next'}
+              {currentQuestionIndex === questions.length - 1 ? 'Complete Quiz' : 'Next'}
             </Button>
           </div>
         </div>
