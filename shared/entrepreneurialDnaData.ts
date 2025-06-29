@@ -253,10 +253,10 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
     text: "Think back to your school years. How did you usually approach a long homework assignment?",
     category: 'validation',
     answers: {
-      A: { text: "I waited until inspiration hit, then worked in a creative sprint.", type: 'visionary-oracle', weight: 1 },
-      B: { text: "I wrote and rewrote sections until it was perfect — even if it was last minute.", type: 'magnetic-perfectionist', weight: 1 },
-      C: { text: "I mapped the sections, added energy when I felt aligned, and adjusted as I went.", type: 'ultimate-alchemist', weight: 1 },
-      D: { text: "I needed to be alone, clear the space, and feel right before even beginning.", type: 'energetic-empath', weight: 1 }
+      A: { text: "I waited until inspiration hit, then worked in a creative sprint.", type: 'alchemist', weight: 1 },
+      B: { text: "I wrote and rewrote sections until it was perfect — even if it was last minute.", type: 'blurred', weight: 1 },
+      C: { text: "I mapped the sections, added energy when I felt aligned, and adjusted as I went.", type: 'architect', weight: 1 },
+      D: { text: "I needed to be alone, clear the space, and feel right before even beginning.", type: 'alchemist', weight: 1 }
     }
   },
   {
@@ -264,10 +264,10 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
     text: "When asked to clean your room or organise your space as a child, what best describes your approach?",
     category: 'validation',
     answers: {
-      A: { text: "I did it in one big emotional burst — the chaos would build until I had to act.", type: 'visionary-oracle', weight: 1 },
-      B: { text: "I made a plan or system first, then tackled it piece by piece.", type: 'ultimate-alchemist', weight: 1 },
-      C: { text: "I felt overwhelmed unless the mood or energy felt right.", type: 'energetic-empath', weight: 1 },
-      D: { text: "I cleaned while imagining how I wanted it to look when done — I needed to see it first.", type: 'magnetic-perfectionist', weight: 1 }
+      A: { text: "I did it in one big emotional burst — the chaos would build until I had to act.", type: 'alchemist', weight: 1 },
+      B: { text: "I made a plan or system first, then tackled it piece by piece.", type: 'architect', weight: 1 },
+      C: { text: "I felt overwhelmed unless the mood or energy felt right.", type: 'alchemist', weight: 1 },
+      D: { text: "I cleaned while imagining how I wanted it to look when done — I needed to see it first.", type: 'blurred', weight: 1 }
     }
   },
   {
@@ -275,10 +275,10 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
     text: "You're learning a new skill (e.g., cooking, driving, drawing). Which learning pattern is most natural for you?",
     category: 'validation',
     answers: {
-      A: { text: "I research first, then repeat steps until it feels mastered.", type: 'magnetic-perfectionist', weight: 1 },
-      B: { text: "I learn by doing — I just start and fix mistakes as I go.", type: 'visionary-oracle', weight: 1 },
-      C: { text: "I learn when I feel connected to what I'm doing — if the energy's off, I can't focus.", type: 'energetic-empath', weight: 1 },
-      D: { text: "I see the end result in my head first, then I try to recreate it immediately.", type: 'ultimate-alchemist', weight: 1 }
+      A: { text: "I research first, then repeat steps until it feels mastered.", type: 'architect', weight: 1 },
+      B: { text: "I learn by doing — I just start and fix mistakes as I go.", type: 'alchemist', weight: 1 },
+      C: { text: "I learn when I feel connected to what I'm doing — if the energy's off, I can't focus.", type: 'alchemist', weight: 1 },
+      D: { text: "I see the end result in my head first, then I try to recreate it immediately.", type: 'blurred', weight: 1 }
     }
   }
 ];
