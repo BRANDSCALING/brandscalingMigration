@@ -75,7 +75,8 @@ const ResultsPageNew: React.FC<Props> = ({ quizState }) => {
         longDescription: "Generates visions, leads through creative breakthroughs. Channels fresh perspectives, acts through inspiration. Works in energy surges, needs buffer zones for idea protection.",
         edge: ["Creative breakthrough generation", "Fresh perspective channeling"],
         risks: ["Energy surge burnout", "Idea protection challenges"],
-        oppositeAwareness: "You admire structured systems but resist rigid implementation. You're learning to build containers that protect your vision rather than constrain it."
+        oppositeAwareness: "You admire structured systems but resist rigid implementation. You're learning to build containers that protect your vision rather than constrain it.",
+        nextSteps: ["Build scaffolding for your vision, not walls", "Create MVPs that reflect essence, not polish", "Protect idea surges with buffer zones"]
       },
       'magnetic-perfectionist': {
         snapshotLine: "Organised to deliver aligned perfection.",
@@ -83,7 +84,8 @@ const ResultsPageNew: React.FC<Props> = ({ quizState }) => {
         longDescription: "Organised to deliver aligned perfection. Trained to finish what she starts. Creates emotional structure, not logic. Seeks refined perfection and can't deliver anything less.",
         edge: ["Emotional structure", "Consistent delivery"],
         risks: ["Over-ownership", "Impossibly high standards"],
-        oppositeAwareness: "You appreciate logical frameworks but lead through emotional precision. Structure serves your standards, not the other way around."
+        oppositeAwareness: "You appreciate logical frameworks but lead through emotional precision. Structure serves your standards, not the other way around.",
+        nextSteps: ["Find collaborators who match delivery frequency", "Create emotional structure systems", "Balance perfectionism with progress"]
       },
       'energetic-empath': {
         snapshotLine: "Heals with energy, absorbs with intensity.",
@@ -91,7 +93,8 @@ const ResultsPageNew: React.FC<Props> = ({ quizState }) => {
         longDescription: "Heals with energy, absorbs with intensity. Radiates energy and uplifts others. Absorbs emotional weight, has high recharge needs. Needs clear logic to counter intuitive bias.",
         edge: ["Energy healing", "Emotional uplift"],
         risks: ["Emotional absorption", "Burnout from others' energy"],
-        oppositeAwareness: "You need logical frameworks to balance your intuitive nature. Clear systems help you manage your empathic abilities without overwhelm."
+        oppositeAwareness: "You need logical frameworks to balance your intuitive nature. Clear systems help you manage your empathic abilities without overwhelm.",
+        nextSteps: ["Develop logical frameworks to balance intuition", "Create energy protection boundaries", "Build sustainable recharge systems"]
       },
       'ultimate-alchemist': {
         snapshotLine: "Carries every Alchemist gift — and full awareness of structure.",
@@ -369,9 +372,9 @@ const ResultsPageNew: React.FC<Props> = ({ quizState }) => {
           </ul>
           
           <div className="mt-6 p-4 bg-red-50 rounded-lg">
-            <p className="font-medium text-red-800 mb-2">Mini Reflection:</p>
-            <p className="text-red-700">You're not scattered — you're nonlinear.</p>
-            <p className="text-red-700">You're not inconsistent — you're resonance-led.</p>
+            <p className="font-medium text-red-800 mb-2">Key Insight:</p>
+            <p className="text-red-700">Your challenges aren't weaknesses — they're signals for growth.</p>
+            <p className="text-red-700">Understanding these patterns helps you build sustainable systems.</p>
           </div>
         </Card>
 
@@ -394,18 +397,17 @@ const ResultsPageNew: React.FC<Props> = ({ quizState }) => {
 
         {/* Growth Mission */}
         <Card className="p-6 bg-gradient-to-r from-green-50 to-blue-50">
-          <h3 className="text-xl font-bold mb-4">CTA: Your Growth Mission</h3>
+          <h3 className="text-xl font-bold mb-4">Your Next Step Forward</h3>
           <div className="space-y-4">
             <div>
-              <h4 className="font-bold text-lg">Title: "Build the Future Without Burning Out"</h4>
+              <h4 className="font-bold text-lg">Ready to Scale Authentically?</h4>
             </div>
             <div>
-              <p className="font-medium">Mission Text:</p>
-              <p className="text-gray-700">Your ideas don't need containment — they need intelligent containers.</p>
+              <p className="text-gray-700">Your entrepreneurial DNA is your competitive advantage.</p>
+              <p className="text-gray-700">Building a business that honors your natural operating system creates sustainable success.</p>
             </div>
-            <p className="text-gray-700">Build systems that hold your frequency without dimming it.</p>
-            <p className="text-gray-700">You're not meant to scale by grinding — you're meant to expand through alignment.</p>
-            <p className="text-gray-700 font-medium">Let's build it your way — for real this time.</p>
+            <p className="text-gray-700">The most successful entrepreneurs don't fight their nature — they leverage it.</p>
+            <p className="text-gray-700 font-medium">Your assessment shows exactly how to build from your strengths.</p>
           </div>
         </Card>
 
