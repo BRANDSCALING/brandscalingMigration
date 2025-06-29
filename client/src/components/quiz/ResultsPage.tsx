@@ -133,9 +133,9 @@ const ResultsPageNew: React.FC<Props> = ({ quizState }) => {
             <h2 className="text-3xl font-bold">Your Entrepreneurial DNA Result</h2>
             <div className="space-y-2">
               <p className="text-xl opacity-90">Your Default DNA: {defaultDNA || 'Processing...'}</p>
-              {subtype && <p className="text-2xl font-bold">Your Sub-DNA: {subtype}</p>}
+              {subtype && defaultDNA !== 'Blurred' && <p className="text-2xl font-bold">Your Sub-DNA: {subtype}</p>}
             </div>
-            {subtype && (
+            {subtype && defaultDNA !== 'Blurred' && (
               <div className="bg-white/10 rounded-lg p-4 mt-6">
                 <p className="text-lg font-medium mb-2">1-line energetic resonance:</p>
                 <p className="text-xl italic">"{getProfileData(subtype).snapshotLine || 'You channel what has never been seen before.'}"</p>
@@ -202,8 +202,8 @@ const ResultsPageNew: React.FC<Props> = ({ quizState }) => {
           </div>
         </Card>
 
-        {/* Subtype Section */}
-        {subtype && (
+        {/* Subtype Section - Only show for Architect/Alchemist, NOT for Blurred */}
+        {subtype && defaultDNA !== 'Blurred' && (
           <Card className="p-6">
             <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
               <Lightbulb className="w-5 h-5 text-yellow-500" />
@@ -245,8 +245,8 @@ const ResultsPageNew: React.FC<Props> = ({ quizState }) => {
           </Card>
         )}
 
-        {/* Core Identity */}
-        {subtype && (
+        {/* Core Identity - Only show for Architect/Alchemist with subtypes */}
+        {subtype && defaultDNA !== 'Blurred' && (
           <Card className="p-6">
             <h3 className="text-xl font-bold mb-4">Core Identity Paragraph:</h3>
             <p className="text-gray-700 leading-relaxed">

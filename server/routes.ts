@@ -973,26 +973,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       // Apply user's scoring rules
-      let defaultType = 'Blurred Identity';
+      let defaultType = 'Blurred';
+      let subtype = '';
+      let awarenessPercentage = 20;
+
       if (architectCount >= 4) {
         defaultType = 'Architect';
+        subtype = 'Master Strategist'; // Default architect subtype
+        awarenessPercentage = 60;
       } else if (alchemistCount >= 4) {
         defaultType = 'Alchemist';
+        subtype = 'Visionary Oracle'; // Default alchemist subtype
+        awarenessPercentage = 50;
       }
+      // Blurred DNA types should NOT have subtypes
 
       console.log('Final scores:', {
         architect: architectCount,
         alchemist: alchemistCount,
         blurred: blurredCount,
         neutral: neutralCount,
-        result: defaultType
+        result: defaultType,
+        subtype: subtype
       });
 
       // Prepare result object
       const quizResult = {
         defaultType,
-        subtype: '',
-        awarenessPercentage: 85,
+        subtype,
+        awarenessPercentage,
         answers: answers,
         scores: {
           architect: architectCount,
