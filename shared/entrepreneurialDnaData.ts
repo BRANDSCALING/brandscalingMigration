@@ -171,74 +171,19 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
   // BLOCK 3: Q13-Q18 Path Choice Questions - Your Authentic Questions
   {
     id: 13,
-    text: "When you think about your ideal business model, what draws you most?",
+    text: "When you envision your ideal business environment, what feels most authentic to you?",
     category: 'subtype',
     answers: {
-      A: { text: "Building repeatable systems that scale efficiently", type: 'architect', weight: 1 },
-      B: { text: "Creating experiences that deeply impact people", type: 'alchemist', weight: 1 },
-      C: { text: "Optimizing complex processes for maximum results", type: 'architect', weight: 1 },
-      D: { text: "Innovating solutions that haven't been tried before", type: 'alchemist', weight: 1 }
-    }
-  },
-  {
-    id: 14,
-    text: "You're leading a high-pressure project with tight deadlines. Your natural tendency is to:",
-    category: 'subtype',
-    answers: {
-      A: { text: "Break everything into clear phases and delegate systematically", type: 'architect', weight: 1 },
-      B: { text: "Rally the team around a compelling vision and keep energy high", type: 'alchemist', weight: 1 },
-      C: { text: "Focus on the critical path and remove bottlenecks efficiently", type: 'architect', weight: 1 },
-      D: { text: "Analyze what could go wrong and build contingencies", type: 'architect', weight: 1 }
-    }
-  },
-  {
-    id: 15,
-    text: "When you think about scaling your business, what excites you most?",
-    category: 'subtype',
-    answers: {
-      A: { text: "Building repeatable systems that work without you", type: 'architect', weight: 1 },
-      B: { text: "Amplifying the positive impact on people's lives", type: 'alchemist', weight: 1 },
-      C: { text: "Achieving market leadership through strategic positioning", type: 'architect', weight: 1 },
-      D: { text: "Optimizing operations to maximum efficiency", type: 'architect', weight: 1 }
-    }
-  },
-  {
-    id: 16,
-    text: "A major client gives you critical feedback about your service. Your first instinct is to:",
-    category: 'subtype',
-    answers: {
-      A: { text: "Document it systematically and improve the process", type: 'architect', weight: 1 },
-      B: { text: "Connect with them personally to understand the deeper need", type: 'alchemist', weight: 1 },
-      C: { text: "Assess if this represents a broader strategic issue", type: 'architect', weight: 1 },
-      D: { text: "Analyze the root cause and optimize the solution", type: 'architect', weight: 1 }
-    }
-  },
-  {
-    id: 17,
-    text: "You're designing a new offering for your market. What drives your decisions?",
-    category: 'subtype',
-    answers: {
-      A: { text: "How efficiently it can be delivered at scale", type: 'architect', weight: 1 },
-      B: { text: "How meaningfully it serves people's transformation", type: 'alchemist', weight: 1 },
-      C: { text: "How strategically it positions us in the market", type: 'architect', weight: 1 },
-      D: { text: "How perfectly it solves the core problem", type: 'architect', weight: 1 }
-    }
-  },
-  {
-    id: 18,
-    text: "When you reflect on your greatest business wins, what stands out?",
-    category: 'subtype',
-    answers: {
-      A: { text: "The systems and processes we built", type: 'architect', weight: 1 },
-      B: { text: "The lives and businesses we transformed", type: 'alchemist', weight: 1 },
-      C: { text: "The strategic insights that drove success", type: 'architect', weight: 1 },
-      D: { text: "The optimized outcomes we achieved", type: 'architect', weight: 1 }
+      A: { text: "A structured operation with clear systems and predictable outcomes", type: 'architect', weight: 1 },
+      B: { text: "A dynamic environment where innovation and inspiration drive daily decisions", type: 'alchemist', weight: 1 },
+      C: { text: "A balanced approach that adapts based on what the situation requires", type: 'neutral', weight: 1 },
+      D: { text: "I'm not sure - I see value in different approaches depending on circumstances", type: 'blurred', weight: 1 }
     }
   },
   {
     id: 14,
     text: "How do you naturally approach making important business decisions?",
-    category: 'pathChoice',
+    category: 'subtype',
     answers: {
       A: { text: "I analyze data, create frameworks, and follow proven methodologies", type: 'architect', weight: 1 },
       B: { text: "I trust my intuition and consider the human impact of each choice", type: 'alchemist', weight: 1 },
@@ -249,7 +194,7 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
   {
     id: 15,
     text: "What energizes you most about entrepreneurship?",
-    category: 'pathChoice',
+    category: 'subtype',
     answers: {
       A: { text: "Building efficient systems that create consistent, scalable results", type: 'architect', weight: 1 },
       B: { text: "Transforming lives and creating meaningful impact through innovative solutions", type: 'alchemist', weight: 1 },
@@ -260,7 +205,7 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
   {
     id: 16,
     text: "When planning a new project, what's your natural starting point?",
-    category: 'pathChoice',
+    category: 'subtype',
     answers: {
       A: { text: "Define clear objectives, create detailed timelines, and establish success metrics", type: 'architect', weight: 1 },
       B: { text: "Envision the transformation it will create and let passion guide the planning", type: 'alchemist', weight: 1 },
@@ -271,7 +216,7 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
   {
     id: 17,
     text: "How do you prefer to learn and develop new business skills?",
-    category: 'pathChoice',
+    category: 'subtype',
     answers: {
       A: { text: "Through structured courses, proven frameworks, and systematic practice", type: 'architect', weight: 1 },
       B: { text: "Through experimentation, mentorship, and following my curiosity", type: 'alchemist', weight: 1 },
@@ -282,7 +227,7 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
   {
     id: 18,
     text: "What's your relationship with business planning and strategy?",
-    category: 'pathChoice',
+    category: 'subtype',
     answers: {
       A: { text: "I thrive on detailed planning and strategic frameworks that guide execution", type: 'architect', weight: 1 },
       B: { text: "I prefer flexible planning that leaves room for inspiration and pivots", type: 'alchemist', weight: 1 },
@@ -291,16 +236,16 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
     }
   },
 
-  // BLOCK 5: Q19-Q22 Validation Questions - Your Authentic Questions
+  // BLOCK 4: Q19-Q22 Validation Questions - Your Authentic Questions
   {
     id: 19,
     text: "You're given a blank room and asked to design it however you want — no deadline, no instructions, just freedom. What do you naturally do first?",
     category: 'validation',
     answers: {
-      A: { text: "I stand in the space and feel what it needs. Then I begin placing things intuitively.", type: 'energetic-empath', weight: 1 },
-      B: { text: "I imagine the finished look instantly, then begin collecting images or pieces to match the vision.", type: 'visionary-oracle', weight: 1 },
-      C: { text: "I begin sketching it out in a step-by-step plan so I don't waste energy.", type: 'ultimate-alchemist', weight: 1 },
-      D: { text: "I overthink each decision and delay starting until I'm sure it'll look right.", type: 'magnetic-perfectionist', weight: 1 }
+      A: { text: "I stand in the space and feel what it needs. Then I begin placing things intuitively.", type: 'alchemist', weight: 1 },
+      B: { text: "I imagine the finished look instantly, then begin collecting images or pieces to match the vision.", type: 'alchemist', weight: 1 },
+      C: { text: "I begin sketching it out in a step-by-step plan so I don't waste energy.", type: 'architect', weight: 1 },
+      D: { text: "I overthink each decision and delay starting until I'm sure it'll look right.", type: 'blurred', weight: 1 }
     }
   },
   {
@@ -374,7 +319,7 @@ export const DNA_SUBTYPES: Record<string, DNASubtype> = {
     coreIdentity: 'Heals with energy, absorbs with intensity. Radiates energy and uplifts others. Absorbs emotional weight, has high recharge needs. Needs clear logic to counter intuitive bias.',
     oppositeAwareness: 'Medium awareness of Architect traits',
     edge: 'Energy healing, emotional uplift',
-    risks: 'Emotional absorption, burnout from others\' energy',
+    risks: 'Emotional absorption, burnout from others energy',
     nextSteps: 'Develop logical frameworks to balance intuition'
   },
   'ultimate-alchemist': {
