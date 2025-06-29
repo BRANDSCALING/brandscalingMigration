@@ -14,7 +14,7 @@ interface Props {
   quizState: QuizState;
 }
 
-const ResultsPageNew: React.FC<Props> = ({ quizState }) => {
+const ResultsPage: React.FC<Props> = ({ quizState }) => {
   const { defaultDNA, awarenessScore, subtype, subtypeProgress } = quizState;
   const [, setLocation] = useLocation();
   const { toast } = useToast();
@@ -519,4 +519,4 @@ const ResultsPageNew: React.FC<Props> = ({ quizState }) => {
   );
 };
 
-export default ResultsPageNew;
+export default ResultsPage;

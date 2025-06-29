@@ -79,10 +79,8 @@ const ValidationBlock: React.FC<Props> = ({ subtype, onComplete, recordAnswer })
     if (currentQuestion < questions.length - 1) {
       setTimeout(() => setCurrentQuestion(currentQuestion + 1), 300);
     } else {
-      console.log('ValidationBlock: All questions answered, starting analysis');
       setIsAnalyzing(true);
       setTimeout(() => {
-        console.log('ValidationBlock: Analysis complete, calling onComplete');
         onComplete();
       }, 2000);
     }
