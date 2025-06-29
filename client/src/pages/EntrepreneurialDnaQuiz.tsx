@@ -111,11 +111,13 @@ export default function EntrepreneurialDnaQuiz() {
   };
 
   const handleValidationComplete = () => {
+    console.log('ValidationBlock completed - transitioning to results');
     setQuizState(prev => ({
       ...prev,
       currentStage: 'results'
     }));
     setCurrentStage('results');
+    console.log('Current stage set to results');
   };
 
   // Show loading state while checking eligibility
@@ -142,6 +144,9 @@ export default function EntrepreneurialDnaQuiz() {
       </div>
     );
   }
+
+  // Debug: Add stage indicator
+  console.log('Current quiz stage:', currentStage);
 
   // Render appropriate stage based on current stage
   const renderCurrentStage = () => {
@@ -203,6 +208,10 @@ export default function EntrepreneurialDnaQuiz() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100">
       <div className="container mx-auto px-4 py-8">
+        {/* Debug indicator */}
+        <div className="max-w-4xl mx-auto mb-4 p-2 bg-gray-800 text-white text-sm rounded">
+          Stage: {currentStage}
+        </div>
         <div className="max-w-4xl mx-auto">
           {renderCurrentStage()}
         </div>
