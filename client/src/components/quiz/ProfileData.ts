@@ -63,8 +63,8 @@ export const PROFILE_DESCRIPTIONS = {
       },
       whereTheyStruggle: {
         "Over-structuring": "Energetic innovation and iteration",
-        "Emotional disconnect": "Resonance and creative magnetism", 
-        "Routine burnout": "Passion, empathy, and vision"
+        "Emotional disconnect": "Energy-based leadership and creative innovation", 
+        "Routine burnout": "Passion-driven vision and empathetic guidance"
       }
     },
     whatYouNeedNext: [
@@ -76,10 +76,10 @@ export const PROFILE_DESCRIPTIONS = {
     ]
   },
   'Magnetic Perfectionist': {
-    description: "You don't polish to impress — you refine until it feels right.",
-    longDescription: "You see what others don't — the microscopic details that make an experience feel perfect. You don't create for applause — you create for resonance. What you ship must feel beautiful.",
-    edge: ["Emotional refinement", "Polished delivery that feels felt", "Natural taste for alignment", "Creative authority"],
-    risks: ["Stalling when something isn't aligned", "Over-tweaking past usefulness", "Hiding behind the work"],
+    description: "Refines until it feels right and resonates perfectly.",
+    longDescription: "Focuses on emotional refinement and polished delivery. Creates for resonance rather than applause. Ensures what is delivered feels beautiful and aligned.",
+    edge: ["Emotional refinement", "Quality-focused delivery", "Natural alignment instincts", "Authority through excellence"],
+    risks: ["Alignment-dependent progress", "Over-refinement tendencies", "Perfectionism delays"],
     complement: "Internal Analyzer",
     icon: ""
   },

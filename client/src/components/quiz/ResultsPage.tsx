@@ -139,14 +139,13 @@ const ResultsPageNew: React.FC<Props> = ({ quizState }) => {
   const oppositeType = defaultDNA === 'Architect' ? 'Alchemist' : 
                       defaultDNA === 'Alchemist' ? 'Architect' : 'Opposite';
 
-  const milestones = [
-    { name: "Finishing without burnout", status: "completed" },
-    { name: "Energy-first project planning", status: "completed" },
-    { name: "Aligned systems that mirror your rhythm", status: "completed" },
-    { name: "Delegation without disruption", status: "in-progress" },
-    { name: "Rhythmic recovery integration", status: "in-progress" },
-    { name: "Protecting vision through collaboration", status: "in-progress" }
-  ];
+  const milestones = profileData?.milestoneTracker ? 
+    Object.entries(profileData.milestoneTracker).map(([name, status]) => ({ name, status })) :
+    [
+      { name: "Strategic planning mastery", status: "completed" },
+      { name: "Systematic execution development", status: "in-progress" },
+      { name: "Analytical framework building", status: "in-progress" }
+    ];
 
   const edges = profileData?.edge || ["Strategic thinking", "Systematic execution", "Analytical precision", "Leadership capacity"];
 
