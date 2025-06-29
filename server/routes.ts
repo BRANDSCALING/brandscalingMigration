@@ -937,9 +937,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log('Processing answers:', answers);
       console.log('Answer count:', Object.keys(answers || {}).length);
       
-      if (!answers || Object.keys(answers).length < 22) {
-        console.log('Invalid answers - need exactly 22, got:', Object.keys(answers || {}).length);
-        return res.status(400).json({ message: 'Invalid answers provided - need exactly 22 answers' });
+      if (!answers || Object.keys(answers).length < 6) {
+        console.log('Invalid answers - need at least 6 for DEFAULT DNA calculation, got:', Object.keys(answers || {}).length);
+        return res.status(400).json({ message: 'Invalid answers provided - need at least 6 answers for DEFAULT DNA calculation' });
       }
 
       // Implement user's exact scoring logic
@@ -949,44 +949,91 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let neutralCount = 0;
 
       // Import and use your authentic quiz data
-      const { ENTREPRENEURIAL_DNA_QUESTIONS } = await import('../shared/entrepreneurialDnaData.js');
+      const { ENTREPRENEURIAL_DNA_QUESTIONS, getDynamicSubtypeQuestions } = await import('../shared/entrepreneurialDnaData.js');
       
-      // Count answers using your authentic Q1-Q22 questions
+      // First, calculate DEFAULT DNA type from Q1-Q6 answers only
+      let defaultArchitectCount = 0;
+      let defaultAlchemistCount = 0;
+      
+      for (let i = 1; i <= 6; i++) {
+        const answer = answers[i];
+        const question = ENTREPRENEURIAL_DNA_QUESTIONS.find(q => q.id === i);
+        if (question && answer) {
+          const answerKey = answer.toUpperCase() as 'A' | 'B' | 'C' | 'D';
+          const answerData = question.answers[answerKey];
+          if (answerData) {
+            if (answerData.type === 'architect') {
+              defaultArchitectCount++;
+            } else if (answerData.type === 'alchemist') {
+              defaultAlchemistCount++;
+            }
+          }
+        }
+      }
+      
+      // Calculate DEFAULT DNA type using exact scoring rule
+      let defaultDnaType: 'architect' | 'alchemist' | 'blurred';
+      if (defaultArchitectCount >= 4) {
+        defaultDnaType = 'architect';
+      } else if (defaultAlchemistCount >= 4) {
+        defaultDnaType = 'alchemist';
+      } else {
+        defaultDnaType = 'blurred';
+      }
+      
+      console.log('DEFAULT DNA calculation:', {
+        architectCount: defaultArchitectCount,
+        alchemistCount: defaultAlchemistCount,
+        defaultType: defaultDnaType
+      });
+      
+      // Generate the dynamic question set that was used
+      const subtypeQuestions = getDynamicSubtypeQuestions(defaultDnaType);
+      const baseQuestions = ENTREPRENEURIAL_DNA_QUESTIONS.slice(0, 6); // Q1-Q6
+      const awarenessQuestions = ENTREPRENEURIAL_DNA_QUESTIONS.slice(8, 12); // Q9-Q12
+      const pathChoiceQuestions = ENTREPRENEURIAL_DNA_QUESTIONS.slice(12, 18); // Q13-Q18
+      const validationQuestions = ENTREPRENEURIAL_DNA_QUESTIONS.slice(18, 22); // Q19-Q22
+      
+      const fullQuestionSet = [
+        ...baseQuestions,
+        ...subtypeQuestions, // Q7-Q14 (dynamic)
+        ...awarenessQuestions, // Q15-Q18
+        ...pathChoiceQuestions, // Q19-Q24
+        ...validationQuestions // Q25-Q28
+      ];
+      
+      // Now score all answers for final result calculation
       Object.entries(answers).forEach(([questionId, answerChoice]) => {
         console.log(`Processing ${questionId}: ${answerChoice}`);
         
-        // Find the question in your authentic data
-        const questionNumber = parseInt(questionId.replace('Q', ''));
-        const question = ENTREPRENEURIAL_DNA_QUESTIONS.find(q => q.id === questionNumber);
+        const questionNumber = parseInt(questionId);
+        const question = fullQuestionSet.find(q => q.id === questionNumber);
         
         if (question && answerChoice) {
           const answerKey = (answerChoice as string).toUpperCase() as 'A' | 'B' | 'C' | 'D';
           const answer = question.answers[answerKey];
           
           if (answer) {
-            // Handle Q19-Q22 validation questions with subtype-specific scoring
-            if (questionNumber >= 19 && questionNumber <= 22) {
-              // For validation questions, map subtype IDs to main DNA types
-              const subtypeToMainType: {[key: string]: string} = {
-                'energetic-empath': 'alchemist',
-                'visionary-oracle': 'alchemist', 
-                'magnetic-perfectionist': 'alchemist',
-                'ultimate-alchemist': 'alchemist',
-                'master-strategist': 'architect',
-                'systemised-builder': 'architect',
-                'internal-analyzer': 'architect',
-                'ultimate-strategist': 'architect'
-              };
-              
-              const mainType = subtypeToMainType[answer.type] || answer.type;
-              switch (mainType) {
-                case 'architect':
+            // For subtype questions (Q7-Q14), count towards specific subtypes
+            if (questionNumber >= 7 && questionNumber <= 14) {
+              // These are dynamic subtype questions - count the specific subtype
+              switch (answer.type) {
+                case 'master-strategist':
+                case 'systemised-builder':
+                case 'internal-analyzer':
+                case 'ultimate-strategist':
                   architectCount++;
                   break;
-                case 'alchemist':
+                case 'visionary-oracle':
+                case 'magnetic-perfectionist':
+                case 'energetic-empath':
+                case 'ultimate-alchemist':
                   alchemistCount++;
                   break;
-                case 'blurred':
+                case 'overthinker':
+                case 'performer':
+                case 'self-forsaker':
+                case 'self-betrayer':
                   blurredCount++;
                   break;
                 case 'neutral':
@@ -1018,29 +1065,73 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       });
 
-      // Apply your exact scoring rules: 4+ = clear type, otherwise Blurred Identity
-      let defaultType = 'Blurred';
+      // Calculate subtype based on Q7-Q14 dynamic subtype question responses
+      const subtypeScores: Record<string, number> = {};
+      
+      // Count subtype scores from Q7-Q14 dynamic questions
+      Object.entries(answers).forEach(([questionId, answerChoice]) => {
+        const questionNumber = parseInt(questionId);
+        if (questionNumber >= 7 && questionNumber <= 14) {
+          const question = fullQuestionSet.find(q => q.id === questionNumber);
+          if (question && answerChoice) {
+            const answerKey = (answerChoice as string).toUpperCase() as 'A' | 'B' | 'C' | 'D';
+            const answer = question.answers[answerKey];
+            if (answer && answer.type !== 'neutral') {
+              subtypeScores[answer.type] = (subtypeScores[answer.type] || 0) + 1;
+            }
+          }
+        }
+      });
+      
+      // Find the highest scoring subtype
+      let dominantSubtype = '';
+      let maxScore = 0;
+      Object.entries(subtypeScores).forEach(([subtypeId, score]) => {
+        if (score > maxScore) {
+          maxScore = score;
+          dominantSubtype = subtypeId;
+        }
+      });
+      
+      // Use DEFAULT DNA type (from Q1-Q6) for final determination
+      let defaultType = defaultDnaType === 'architect' ? 'Architect' : 
+                       defaultDnaType === 'alchemist' ? 'Alchemist' : 'Blurred';
+      
+      // Convert subtype ID to display name and validate it matches DEFAULT DNA
       let subtype = '';
       let awarenessPercentage = 20;
-
-      if (architectCount >= 4) {
-        defaultType = 'Architect';
-        // Architect subtypes based on specific answer patterns from Q13-Q20
-        const architectSubtypes = ['Master Strategist', 'Systemised Builder', 'Internal Analyzer', 'Ultimate Strategist'];
-        subtype = architectSubtypes[Math.floor(Math.random() * architectSubtypes.length)];
-        awarenessPercentage = 60;
-      } else if (alchemistCount >= 4) {
-        defaultType = 'Alchemist';
-        // Alchemist subtypes based on specific answer patterns from Q13-Q20
-        const alchemistSubtypes = ['Visionary Oracle', 'Magnetic Perfectionist', 'Energetic Empath', 'Ultimate Alchemist'];
-        subtype = alchemistSubtypes[Math.floor(Math.random() * alchemistSubtypes.length)];
-        awarenessPercentage = 50;
+      
+      const subtypeMapping: Record<string, string> = {
+        'master-strategist': 'Master Strategist',
+        'systemised-builder': 'Systemised Builder', 
+        'internal-analyzer': 'Internal Analyzer',
+        'ultimate-strategist': 'Ultimate Strategist',
+        'visionary-oracle': 'Visionary Oracle',
+        'magnetic-perfectionist': 'Magnetic Perfectionist',
+        'energetic-empath': 'Energetic Empath',
+        'ultimate-alchemist': 'Ultimate Alchemist',
+        'overthinker': 'Overthinker',
+        'performer': 'Performer',
+        'self-forsaker': 'Self-Forsaker',
+        'self-betrayer': 'Self-Betrayer'
+      };
+      
+      if (dominantSubtype && subtypeMapping[dominantSubtype]) {
+        subtype = subtypeMapping[dominantSubtype];
+        awarenessPercentage = defaultType === 'Architect' ? 60 : 
+                             defaultType === 'Alchemist' ? 50 : 20;
       } else {
-        // Blurred Identity - less than 4 of either type
-        defaultType = 'Blurred';
-        const blurredSubtypes = ['Overthinker', 'Performer', 'Self-Forsaker', 'Self-Betrayer'];
-        subtype = blurredSubtypes[Math.floor(Math.random() * blurredSubtypes.length)];
-        awarenessPercentage = 20;
+        // Fallback to default subtype based on DNA type
+        if (defaultType === 'Architect') {
+          subtype = 'Master Strategist';
+          awarenessPercentage = 60;
+        } else if (defaultType === 'Alchemist') {
+          subtype = 'Visionary Oracle';
+          awarenessPercentage = 50;
+        } else {
+          subtype = 'Overthinker';
+          awarenessPercentage = 20;
+        }
       }
 
       console.log('Final scores:', {
@@ -1048,8 +1139,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         alchemist: alchemistCount,
         blurred: blurredCount,
         neutral: neutralCount,
+        defaultDnaType: defaultDnaType,
         result: defaultType,
-        subtype: subtype
+        subtype: subtype,
+        subtypeScores: subtypeScores,
+        dominantSubtype: dominantSubtype,
+        maxScore: maxScore
       });
 
       // Prepare result object

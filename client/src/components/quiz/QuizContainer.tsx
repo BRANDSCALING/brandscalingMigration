@@ -19,6 +19,13 @@ export interface QuizState {
   defaultDNA?: DNAType;
   awarenessScore?: number;
   subtypeProgress?: number;
+  scores?: {
+    architect: number;
+    alchemist: number;
+    blurred: number;
+    neutral: number;
+  };
+  insights?: any;
 }
 
 interface Question {
