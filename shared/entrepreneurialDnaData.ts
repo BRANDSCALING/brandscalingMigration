@@ -481,7 +481,7 @@ export const DNA_SUBTYPES: Record<string, DNASubtype> = {
   'self-forsaker': {
     id: 'self-forsaker', 
     name: 'The Self-Forsaker',
-    emoji: '🕳️',
+    emoji: '',
     category: 'blurred',
     operatingLoop: 'Suppressed Emotion',
     coreIdentity: 'Origin: Alchemist. Suppressed emotion, performs logic. Origin Alchemist who disconnected from emotional DNA due to pressure. Now performs logic — but feels deeply unfulfilled.',
@@ -507,7 +507,7 @@ export const DNA_SUBTYPES: Record<string, DNASubtype> = {
   'self-betrayer': {
     id: 'self-betrayer',
     name: 'The Self-Betrayer',
-    emoji: '🧩',
+    emoji: '',
     category: 'blurred',
     operatingLoop: 'Suppressed Thought → Emotion → Reaction',
     coreIdentity: 'You weren\'t born scattered — you became that way. Your original clarity got clouded. Your logic got overridden. You once trusted systems, structure, and strategy… but somewhere along the way, your need to adapt became louder than your inner compass.',
