@@ -287,8 +287,14 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
 export const DNA_LOOP_DESCRIPTIONS = {
   'Architect': "Your DNA loop operates through systematic analysis → strategic planning → structured execution → measurable results. You thrive on creating frameworks that others can follow and building sustainable systems.",
   'Alchemist': "Your DNA loop flows through intuitive sensing → creative visioning → adaptive action → meaningful transformation. You excel at reading energy, following instincts, and creating authentic change.",
-  'Blurred Identity': "Your DNA loop shifts between analytical and intuitive approaches without clear consistency. This creates internal conflict but also potential for balanced perspective once you choose your primary operating system."
+  'Blurred': "Your DNA loop shifts between analytical and intuitive approaches without clear consistency. This creates internal conflict but also potential for balanced perspective once you choose your primary operating system.",
+  'Neutral': "Your DNA loop adapts fluidly between systematic and intuitive approaches based on context. You have the potential to integrate both analytical and creative strengths once you develop awareness of when to use each approach."
 };
+
+// Helper function to get profile data for a given subtype
+export function getProfileData(subtypeId: string) {
+  return DNA_SUBTYPES[subtypeId] || null;
+}
 
 // DNA Subtypes - Using exact user specifications from attached documents
 export const DNA_SUBTYPES: Record<string, DNASubtype> = {

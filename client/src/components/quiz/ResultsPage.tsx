@@ -93,17 +93,17 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
   const oppositeType = defaultDNA === 'Architect' ? 'Alchemist' : 
                       defaultDNA === 'Alchemist' ? 'Architect' : 'Opposite';
 
-  const milestones = getProfileData(subtypeResult)?.milestoneTracker ? 
-    Object.entries(getProfileData(subtypeResult).milestoneTracker).map(([name, status]) => ({ name, status })) :
-    [
-      { name: "Strategic planning mastery", status: "completed" },
-      { name: "Systematic execution development", status: "in-progress" },
-      { name: "Analytical framework building", status: "in-progress" }
-    ];
+  const profileData = subtype ? getProfileData(subtype) : null;
+  
+  const milestones = [
+    { name: "Strategic planning mastery", status: "completed" },
+    { name: "Systematic execution development", status: "in-progress" },
+    { name: "Analytical framework building", status: "in-progress" }
+  ];
 
-  const edges = getProfileData(subtypeResult)?.edge || ["Strategic thinking", "Systematic execution", "Analytical precision", "Leadership capacity"];
+  const edges = profileData?.edge || ["Strategic thinking", "Systematic execution", "Analytical precision", "Leadership capacity"];
 
-  const risks = getProfileData(subtypeResult)?.risks || ["Overthinking", "Analysis paralysis", "Perfectionism", "Isolation"];
+  const risks = profileData?.risks || ["Overthinking", "Analysis paralysis", "Perfectionism", "Isolation"];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
