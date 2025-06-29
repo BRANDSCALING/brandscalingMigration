@@ -168,20 +168,20 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
     }
   },
 
-  // BLOCK 3: Q7-Q12 Subtype Detection - Your Authentic Questions
+  // BLOCK 3: Q13-Q18 Path Choice Questions - Your Authentic Questions
   {
-    id: 7,
-    text: "Looking at your business experience, what has been your strongest pattern?",
+    id: 13,
+    text: "When you think about your ideal business model, what draws you most?",
     category: 'subtype',
     answers: {
-      A: { text: "Building and refining systems that deliver consistent results", type: 'architect', weight: 1 },
-      B: { text: "Creating breakthrough innovations and inspiring teams", type: 'alchemist', weight: 1 },
-      C: { text: "Making strategic decisions that positioned us ahead of competition", type: 'architect', weight: 1 },
-      D: { text: "Understanding complex business dynamics and optimizing them", type: 'architect', weight: 1 }
+      A: { text: "Building repeatable systems that scale efficiently", type: 'architect', weight: 1 },
+      B: { text: "Creating experiences that deeply impact people", type: 'alchemist', weight: 1 },
+      C: { text: "Optimizing complex processes for maximum results", type: 'architect', weight: 1 },
+      D: { text: "Innovating solutions that haven't been tried before", type: 'alchemist', weight: 1 }
     }
   },
   {
-    id: 8,
+    id: 14,
     text: "You're leading a high-pressure project with tight deadlines. Your natural tendency is to:",
     category: 'subtype',
     answers: {
@@ -192,7 +192,7 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
     }
   },
   {
-    id: 9,
+    id: 15,
     text: "When you think about scaling your business, what excites you most?",
     category: 'subtype',
     answers: {
@@ -203,7 +203,7 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
     }
   },
   {
-    id: 10,
+    id: 16,
     text: "A major client gives you critical feedback about your service. Your first instinct is to:",
     category: 'subtype',
     answers: {
@@ -214,7 +214,7 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
     }
   },
   {
-    id: 11,
+    id: 17,
     text: "You're designing a new offering for your market. What drives your decisions?",
     category: 'subtype',
     answers: {
@@ -225,7 +225,7 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
     }
   },
   {
-    id: 12,
+    id: 18,
     text: "When you reflect on your greatest business wins, what stands out?",
     category: 'subtype',
     answers: {
@@ -233,19 +233,6 @@ export const ENTREPRENEURIAL_DNA_QUESTIONS: QuizQuestion[] = [
       B: { text: "The lives and businesses we transformed", type: 'alchemist', weight: 1 },
       C: { text: "The strategic insights that drove success", type: 'architect', weight: 1 },
       D: { text: "The optimized outcomes we achieved", type: 'architect', weight: 1 }
-    }
-  },
-
-  // BLOCK 4: Q13-Q18 Path Choice Questions - Your Authentic Questions
-  {
-    id: 13,
-    text: "When you envision your ideal business environment, what feels most authentic to you?",
-    category: 'pathChoice',
-    answers: {
-      A: { text: "A structured operation with clear systems and predictable outcomes", type: 'architect', weight: 1 },
-      B: { text: "A dynamic environment where innovation and inspiration drive daily decisions", type: 'alchemist', weight: 1 },
-      C: { text: "A balanced approach that adapts based on what the situation requires", type: 'neutral', weight: 1 },
-      D: { text: "I'm not sure - I see value in different approaches depending on circumstances", type: 'blurred', weight: 1 }
     }
   },
   {

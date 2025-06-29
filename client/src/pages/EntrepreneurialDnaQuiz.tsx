@@ -16,6 +16,8 @@ export default function EntrepreneurialDnaQuiz() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [showResults, setShowResults] = useState(false);
+  const [showAnalysis, setShowAnalysis] = useState(false);
+  const [analysisType, setAnalysisType] = useState<'default' | 'awareness' | 'subtype'>('default');
   const [quizState, setQuizState] = useState<QuizState>({
     currentStage: 'results',
     answers: {},
@@ -73,6 +75,21 @@ export default function EntrepreneurialDnaQuiz() {
   };
 
   const handleNext = () => {
+    // Check if we need to show analysis screens after specific question blocks
+    if (currentQuestionIndex === 5) { // After Q6 - Default DNA Detection
+      setAnalysisType('default');
+      setShowAnalysis(true);
+      return;
+    } else if (currentQuestionIndex === 11) { // After Q12 - Awareness Block
+      setAnalysisType('awareness');
+      setShowAnalysis(true);
+      return;
+    } else if (currentQuestionIndex === 17) { // After Q18 - Subtype Block
+      setAnalysisType('subtype');
+      setShowAnalysis(true);
+      return;
+    }
+
     if (currentQuestionIndex < ENTREPRENEURIAL_DNA_QUESTIONS.length - 1) {
       setCurrentQuestionIndex(prev => prev + 1);
     } else {
