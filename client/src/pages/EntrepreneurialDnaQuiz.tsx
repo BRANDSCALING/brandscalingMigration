@@ -9,6 +9,7 @@ import { AUTHENTIC_DNA_QUESTIONS, calculateDNAType, calculateSubtype } from '@/.
 import ResultsPage from '@/components/quiz/ResultsPage';
 import AnalysisBlock from '@/components/quiz/AnalysisBlock';
 import PathChoiceBlock from '@/components/quiz/PathChoiceBlock';
+import AwarenessCompleteBlock from '@/components/quiz/AwarenessCompleteBlock';
 import { DNAType, QuizState, PathType } from '@/components/quiz/QuizContainer';
 
 export default function EntrepreneurialDnaQuiz() {
@@ -19,6 +20,7 @@ export default function EntrepreneurialDnaQuiz() {
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [showResults, setShowResults] = useState(false);
   const [showAnalysis, setShowAnalysis] = useState(false);
+  const [showAwarenessComplete, setShowAwarenessComplete] = useState(false);
   const [showPathChoice, setShowPathChoice] = useState(false);
   const [pathChoice, setPathChoice] = useState<PathType | null>(null);
   const [analysisType, setAnalysisType] = useState<'awareness' | 'subtype' | 'validation'>('awareness');
@@ -89,7 +91,7 @@ export default function EntrepreneurialDnaQuiz() {
       setShowAnalysis(true);
       return;
     } else if (currentQuestionIndex === 11) { // After Q12
-      setShowPathChoice(true);
+      setShowAwarenessComplete(true);
       return;
     } else if (currentQuestionIndex === 17) { // After Q18
       setAnalysisType('validation');
@@ -149,6 +151,11 @@ export default function EntrepreneurialDnaQuiz() {
     setCurrentQuestionIndex(prev => prev + 1);
   };
 
+  const handleAwarenessCompleteContinue = () => {
+    setShowAwarenessComplete(false);
+    setShowPathChoice(true);
+  };
+
   const handlePathChoice = (path: PathType) => {
     setPathChoice(path);
     setShowPathChoice(false);
@@ -167,7 +174,16 @@ export default function EntrepreneurialDnaQuiz() {
     );
   }
 
-  // Show path choice screen after Q12
+  // Show awareness complete screen after Q12
+  if (showAwarenessComplete) {
+    return (
+      <AwarenessCompleteBlock 
+        onContinue={handleAwarenessCompleteContinue}
+      />
+    );
+  }
+
+  // Show path choice screen after awareness complete
   if (showPathChoice) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 py-8">
