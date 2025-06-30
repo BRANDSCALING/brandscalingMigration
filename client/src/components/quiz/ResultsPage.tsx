@@ -7,7 +7,7 @@ import { useLocation } from 'wouter';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { QuizState } from './QuizContainer';
-import { DNA_SUBTYPES, DNA_LOOP_DESCRIPTIONS, getProfileData } from '@/../../shared/entrepreneurialDnaData';
+import { AUTHENTIC_DNA_PROFILES, AUTHENTIC_DNA_LOOPS, getAuthenticProfileData } from '@/../../shared/authenticResultsData';
 import { CheckCircle, Clock, Lightbulb, Target, Zap, Users, Brain, Star } from 'lucide-react';
 
 interface Props {
@@ -18,7 +18,6 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
   const { defaultDNA, awarenessScore, subtype, subtypeProgress } = quizState;
   const [, setLocation] = useLocation();
   const { toast } = useToast();
-  const [serverResult, setServerResult] = React.useState<any>(null);
 
   // Store quiz results in localStorage for dashboard access
   useEffect(() => {
@@ -33,58 +32,23 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
     }
   }, [quizState, awarenessScore, subtypeProgress]);
 
-  const getProfileData = (subtype: string) => {
-    // Use your authentic DNA_SUBTYPES data
-    const subtypeInfo = DNA_SUBTYPES[subtype];
-    
-    if (!subtypeInfo) {
-      return {
-        snapshotLine: "Developing entrepreneurial clarity.",
-        snapshot: [],
-        longDescription: "Developing comprehensive entrepreneurial clarity.",
-        edge: [],
-        risks: [],
-        oppositeAwareness: "Developing awareness of complementary operating styles.",
-        nextSteps: ["Continue authentic entrepreneurial development"]
-      };
+  // Get authentic profile data
+  const profileData = subtype ? getAuthenticProfileData(subtype) : null;
+
+  const handleDashboardRedirect = () => {
+    const studentId = localStorage.getItem('studentId');
+    if (studentId) {
+      // Check access tier to determine redirect
+      const accessTier = 'beginner'; // Default for now
+      if (accessTier === 'entry') {
+        setLocation('/entry');
+      } else {
+        setLocation('/student');
+      }
+    } else {
+      setLocation('/auth');
     }
-
-    return {
-      snapshotLine: subtypeInfo.coreIdentity.split('.')[0] + '.',
-      snapshot: [subtypeInfo.coreIdentity.split('.')[0], subtypeInfo.operatingLoop],
-      longDescription: subtypeInfo.coreIdentity,
-      edge: [subtypeInfo.edge],
-      risks: [subtypeInfo.risks],
-      oppositeAwareness: subtypeInfo.oppositeAwareness,
-      nextSteps: [subtypeInfo.nextSteps],
-      emoji: subtypeInfo.emoji,
-      name: subtypeInfo.name
-    };
   };
-
-  const getAwarenessLevel = (score: number) => {
-    return Math.min(Math.max(score * 10, 30), 100);
-  };
-
-  const getEvolutionPath = (dnaType: string) => {
-    return dnaType === 'Architect' ? 'Ultimate Architect' : 
-           dnaType === 'Alchemist' ? 'Ultimate Alchemist' : 'Balanced Entrepreneur';
-  };
-
-  const oppositeType = defaultDNA === 'Architect' ? 'Alchemist' : 
-                      defaultDNA === 'Alchemist' ? 'Architect' : 'Opposite';
-
-  const profileData = subtype ? getProfileData(subtype) : null;
-  
-  const milestones = [
-    { name: "Strategic planning mastery", status: "completed" },
-    { name: "Systematic execution development", status: "in-progress" },
-    { name: "Analytical framework building", status: "in-progress" }
-  ];
-
-  const edges = profileData?.edge || ["Strategic thinking", "Systematic execution", "Analytical precision", "Leadership capacity"];
-
-  const risks = profileData?.risks || ["Overthinking", "Analysis paralysis", "Perfectionism", "Isolation"];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
@@ -97,7 +61,7 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
       </div>
 
       <div className="max-w-4xl mx-auto px-6 py-8 space-y-8">
-        {/* Main Result Card - Matching Reference Design */}
+        {/* Main Result Card - Authentic Design */}
         <Card className="overflow-hidden border-0 shadow-2xl rounded-2xl">
           <div className="bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-700 px-8 py-12 text-white relative">
             <div className="text-center space-y-6">
@@ -126,10 +90,10 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
               </div>
               
               {/* Energetic resonance quote without title */}
-              {subtype && (
+              {profileData && (
                 <div className="mt-8">
                   <p className="text-xl italic font-light leading-relaxed">
-                    "{getProfileData(subtype).snapshotLine || 'Developing entrepreneurial clarity.'}"
+                    "{profileData.snapshotLine}"
                   </p>
                 </div>
               )}
@@ -144,25 +108,16 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
             Your Default DNA
           </h3>
           <p className="text-gray-700 mb-4">
-            {defaultDNA === 'Alchemist' ? (
-              'You lead with emotional clarity. You feel first, then think. Your actions are driven by energetic resonance, not by deadlines or pressure. Your rhythm is non-linear — you move in bursts of inspiration, not mechanical steps. Productivity flows when alignment is high and pressure is low. You operate best when you\'re given space to dream, feel, and respond rather than plan, push, and perform. Your greatest strength is your creative intuition. Your greatest risk is emotional burnout from trying to \'keep up\' with linear systems.'
-            ) : defaultDNA === 'Architect' ? (
-              'You lead with logical clarity. You think first, then feel. Your actions are driven by systematic analysis, not by impulse or pressure. Your rhythm is linear — you move in structured steps, not emotional bursts. Productivity flows when systems are clear and processes are optimized. You operate best when you\'re given frameworks to plan, organize, and execute rather than improvise and respond. Your greatest strength is your strategic thinking. Your greatest risk is creative stagnation from over-structuring.'
-            ) : defaultDNA === 'Blurred' ? (
-              'Your DNA type is currently unclear. This means you may be in transition between types, or you may need more clarity on your natural operating rhythm. Take the 7-Day Identity Reset to discover your true default DNA.'
-            ) : (
-              'Developing comprehensive entrepreneurial clarity.'
-            )}
+            {profileData?.defaultDNADescription || 'Processing your DNA analysis...'}
           </p>
           
           <div className="space-y-4">
             <div>
               <div className="flex justify-between items-center mb-2">
                 <span className="font-medium">Default Mastery</span>
-                <span className="text-sm text-gray-500">80%</span>
+                <span className="text-sm text-gray-500">{profileData?.defaultMastery || 80}%</span>
               </div>
-              <Progress value={80} className="h-2" />
-
+              <Progress value={profileData?.defaultMastery || 80} className="h-2" />
             </div>
           </div>
         </Card>
@@ -175,10 +130,12 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
           </h3>
           
           <div className="space-y-4">
-            <p className="text-gray-700">
-              {DNA_LOOP_DESCRIPTIONS[defaultDNA || 'Blurred'] || 
-               'You feel first. Then you think about that feeling. Then you act — but only if it still feels right.'}
-            </p>
+            <div className="mb-4">
+              <h4 className="font-semibold text-gray-800 mb-2">Loop Format: {profileData?.loopFormat || 'Processing...'}</h4>
+              <p className="text-gray-700">
+                {profileData?.loopDescription || AUTHENTIC_DNA_LOOPS[defaultDNA || 'Blurred'] || 'Processing your loop pattern...'}
+              </p>
+            </div>
             
             <div className="bg-blue-50 rounded-lg p-4">
               <p className="font-medium text-blue-800 mb-2">Loop Mastery Reminder:</p>
