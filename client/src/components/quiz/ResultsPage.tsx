@@ -135,6 +135,22 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
           </div>
         </Card>
 
+        {/* Progress Steps */}
+        <Card className="p-6">
+          <h3 className="text-xl font-bold mb-6">Assessment Progress</h3>
+          <div className="space-y-6">
+            {progressSteps.map((step, index) => (
+              <div key={index} className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="font-medium text-gray-700">{step.label}</span>
+                  <span className="text-sm text-gray-500">{step.percentage}%</span>
+                </div>
+                <Progress value={step.percentage} className="h-2" />
+              </div>
+            ))}
+          </div>
+        </Card>
+
         {/* Default DNA Section */}
         <Card className="p-6">
           <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
@@ -142,7 +158,7 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
             Your Default DNA
           </h3>
           <p className="text-gray-700 mb-4">
-            {profileData?.defaultDNADescription || 'Processing your DNA analysis...'}
+            Processing your DNA analysis...
           </p>
           
           <div className="space-y-4">

@@ -270,19 +270,26 @@ export const calculateDNAType = (answers: Record<number, string>): 'architect' |
 export const calculateSubtype = (answers: Record<number, string>, dnaType: 'architect' | 'alchemist' | 'blurred'): string => {
   const subtypeCounts: Record<string, number> = {};
 
-  // Count subtype answers from Q13-Q22
+  // Filter subtypes based on DNA type to ensure proper mapping
+  const validSubtypes = {
+    'architect': ['master-strategist', 'systemised-builder', 'internal-analyzer', 'ultimate-strategist'],
+    'alchemist': ['visionary-oracle', 'magnetic-perfectionist', 'energetic-empath', 'ultimate-alchemist'],
+    'blurred': ['overthinker', 'performer', 'self-forsaker', 'self-betrayer']
+  };
+
+  // Count subtype answers from Q13-Q22, but only count valid subtypes for the DNA type
   for (let i = 13; i <= 22; i++) {
     const answer = answers[i];
     const question = AUTHENTIC_DNA_QUESTIONS.find(q => q.id === i);
     if (question && answer) {
       const answerData = question.answers[answer as keyof typeof question.answers];
-      if (answerData.subtype) {
+      if (answerData.subtype && validSubtypes[dnaType].includes(answerData.subtype)) {
         subtypeCounts[answerData.subtype] = (subtypeCounts[answerData.subtype] || 0) + 1;
       }
     }
   }
 
-  // Find the most common subtype
+  // Find the most common valid subtype
   let maxCount = 0;
   let dominantSubtype = '';
   for (const [subtype, count] of Object.entries(subtypeCounts)) {
