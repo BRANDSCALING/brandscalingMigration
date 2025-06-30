@@ -40,13 +40,20 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
     }
   }, [quizState, awarenessScore, subtypeProgress]);
 
-  // Get authentic profile data
-  const profileData = subtype ? getAuthenticProfileData(subtype) : null;
+  // Get authentic profile data - ensure we're using the correct subtype
+  const actualSubtype = quizState.subtype || subtype;
+  const actualDnaType = quizState.defaultDNA || defaultDNA;
   
-  // Debug profile data
+  console.log('Using subtype for profile data:', actualSubtype);
+  console.log('Using DNA type:', actualDnaType);
+  
+  const profileData = actualSubtype ? getAuthenticProfileData(actualSubtype) : null;
+  
+  // Force re-render when quiz state changes
+  const [renderKey, setRenderKey] = React.useState(0);
   useEffect(() => {
-    console.log('Profile data for subtype:', subtype, profileData);
-  }, [subtype, profileData]);
+    setRenderKey(prev => prev + 1);
+  }, [quizState]);
 
   const handleDashboardRedirect = () => {
     const studentId = localStorage.getItem('studentId');
@@ -64,12 +71,12 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+    <div key={renderKey} className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
       {/* Header */}
       <div className="bg-white/80 backdrop-blur-sm border-b sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-6 py-4">
           <h1 className="text-2xl font-bold text-gray-900">Your Entrepreneurial DNA Results</h1>
-          <p className="text-gray-600 mt-1">{subtype || 'Your DNA Profile'}</p>
+          <p className="text-gray-600 mt-1">{actualSubtype || 'Your DNA Profile'}</p>
         </div>
       </div>
 
@@ -96,8 +103,8 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
                 
                 {/* Values Row */}
                 <div className="grid grid-cols-3 gap-4 text-lg font-semibold">
-                  <div className="text-center">{defaultDNA || 'Processing...'}</div>
-                  <div className="text-center">{subtype || '—'}</div>
+                  <div className="text-center">{actualDnaType || 'Processing...'}</div>
+                  <div className="text-center">{actualSubtype || '—'}</div>
                   <div className="text-center">—</div>
                 </div>
               </div>
@@ -161,11 +168,11 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
         </Card>
 
         {/* Subtype Section */}
-        {subtype && profileData && (
+        {actualSubtype && profileData && (
           <Card className="p-6">
             <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
               <Lightbulb className="w-5 h-5 text-yellow-500" />
-              Your Subtype: {subtype}
+              Your Subtype: {actualSubtype}
             </h3>
             
             <div className="space-y-4">

@@ -27,7 +27,7 @@ export default function EntrepreneurialDnaQuiz() {
   const [defaultDnaType, setDefaultDnaType] = useState<'architect' | 'alchemist' | 'blurred' | null>(null);
   const [questions] = useState(AUTHENTIC_DNA_QUESTIONS); // All 22 authentic questions
   const [quizState, setQuizState] = useState<QuizState>({
-    currentStage: 'results',
+    currentStage: 'taking',
     answers: {},
   });
 
@@ -35,8 +35,21 @@ export default function EntrepreneurialDnaQuiz() {
   useEffect(() => {
     const checkQuizEligibility = async () => {
       try {
-        // Clear any cached quiz results to ensure fresh data
+        // Force clear all quiz-related cache
         localStorage.removeItem('quizResult');
+        localStorage.removeItem('quizState');
+        localStorage.removeItem('dnaType');
+        localStorage.removeItem('subtype');
+        
+        // Reset all quiz state to ensure fresh start
+        setAnswers({});
+        setCurrentQuestionIndex(0);
+        setShowResults(false);
+        setShowAnalysis(false);
+        setShowAwarenessComplete(false);
+        setShowPathChoice(false);
+        setPathChoice(null);
+        setDefaultDnaType(null);
         
         const studentId = localStorage.getItem('studentId');
         if (!studentId) {
@@ -136,8 +149,11 @@ export default function EntrepreneurialDnaQuiz() {
         awarenessScore: result.awarenessPercentage
       });
       
-      setQuizState({
-        currentStage: 'results',
+      // Force clear any cached data before setting new results
+      localStorage.removeItem('quizResult');
+      
+      const newQuizState = {
+        currentStage: 'results' as const,
         answers: answers,
         dnaType: result.dnaType,
         defaultDNA: result.dnaType.charAt(0).toUpperCase() + result.dnaType.slice(1),
@@ -145,7 +161,10 @@ export default function EntrepreneurialDnaQuiz() {
         awarenessScore: result.awarenessPercentage,
         scores: result.scores,
         insights: result.insights
-      });
+      };
+      
+      console.log('Setting new quiz state:', newQuizState);
+      setQuizState(newQuizState);
       
       setShowResults(true);
     } catch (error) {
