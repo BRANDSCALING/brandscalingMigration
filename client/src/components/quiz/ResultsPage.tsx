@@ -20,41 +20,18 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
   const { toast } = useToast();
   const [serverResult, setServerResult] = React.useState<any>(null);
 
-  // Submit quiz results to backend and get authentic server response
+  // Store quiz results in localStorage for dashboard access
   useEffect(() => {
-    const submitQuizResults = async () => {
-      try {
-        const studentId = localStorage.getItem('studentId');
-        if (!studentId) {
-          return; // Skip submission if not authenticated, but still show results
-        }
-
-        // Submit comprehensive quiz results to correct endpoint
-        const response = await apiRequest('POST', '/api/quiz/entrepreneurial-dna/submit', {
-          answers: quizState.answers
-        });
-
-        // Store authentic server result
-        setServerResult(response);
-
-        // Store result for immediate access
-        localStorage.setItem('quizResult', JSON.stringify({
-          type: response.dnaType,
-          subtype: response.subtype,
-          awarenessScore: response.awarenessPercentage,
-          subtypeProgress,
-          timestamp: new Date().toISOString()
-        }));
-
-      } catch (error: any) {
-        console.error('Error submitting quiz results:', error);
-        // Don't show error toast to avoid disrupting results display
-      }
-    };
-
-    // Run submission and get authentic results
-    submitQuizResults();
-  }, [quizState]);
+    if (quizState.dnaType && quizState.subtype) {
+      localStorage.setItem('quizResult', JSON.stringify({
+        type: quizState.dnaType,
+        subtype: quizState.subtype,
+        awarenessScore: quizState.awarenessScore || awarenessScore,
+        subtypeProgress,
+        timestamp: new Date().toISOString()
+      }));
+    }
+  }, [quizState, awarenessScore, subtypeProgress]);
 
   const getProfileData = (subtype: string) => {
     // Use your authentic DNA_SUBTYPES data
@@ -94,15 +71,10 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
            dnaType === 'Alchemist' ? 'Ultimate Alchemist' : 'Balanced Entrepreneur';
   };
 
-  // Get actual DNA type from server response or fallback
-  const actualDnaType = serverResult?.dnaType ? 
-    (serverResult.dnaType.charAt(0).toUpperCase() + serverResult.dnaType.slice(1)) : 
-    defaultDNA;
-  
-  const oppositeType = actualDnaType === 'Architect' ? 'Alchemist' : 
-                      actualDnaType === 'Alchemist' ? 'Architect' : 'Opposite';
+  const oppositeType = defaultDNA === 'Architect' ? 'Alchemist' : 
+                      defaultDNA === 'Alchemist' ? 'Architect' : 'Opposite';
 
-  const profileData = (serverResult?.subtype || subtype) ? getProfileData(serverResult?.subtype || subtype) : null;
+  const profileData = subtype ? getProfileData(subtype) : null;
   
   const milestones = [
     { name: "Strategic planning mastery", status: "completed" },
@@ -140,23 +112,21 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
               {/* DNA Type Information */}
               <div className="space-y-3">
                 <p className="text-xl font-medium opacity-95">
-                  Your Default DNA: {serverResult?.dnaType ? 
-                    (serverResult.dnaType.charAt(0).toUpperCase() + serverResult.dnaType.slice(1)) : 
-                    (defaultDNA || 'Processing...')}
+                  Your Default DNA: {defaultDNA || 'Processing...'}
                 </p>
-                {(serverResult?.subtype || subtype) && (
+                {subtype && (
                   <p className="text-2xl font-bold">
-                    Your Sub-DNA: {serverResult?.subtype || subtype}
+                    Your Sub-DNA: {subtype}
                   </p>
                 )}
               </div>
               
               {/* 1-line energetic resonance - matching reference layout */}
-              {(serverResult?.subtype || subtype) && (
+              {subtype && (
                 <div className="mt-8 space-y-3">
                   <p className="text-lg font-medium opacity-90">1-line energetic resonance:</p>
                   <p className="text-xl italic font-light leading-relaxed">
-                    "{getProfileData(serverResult?.subtype || subtype).snapshotLine || 'Developing entrepreneurial clarity.'}"
+                    "{getProfileData(subtype).snapshotLine || 'Developing entrepreneurial clarity.'}"
                   </p>
                 </div>
               )}
@@ -171,11 +141,11 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
             Your Default DNA
           </h3>
           <p className="text-gray-700 mb-4">
-            {actualDnaType === 'Alchemist' ? (
+            {defaultDNA === 'Alchemist' ? (
               'You lead with emotional clarity. You feel first, then think. Your actions are driven by energetic resonance, not by deadlines or pressure. Your rhythm is non-linear — you move in bursts of inspiration, not mechanical steps. Productivity flows when alignment is high and pressure is low. You operate best when you\'re given space to dream, feel, and respond rather than plan, push, and perform. Your greatest strength is your creative intuition. Your greatest risk is emotional burnout from trying to \'keep up\' with linear systems.'
-            ) : actualDnaType === 'Architect' ? (
+            ) : defaultDNA === 'Architect' ? (
               'You lead with logical clarity. You think first, then feel. Your actions are driven by systematic analysis, not by impulse or pressure. Your rhythm is linear — you move in structured steps, not emotional bursts. Productivity flows when systems are clear and processes are optimized. You operate best when you\'re given frameworks to plan, organize, and execute rather than improvise and respond. Your greatest strength is your strategic thinking. Your greatest risk is creative stagnation from over-structuring.'
-            ) : actualDnaType === 'Blurred' ? (
+            ) : defaultDNA === 'Blurred' ? (
               'Your DNA type is currently unclear. This means you may be in transition between types, or you may need more clarity on your natural operating rhythm. Take the 7-Day Identity Reset to discover your true default DNA.'
             ) : (
               'Your authentic entrepreneurial profile is being refined based on your assessment responses.'
@@ -204,13 +174,13 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
           
           <div className="bg-orange-50 rounded-lg p-4 mb-4">
             <p className="font-medium text-orange-800">
-              Loop Format: {DNA_LOOP_DESCRIPTIONS[actualDnaType || 'Blurred']?.format || 'Emotion → Thought → Emotion'}
+              Loop Format: {DNA_LOOP_DESCRIPTIONS[defaultDNA || 'Blurred']?.format || 'Emotion → Thought → Emotion'}
             </p>
           </div>
           
           <div className="space-y-4">
             <p className="text-gray-700">
-              {DNA_LOOP_DESCRIPTIONS[actualDnaType || 'Blurred']?.description || 
+              {DNA_LOOP_DESCRIPTIONS[defaultDNA || 'Blurred']?.description || 
                'You feel first. Then you think about that feeling. Then you act — but only if it still feels right.'}
             </p>
             

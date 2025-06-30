@@ -124,7 +124,9 @@ export default function EntrepreneurialDnaQuiz() {
         currentStage: 'results',
         answers: answers,
         dnaType: result.dnaType,
+        defaultDNA: result.dnaType.charAt(0).toUpperCase() + result.dnaType.slice(1),
         subtype: result.subtype,
+        awarenessScore: result.awarenessPercentage,
         scores: result.scores,
         insights: result.insights
       });
