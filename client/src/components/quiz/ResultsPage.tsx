@@ -148,7 +148,7 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
             ) : defaultDNA === 'Blurred' ? (
               'Your DNA type is currently unclear. This means you may be in transition between types, or you may need more clarity on your natural operating rhythm. Take the 7-Day Identity Reset to discover your true default DNA.'
             ) : (
-              'Your authentic entrepreneurial profile is being refined based on your assessment responses.'
+              'Developing comprehensive entrepreneurial clarity.'
             )}
           </p>
           
@@ -171,15 +171,9 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
             Your Natural Loop of Action
           </h3>
           
-          <div className="bg-orange-50 rounded-lg p-4 mb-4">
-            <p className="font-medium text-orange-800">
-              Loop Format: {DNA_LOOP_DESCRIPTIONS[defaultDNA || 'Blurred']?.format || 'Emotion → Thought → Emotion'}
-            </p>
-          </div>
-          
           <div className="space-y-4">
             <p className="text-gray-700">
-              {DNA_LOOP_DESCRIPTIONS[defaultDNA || 'Blurred']?.description || 
+              {DNA_LOOP_DESCRIPTIONS[defaultDNA || 'Blurred'] || 
                'You feel first. Then you think about that feeling. Then you act — but only if it still feels right.'}
             </p>
             
