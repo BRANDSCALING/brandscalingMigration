@@ -935,134 +935,61 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = studentId || req.user?.uid || 'anonymous-user';
       
       console.log('Processing answers:', answers);
-      console.log('Answer count:', Object.keys(answers || {}).length);
+      console.log('Answer count:', answers?.length || 0);
       
-      if (!answers || Object.keys(answers).length < 6) {
-        console.log('Invalid answers - need at least 6 for DEFAULT DNA calculation, got:', Object.keys(answers || {}).length);
-        return res.status(400).json({ message: 'Invalid answers provided - need at least 6 answers for DEFAULT DNA calculation' });
+      if (!answers || answers.length !== 22) {
+        console.log('Invalid answers - need exactly 22 answers, got:', answers?.length || 0);
+        return res.status(400).json({ message: 'Invalid answers provided - need exactly 22 answers' });
       }
 
-      // Implement user's exact scoring logic
+      // Convert answers array to object for processing
+      const answersObject: Record<number, string> = {};
+      answers.forEach((answer: { questionId: number, answer: string }) => {
+        answersObject[answer.questionId] = answer.answer;
+      });
+
+      // Import authentic scoring functions
+      const { calculateDNAType, calculateSubtype, AUTHENTIC_DNA_QUESTIONS } = require('../shared/authenticQuestions');
+      
+      // Calculate DNA type using authentic scoring (Q1-Q6)
+      const dnaType = calculateDNAType(answersObject);
+      
+      // Calculate subtype using Q13-Q22
+      const subtypeResult = calculateSubtype(answersObject, dnaType);
+      
+      console.log('Calculated DNA type:', dnaType);
+      console.log('Calculated subtype:', subtypeResult);
+
+      // Count scores for display purposes
       let architectCount = 0;
       let alchemistCount = 0;
       let blurredCount = 0;
       let neutralCount = 0;
 
-      // Import and use your authentic quiz data
-      const { ENTREPRENEURIAL_DNA_QUESTIONS, getDynamicSubtypeQuestions } = await import('../shared/entrepreneurialDnaData.js');
-      
-      // First, calculate DEFAULT DNA type from Q1-Q6 answers only
-      let defaultArchitectCount = 0;
-      let defaultAlchemistCount = 0;
-      
+      // Count answers by type from Q1-Q6 for awareness percentage
       for (let i = 1; i <= 6; i++) {
-        const answer = answers[i];
-        const question = ENTREPRENEURIAL_DNA_QUESTIONS.find(q => q.id === i);
+        const answer = answersObject[i];
+        const question = AUTHENTIC_DNA_QUESTIONS.find(q => q.id === i);
         if (question && answer) {
-          const answerKey = answer.toUpperCase() as 'A' | 'B' | 'C' | 'D';
-          const answerData = question.answers[answerKey];
+          const answerData = question.answers[answer as keyof typeof question.answers];
           if (answerData) {
-            if (answerData.type === 'architect') {
-              defaultArchitectCount++;
-            } else if (answerData.type === 'alchemist') {
-              defaultAlchemistCount++;
+            switch (answerData.type) {
+              case 'architect':
+                architectCount++;
+                break;
+              case 'alchemist':
+                alchemistCount++;
+                break;
+              case 'blurred':
+                blurredCount++;
+                break;
+              case 'neutral':
+                neutralCount++;
+                break;
             }
           }
         }
       }
-      
-      // Calculate DEFAULT DNA type using exact scoring rule
-      let defaultDnaType: 'architect' | 'alchemist' | 'blurred';
-      if (defaultArchitectCount >= 4) {
-        defaultDnaType = 'architect';
-      } else if (defaultAlchemistCount >= 4) {
-        defaultDnaType = 'alchemist';
-      } else {
-        defaultDnaType = 'blurred';
-      }
-      
-      console.log('DEFAULT DNA calculation:', {
-        architectCount: defaultArchitectCount,
-        alchemistCount: defaultAlchemistCount,
-        defaultType: defaultDnaType
-      });
-      
-      // Generate the dynamic question set that was used
-      const subtypeQuestions = getDynamicSubtypeQuestions(defaultDnaType);
-      const baseQuestions = ENTREPRENEURIAL_DNA_QUESTIONS.slice(0, 6); // Q1-Q6
-      const awarenessQuestions = ENTREPRENEURIAL_DNA_QUESTIONS.slice(8, 12); // Q9-Q12
-      const pathChoiceQuestions = ENTREPRENEURIAL_DNA_QUESTIONS.slice(12, 18); // Q13-Q18
-      const validationQuestions = ENTREPRENEURIAL_DNA_QUESTIONS.slice(18, 22); // Q19-Q22
-      
-      const fullQuestionSet = [
-        ...baseQuestions,
-        ...subtypeQuestions, // Q7-Q14 (dynamic)
-        ...awarenessQuestions, // Q15-Q18
-        ...pathChoiceQuestions, // Q19-Q24
-        ...validationQuestions // Q25-Q28
-      ];
-      
-      // Now score all answers for final result calculation
-      Object.entries(answers).forEach(([questionId, answerChoice]) => {
-        console.log(`Processing ${questionId}: ${answerChoice}`);
-        
-        const questionNumber = parseInt(questionId);
-        const question = fullQuestionSet.find(q => q.id === questionNumber);
-        
-        if (question && answerChoice) {
-          const answerKey = (answerChoice as string).toUpperCase() as 'A' | 'B' | 'C' | 'D';
-          const answer = question.answers[answerKey];
-          
-          if (answer) {
-            // For subtype questions (Q7-Q14), count towards specific subtypes
-            if (questionNumber >= 7 && questionNumber <= 14) {
-              // These are dynamic subtype questions - count the specific subtype
-              switch (answer.type) {
-                case 'master-strategist':
-                case 'systemised-builder':
-                case 'internal-analyzer':
-                case 'ultimate-strategist':
-                  architectCount++;
-                  break;
-                case 'visionary-oracle':
-                case 'magnetic-perfectionist':
-                case 'energetic-empath':
-                case 'ultimate-alchemist':
-                  alchemistCount++;
-                  break;
-                case 'overthinker':
-                case 'performer':
-                case 'self-forsaker':
-                case 'self-betrayer':
-                  blurredCount++;
-                  break;
-                case 'neutral':
-                  neutralCount++;
-                  break;
-              }
-            } else {
-              // Handle Q1-Q18 questions with direct type mapping
-              switch (answer.type) {
-                case 'architect':
-                  architectCount++;
-                  break;
-                case 'alchemist':
-                  alchemistCount++;
-                  break;
-                case 'blurred':
-                  blurredCount++;
-                  break;
-                case 'neutral':
-                  neutralCount++;
-                  break;
-              }
-            }
-          } else {
-            console.log(`Invalid answer choice: ${answerKey} for question ${questionId}`);
-          }
-        } else {
-          console.log(`Question not found: ${questionId}`);
-        }
       });
 
       // Calculate subtype based on Q7-Q14 dynamic subtype question responses

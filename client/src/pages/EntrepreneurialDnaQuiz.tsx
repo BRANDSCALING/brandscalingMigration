@@ -5,7 +5,7 @@ import { apiRequest } from '@/lib/queryClient';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { ENTREPRENEURIAL_DNA_QUESTIONS } from '@/../../shared/entrepreneurialDnaData';
+import { AUTHENTIC_DNA_QUESTIONS, calculateDNAType, calculateSubtype } from '@/../../shared/authenticQuestions';
 import ResultsPage from '@/components/quiz/ResultsPage';
 import AnalysisBlock from '@/components/quiz/AnalysisBlock';
 import { DNAType, QuizState } from '@/components/quiz/QuizContainer';
@@ -20,7 +20,7 @@ export default function EntrepreneurialDnaQuiz() {
   const [showAnalysis, setShowAnalysis] = useState(false);
   const [analysisType, setAnalysisType] = useState<'awareness' | 'subtype' | 'validation'>('awareness');
   const [defaultDnaType, setDefaultDnaType] = useState<'architect' | 'alchemist' | 'blurred' | null>(null);
-  const [questions] = useState(ENTREPRENEURIAL_DNA_QUESTIONS.slice(0, 22)); // Use only Q1-Q22
+  const [questions] = useState(AUTHENTIC_DNA_QUESTIONS); // All 22 authentic questions
   const [quizState, setQuizState] = useState<QuizState>({
     currentStage: 'results',
     answers: {},
@@ -77,29 +77,7 @@ export default function EntrepreneurialDnaQuiz() {
     }));
   };
 
-  // Calculate DEFAULT DNA type from Q1-Q6 answers
-  const calculateDefaultDnaType = (answersQ1ToQ6: Record<number, string>): 'architect' | 'alchemist' | 'blurred' => {
-    let architectScore = 0;
-    let alchemistScore = 0;
 
-    for (let i = 1; i <= 6; i++) {
-      const answer = answersQ1ToQ6[i];
-      const question = questions.find(q => q.id === i);
-      if (question && answer) {
-        const answerData = question.answers[answer as keyof typeof question.answers];
-        if (answerData.type === 'architect') {
-          architectScore++;
-        } else if (answerData.type === 'alchemist') {
-          alchemistScore++;
-        }
-      }
-    }
-
-    // Apply exact scoring rule: 4+ = clear type, <4 either = Blurred Identity
-    if (architectScore >= 4) return 'architect';
-    if (alchemistScore >= 4) return 'alchemist';
-    return 'blurred';
-  };
 
   const handleNext = () => {
     // Show analysis blocks at specific intervals
