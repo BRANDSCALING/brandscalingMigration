@@ -171,12 +171,14 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
             Your Default DNA
           </h3>
           <p className="text-gray-700 mb-4">
-            {defaultDNA === 'Alchemist' ? (
+            {actualDnaType === 'Alchemist' ? (
               'You lead with emotional clarity. You feel first, then think. Your actions are driven by energetic resonance, not by deadlines or pressure. Your rhythm is non-linear — you move in bursts of inspiration, not mechanical steps. Productivity flows when alignment is high and pressure is low. You operate best when you\'re given space to dream, feel, and respond rather than plan, push, and perform. Your greatest strength is your creative intuition. Your greatest risk is emotional burnout from trying to \'keep up\' with linear systems.'
-            ) : defaultDNA === 'Architect' ? (
+            ) : actualDnaType === 'Architect' ? (
               'You lead with logical clarity. You think first, then feel. Your actions are driven by systematic analysis, not by impulse or pressure. Your rhythm is linear — you move in structured steps, not emotional bursts. Productivity flows when systems are clear and processes are optimized. You operate best when you\'re given frameworks to plan, organize, and execute rather than improvise and respond. Your greatest strength is your strategic thinking. Your greatest risk is creative stagnation from over-structuring.'
-            ) : (
+            ) : actualDnaType === 'Blurred' ? (
               'Your DNA type is currently unclear. This means you may be in transition between types, or you may need more clarity on your natural operating rhythm. Take the 7-Day Identity Reset to discover your true default DNA.'
+            ) : (
+              'Your authentic entrepreneurial profile is being refined based on your assessment responses.'
             )}
           </p>
           
@@ -202,13 +204,13 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
           
           <div className="bg-orange-50 rounded-lg p-4 mb-4">
             <p className="font-medium text-orange-800">
-              Loop Format: {DNA_LOOP_DESCRIPTIONS[defaultDNA || 'Blurred']?.format || 'Emotion → Thought → Emotion'}
+              Loop Format: {DNA_LOOP_DESCRIPTIONS[actualDnaType || 'Blurred']?.format || 'Emotion → Thought → Emotion'}
             </p>
           </div>
           
           <div className="space-y-4">
             <p className="text-gray-700">
-              {DNA_LOOP_DESCRIPTIONS[defaultDNA || 'Blurred']?.description || 
+              {DNA_LOOP_DESCRIPTIONS[actualDnaType || 'Blurred']?.description || 
                'You feel first. Then you think about that feeling. Then you act — but only if it still feels right.'}
             </p>
             
