@@ -805,5 +805,22 @@ export const AUTHENTIC_DNA_LOOPS: Record<string, string> = {
 };
 
 export function getAuthenticProfileData(subtype: string): DNAProfileData | null {
-  return AUTHENTIC_DNA_PROFILES[subtype] || null;
+  // Map hyphenated subtype keys to display names
+  const subtypeMapping: Record<string, string> = {
+    'master-strategist': 'Master Strategist',
+    'systemised-builder': 'Systemised Builder',
+    'internal-analyzer': 'Internal Analyzer',
+    'ultimate-strategist': 'Ultimate Strategist',
+    'visionary-oracle': 'Visionary Oracle',
+    'magnetic-perfectionist': 'Magnetic Perfectionist',
+    'energetic-empath': 'Energetic Empath',
+    'ultimate-alchemist': 'Ultimate Alchemist',
+    'overthinker': 'Overthinker',
+    'performer': 'Performer',
+    'self-forsaker': 'Self-Forsaker',
+    'self-betrayer': 'Self-Betrayer'
+  };
+
+  const displayName = subtypeMapping[subtype] || subtype;
+  return AUTHENTIC_DNA_PROFILES[displayName] || null;
 }

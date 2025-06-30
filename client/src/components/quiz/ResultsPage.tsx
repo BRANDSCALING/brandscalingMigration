@@ -158,7 +158,7 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
             Your Default DNA
           </h3>
           <p className="text-gray-700 mb-4">
-            Processing your DNA analysis...
+            {profileData?.coreIdentity || 'Loading your DNA profile...'}
           </p>
           
           <div className="space-y-4">
@@ -183,17 +183,95 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
             <div className="mb-4">
               <h4 className="font-semibold text-gray-800 mb-2">Loop Format: {profileData?.loopFormat || 'Processing...'}</h4>
               <p className="text-gray-700">
-                {profileData?.loopDescription || AUTHENTIC_DNA_LOOPS[defaultDNA || 'Blurred'] || 'Processing your loop pattern...'}
+                {profileData?.loopDescription || 'Loading your authentic loop pattern...'}
               </p>
             </div>
             
             <div className="bg-blue-50 rounded-lg p-4">
               <p className="font-medium text-blue-800 mb-2">Loop Mastery Reminder:</p>
               <p className="text-blue-700">
-                You don't evolve by switching loops — you evolve by deepening your own until it 
-                becomes powerful, repeatable, and precise.
+                You don't evolve by switching loops — you evolve by deepening your own until it becomes powerful, repeatable, and precise.
               </p>
             </div>
+          </div>
+        </Card>
+
+        {/* Opposite Mode Awareness */}
+        <Card className="p-6">
+          <h3 className="text-xl font-bold mb-4">Opposite Mode Awareness</h3>
+          <div className="space-y-4">
+            <div>
+              <div className="flex justify-between items-center mb-2">
+                <span className="font-medium">Opposite Mode Awareness</span>
+                <span className="text-sm text-gray-500">{profileData?.oppositeAwareness || 50}%</span>
+              </div>
+              <Progress value={profileData?.oppositeAwareness || 50} className="h-2" />
+            </div>
+            <p className="text-gray-700">
+              {profileData?.oppositeDescription || 'Developing awareness of complementary operating styles and how they enhance your natural strengths.'}
+            </p>
+          </div>
+        </Card>
+
+        {/* Your Edge */}
+        <Card className="p-6">
+          <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+            <Star className="w-5 h-5 text-yellow-500" />
+            Your Edge
+          </h3>
+          <div className="space-y-4">
+            {profileData?.edges && profileData.edges.length > 0 && (
+              <div>
+                <h4 className="font-semibold text-gray-800 mb-2">Core Edges:</h4>
+                <ul className="space-y-2">
+                  {profileData.edges.map((edge, index) => (
+                    <li key={index} className="text-gray-700 flex items-start gap-2">
+                      <span className="text-green-500 mt-1">•</span>
+                      {edge}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        </Card>
+
+        {/* Risks & Blind Spots */}
+        <Card className="p-6">
+          <h3 className="text-xl font-bold mb-4 text-red-600">Risks & Blind Spots</h3>
+          <div className="bg-red-50 rounded-lg p-4">
+            <h4 className="font-semibold text-red-800 mb-2">Key Insight:</h4>
+            {profileData?.risks && profileData.risks.length > 0 ? (
+              <ul className="space-y-2">
+                {profileData.risks.map((risk, index) => (
+                  <li key={index} className="text-red-700 flex items-start gap-2">
+                    <span className="text-red-500 mt-1">•</span>
+                    {risk}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-red-700">
+                Your challenges aren't weaknesses — they're signals for growth. Understanding these patterns helps you build sustainable systems.
+              </p>
+            )}
+          </div>
+        </Card>
+
+        {/* What You Need Next */}
+        <Card className="p-6">
+          <h3 className="text-xl font-bold mb-4">What You Need Next</h3>
+          <div className="space-y-4">
+            {profileData?.whatYouNeed && profileData.whatYouNeed.length > 0 && (
+              <ul className="space-y-2">
+                {profileData.whatYouNeed.map((item, index) => (
+                  <li key={index} className="text-gray-700 flex items-start gap-2">
+                    <span className="text-blue-500 mt-1">•</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         </Card>
 
