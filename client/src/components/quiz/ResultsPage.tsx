@@ -319,32 +319,34 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
         )}
 
         {/* Milestone Tracker */}
-        <Card className="p-6">
-          <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-            <Users className="w-5 h-5 text-green-600" />
-            Milestone Tracker
-          </h3>
-          
-          <div className="space-y-4">
-            {milestones.map((milestone, index) => (
-              <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                <div className="flex-shrink-0">
-                  {milestone.status === 'completed' ? (
-                    <CheckCircle className="w-5 h-5 text-green-500" />
-                  ) : (
-                    <Clock className="w-5 h-5 text-yellow-500" />
-                  )}
+        {profileData && (
+          <Card className="p-6">
+            <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+              <Users className="w-5 h-5 text-green-600" />
+              Milestone Tracker
+            </h3>
+            
+            <div className="space-y-4">
+              {profileData.milestones.map((milestone, index) => (
+                <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                  <div className="flex-shrink-0">
+                    {milestone.status === 'completed' ? (
+                      <CheckCircle className="w-5 h-5 text-green-500" />
+                    ) : (
+                      <Clock className="w-5 h-5 text-yellow-500" />
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-medium text-gray-900">{milestone.name}</p>
+                  </div>
+                  <Badge variant={milestone.status === 'completed' ? 'default' : 'secondary'}>
+                    {milestone.status === 'completed' ? 'Complete' : 'Locked'}
+                  </Badge>
                 </div>
-                <div className="flex-1">
-                  <p className="font-medium text-gray-900">{milestone.name}</p>
-                </div>
-                <Badge variant={milestone.status === 'completed' ? 'default' : 'secondary'}>
-                  {milestone.status === 'completed' ? 'Complete' : 'In Progress'}
-                </Badge>
-              </div>
-            ))}
-          </div>
-        </Card>
+              ))}
+            </div>
+          </Card>
+        )}
 
         {/* Blurred Identity Special Section */}
         {defaultDNA === 'Blurred' && (
