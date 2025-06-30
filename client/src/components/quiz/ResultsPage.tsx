@@ -148,7 +148,7 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
         </Card>
 
         {/* Subtype Section */}
-        {subtype && (
+        {subtype && profileData && (
           <Card className="p-6">
             <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
               <Lightbulb className="w-5 h-5 text-yellow-500" />
@@ -158,27 +158,21 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
             <div className="space-y-4">
               <div className="bg-yellow-50 rounded-lg p-4">
                 <p className="font-medium text-yellow-800 mb-2">Snapshot Line:</p>
-                <p className="text-yellow-700 italic">"{getProfileData(subtype).snapshotLine}"</p>
+                <p className="text-yellow-700 italic">"{profileData.snapshotLine}"</p>
               </div>
               
               <div>
                 <div className="flex justify-between items-center mb-2">
                   <span className="font-medium">Subtype Mastery</span>
-                  <span className="text-sm text-gray-500">{subtypeProgress || 30}%</span>
+                  <span className="text-sm text-gray-500">{profileData.subtypeMastery}%</span>
                 </div>
-                <Progress value={subtypeProgress || 30} className="h-2" />
-
-              </div>
-              
-              <div className="bg-green-50 rounded-lg p-4">
-                <p className="font-medium text-green-800 mb-2">Ultimate Subtype Unlock:</p>
-                <p className="text-green-700">→ Unlocked through consistent entrepreneurial practice</p>
+                <Progress value={profileData.subtypeMastery} className="h-2" />
               </div>
               
               <div className="space-y-3">
                 <h4 className="font-medium">Subtype Snapshot:</h4>
                 <ul className="space-y-2">
-                  {getProfileData(subtype).snapshot?.map((item, index) => (
+                  {profileData.subtypeSnapshot.map((item, index) => (
                     <li key={index} className="flex items-start gap-2">
                       <span className="text-purple-500 mt-1">•</span>
                       <span>{item}</span>
@@ -191,10 +185,11 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
         )}
 
         {/* Core Profile */}
-        {subtype && (
+        {subtype && profileData && (
           <Card className="p-6">
+            <h3 className="text-xl font-bold mb-4">Core Identity</h3>
             <p className="text-gray-700 leading-relaxed">
-              {getProfileData(subtype).longDescription}
+              {profileData.coreIdentity}
             </p>
           </Card>
         )}
@@ -206,16 +201,13 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
           <div className="mb-4">
             <div className="flex justify-between items-center mb-2">
               <span className="font-medium">Opposite Mode Awareness</span>
-              <span className="text-sm text-gray-500">50%</span>
+              <span className="text-sm text-gray-500">{profileData?.oppositeAwareness || 50}%</span>
             </div>
-            <Progress value={50} className="h-2" />
+            <Progress value={profileData?.oppositeAwareness || 50} className="h-2" />
           </div>
           
           <p className="text-gray-700 mb-4">
-            {subtype && getProfileData(subtype).oppositeAwareness ? 
-              getProfileData(subtype).oppositeAwareness : 
-              "Developing awareness of complementary operating styles and how they enhance your natural strengths."
-            }
+            {profileData?.oppositeDescription || "Developing awareness of complementary operating styles and how they enhance your natural strengths."}
           </p>
         </Card>
 
@@ -226,7 +218,7 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
             Your Edge
           </h3>
           <ul className="space-y-2">
-            {(subtype ? getProfileData(subtype).edge : edges).map((edge, index) => (
+            {(profileData?.edges || []).map((edge, index) => (
               <li key={index} className="flex items-start gap-3">
                 <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
                 <span className="text-gray-700">{edge}</span>
@@ -239,7 +231,7 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
         <Card className="p-6">
           <h3 className="text-xl font-bold mb-4 text-red-700">Risks & Blind Spots</h3>
           <ul className="space-y-2">
-            {(subtype ? getProfileData(subtype).risks : risks).map((risk, index) => (
+            {(profileData?.risks || []).map((risk, index) => (
               <li key={index} className="flex items-start gap-3">
                 <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0"></div>
                 <span className="text-gray-700">{risk}</span>
@@ -258,11 +250,7 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
         <Card className="p-6">
           <h3 className="text-xl font-bold mb-4">What You Need Next</h3>
           <ul className="space-y-2">
-            {(subtype && getProfileData(subtype).nextSteps ? getProfileData(subtype).nextSteps : [
-              "Develop authentic entrepreneurial clarity",
-              "Strengthen core operating patterns",
-              "Build sustainable business systems"
-            ]).map((step, index) => (
+            {(profileData?.whatYouNeed || []).map((step, index) => (
               <li key={index} className="flex items-start gap-3">
                 <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
                 <span className="text-gray-700">{step}</span>
@@ -271,87 +259,64 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
           </ul>
         </Card>
 
-        {/* Growth Mission */}
-        <Card className="p-6 bg-gradient-to-r from-green-50 to-blue-50">
-          <h3 className="text-xl font-bold mb-4">Your Next Step Forward</h3>
-          <div className="space-y-4">
-            <div>
-              <h4 className="font-bold text-lg">Ready to Scale Authentically?</h4>
+        {/* CTA Section */}
+        {profileData && (
+          <Card className="p-6 bg-gradient-to-r from-green-50 to-blue-50">
+            <h3 className="text-xl font-bold mb-4">{profileData.ctaTitle}</h3>
+            <div className="space-y-4">
+              <p className="text-gray-700">{profileData.conclusionLine}</p>
+              <p className="text-gray-700">{profileData.ctaText}</p>
             </div>
-            <div>
-              <p className="text-gray-700">Your entrepreneurial DNA is your competitive advantage.</p>
-              <p className="text-gray-700">Building a business that honors your natural operating system creates sustainable success.</p>
-            </div>
-            <p className="text-gray-700">The most successful entrepreneurs don't fight their nature — they leverage it.</p>
-            <p className="text-gray-700 font-medium">Your assessment shows exactly how to build from your strengths.</p>
-          </div>
-        </Card>
+          </Card>
+        )}
 
         {/* Complementary Subtype */}
-        <Card className="p-6">
-          <h3 className="text-xl font-bold mb-4">Best Complementary Opposite Subtype</h3>
-          <p className="font-medium mb-4">Best Support: The Systemised Builder</p>
-          
-          <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <h4 className="font-medium mb-2">Where You Struggle | They Lead With</h4>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between border-b pb-1">
-                  <span>Emotional burnout</span>
-                  <span>Steady, predictable execution</span>
+        {profileData && profileData.complementarySubtype !== 'Identity Reset Required' && (
+          <Card className="p-6">
+            <h3 className="text-xl font-bold mb-4">Best Complementary Opposite Subtype</h3>
+            <p className="font-medium mb-4">Best Support: {profileData.complementarySubtype}</p>
+            
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <h4 className="font-medium mb-2">Where You Struggle | They Lead With</h4>
+                <div className="space-y-2 text-sm">
+                  {profileData.complementaryTable.whereYouStruggle.map((item, index) => (
+                    <div key={index} className="flex justify-between border-b pb-1">
+                      <span>{item.challenge}</span>
+                      <span>{item.theirStrength}</span>
+                    </div>
+                  ))}
                 </div>
-                <div className="flex justify-between border-b pb-1">
-                  <span>Over-ideation</span>
-                  <span>MVP delivery and sequencing</span>
-                </div>
-                <div className="flex justify-between border-b pb-1">
-                  <span>Missed timing</span>
-                  <span>Operational discipline</span>
-                </div>
-                <div className="flex justify-between border-b pb-1">
-                  <span>Perfection paralysis</span>
-                  <span>Ship-before-perfect logic</span>
+              </div>
+              
+              <div>
+                <h4 className="font-medium mb-2">Where They Struggle | You Lead With</h4>
+                <div className="space-y-2 text-sm">
+                  {profileData.complementaryTable.whereTheyStruggle.map((item, index) => (
+                    <div key={index} className="flex justify-between border-b pb-1">
+                      <span>{item.challenge}</span>
+                      <span>{item.yourStrength}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
             
-            <div>
-              <h4 className="font-medium mb-2">Where They Struggle | You Lead With</h4>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between border-b pb-1">
-                  <span>Over-structuring</span>
-                  <span>Energetic innovation and iteration</span>
-                </div>
-                <div className="flex justify-between border-b pb-1">
-                  <span>Emotional disconnect</span>
-                  <span>Resonance and creative magnetism</span>
-                </div>
-                <div className="flex justify-between border-b pb-1">
-                  <span>Routine burnout</span>
-                  <span>Passion, empathy, and vision</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <p className="mt-4 text-gray-700 italic">
-            "Together? You build what sparks *and* scales."
-          </p>
-        </Card>
+            <p className="mt-4 text-gray-700 italic">
+              "Together? You build what sparks *and* scales."
+            </p>
+          </Card>
+        )}
 
         {/* Final Empowerment */}
-        <Card className="p-6 bg-gradient-to-r from-purple-100 to-indigo-100">
-          <h3 className="text-xl font-bold mb-4">Final Empowerment Remark</h3>
-          <div className="space-y-3">
-            <p className="text-gray-700">You don't need to be both.</p>
-            <p className="text-gray-700">
-              You need to become the ultimate version of your DNA type — and that's exactly what 
-              you're doing.
-            </p>
-            <p className="text-gray-700 font-medium">You are {subtype || 'Your Unique DNA Type'}.</p>
-            <p className="text-gray-700">Now go finish building what only you could begin.</p>
-          </div>
-        </Card>
+        {profileData && (
+          <Card className="p-6 bg-gradient-to-r from-purple-100 to-indigo-100">
+            <h3 className="text-xl font-bold mb-4">Final Empowerment Remark</h3>
+            <div className="space-y-3">
+              <p className="text-gray-700">{profileData.finalRemark}</p>
+            </div>
+          </Card>
+        )}
 
         {/* Milestone Tracker */}
         <Card className="p-6">
