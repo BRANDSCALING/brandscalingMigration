@@ -261,9 +261,9 @@ export const calculateDNAType = (answers: Record<number, string>): 'architect' |
     }
   }
 
-  // User's exact scoring rule: 5-6 = clear type, 1-4 mixed = Blurred Identity
-  if (architectScore >= 5) return 'architect';
-  if (alchemistScore >= 5) return 'alchemist';
+  // User's exact scoring rule: 4+ = clear type, <4 either = Blurred Identity
+  if (architectScore >= 4) return 'architect';
+  if (alchemistScore >= 4) return 'alchemist';
   return 'blurred';
 };
 
@@ -292,5 +292,19 @@ export const calculateSubtype = (answers: Record<number, string>, dnaType: 'arch
     }
   }
 
-  return dominantSubtype || 'unknown';
+  // Map DNA types to their default subtypes if no clear subtype winner
+  if (!dominantSubtype || maxCount === 0) {
+    switch (dnaType) {
+      case 'architect':
+        return 'master-strategist';
+      case 'alchemist':
+        return 'visionary-oracle';
+      case 'blurred':
+        return 'overthinker';
+      default:
+        return 'overthinker';
+    }
+  }
+
+  return dominantSubtype;
 };

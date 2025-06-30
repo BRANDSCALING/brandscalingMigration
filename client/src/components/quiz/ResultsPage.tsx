@@ -19,6 +19,13 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
 
+  // Progress steps with authentic completion states
+  const progressSteps = [
+    { label: 'Initial DNA Detection Complete', percentage: 100 },
+    { label: 'Awareness of your opposite Complete', percentage: 100 },
+    { label: 'Subtype Analysis Complete', percentage: 100 }
+  ];
+
   // Debug logging to see what data is being received
   useEffect(() => {
     console.log('ResultsPage received quizState:', quizState);
@@ -46,6 +53,13 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
   
   console.log('Using subtype for profile data:', actualSubtype);
   console.log('Using DNA type:', actualDnaType);
+  
+  // Calculate opposite DNA type for awareness section
+  const calculateOppositeAwareness = () => {
+    if (actualDnaType === 'Architect') return 'Alchemist';
+    if (actualDnaType === 'Alchemist') return 'Architect';
+    return '—'; // Blurred types don't have a clear opposite
+  };
   
   const profileData = actualSubtype ? getAuthenticProfileData(actualSubtype) : null;
   
@@ -105,7 +119,7 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
                 <div className="grid grid-cols-3 gap-4 text-lg font-semibold">
                   <div className="text-center">{actualDnaType || 'Processing...'}</div>
                   <div className="text-center">{actualSubtype || '—'}</div>
-                  <div className="text-center">—</div>
+                  <div className="text-center">{calculateOppositeAwareness()}</div>
                 </div>
               </div>
               
