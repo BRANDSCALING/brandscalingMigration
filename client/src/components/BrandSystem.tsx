@@ -98,19 +98,24 @@ interface BrandSectionProps {
   children: React.ReactNode;
   className?: string;
   spacing?: 'normal' | 'large';
+  id?: string;
 }
 
 export const BrandSection: React.FC<BrandSectionProps> = ({
   children,
   className = '',
-  spacing = 'normal'
+  spacing = 'normal',
+  id
 }) => {
   return (
-    <section className={`
-      container-brandscaling
-      ${spacing === 'large' ? 'spacing-section' : 'spacing-component'}
-      ${className}
-    `}>
+    <section 
+      id={id}
+      className={`
+        container-brandscaling
+        ${spacing === 'large' ? 'spacing-section' : 'spacing-component'}
+        ${className}
+      `}
+    >
       {children}
     </section>
   );

@@ -401,11 +401,9 @@ export default function Landing() {
             </div>
 
             <div className="mt-8 pt-8 border-t border-white/20">
-              <BrandQuote 
-                text="Every entrepreneur is either an Architect or an Alchemist. The key is knowing which you are and scaling accordingly."
-                author="The Infinite Scaling Methodology"
-                className="text-white/90"
-              />
+              <BrandQuote attribution="both">
+                "Every entrepreneur is either an Architect or an Alchemist. The key is knowing which you are and scaling accordingly."
+              </BrandQuote>
             </div>
           </div>
         </div>
