@@ -8,7 +8,8 @@ import { Progress } from '@/components/ui/progress';
 import { AUTHENTIC_DNA_QUESTIONS, calculateDNAType, calculateSubtype } from '@/../../shared/authenticQuestions';
 import ResultsPage from '@/components/quiz/ResultsPage';
 import AnalysisBlock from '@/components/quiz/AnalysisBlock';
-import { DNAType, QuizState } from '@/components/quiz/QuizContainer';
+import PathChoiceBlock from '@/components/quiz/PathChoiceBlock';
+import { DNAType, QuizState, PathType } from '@/components/quiz/QuizContainer';
 
 export default function EntrepreneurialDnaQuiz() {
   const [, setLocation] = useLocation();
@@ -18,6 +19,8 @@ export default function EntrepreneurialDnaQuiz() {
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [showResults, setShowResults] = useState(false);
   const [showAnalysis, setShowAnalysis] = useState(false);
+  const [showPathChoice, setShowPathChoice] = useState(false);
+  const [pathChoice, setPathChoice] = useState<PathType | null>(null);
   const [analysisType, setAnalysisType] = useState<'awareness' | 'subtype' | 'validation'>('awareness');
   const [defaultDnaType, setDefaultDnaType] = useState<'architect' | 'alchemist' | 'blurred' | null>(null);
   const [questions] = useState(AUTHENTIC_DNA_QUESTIONS); // All 22 authentic questions
@@ -86,8 +89,7 @@ export default function EntrepreneurialDnaQuiz() {
       setShowAnalysis(true);
       return;
     } else if (currentQuestionIndex === 11) { // After Q12
-      setAnalysisType('subtype');
-      setShowAnalysis(true);
+      setShowPathChoice(true);
       return;
     } else if (currentQuestionIndex === 17) { // After Q18
       setAnalysisType('validation');
@@ -147,6 +149,12 @@ export default function EntrepreneurialDnaQuiz() {
     setCurrentQuestionIndex(prev => prev + 1);
   };
 
+  const handlePathChoice = (path: PathType) => {
+    setPathChoice(path);
+    setShowPathChoice(false);
+    setCurrentQuestionIndex(prev => prev + 1);
+  };
+
 
 
   // Show analysis screen
@@ -156,6 +164,21 @@ export default function EntrepreneurialDnaQuiz() {
         stage={analysisType}
         onContinue={handleAnalysisContinue}
       />
+    );
+  }
+
+  // Show path choice screen after Q12
+  if (showPathChoice) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 py-8">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <Card>
+              <PathChoiceBlock onComplete={handlePathChoice} />
+            </Card>
+          </div>
+        </div>
+      </div>
     );
   }
 
