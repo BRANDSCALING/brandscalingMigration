@@ -41,7 +41,7 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
       return {
         snapshotLine: "Developing entrepreneurial clarity.",
         snapshot: [],
-        longDescription: "Your authentic entrepreneurial profile is being refined based on your assessment responses.",
+        longDescription: "Developing comprehensive entrepreneurial clarity.",
         edge: [],
         risks: [],
         oppositeAwareness: "Developing awareness of complementary operating styles.",
@@ -159,8 +159,7 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
                 <span className="text-sm text-gray-500">{getAwarenessLevel(awarenessScore || 0)}%</span>
               </div>
               <Progress value={getAwarenessLevel(awarenessScore || 0)} className="h-2" />
-              <p className="text-sm text-gray-600 mt-1">→ Measured by Q1–Q6 + LMS feedback</p>
-              <p className="text-sm text-gray-600">→ Deepens through aligned execution and supportive environments</p>
+
             </div>
           </div>
         </Card>
@@ -214,12 +213,12 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
                   <span className="text-sm text-gray-500">{subtypeProgress || 30}%</span>
                 </div>
                 <Progress value={subtypeProgress || 30} className="h-2" />
-                <p className="text-sm text-gray-600 mt-1">→ Based on Q14–Q22 + behavioral indicators</p>
+
               </div>
               
               <div className="bg-green-50 rounded-lg p-4">
                 <p className="font-medium text-green-800 mb-2">Ultimate Subtype Unlock:</p>
-                <p className="text-green-700">→ Available after LMS course completion + milestone behaviors</p>
+                <p className="text-green-700">→ Unlocked through consistent entrepreneurial practice</p>
               </div>
               
               <div className="space-y-3">
@@ -237,10 +236,9 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
           </Card>
         )}
 
-        {/* Core Identity */}
+        {/* Core Profile */}
         {subtype && (
           <Card className="p-6">
-            <h3 className="text-xl font-bold mb-4">Core Identity Paragraph:</h3>
             <p className="text-gray-700 leading-relaxed">
               {getProfileData(subtype).longDescription}
             </p>
