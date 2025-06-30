@@ -19,6 +19,14 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
 
+  // Debug logging to see what data is being received
+  useEffect(() => {
+    console.log('ResultsPage received quizState:', quizState);
+    console.log('DNA Type:', defaultDNA);
+    console.log('Subtype:', subtype);
+    console.log('Awareness Score:', awarenessScore);
+  }, [quizState, defaultDNA, subtype, awarenessScore]);
+
   // Store quiz results in localStorage for dashboard access
   useEffect(() => {
     if (quizState.dnaType && quizState.subtype) {
@@ -34,6 +42,11 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
 
   // Get authentic profile data
   const profileData = subtype ? getAuthenticProfileData(subtype) : null;
+  
+  // Debug profile data
+  useEffect(() => {
+    console.log('Profile data for subtype:', subtype, profileData);
+  }, [subtype, profileData]);
 
   const handleDashboardRedirect = () => {
     const studentId = localStorage.getItem('studentId');

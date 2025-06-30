@@ -35,6 +35,9 @@ export default function EntrepreneurialDnaQuiz() {
   useEffect(() => {
     const checkQuizEligibility = async () => {
       try {
+        // Clear any cached quiz results to ensure fresh data
+        localStorage.removeItem('quizResult');
+        
         const studentId = localStorage.getItem('studentId');
         if (!studentId) {
           toast({
@@ -123,6 +126,15 @@ export default function EntrepreneurialDnaQuiz() {
       };
 
       const result = await apiRequest('POST', '/api/quiz/entrepreneurial-dna/submit', quizData);
+      
+      // Debug logging
+      console.log('Quiz submission result:', result);
+      console.log('Setting quiz state with:', {
+        dnaType: result.dnaType,
+        defaultDNA: result.dnaType.charAt(0).toUpperCase() + result.dnaType.slice(1),
+        subtype: result.subtype,
+        awarenessScore: result.awarenessPercentage
+      });
       
       setQuizState({
         currentStage: 'results',

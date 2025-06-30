@@ -44,11 +44,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Import authentic scoring functions from shared module
       const { calculateDNAType, calculateSubtype } = await import('../shared/authenticQuestions');
       
+      // Debug logging
+      console.log('Answers received:', answersObject);
+      console.log('Sample Q1-Q6 answers:', {
+        Q1: answersObject[1],
+        Q2: answersObject[2], 
+        Q3: answersObject[3],
+        Q4: answersObject[4],
+        Q5: answersObject[5],
+        Q6: answersObject[6]
+      });
+      
       // Calculate DNA type using authentic Q1-Q6 scoring
       const dnaType = calculateDNAType(answersObject);
+      console.log('Calculated DNA type:', dnaType);
       
       // Calculate subtype using authentic Q13-Q22 scoring
       const subtypeResult = calculateSubtype(answersObject, dnaType);
+      console.log('Calculated subtype:', subtypeResult);
       
       // Calculate awareness percentage (simplified for now)
       const awarenessPercentage = 75;
