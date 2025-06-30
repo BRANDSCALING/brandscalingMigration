@@ -19,12 +19,27 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
 
-  // Progress steps with authentic completion states
-  const progressSteps = [
-    { label: 'Initial DNA Detection Complete', percentage: 100 },
-    { label: 'Awareness of your opposite Complete', percentage: 100 },
-    { label: 'Subtype Analysis Complete', percentage: 100 }
-  ];
+  // Helper functions from authentic document
+  const getAwarenessLevel = (score: number) => {
+    if (score === 6) return 70;
+    if (score === 5) return 60;
+    if (score === 4) return 50;
+    if (score === 3) return 40;
+    if (score === 2) return 30;
+    return 20;
+  };
+
+  const getSubtypeIcon = (subtype: string) => {
+    if (subtype?.includes('Strategist') || subtype?.includes('Builder') || subtype?.includes('Analyzer')) return '🧠';
+    if (subtype?.includes('Oracle') || subtype?.includes('Perfectionist') || subtype?.includes('Empath') || subtype?.includes('Alchemist')) return '✨';
+    return '🔄';
+  };
+
+  const getEvolutionPath = (dnaType: string) => {
+    if (dnaType === 'Architect') return 'Ultimate Architect';
+    if (dnaType === 'Alchemist') return 'Ultimate Alchemist';
+    return 'Integrated Entrepreneur';
+  };
 
   // Debug logging to see what data is being received
   useEffect(() => {
@@ -58,8 +73,11 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
   const calculateOppositeAwareness = () => {
     if (actualDnaType === 'Architect') return 'Alchemist';
     if (actualDnaType === 'Alchemist') return 'Architect';
-    return '—'; // Blurred types don't have a clear opposite
+    return 'Opposite';
   };
+
+  const awarenessLevel = getAwarenessLevel(awarenessScore || 0);
+  const oppositeType = calculateOppositeAwareness();
   
   const profileData = actualSubtype ? getAuthenticProfileData(actualSubtype) : null;
   
@@ -135,145 +153,100 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
           </div>
         </Card>
 
-        {/* Progress Steps */}
-        <Card className="p-6">
-          <h3 className="text-xl font-bold mb-6">Assessment Progress</h3>
-          <div className="space-y-6">
-            {progressSteps.map((step, index) => (
-              <div key={index} className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <span className="font-medium text-gray-700">{step.label}</span>
-                  <span className="text-sm text-gray-500">{step.percentage}%</span>
-                </div>
-                <Progress value={step.percentage} className="h-2" />
+        {/* Default DNA Result */}
+        <Card className="border-2 border-purple-200">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold text-gray-800">Your Default DNA</h3>
+              <div className={`px-4 py-2 rounded-full text-white font-semibold ${
+                actualDnaType === 'Architect' ? 'bg-purple-500' :
+                actualDnaType === 'Alchemist' ? 'bg-orange-500' : 'bg-red-500'
+              }`}>
+                {actualDnaType}
               </div>
-            ))}
-          </div>
-        </Card>
-
-        {/* Default DNA Section */}
-        <Card className="p-6">
-          <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-            <Target className="w-5 h-5 text-purple-600" />
-            Your Default DNA
-          </h3>
-          <p className="text-gray-700 mb-4">
-            {profileData?.coreIdentity || 'Loading your DNA profile...'}
-          </p>
-          
-          <div className="space-y-4">
-            <div>
-              <div className="flex justify-between items-center mb-2">
-                <span className="font-medium">Default Mastery</span>
-                <span className="text-sm text-gray-500">{profileData?.defaultMastery || 80}%</span>
-              </div>
-              <Progress value={profileData?.defaultMastery || 80} className="h-2" />
             </div>
-          </div>
-        </Card>
-
-        {/* Natural Loop of Action */}
-        <Card className="p-6">
-          <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-            <Zap className="w-5 h-5 text-orange-500" />
-            Your Natural Loop of Action
-          </h3>
-          
-          <div className="space-y-4">
-            <div className="mb-4">
-              <h4 className="font-semibold text-gray-800 mb-2">Loop Format: {profileData?.loopFormat || 'Processing...'}</h4>
-              <p className="text-gray-700">
-                {profileData?.loopDescription || 'Loading your authentic loop pattern...'}
-              </p>
-            </div>
-            
-            <div className="bg-blue-50 rounded-lg p-4">
-              <p className="font-medium text-blue-800 mb-2">Loop Mastery Reminder:</p>
-              <p className="text-blue-700">
-                You don't evolve by switching loops — you evolve by deepening your own until it becomes powerful, repeatable, and precise.
-              </p>
-            </div>
-          </div>
-        </Card>
-
-        {/* Opposite Mode Awareness */}
-        <Card className="p-6">
-          <h3 className="text-xl font-bold mb-4">Opposite Mode Awareness</h3>
-          <div className="space-y-4">
-            <div>
-              <div className="flex justify-between items-center mb-2">
-                <span className="font-medium">Opposite Mode Awareness</span>
-                <span className="text-sm text-gray-500">{profileData?.oppositeAwareness || 50}%</span>
-              </div>
-              <Progress value={profileData?.oppositeAwareness || 50} className="h-2" />
-            </div>
-            <p className="text-gray-700">
-              {profileData?.oppositeDescription || 'Developing awareness of complementary operating styles and how they enhance your natural strengths.'}
+            <p className="text-gray-600">
+              {actualDnaType === 'Architect' && 'You operate through logic, systems, and structured thinking.'}
+              {actualDnaType === 'Alchemist' && 'You operate through intuition, vision, and transformational energy.'}
+              {actualDnaType === 'Blurred' && 'You show characteristics of both types and may benefit from clarity work.'}
             </p>
-          </div>
+          </CardContent>
         </Card>
 
-        {/* Your Edge */}
-        <Card className="p-6">
-          <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-            <Star className="w-5 h-5 text-yellow-500" />
-            Your Edge
-          </h3>
-          <div className="space-y-4">
-            {profileData?.edges && profileData.edges.length > 0 && (
-              <div>
-                <h4 className="font-semibold text-gray-800 mb-2">Core Edges:</h4>
-                <ul className="space-y-2">
-                  {profileData.edges.map((edge, index) => (
-                    <li key={index} className="text-gray-700 flex items-start gap-2">
-                      <span className="text-green-500 mt-1">•</span>
-                      {edge}
-                    </li>
-                  ))}
-                </ul>
+        {/* Awareness Level */}
+        <Card className="border-2 border-blue-200">
+          <CardContent className="p-6">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">
+              Awareness of {oppositeType} Mode
+            </h3>
+            <div className="mb-4">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm font-medium">Awareness Level</span>
+                <span className="text-lg font-bold">{awarenessLevel}%</span>
               </div>
-            )}
-          </div>
+              <Progress value={awarenessLevel} className="w-full h-3" />
+            </div>
+            <p className="text-gray-600">
+              {awarenessLevel >= 60 && 'Exceptional understanding of your opposite operating system.'}
+              {awarenessLevel >= 40 && awarenessLevel < 60 && 'Good awareness with room for deeper understanding.'}
+              {awarenessLevel < 40 && 'Limited awareness - exploring this could unlock new capabilities.'}
+            </p>
+          </CardContent>
         </Card>
 
-        {/* Risks & Blind Spots */}
-        <Card className="p-6">
-          <h3 className="text-xl font-bold mb-4 text-red-600">Risks & Blind Spots</h3>
-          <div className="bg-red-50 rounded-lg p-4">
-            <h4 className="font-semibold text-red-800 mb-2">Key Insight:</h4>
-            {profileData?.risks && profileData.risks.length > 0 ? (
-              <ul className="space-y-2">
-                {profileData.risks.map((risk, index) => (
-                  <li key={index} className="text-red-700 flex items-start gap-2">
-                    <span className="text-red-500 mt-1">•</span>
-                    {risk}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-red-700">
-                Your challenges aren't weaknesses — they're signals for growth. Understanding these patterns helps you build sustainable systems.
+        {/* Subtype */}
+        <Card className="border-2 border-green-200">
+          <CardContent className="p-6">
+            <div className="flex items-center mb-4">
+              <span className="text-3xl mr-3">{getSubtypeIcon(actualSubtype || '')}</span>
+              <div>
+                <h3 className="text-xl font-bold text-gray-800">Your Subtype</h3>
+                <p className="text-lg font-semibold text-green-600">{actualSubtype}</p>
+              </div>
+            </div>
+            <div className="mb-4">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm font-medium">Subtype Progress</span>
+                <span className="text-lg font-bold">{subtypeProgress || 85}%</span>
+              </div>
+              <Progress value={subtypeProgress || 85} className="w-full h-3" />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Evolution Path */}
+        <Card className="border-2 border-yellow-200">
+          <CardContent className="p-6">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">Your Evolution Path</h3>
+            <div className="text-center">
+              <p className="text-lg mb-4">Grow into the <strong>{getEvolutionPath(actualDnaType || '')}</strong></p>
+              {(subtypeProgress || 85) >= 90 ? (
+                <Button className="bg-gradient-to-r from-purple-600 to-blue-600 text-white">
+                  Unlock Advanced Track
+                </Button>
+              ) : (
+                <Button variant="outline">
+                  Continue Development Journey
+                </Button>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Blurred Identity Special Section */}
+        {actualDnaType === 'Blurred' && (
+          <Card className="border-2 border-red-200 bg-red-50">
+            <CardContent className="p-6 text-center">
+              <h3 className="text-xl font-bold text-red-800 mb-4">7-Day Identity Reset</h3>
+              <p className="text-red-700 mb-4">
+                Discover your true entrepreneurial identity with our focused clarity program.
               </p>
-            )}
-          </div>
-        </Card>
-
-        {/* What You Need Next */}
-        <Card className="p-6">
-          <h3 className="text-xl font-bold mb-4">What You Need Next</h3>
-          <div className="space-y-4">
-            {profileData?.whatYouNeed && profileData.whatYouNeed.length > 0 && (
-              <ul className="space-y-2">
-                {profileData.whatYouNeed.map((item, index) => (
-                  <li key={index} className="text-gray-700 flex items-start gap-2">
-                    <span className="text-blue-500 mt-1">•</span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        </Card>
+              <Button className="bg-red-600 hover:bg-red-700 text-white">
+                Start Identity Reset
+              </Button>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Subtype Section */}
         {actualSubtype && profileData && (
