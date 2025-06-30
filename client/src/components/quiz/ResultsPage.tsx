@@ -101,16 +101,16 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
         <Card className="overflow-hidden border-0 shadow-2xl rounded-2xl">
           <div className="bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-700 px-8 py-12 text-white relative">
             <div className="text-center space-y-6">
-              {/* DNA Type Information - horizontal aligned layout */}
-              <div className="flex items-center justify-center flex-wrap gap-x-6 gap-y-2 text-lg font-medium">
+              {/* DNA Type Information - single line parallel layout */}
+              <div className="flex items-center justify-center gap-4 text-lg font-medium overflow-x-auto">
                 <span className="whitespace-nowrap">Your Default DNA: {defaultDNA || 'Processing...'}</span>
+                <span className="text-white/60 mx-2">|</span>
                 {subtype && (
                   <>
-                    <span className="text-white/60">|</span>
                     <span className="whitespace-nowrap">Your Sub-DNA: {subtype}</span>
+                    <span className="text-white/60 mx-2">|</span>
                   </>
                 )}
-                <span className="text-white/60">|</span>
                 <span className="whitespace-nowrap">Awareness of your opposite</span>
               </div>
               
