@@ -39,17 +39,14 @@ export default function Landing() {
             loop
             muted
             playsInline
-            className="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto transform -translate-x-1/2 -translate-y-1/2 object-cover opacity-100 filter-none"
-            style={{ imageRendering: 'crisp-edges' }}
-            onLoadedData={() => console.log('Background video loaded')}
+            className="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto transform -translate-x-1/2 -translate-y-1/2 object-cover opacity-100"
+            onLoadedData={() => console.log('Background video loaded successfully')}
             onError={(e) => {
-              console.log('Background video failed to load:', e);
-              const target = e.target as HTMLVideoElement;
-              target.style.display = 'none';
+              console.error('Background video failed to load:', e);
             }}
           >
             <source src="/logo-animation.mp4" type="video/mp4" />
-            <source src="/uploads/logo-animation.mp4" type="video/mp4" />
+            <source src="/logo-loop.mp4" type="video/mp4" />
           </video>
         </div>
         
@@ -81,10 +78,9 @@ export default function Landing() {
               </Link>
             </div>
 
-            <BrandQuote 
-              text="Purpose → Profit → Purpose. Every entrepreneur is either an Architect or an Alchemist. Which are you?"
-              author="The Brandscaling Method"
-            />
+            <BrandQuote attribution="both">
+              "Purpose → Profit → Purpose. Every entrepreneur is either an Architect or an Alchemist. Which are you?"
+            </BrandQuote>
           </div>
         </div>
       </BrandSection>

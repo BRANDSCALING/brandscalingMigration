@@ -85,7 +85,7 @@ export default function StudentDashboard() {
   }, [setLocation]);
   
   const { data: dashboardData, isLoading, error } = useQuery<DashboardData>({
-    queryKey: ['/api/student/dashboard'],
+    queryKey: ['/api/dashboard'],
     enabled: isAuthenticated,
     retry: false
   });

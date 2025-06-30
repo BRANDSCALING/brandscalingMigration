@@ -199,6 +199,79 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // AI Agents Direct OpenAI Integration
+  app.post('/api/ai-agents/chat-direct', async (req: any, res) => {
+    try {
+      const { message, agentType } = req.body;
+      const userId = req.user?.uid || 'anonymous-user';
+      
+      if (!message || !agentType) {
+        return res.status(400).json({ error: 'Message and agent type are required' });
+      }
+
+      if (!['architect', 'alchemist'].includes(agentType)) {
+        return res.status(400).json({ error: 'Invalid agent type' });
+      }
+
+      // Import AI agent chat function
+      const { chatWithAgent } = await import('./aiAgent');
+      
+      // Get user's DNA type for personalization
+      const userDnaType = agentType === 'architect' ? 'Architect' : 'Alchemist';
+      
+      // Use the existing AI agent chat function with direct OpenAI
+      const responseText = await chatWithAgent(message, userDnaType, userId);
+
+      res.json({
+        response: responseText,
+        agentType: agentType,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Error communicating with AI agent:', error);
+      res.status(500).json({ 
+        error: 'Failed to communicate with AI agent',
+        response: 'I apologize, but I\'m temporarily unavailable. Please try again in a moment.'
+      });
+    }
+  });
+
+  // Get AI conversation history (separated by agent)
+  app.get('/api/ai-conversations/:agentType?', requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.user.uid;
+      const agentType = req.params.agentType;
+      
+      const conversations = await storage.getAiConversationsByUser(userId, agentType);
+      
+      res.json(conversations);
+    } catch (error) {
+      console.error('Error fetching AI conversations:', error);
+      res.status(500).json({ error: 'Failed to fetch conversation history' });
+    }
+  });
+
+  // Courses endpoints
+  app.get('/api/courses', requireAuth, async (req, res) => {
+    try {
+      const courses = await storage.getAllCourses();
+      res.json(courses);
+    } catch (error) {
+      console.error('Error fetching courses:', error);
+      res.status(500).json({ message: 'Failed to fetch courses' });
+    }
+  });
+
+  app.get('/api/courses/with-lessons', requireAuth, async (req, res) => {
+    try {
+      const courses = await storage.getCoursesWithLessons();
+      res.json(courses);
+    } catch (error) {
+      console.error('Error fetching courses with lessons:', error);
+      res.status(500).json({ message: 'Failed to fetch courses with lessons' });
+    }
+  });
+
   // Return the app for the main server to use
   return app as any;
 }
