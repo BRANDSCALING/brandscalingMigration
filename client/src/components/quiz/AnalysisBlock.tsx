@@ -15,7 +15,7 @@ const AnalysisBlock: React.FC<AnalysisBlockProps> = ({ stage, onContinue }) => {
         return {
           icon: <Brain className="w-8 h-8 text-purple-600" />,
           title: "Initial DNA Detection Complete",
-          subtitle: "Analyzing your entrepreneurial patterns...",
+          subtitle: "",
           description: "Based on your responses, we're identifying your core entrepreneurial tendencies. The next questions will help us understand your awareness level and decision-making patterns.",
           insights: [
             "Your approach to problem-solving is taking shape",
@@ -39,7 +39,7 @@ const AnalysisBlock: React.FC<AnalysisBlockProps> = ({ stage, onContinue }) => {
         return {
           icon: <Lightbulb className="w-8 h-8 text-purple-600" />,
           title: "Subtype Analysis Complete", 
-          subtitle: "Final validation in progress...",
+          subtitle: "",
           description: "Your entrepreneurial subtype has been identified. These final questions will validate and confirm your complete DNA profile.",
           insights: [
             "Your entrepreneurial subtype is determined",

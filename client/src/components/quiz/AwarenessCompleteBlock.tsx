@@ -21,9 +21,6 @@ export default function AwarenessCompleteBlock({ onContinue }: AwarenessComplete
                 <h2 className="text-2xl font-bold text-gray-900 mb-3">
                   Awareness of your opposite Complete
                 </h2>
-                <p className="text-purple-600 font-medium mb-6">
-                  Analyzing your entrepreneurial patterns...
-                </p>
               </div>
 
               <div className="space-y-4 text-left mb-8">
