@@ -72,8 +72,8 @@ export default function Auth() {
       const data = await response.json();
       
       // Store student session
-      localStorage.setItem('studentId', data.user.id);
-      localStorage.setItem('studentEmail', data.user.email);
+      localStorage.setItem('studentId', data.student.id);
+      localStorage.setItem('studentEmail', data.student.email);
       
       toast({
         title: "Welcome Back!",
