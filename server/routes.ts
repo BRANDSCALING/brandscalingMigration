@@ -41,53 +41,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         answersObject[answer.questionId] = answer.answer;
       });
 
-      // AUTHENTIC DNA SCORING LOGIC (Q1-Q6) - From user's document
-      let architectCount = 0;
-      let alchemistCount = 0;
+      // Import authentic scoring functions from shared module
+      const { calculateDNAType, calculateSubtype } = await import('../shared/authenticQuestions');
       
-      // Q1: Weekend preparation - A=🟪, B=🔴, C=🟧, D=🔴
-      if (answersObject[1] === 'A') architectCount++;
-      else if (answersObject[1] === 'C') alchemistCount++;
+      // Calculate DNA type using authentic Q1-Q6 scoring
+      const dnaType = calculateDNAType(answersObject);
       
-      // Q2: Friend hurts feelings - A=🟪, B=🟧, C=🔴, D=🔴
-      if (answersObject[2] === 'A') architectCount++;
-      else if (answersObject[2] === 'B') alchemistCount++;
-      
-      // Q3: Room of strangers - A=🟪, B=🟧, C=⚪, D=🔴
-      if (answersObject[3] === 'A') architectCount++;
-      else if (answersObject[3] === 'B') alchemistCount++;
-      
-      // Q4: 6am commitment - A=🟪, B=🟧, C=⚪, D=🔴
-      if (answersObject[4] === 'A') architectCount++;
-      else if (answersObject[4] === 'B') alchemistCount++;
-      
-      // Q5: Project completion - A=🟪, B=🟧, C=🔴, D=🔴
-      if (answersObject[5] === 'A') architectCount++;
-      else if (answersObject[5] === 'B') alchemistCount++;
-      
-      // Q6: Unachieved goal - A=🟪, B=🟧, C=🔴, D=🔴
-      if (answersObject[6] === 'A') architectCount++;
-      else if (answersObject[6] === 'B') alchemistCount++;
-      
-      // AUTHENTIC SCORING RULES: 5-6 = clear type, 1-4 = Blurred Identity
-      let dnaType: 'architect' | 'alchemist' | 'blurred';
-      if (architectCount >= 5) {
-        dnaType = 'architect';
-      } else if (alchemistCount >= 5) {
-        dnaType = 'alchemist';
-      } else {
-        dnaType = 'blurred';
-      }
-      
-      // AUTHENTIC 12 SUBTYPES - Based on Q13-Q22 validation questions
-      const subtypeMapping = {
-        'architect': ['Master Strategist', 'Systemised Builder', 'Internal Analyzer', 'Ultimate Strategist'],
-        'alchemist': ['Visionary Oracle', 'Magnetic Perfectionist', 'Energetic Empath', 'Ultimate Alchemist'],
-        'blurred': ['Overthinker', 'Performer', 'Self-Forsaker', 'Self-Betrayer']
-      };
-      
-      // Determine subtype based on Q13-Q22 patterns (simplified for now)
-      const subtypeResult = subtypeMapping[dnaType][0];
+      // Calculate subtype using authentic Q13-Q22 scoring
+      const subtypeResult = calculateSubtype(answersObject, dnaType);
       
       // Calculate awareness percentage (simplified for now)
       const awarenessPercentage = 75;
