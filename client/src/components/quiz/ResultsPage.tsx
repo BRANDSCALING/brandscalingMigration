@@ -64,7 +64,7 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
 
   // Get authentic profile data - ensure we're using the correct subtype
   const actualSubtype = quizState.subtype || subtype;
-  const actualDnaType = quizState.defaultDNA || defaultDNA;
+  const actualDnaType = quizState.dnaType || defaultDNA;
   
   console.log('Using subtype for profile data:', actualSubtype);
   console.log('Using DNA type:', actualDnaType);
@@ -153,163 +153,94 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
           </div>
         </Card>
 
-        {/* Default DNA Result */}
-        <Card className="border-2 border-purple-200">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold text-gray-800">Your Default DNA</h3>
-              <div className={`px-4 py-2 rounded-full text-white font-semibold ${
-                actualDnaType === 'Architect' ? 'bg-purple-500' :
-                actualDnaType === 'Alchemist' ? 'bg-orange-500' : 'bg-red-500'
-              }`}>
-                {actualDnaType}
+        {/* Assessment Progress */}
+        <Card className="p-6">
+          <h3 className="text-xl font-bold mb-6">Assessment Progress</h3>
+          <div className="space-y-6">
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="font-medium text-gray-700">Initial DNA Detection Complete</span>
+                <span className="text-sm text-gray-500">100%</span>
               </div>
+              <Progress value={100} className="h-2" />
             </div>
-            <p className="text-gray-600">
-              {actualDnaType === 'Architect' && 'You operate through logic, systems, and structured thinking.'}
-              {actualDnaType === 'Alchemist' && 'You operate through intuition, vision, and transformational energy.'}
-              {actualDnaType === 'Blurred' && 'You show characteristics of both types and may benefit from clarity work.'}
-            </p>
-          </CardContent>
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="font-medium text-gray-700">Awareness of your opposite Complete</span>
+                <span className="text-sm text-gray-500">100%</span>
+              </div>
+              <Progress value={100} className="h-2" />
+            </div>
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="font-medium text-gray-700">Subtype Analysis Complete</span>
+                <span className="text-sm text-gray-500">100%</span>
+              </div>
+              <Progress value={100} className="h-2" />
+            </div>
+          </div>
         </Card>
 
-        {/* Awareness Level */}
-        <Card className="border-2 border-blue-200">
-          <CardContent className="p-6">
-            <h3 className="text-xl font-bold text-gray-800 mb-4">
-              Awareness of {oppositeType} Mode
-            </h3>
-            <div className="mb-4">
+        {/* Default DNA Section */}
+        <Card className="p-6">
+          <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+            <Target className="w-5 h-5 text-purple-600" />
+            Your Default DNA
+          </h3>
+          <p className="text-gray-700 mb-4">
+            {profileData?.coreIdentity || 'Loading your DNA profile...'}
+          </p>
+          
+          <div className="space-y-4">
+            <div>
               <div className="flex justify-between items-center mb-2">
-                <span className="text-sm font-medium">Awareness Level</span>
-                <span className="text-lg font-bold">{awarenessLevel}%</span>
+                <span className="font-medium">Default Mastery</span>
+                <span className="text-sm text-gray-500">{profileData?.defaultMastery || 80}%</span>
               </div>
-              <Progress value={awarenessLevel} className="w-full h-3" />
+              <Progress value={profileData?.defaultMastery || 80} className="h-2" />
             </div>
-            <p className="text-gray-600">
-              {awarenessLevel >= 60 && 'Exceptional understanding of your opposite operating system.'}
-              {awarenessLevel >= 40 && awarenessLevel < 60 && 'Good awareness with room for deeper understanding.'}
-              {awarenessLevel < 40 && 'Limited awareness - exploring this could unlock new capabilities.'}
-            </p>
-          </CardContent>
+          </div>
         </Card>
 
-        {/* Subtype */}
-        <Card className="border-2 border-green-200">
-          <CardContent className="p-6">
-            <div className="flex items-center mb-4">
-              <span className="text-3xl mr-3">{getSubtypeIcon(actualSubtype || '')}</span>
-              <div>
-                <h3 className="text-xl font-bold text-gray-800">Your Subtype</h3>
-                <p className="text-lg font-semibold text-green-600">{actualSubtype}</p>
-              </div>
-            </div>
+        {/* Natural Loop of Action */}
+        <Card className="p-6">
+          <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+            <Zap className="w-5 h-5 text-orange-500" />
+            Your Natural Loop of Action
+          </h3>
+          
+          <div className="space-y-4">
             <div className="mb-4">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-sm font-medium">Subtype Progress</span>
-                <span className="text-lg font-bold">{subtypeProgress || 85}%</span>
-              </div>
-              <Progress value={subtypeProgress || 85} className="w-full h-3" />
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Evolution Path */}
-        <Card className="border-2 border-yellow-200">
-          <CardContent className="p-6">
-            <h3 className="text-xl font-bold text-gray-800 mb-4">Your Evolution Path</h3>
-            <div className="text-center">
-              <p className="text-lg mb-4">Grow into the <strong>{getEvolutionPath(actualDnaType || '')}</strong></p>
-              {(subtypeProgress || 85) >= 90 ? (
-                <Button className="bg-gradient-to-r from-purple-600 to-blue-600 text-white">
-                  Unlock Advanced Track
-                </Button>
-              ) : (
-                <Button variant="outline">
-                  Continue Development Journey
-                </Button>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Blurred Identity Special Section */}
-        {actualDnaType === 'Blurred' && (
-          <Card className="border-2 border-red-200 bg-red-50">
-            <CardContent className="p-6 text-center">
-              <h3 className="text-xl font-bold text-red-800 mb-4">7-Day Identity Reset</h3>
-              <p className="text-red-700 mb-4">
-                Discover your true entrepreneurial identity with our focused clarity program.
+              <h4 className="font-semibold text-gray-800 mb-2">Loop Format: {profileData?.loopFormat || 'Processing...'}</h4>
+              <p className="text-gray-700">
+                {profileData?.loopDescription || 'Loading your authentic loop pattern...'}
               </p>
-              <Button className="bg-red-600 hover:bg-red-700 text-white">
-                Start Identity Reset
-              </Button>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Subtype Section */}
-        {actualSubtype && profileData && (
-          <Card className="p-6">
-            <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <Lightbulb className="w-5 h-5 text-yellow-500" />
-              Your Subtype: {actualSubtype}
-            </h3>
-            
-            <div className="space-y-4">
-              <div className="bg-yellow-50 rounded-lg p-4">
-                <p className="font-medium text-yellow-800 mb-2">Snapshot Line:</p>
-                <p className="text-yellow-700 italic">"{profileData.snapshotLine}"</p>
-              </div>
-              
-              <div>
-                <div className="flex justify-between items-center mb-2">
-                  <span className="font-medium">Subtype Mastery</span>
-                  <span className="text-sm text-gray-500">{profileData.subtypeMastery}%</span>
-                </div>
-                <Progress value={profileData.subtypeMastery} className="h-2" />
-              </div>
-              
-              <div className="space-y-3">
-                <h4 className="font-medium">Subtype Snapshot:</h4>
-                <ul className="space-y-2">
-                  {profileData.subtypeSnapshot.map((item, index) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <span className="text-purple-500 mt-1">•</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
             </div>
-          </Card>
-        )}
-
-        {/* Core Profile */}
-        {subtype && profileData && (
-          <Card className="p-6">
-            <h3 className="text-xl font-bold mb-4">Core Identity</h3>
-            <p className="text-gray-700 leading-relaxed">
-              {profileData.coreIdentity}
-            </p>
-          </Card>
-        )}
+            
+            <div className="bg-blue-50 rounded-lg p-4">
+              <p className="font-medium text-blue-800 mb-2">Loop Mastery Reminder:</p>
+              <p className="text-blue-700">
+                You don't evolve by switching loops — you evolve by deepening your own until it becomes powerful, repeatable, and precise.
+              </p>
+            </div>
+          </div>
+        </Card>
 
         {/* Opposite Mode Awareness */}
         <Card className="p-6">
           <h3 className="text-xl font-bold mb-4">Opposite Mode Awareness</h3>
-          
-          <div className="mb-4">
-            <div className="flex justify-between items-center mb-2">
-              <span className="font-medium">Opposite Mode Awareness</span>
-              <span className="text-sm text-gray-500">{profileData?.oppositeAwareness || 50}%</span>
+          <div className="space-y-4">
+            <div>
+              <div className="flex justify-between items-center mb-2">
+                <span className="font-medium">Opposite Mode Awareness</span>
+                <span className="text-sm text-gray-500">{profileData?.oppositeAwareness || 50}%</span>
+              </div>
+              <Progress value={profileData?.oppositeAwareness || 50} className="h-2" />
             </div>
-            <Progress value={profileData?.oppositeAwareness || 50} className="h-2" />
+            <p className="text-gray-700">
+              {profileData?.oppositeDescription || 'Developing awareness of complementary operating styles and how they enhance your natural strengths.'}
+            </p>
           </div>
-          
-          <p className="text-gray-700 mb-4">
-            {profileData?.oppositeDescription || "Developing awareness of complementary operating styles and how they enhance your natural strengths."}
-          </p>
         </Card>
 
         {/* Your Edge */}
@@ -318,169 +249,67 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
             <Star className="w-5 h-5 text-yellow-500" />
             Your Edge
           </h3>
-          <ul className="space-y-2">
-            {(profileData?.edges || []).map((edge, index) => (
-              <li key={index} className="flex items-start gap-3">
-                <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
-                <span className="text-gray-700">{edge}</span>
-              </li>
-            ))}
-          </ul>
+          <div className="space-y-4">
+            {profileData?.edges && profileData.edges.length > 0 && (
+              <div>
+                <h4 className="font-semibold text-gray-800 mb-2">Core Edges:</h4>
+                <ul className="space-y-2">
+                  {profileData.edges.map((edge, index) => (
+                    <li key={index} className="text-gray-700 flex items-start gap-2">
+                      <span className="text-green-500 mt-1">•</span>
+                      {edge}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
         </Card>
 
         {/* Risks & Blind Spots */}
         <Card className="p-6">
-          <h3 className="text-xl font-bold mb-4 text-red-700">Risks & Blind Spots</h3>
-          <ul className="space-y-2">
-            {(profileData?.risks || []).map((risk, index) => (
-              <li key={index} className="flex items-start gap-3">
-                <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0"></div>
-                <span className="text-gray-700">{risk}</span>
-              </li>
-            ))}
-          </ul>
-          
-          <div className="mt-6 p-4 bg-red-50 rounded-lg">
-            <p className="font-medium text-red-800 mb-2">Key Insight:</p>
-            <p className="text-red-700">Your challenges aren't weaknesses — they're signals for growth.</p>
-            <p className="text-red-700">Understanding these patterns helps you build sustainable systems.</p>
+          <h3 className="text-xl font-bold mb-4 text-red-600">Risks & Blind Spots</h3>
+          <div className="bg-red-50 rounded-lg p-4">
+            <h4 className="font-semibold text-red-800 mb-2">Key Insight:</h4>
+            {profileData?.risks && profileData.risks.length > 0 ? (
+              <ul className="space-y-2">
+                {profileData.risks.map((risk, index) => (
+                  <li key={index} className="text-red-700 flex items-start gap-2">
+                    <span className="text-red-500 mt-1">•</span>
+                    {risk}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-red-700">
+                Your challenges aren't weaknesses — they're signals for growth. Understanding these patterns helps you build sustainable systems.
+              </p>
+            )}
           </div>
         </Card>
 
         {/* What You Need Next */}
         <Card className="p-6">
           <h3 className="text-xl font-bold mb-4">What You Need Next</h3>
-          <ul className="space-y-2">
-            {(profileData?.whatYouNeed || []).map((step, index) => (
-              <li key={index} className="flex items-start gap-3">
-                <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                <span className="text-gray-700">{step}</span>
-              </li>
-            ))}
-          </ul>
+          <div className="space-y-4">
+            {profileData?.whatYouNeed && profileData.whatYouNeed.length > 0 && (
+              <ul className="space-y-2">
+                {profileData.whatYouNeed.map((item, index) => (
+                  <li key={index} className="text-gray-700 flex items-start gap-2">
+                    <span className="text-blue-500 mt-1">•</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </Card>
 
-        {/* CTA Section */}
-        {profileData && (
-          <Card className="p-6 bg-gradient-to-r from-green-50 to-blue-50">
-            <h3 className="text-xl font-bold mb-4">{profileData.ctaTitle}</h3>
-            <div className="space-y-4">
-              <p className="text-gray-700">{profileData.conclusionLine}</p>
-              <p className="text-gray-700">{profileData.ctaText}</p>
-            </div>
-          </Card>
-        )}
-
-        {/* Complementary Subtype */}
-        {profileData && profileData.complementarySubtype !== 'Identity Reset Required' && (
-          <Card className="p-6">
-            <h3 className="text-xl font-bold mb-4">Best Complementary Opposite Subtype</h3>
-            <p className="font-medium mb-4">Best Support: {profileData.complementarySubtype}</p>
-            
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <h4 className="font-medium mb-2">Where You Struggle | They Lead With</h4>
-                <div className="space-y-2 text-sm">
-                  {profileData.complementaryTable.whereYouStruggle.map((item, index) => (
-                    <div key={index} className="flex justify-between border-b pb-1">
-                      <span>{item.challenge}</span>
-                      <span>{item.theirStrength}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              
-              <div>
-                <h4 className="font-medium mb-2">Where They Struggle | You Lead With</h4>
-                <div className="space-y-2 text-sm">
-                  {profileData.complementaryTable.whereTheyStruggle.map((item, index) => (
-                    <div key={index} className="flex justify-between border-b pb-1">
-                      <span>{item.challenge}</span>
-                      <span>{item.yourStrength}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-            
-            <p className="mt-4 text-gray-700 italic">
-              "Together? You build what sparks *and* scales."
-            </p>
-          </Card>
-        )}
-
-        {/* Final Empowerment */}
-        {profileData && (
-          <Card className="p-6 bg-gradient-to-r from-purple-100 to-indigo-100">
-            <h3 className="text-xl font-bold mb-4">Final Empowerment Remark</h3>
-            <div className="space-y-3">
-              <p className="text-gray-700">{profileData.finalRemark}</p>
-            </div>
-          </Card>
-        )}
-
-        {/* Milestone Tracker */}
-        {profileData && (
-          <Card className="p-6">
-            <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-              <Users className="w-5 h-5 text-green-600" />
-              Milestone Tracker
-            </h3>
-            
-            <div className="space-y-4">
-              {profileData.milestones.map((milestone, index) => (
-                <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                  <div className="flex-shrink-0">
-                    {milestone.status === 'completed' ? (
-                      <CheckCircle className="w-5 h-5 text-green-500" />
-                    ) : (
-                      <Clock className="w-5 h-5 text-yellow-500" />
-                    )}
-                  </div>
-                  <div className="flex-1">
-                    <p className="font-medium text-gray-900">{milestone.name}</p>
-                  </div>
-                  <Badge variant={milestone.status === 'completed' ? 'default' : 'secondary'}>
-                    {milestone.status === 'completed' ? 'Complete' : 'Locked'}
-                  </Badge>
-                </div>
-              ))}
-            </div>
-          </Card>
-        )}
-
-        {/* Blurred Identity Special Section */}
-        {defaultDNA === 'Blurred' && (
-          <Card className="p-6 bg-red-50 border-2 border-red-200">
-            <h3 className="text-xl font-bold text-red-800 mb-4">7-Day Identity Reset</h3>
-            <div className="space-y-4">
-              <div className="bg-white p-4 rounded border border-red-200">
-                <h4 className="font-semibold text-red-700 mb-2">Identity Clarity Emergency</h4>
-                <p className="text-sm">
-                  You're entering the 7-Day Identity Reset — a structured path to help you find your default DNA.
-                  This isn't about guessing your type. It's about experiencing both Architect and Alchemist rhythms — and seeing what finally feels like home.
-                </p>
-              </div>
-            </div>
-            <Button className="bg-red-600 hover:bg-red-700 text-white mt-4">
-              Start 7-Day Identity Reset
-            </Button>
-          </Card>
-        )}
-
-        {/* Action Button */}
+        {/* Continue Your Journey Button */}
         <div className="text-center py-8">
           <Button 
-            size="lg" 
-            className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-8 py-3 text-lg"
-            onClick={() => {
-              const accessTier = localStorage.getItem('accessTier') || 'entry';
-              if (accessTier === 'entry') {
-                setLocation('/entry');
-              } else {
-                setLocation('/student');
-              }
-            }}
+            onClick={handleDashboardRedirect}
+            className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 text-lg rounded-lg"
           >
             Continue Your Journey
           </Button>
