@@ -73,7 +73,7 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
     const studentId = localStorage.getItem('studentId');
     if (studentId) {
       // Check access tier to determine redirect
-      const accessTier = 'beginner'; // Default for now
+      const accessTier = localStorage.getItem('accessTier') || 'student';
       if (accessTier === 'entry') {
         setLocation('/entry');
       } else {
