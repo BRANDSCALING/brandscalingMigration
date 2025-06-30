@@ -239,11 +239,7 @@ export default function Landing() {
               <CardContent className="p-8">
                 <div className="text-center mb-6">
                   <h3 className="text-2xl font-bold text-strategic-black mb-2">Entry</h3>
-                  <div className="flex items-center justify-center gap-2 mb-2">
-                    <div className="text-2xl font-bold text-gray-400 line-through">£499</div>
-                    <div className="text-4xl font-bold text-green-600">£49</div>
-                  </div>
-                  <p className="text-green-600 font-semibold text-sm mb-1">Today Only - Use Code: LAUNCH49</p>
+                  <div className="text-4xl font-bold text-strategic-black mb-2">£499</div>
                   <p className="text-gray-600 text-sm">Perfect for idea-stage entrepreneurs</p>
                 </div>
                 
@@ -275,11 +271,11 @@ export default function Landing() {
               </CardContent>
             </Card>
 
-            {/* Expert Tier - Most Popular */}
+            {/* Expert Tier - Coming Soon */}
             <Card className="border-2 border-architect-indigo hover:shadow-xl transition-all duration-300 relative">
               <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                 <span className="bg-architect-indigo text-white px-4 py-1 rounded-full text-sm font-medium">
-                  Most Popular
+                  Coming Soon
                 </span>
               </div>
               <CardContent className="p-8">
