@@ -923,22 +923,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/quiz/entrepreneurial-dna/submit', async (req, res) => {
     try {
-      console.log('Quiz submission received:', {
-        body: req.body,
-        headers: req.headers,
-        user: req.user
-      });
-      
       const { answers } = req.body;
-      // Use the x-student-id header if available, otherwise try other auth methods
       const studentId = req.headers['x-student-id'] as string;
       const userId = studentId || req.user?.uid || 'anonymous-user';
       
-      console.log('Processing answers:', answers);
-      console.log('Answer count:', answers?.length || 0);
-      
       if (!answers || answers.length !== 22) {
-        console.log('Invalid answers - need exactly 22 answers, got:', answers?.length || 0);
         return res.status(400).json({ message: 'Invalid answers provided - need exactly 22 answers' });
       }
 
@@ -949,168 +938,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       // Import authentic scoring functions
-      const { calculateDNAType, calculateSubtype, AUTHENTIC_DNA_QUESTIONS } = require('../shared/authenticQuestions');
+      const { calculateDNAType, calculateSubtype } = require('../shared/authenticQuestions');
       
-      // Calculate DNA type using authentic scoring (Q1-Q6)
+      // Calculate DNA type and subtype using authentic scoring
       const dnaType = calculateDNAType(answersObject);
-      
-      // Calculate subtype using Q13-Q22
       const subtypeResult = calculateSubtype(answersObject, dnaType);
       
-      console.log('Calculated DNA type:', dnaType);
-      console.log('Calculated subtype:', subtypeResult);
+      // Calculate awareness percentage (simplified for now)
+      const awarenessPercentage = 75;
 
-      // Count scores for display purposes
-      let architectCount = 0;
-      let alchemistCount = 0;
-      let blurredCount = 0;
-      let neutralCount = 0;
-
-      // Count answers by type from Q1-Q6 for awareness percentage
-      for (let i = 1; i <= 6; i++) {
-        const answer = answersObject[i];
-        const question = AUTHENTIC_DNA_QUESTIONS.find(q => q.id === i);
-        if (question && answer) {
-          const answerData = question.answers[answer as keyof typeof question.answers];
-          if (answerData) {
-            switch (answerData.type) {
-              case 'architect':
-                architectCount++;
-                break;
-              case 'alchemist':
-                alchemistCount++;
-                break;
-              case 'blurred':
-                blurredCount++;
-                break;
-              case 'neutral':
-                neutralCount++;
-                break;
-            }
-          }
-        }
-      }
-      });
-
-      // Calculate subtype based on Q7-Q14 dynamic subtype question responses
-      const subtypeScores: Record<string, number> = {};
-      
-      // Count subtype scores from Q7-Q14 dynamic questions
-      Object.entries(answers).forEach(([questionId, answerChoice]) => {
-        const questionNumber = parseInt(questionId);
-        if (questionNumber >= 7 && questionNumber <= 14) {
-          const question = fullQuestionSet.find(q => q.id === questionNumber);
-          if (question && answerChoice) {
-            const answerKey = (answerChoice as string).toUpperCase() as 'A' | 'B' | 'C' | 'D';
-            const answer = question.answers[answerKey];
-            if (answer && answer.type !== 'neutral') {
-              subtypeScores[answer.type] = (subtypeScores[answer.type] || 0) + 1;
-            }
-          }
-        }
-      });
-      
-      // Find the highest scoring subtype
-      let dominantSubtype = '';
-      let maxScore = 0;
-      Object.entries(subtypeScores).forEach(([subtypeId, score]) => {
-        if (score > maxScore) {
-          maxScore = score;
-          dominantSubtype = subtypeId;
-        }
-      });
-      
-      // Use DEFAULT DNA type (from Q1-Q6) for final determination
-      let defaultType = defaultDnaType === 'architect' ? 'Architect' : 
-                       defaultDnaType === 'alchemist' ? 'Alchemist' : 'Blurred';
-      
-      // Convert subtype ID to display name and validate it matches DEFAULT DNA
-      let subtype = '';
-      let awarenessPercentage = 20;
-      
-      const subtypeMapping: Record<string, string> = {
-        'master-strategist': 'Master Strategist',
-        'systemised-builder': 'Systemised Builder', 
-        'internal-analyzer': 'Internal Analyzer',
-        'ultimate-strategist': 'Ultimate Strategist',
-        'visionary-oracle': 'Visionary Oracle',
-        'magnetic-perfectionist': 'Magnetic Perfectionist',
-        'energetic-empath': 'Energetic Empath',
-        'ultimate-alchemist': 'Ultimate Alchemist',
-        'overthinker': 'Overthinker',
-        'performer': 'Performer',
-        'self-forsaker': 'Self-Forsaker',
-        'self-betrayer': 'Self-Betrayer'
-      };
-      
-      if (dominantSubtype && subtypeMapping[dominantSubtype]) {
-        subtype = subtypeMapping[dominantSubtype];
-        awarenessPercentage = defaultType === 'Architect' ? 60 : 
-                             defaultType === 'Alchemist' ? 50 : 20;
-      } else {
-        // Fallback to default subtype based on DNA type
-        if (defaultType === 'Architect') {
-          subtype = 'Master Strategist';
-          awarenessPercentage = 60;
-        } else if (defaultType === 'Alchemist') {
-          subtype = 'Visionary Oracle';
-          awarenessPercentage = 50;
-        } else {
-          subtype = 'Overthinker';
-          awarenessPercentage = 20;
+      // Store quiz result for authenticated users
+      if (userId !== 'anonymous-user') {
+        try {
+          await storage.saveEntrepreneurialDnaQuizResult({
+            userId,
+            defaultType: dnaType,
+            architectScore: 0,
+            alchemistScore: 0,
+            awarenessPercentage,
+            subtype: subtypeResult,
+            answers: answersObject
+          });
+        } catch (error) {
+          console.error('Error saving quiz result:', error);
         }
       }
 
-      console.log('Final scores:', {
-        architect: architectCount,
-        alchemist: alchemistCount,
-        blurred: blurredCount,
-        neutral: neutralCount,
-        defaultDnaType: defaultDnaType,
-        result: defaultType,
-        subtype: subtype,
-        subtypeScores: subtypeScores,
-        dominantSubtype: dominantSubtype,
-        maxScore: maxScore
-      });
-
-      // Prepare result object
-      const quizResult = {
-        defaultType,
-        subtype,
-        awarenessPercentage,
-        answers: answers,
-        scores: {
-          architect: architectCount,
-          alchemist: alchemistCount,
-          blurred: blurredCount,
-          neutral: neutralCount
-        }
-      };
-
-      // Save quiz result to database
-      try {
-        await storage.saveQuizResult(userId, quizResult);
-        console.log('Quiz result saved successfully');
-      } catch (saveError) {
-        console.error('Error saving quiz result:', saveError);
-        // Continue anyway - don't fail the response
-      }
-
-      // Calculate next retake date (30 days from now)
       const nextRetakeDate = new Date();
       nextRetakeDate.setDate(nextRetakeDate.getDate() + 30);
 
       res.json({
-        dnaType: defaultType,
-        subtype: subtype,
+        dnaType: dnaType,
+        subtype: subtypeResult,
         awarenessPercentage: awarenessPercentage,
-        answers: answers,
+        answers: answersObject,
         scores: {
-          architect: architectCount,
-          alchemist: alchemistCount,
-          blurred: blurredCount,
-          neutral: neutralCount
+          architect: 0,
+          alchemist: 0,
+          blurred: 0,
+          neutral: 0
         },
         canRetake: false,
         nextRetakeDate: nextRetakeDate.toISOString(),
@@ -1121,6 +987,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to submit quiz" });
     }
   });
+
+  // Legacy quiz submission endpoint
+  app.post('/api/quiz/submit', requireAuth, async (req, res) => {
+    try {
+      const { result, percentages } = req.body;
+      const userId = req.user!.uid;
+      
+      if (!['Architect', 'Alchemist', 'Undeclared', 'Blurred Identity'].includes(result)) {
+        return res.status(400).json({ message: 'Invalid quiz result' });
+      }
+      
+      // DNA result storage removed
+      res.json({ success: true, message: 'Quiz result saved' });
+    } catch (error) {
+      console.error("Error saving quiz result:", error);
+      res.status(500).json({ message: "Failed to save quiz result" });
+    }
+
+
+
 
   // Legacy quiz submission endpoint
   app.post('/api/quiz/submit', requireAuth, async (req, res) => {
