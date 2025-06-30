@@ -101,30 +101,22 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
         <Card className="overflow-hidden border-0 shadow-2xl rounded-2xl">
           <div className="bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-700 px-8 py-12 text-white relative">
             <div className="text-center space-y-6">
-              {/* DNA Icon - matching reference */}
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 rounded-full">
-                <Brain className="w-8 h-8" />
-              </div>
-              
-              {/* Main Title */}
-              <h2 className="text-3xl font-bold tracking-tight">Your Entrepreneurial DNA Result</h2>
-              
-              {/* DNA Type Information */}
-              <div className="space-y-3">
-                <p className="text-xl font-medium opacity-95">
-                  Your Default DNA: {defaultDNA || 'Processing...'}
-                </p>
+              {/* DNA Type Information - parallel layout */}
+              <div className="flex items-center justify-center gap-4 text-xl font-medium">
+                <span>Your Default DNA: {defaultDNA || 'Processing...'}</span>
                 {subtype && (
-                  <p className="text-2xl font-bold">
-                    Your Sub-DNA: {subtype}
-                  </p>
+                  <>
+                    <span>|</span>
+                    <span>Your Sub-DNA: {subtype}</span>
+                  </>
                 )}
+                <span>|</span>
+                <span>Awareness of your opposite</span>
               </div>
               
-              {/* 1-line energetic resonance - matching reference layout */}
+              {/* Energetic resonance quote without title */}
               {subtype && (
-                <div className="mt-8 space-y-3">
-                  <p className="text-lg font-medium opacity-90">1-line energetic resonance:</p>
+                <div className="mt-8">
                   <p className="text-xl italic font-light leading-relaxed">
                     "{getProfileData(subtype).snapshotLine || 'Developing entrepreneurial clarity.'}"
                   </p>
@@ -156,9 +148,9 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
             <div>
               <div className="flex justify-between items-center mb-2">
                 <span className="font-medium">Default Mastery</span>
-                <span className="text-sm text-gray-500">{getAwarenessLevel(awarenessScore || 0)}%</span>
+                <span className="text-sm text-gray-500">80%</span>
               </div>
-              <Progress value={getAwarenessLevel(awarenessScore || 0)} className="h-2" />
+              <Progress value={80} className="h-2" />
 
             </div>
           </div>
