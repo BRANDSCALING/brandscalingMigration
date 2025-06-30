@@ -18,8 +18,9 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
   const { defaultDNA, awarenessScore, subtype, subtypeProgress } = quizState;
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  const [serverResult, setServerResult] = React.useState<any>(null);
 
-  // Submit quiz results to backend in background (non-blocking)
+  // Submit quiz results to backend and get authentic server response
   useEffect(() => {
     const submitQuizResults = async () => {
       try {
@@ -28,16 +29,19 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
           return; // Skip submission if not authenticated, but still show results
         }
 
-        // Submit comprehensive quiz results to correct endpoint (non-blocking)
-        await apiRequest('POST', '/api/quiz/entrepreneurial-dna/submit', {
+        // Submit comprehensive quiz results to correct endpoint
+        const response = await apiRequest('POST', '/api/quiz/entrepreneurial-dna/submit', {
           answers: quizState.answers
         });
 
+        // Store authentic server result
+        setServerResult(response);
+
         // Store result for immediate access
         localStorage.setItem('quizResult', JSON.stringify({
-          type: defaultDNA?.toLowerCase(),
-          subtype,
-          awarenessScore,
+          type: response.dnaType,
+          subtype: response.subtype,
+          awarenessScore: response.awarenessPercentage,
           subtypeProgress,
           timestamp: new Date().toISOString()
         }));
@@ -48,7 +52,7 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
       }
     };
 
-    // Run submission in background without blocking results display
+    // Run submission and get authentic results
     submitQuizResults();
   }, [quizState]);
 
@@ -90,10 +94,15 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
            dnaType === 'Alchemist' ? 'Ultimate Alchemist' : 'Balanced Entrepreneur';
   };
 
-  const oppositeType = defaultDNA === 'Architect' ? 'Alchemist' : 
-                      defaultDNA === 'Alchemist' ? 'Architect' : 'Opposite';
+  // Get actual DNA type from server response or fallback
+  const actualDnaType = serverResult?.dnaType ? 
+    (serverResult.dnaType.charAt(0).toUpperCase() + serverResult.dnaType.slice(1)) : 
+    defaultDNA;
+  
+  const oppositeType = actualDnaType === 'Architect' ? 'Alchemist' : 
+                      actualDnaType === 'Alchemist' ? 'Architect' : 'Opposite';
 
-  const profileData = subtype ? getProfileData(subtype) : null;
+  const profileData = (serverResult?.subtype || subtype) ? getProfileData(serverResult?.subtype || subtype) : null;
   
   const milestones = [
     { name: "Strategic planning mastery", status: "completed" },
@@ -131,21 +140,23 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
               {/* DNA Type Information */}
               <div className="space-y-3">
                 <p className="text-xl font-medium opacity-95">
-                  Your Default DNA: {defaultDNA || 'Processing...'}
+                  Your Default DNA: {serverResult?.dnaType ? 
+                    (serverResult.dnaType.charAt(0).toUpperCase() + serverResult.dnaType.slice(1)) : 
+                    (defaultDNA || 'Processing...')}
                 </p>
-                {subtype && (
+                {(serverResult?.subtype || subtype) && (
                   <p className="text-2xl font-bold">
-                    Your Sub-DNA: {subtype}
+                    Your Sub-DNA: {serverResult?.subtype || subtype}
                   </p>
                 )}
               </div>
               
               {/* 1-line energetic resonance - matching reference layout */}
-              {subtype && (
+              {(serverResult?.subtype || subtype) && (
                 <div className="mt-8 space-y-3">
                   <p className="text-lg font-medium opacity-90">1-line energetic resonance:</p>
                   <p className="text-xl italic font-light leading-relaxed">
-                    "{getProfileData(subtype).snapshotLine || 'Entrepreneurial insight processing.'}"
+                    "{getProfileData(serverResult?.subtype || subtype).snapshotLine || 'Developing entrepreneurial clarity.'}"
                   </p>
                 </div>
               )}
