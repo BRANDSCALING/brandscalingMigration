@@ -41,39 +41,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
         answersObject[answer.questionId] = answer.answer;
       });
 
-      // Authentic DNA scoring logic (Q1-Q6)
+      // AUTHENTIC DNA SCORING LOGIC (Q1-Q6) - From user's document
       let architectCount = 0;
       let alchemistCount = 0;
-      let blurredCount = 0;
       
-      // Count Q1-Q6 responses for DNA type determination
-      for (let i = 1; i <= 6; i++) {
-        const answer = answersObject[i];
-        if (answer === 'A' && [1, 3, 4, 5].includes(i)) architectCount++;
-        if (answer === 'B' && [2, 6].includes(i)) alchemistCount++;
-        if (answer === 'C' && [1, 4].includes(i)) alchemistCount++;
-        if (answer === 'B' && [1, 4, 5].includes(i)) blurredCount++;
-        if (answer === 'D' && [1, 2, 3].includes(i)) blurredCount++;
-      }
+      // Q1: Weekend preparation - A=🟪, B=🔴, C=🟧, D=🔴
+      if (answersObject[1] === 'A') architectCount++;
+      else if (answersObject[1] === 'C') alchemistCount++;
       
-      // Calculate DNA type using authentic scoring (4+ rule)
+      // Q2: Friend hurts feelings - A=🟪, B=🟧, C=🔴, D=🔴
+      if (answersObject[2] === 'A') architectCount++;
+      else if (answersObject[2] === 'B') alchemistCount++;
+      
+      // Q3: Room of strangers - A=🟪, B=🟧, C=⚪, D=🔴
+      if (answersObject[3] === 'A') architectCount++;
+      else if (answersObject[3] === 'B') alchemistCount++;
+      
+      // Q4: 6am commitment - A=🟪, B=🟧, C=⚪, D=🔴
+      if (answersObject[4] === 'A') architectCount++;
+      else if (answersObject[4] === 'B') alchemistCount++;
+      
+      // Q5: Project completion - A=🟪, B=🟧, C=🔴, D=🔴
+      if (answersObject[5] === 'A') architectCount++;
+      else if (answersObject[5] === 'B') alchemistCount++;
+      
+      // Q6: Unachieved goal - A=🟪, B=🟧, C=🔴, D=🔴
+      if (answersObject[6] === 'A') architectCount++;
+      else if (answersObject[6] === 'B') alchemistCount++;
+      
+      // AUTHENTIC SCORING RULES: 5-6 = clear type, 1-4 = Blurred Identity
       let dnaType: 'architect' | 'alchemist' | 'blurred';
-      if (architectCount >= 4) {
+      if (architectCount >= 5) {
         dnaType = 'architect';
-      } else if (alchemistCount >= 4) {
+      } else if (alchemistCount >= 5) {
         dnaType = 'alchemist';
       } else {
         dnaType = 'blurred';
       }
       
-      // Calculate subtype based on Q13-Q22 validation questions
+      // AUTHENTIC 12 SUBTYPES - Based on Q13-Q22 validation questions
       const subtypeMapping = {
         'architect': ['Master Strategist', 'Systemised Builder', 'Internal Analyzer', 'Ultimate Strategist'],
         'alchemist': ['Visionary Oracle', 'Magnetic Perfectionist', 'Energetic Empath', 'Ultimate Alchemist'],
         'blurred': ['Overthinker', 'Performer', 'Self-Forsaker', 'Self-Betrayer']
       };
       
-      // Select first subtype for the DNA type (simplified)
+      // Determine subtype based on Q13-Q22 patterns (simplified for now)
       const subtypeResult = subtypeMapping[dnaType][0];
       
       // Calculate awareness percentage (simplified for now)
