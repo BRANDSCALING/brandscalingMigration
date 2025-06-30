@@ -101,17 +101,28 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
         <Card className="overflow-hidden border-0 shadow-2xl rounded-2xl">
           <div className="bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-700 px-8 py-12 text-white relative">
             <div className="text-center space-y-6">
-              {/* DNA Type Information - single line parallel layout */}
-              <div className="flex items-center justify-center gap-4 text-lg font-medium overflow-x-auto">
-                <span className="whitespace-nowrap">Your Default DNA: {defaultDNA || 'Processing...'}</span>
-                <span className="text-white/60 mx-2">|</span>
-                {subtype && (
-                  <>
-                    <span className="whitespace-nowrap">Your Sub-DNA: {subtype}</span>
-                    <span className="text-white/60 mx-2">|</span>
-                  </>
-                )}
-                <span className="whitespace-nowrap">Awareness of your opposite</span>
+              {/* DNA Type Information - table-like layout */}
+              <div className="w-full max-w-2xl mx-auto">
+                {/* Header Row */}
+                <div className="grid grid-cols-3 gap-4 text-sm font-medium opacity-80 mb-3">
+                  <div className="text-center">Default DNA</div>
+                  <div className="text-center">Your Sub-DNA</div>
+                  <div className="text-center">Awareness of your opposite</div>
+                </div>
+                
+                {/* Separator */}
+                <div className="grid grid-cols-3 gap-4 mb-3">
+                  <div className="text-center text-white/60">|</div>
+                  <div className="text-center text-white/60">|</div>
+                  <div className="text-center text-white/60">|</div>
+                </div>
+                
+                {/* Values Row */}
+                <div className="grid grid-cols-3 gap-4 text-lg font-semibold">
+                  <div className="text-center">{defaultDNA || 'Processing...'}</div>
+                  <div className="text-center">{subtype || '—'}</div>
+                  <div className="text-center">—</div>
+                </div>
               </div>
               
               {/* Energetic resonance quote without title */}
