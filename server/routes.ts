@@ -143,6 +143,94 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Student authentication endpoints
+  app.post('/api/auth/student-login', async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      
+      // Check for specific test student credentials
+      const validStudents = [
+        { 
+          email: 'munawarrasoolabbasi@gmail.com', 
+          password: '123456',
+          firstName: 'Munawar',
+          lastName: 'Abbasi',
+          accessTier: 'beginner'
+        },
+        { 
+          email: 'sarah.testing@brandscaling.com', 
+          password: 'testing123',
+          firstName: 'Sarah',
+          lastName: 'Johnson',
+          accessTier: 'beginner'
+        },
+        { 
+          email: 'journeytest@brandscaling.com', 
+          password: 'password123',
+          firstName: 'Journey',
+          lastName: 'Test',
+          accessTier: 'expert'
+        }
+      ];
+
+      const student = validStudents.find(s => s.email === email && s.password === password);
+      
+      if (student) {
+        // Generate student ID for session
+        const studentId = `student-${Date.now()}`;
+        
+        res.json({
+          success: true,
+          student: {
+            id: studentId,
+            email: student.email,
+            firstName: student.firstName,
+            lastName: student.lastName,
+            accessTier: student.accessTier,
+            role: 'student'
+          }
+        });
+      } else {
+        res.status(401).json({ success: false, message: 'Invalid credentials' });
+      }
+    } catch (error) {
+      console.error("Student login error:", error);
+      res.status(500).json({ success: false, message: "Login failed" });
+    }
+  });
+
+  app.get('/api/auth/user', async (req, res) => {
+    try {
+      // Check for student session
+      const studentId = req.headers['x-student-id'] as string;
+      if (studentId) {
+        res.json({
+          uid: studentId,
+          email: 'student@brandscaling.com',
+          role: 'student',
+          accessTier: 'beginner'
+        });
+        return;
+      }
+      
+      // Check for admin session
+      const adminId = req.headers['x-admin-id'] as string;
+      if (adminId === 'admin-dev-12345') {
+        res.json({
+          uid: 'admin-dev-12345',
+          email: 'admin@brandscaling.com',
+          role: 'admin'
+        });
+        return;
+      }
+      
+      res.status(401).json({ message: 'Not authenticated' });
+    } catch (error) {
+      console.error("Auth user error:", error);
+      res.status(500).json({ message: "Authentication check failed" });
+    }
+  });
+
   // Return the app for the main server to use
   return app as any;
 }
