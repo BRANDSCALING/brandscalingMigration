@@ -101,17 +101,17 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
         <Card className="overflow-hidden border-0 shadow-2xl rounded-2xl">
           <div className="bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-700 px-8 py-12 text-white relative">
             <div className="text-center space-y-6">
-              {/* DNA Type Information - parallel layout */}
-              <div className="flex items-center justify-center gap-4 text-xl font-medium">
-                <span>Your Default DNA: {defaultDNA || 'Processing...'}</span>
+              {/* DNA Type Information - horizontal aligned layout */}
+              <div className="flex items-center justify-center flex-wrap gap-x-6 gap-y-2 text-lg font-medium">
+                <span className="whitespace-nowrap">Your Default DNA: {defaultDNA || 'Processing...'}</span>
                 {subtype && (
                   <>
-                    <span>|</span>
-                    <span>Your Sub-DNA: {subtype}</span>
+                    <span className="text-white/60">|</span>
+                    <span className="whitespace-nowrap">Your Sub-DNA: {subtype}</span>
                   </>
                 )}
-                <span>|</span>
-                <span>Awareness of your opposite</span>
+                <span className="text-white/60">|</span>
+                <span className="whitespace-nowrap">Awareness of your opposite</span>
               </div>
               
               {/* Energetic resonance quote without title */}
