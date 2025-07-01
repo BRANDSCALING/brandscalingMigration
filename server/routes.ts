@@ -277,7 +277,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const courses = await storage.getCoursesWithLessons();
       const entryCourses = courses.filter(course => 
-        course.accessTier === 'beginner' && course.isPublished
+        course.accessTier === 'beginner' && course.isPublished === true
       );
       res.json(entryCourses);
     } catch (error) {

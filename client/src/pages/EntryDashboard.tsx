@@ -51,7 +51,7 @@ export default function EntryDashboard() {
     "30-Day Launch Plan"
   ];
 
-  const filteredCourses = courses.filter(course => 
+  const filteredCourses = courses.filter((course: Course) => 
     entryTierCourses.includes(course.title)
   );
 
@@ -183,7 +183,7 @@ export default function EntryDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-xl font-semibold mb-1">
-                  {user?.firstName || 'Student'}
+                  {(user as any)?.firstName || 'Student'}
                 </h2>
                 <div className="flex items-center gap-2">
                   <Badge className="bg-green-100 text-green-800">Entry Tier</Badge>
@@ -198,7 +198,7 @@ export default function EntryDashboard() {
 
         {/* Course Grid */}
         <div className="grid md:grid-cols-2 gap-6">
-          {filteredCourses.map((course) => (
+          {filteredCourses.map((course: Course) => (
             <Card 
               key={course.id}
               className="hover:shadow-lg transition-shadow cursor-pointer"
