@@ -31,19 +31,23 @@ export default function Landing() {
     <div className="min-h-screen bg-white">{/* Removed old duplicate header */}
 
       {/* Hero Section */}
-      <BrandSection className="spacing-section relative overflow-hidden">
+      <BrandSection className="spacing-section relative overflow-hidden bg-white">
         {/* Background Video - Clear and Sharp */}
         <div className="absolute inset-0 z-0 bg-white">
+          {/* White background fallback */}
+          <div className="absolute inset-0 bg-white z-0"></div>
           <video
             autoPlay
             loop
             muted
             playsInline
-            key="hero-video-refresh"
-            className="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto transform -translate-x-1/2 -translate-y-1/2 object-cover opacity-100"
+            key="hero-video-white-bg"
+            className="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto transform -translate-x-1/2 -translate-y-1/2 object-cover opacity-100 z-10"
             src="/hero-video-1751363433.mov"
+            onLoadedData={() => console.log('White background video loaded')}
             onError={(e) => {
               console.error('Background video failed to load:', e);
+              console.log('Falling back to white background');
             }}
           />
         </div>
