@@ -49,7 +49,7 @@ export default function About() {
           <hr className="my-16 border-t-2 border-architect" />
 
           <div className="mb-16 gradient-brandscaling p-8 rounded-lg text-white">
-            <h2 className="text-3xl font-bold mb-4 text-white flex items-center"><span className="mr-3">🤝</span>Together: The Founders of the Brandscaling Operating System</h2>
+            <h2 className="text-3xl font-bold mb-4 text-white">Together: The Founders of the Brandscaling Operating System</h2>
             <p className="mb-6 text-white/90">
               Fariza and Hanif built Brandscaling around a revolutionary insight:
             </p>
@@ -80,14 +80,14 @@ export default function About() {
 
             <div className="space-y-12">
               <div className="gradient-brandscaling p-8 rounded-lg text-white">
-                <h3 className="text-2xl font-bold mb-4 text-white flex items-center"><span className="mr-3">🔁</span>The Architect–Alchemist Model™</h3>
+                <h3 className="text-2xl font-bold mb-4 text-white">The Architect–Alchemist Model™</h3>
                 <p className="mb-4 text-white/90">A proprietary lens for how entrepreneurs think, operate, and scale.</p>
                 <p className="mb-4 text-white/90">Every founder is guided to discover their <span className="font-bold text-white">Entrepreneurial DNA</span>—then learns through tailored frameworks built for that exact style.</p>
                 <p className="italic text-white/95">→ No more one-size-fits-all strategies.</p>
               </div>
 
               <div className="gradient-alchemist p-8 rounded-lg text-white">
-                <h3 className="text-2xl font-bold mb-4 text-white flex items-center"><span className="mr-3">♾️</span>The Infinite Scaling Methodology™</h3>
+                <h3 className="text-2xl font-bold mb-4 text-white">The Infinite Scaling Methodology™</h3>
                 <p className="mb-4 text-white/90">A multi-layered pyramid showing how to scale in sequence:</p>
                 <p className="font-bold mb-4 text-white">Profit Maximisation → Automate → Asset Builder → Multiple Exits → Platform → Ecosystem → Infinite Layer</p>
                 <p className="mb-4 text-white/90">Each layer includes Architect and Alchemist approaches—so you grow using your strength and understand your blind spots.</p>
@@ -95,7 +95,7 @@ export default function About() {
               </div>
 
               <div className="gradient-architect p-8 rounded-lg text-white">
-                <h3 className="text-2xl font-bold mb-4 text-white flex items-center"><span className="mr-3">💥</span>The F.U.S.E. Framework™ for Founders</h3>
+                <h3 className="text-2xl font-bold mb-4 text-white">The F.U.S.E. Framework™ for Founders</h3>
                 <p className="font-bold mb-4 text-white">Partner-Led Scaling. Built for Embedding.</p>
                 <p className="mb-4 text-white/90">You're not here to sell another service. You're here to become infrastructure inside someone else's business.</p>
                 <div className="mb-4">
@@ -112,7 +112,7 @@ export default function About() {
               </div>
 
               <div className="gradient-alchemist p-8 rounded-lg text-white">
-                <h3 className="text-2xl font-bold mb-4 text-white flex items-center"><span className="mr-3">💸</span>The Profit Maximisation Blueprint™</h3>
+                <h3 className="text-2xl font-bold mb-4 text-white">The Profit Maximisation Blueprint™</h3>
                 <p className="mb-6 text-white/90">More than making money—this is about building a machine that keeps it, compounds it, and protects your energy while doing it.</p>
                 <div className="mb-6">
                   <p className="font-bold mb-4 text-white">What's Inside:</p>
@@ -141,24 +141,24 @@ export default function About() {
           <hr className="my-16 border-t-2 border-architect" />
 
           <div className="mb-16">
-            <h2 className="text-3xl font-bold mb-8 text-architect flex items-center"><span className="mr-3">🔐</span>What Makes These Frameworks Unique?</h2>
+            <h2 className="text-3xl font-bold mb-8 text-architect">What Makes These Frameworks Unique?</h2>
             <div className="space-y-6">
               <div className="flex items-start">
-                <span className="text-2xl mr-4">✳️</span>
+                <span className="text-2xl mr-4">•</span>
                 <div>
                   <p className="font-bold mb-2">Dual-Mode Learning:</p>
                   <p>Every tool, course, and workbook is built in two styles—Architect (logic-first) and Alchemist (energy-first). No other platform in the market is designed this way.</p>
                 </div>
               </div>
               <div className="flex items-start">
-                <span className="text-2xl mr-4">✳️</span>
+                <span className="text-2xl mr-4">•</span>
                 <div>
                   <p className="font-bold mb-2">Founder-Led, Field-Tested:</p>
                   <p>These aren't theories—they've been applied in scaling real companies, tested in masterminds, and stress-tested by hundreds of founders.</p>
                 </div>
               </div>
               <div className="flex items-start">
-                <span className="text-2xl mr-4">✳️</span>
+                <span className="text-2xl mr-4">•</span>
                 <div>
                   <p className="font-bold mb-2">Emotionally-Aware + Strategically-Precise:</p>
                   <p>No fluffy mindset work. No rigid frameworks. Brandscaling meets you at your depth and builds upward from who you already are.</p>
