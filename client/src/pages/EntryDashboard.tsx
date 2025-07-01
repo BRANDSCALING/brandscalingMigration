@@ -61,10 +61,7 @@ export default function EntryDashboard() {
     entryTierCourses.includes(course.title)
   );
 
-  // Debug logging
-  console.log('Raw courses from API:', courses);
-  console.log('Entry tier course titles:', entryTierCourses);
-  console.log('Filtered courses:', filteredCourses);
+
 
   if (isLoading) {
     return (
