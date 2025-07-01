@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { User, Infinity } from "lucide-react";
+import { User, Infinity, Menu, X } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect, useCallback } from "react";
@@ -7,6 +7,7 @@ import { useState, useEffect, useCallback } from "react";
 export default function Header() {
   const { user, isAuthenticated } = useAuth();
   const [localUser, setLocalUser] = useState<any>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   // Check for local student authentication
   const checkAuthState = useCallback(() => {
@@ -119,8 +120,19 @@ export default function Header() {
             </Link>
           </nav>
 
-          {/* User Dashboard Access */}
+          {/* Mobile Menu Button & User Dashboard Access */}
           <div className="flex items-center space-x-4">
+            {/* Mobile menu toggle button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="lg:hidden text-gray-700 hover:text-architect hover:bg-gray-50"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </Button>
+            
+            {/* User Dashboard Access */}
             <Link href={getDashboardLink()}>
               <Button variant="ghost" size="icon" className="text-gray-700 hover:text-architect hover:bg-gray-50">
                 <User className="h-5 w-5" />
@@ -129,28 +141,50 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Mobile Navigation */}
-        <div className="lg:hidden border-t border-gray-100 py-4">
-          <nav className="flex flex-col space-y-3">
-            <Link href="/about" className="text-gray-700 hover:text-architect font-medium py-2">
-              About
-            </Link>
-            <Link href="/courses" className="text-gray-700 hover:text-architect font-medium py-2">
-              Courses
-            </Link>
-            <Link href="/ai-agents" className="text-gray-700 hover:text-alchemist font-medium py-2">
-              AI Advisors
-            </Link>
-            <Link href="/workbooks" className="text-gray-700 hover:text-alchemist font-medium py-2">
-              Workbooks
-            </Link>
-            <Link href="/entrepreneurial-dna-quiz" className="py-2">
-              <Button variant="outline" className="w-full border-architect-indigo text-architect-indigo hover:bg-architect-indigo hover:text-white">
-                Discover Your E-DNA
-              </Button>
-            </Link>
-          </nav>
-        </div>
+        {/* Mobile Navigation - Only show when menu is open */}
+        {isMobileMenuOpen && (
+          <div className="lg:hidden border-t border-gray-100 py-4">
+            <nav className="flex flex-col space-y-3">
+              <Link 
+                href="/about" 
+                className="text-gray-700 hover:text-architect font-medium py-2"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                About
+              </Link>
+              <Link 
+                href="/courses" 
+                className="text-gray-700 hover:text-architect font-medium py-2"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Courses
+              </Link>
+              <Link 
+                href="/ai-agents" 
+                className="text-gray-700 hover:text-alchemist font-medium py-2"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                AI Advisors
+              </Link>
+              <Link 
+                href="/workbooks" 
+                className="text-gray-700 hover:text-alchemist font-medium py-2"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Workbooks
+              </Link>
+              <Link 
+                href="/entrepreneurial-dna-quiz" 
+                className="py-2"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <Button variant="outline" className="w-full border-architect-indigo text-architect-indigo hover:bg-architect-indigo hover:text-white">
+                  Discover Your E-DNA
+                </Button>
+              </Link>
+            </nav>
+          </div>
+        )}
       </div>
     </header>
   );
