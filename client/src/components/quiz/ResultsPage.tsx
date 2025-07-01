@@ -113,70 +113,101 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
       </div>
 
       <div className="max-w-4xl mx-auto px-6 py-8 space-y-8">
-        {/* Main Result Card - Authentic Design */}
+        {/* Main Result Card - Redesigned with Boxes and Assessment Progress */}
         <Card className="overflow-hidden border-0 shadow-2xl rounded-2xl">
           <div className="bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-700 px-8 py-12 text-white relative">
-            <div className="text-center space-y-6">
-              {/* DNA Type Information - table-like layout */}
-              <div className="w-full max-w-2xl mx-auto">
+            <div className="text-center space-y-8">
+              
+              {/* DNA Type Information - Attractive Boxes Layout */}
+              <div className="w-full max-w-3xl mx-auto">
                 {/* Header Row */}
-                <div className="grid grid-cols-3 gap-4 text-sm font-medium opacity-80 mb-3">
-                  <div className="text-center">Default DNA</div>
-                  <div className="text-center">Your Sub-DNA</div>
-                  <div className="text-center">Awareness of your opposite</div>
-                </div>
-                
-                {/* Separator */}
-                <div className="grid grid-cols-3 gap-4 mb-3">
-                  <div className="text-center text-white/60">|</div>
-                  <div className="text-center text-white/60">|</div>
-                  <div className="text-center text-white/60">|</div>
-                </div>
-                
-                {/* Values Row */}
-                <div className="grid grid-cols-3 gap-4 text-lg font-semibold">
-                  <div className="text-center">{actualDnaType || 'Processing...'}</div>
-                  <div className="text-center">{actualSubtype || '—'}</div>
-                  <div className="text-center">{calculateOppositeAwareness()}</div>
+                <div className="grid grid-cols-3 gap-6 mb-6">
+                  <div className="text-center">
+                    <div className="text-sm font-medium opacity-80 mb-2">Default DNA</div>
+                    <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4 border border-white/30">
+                      <div className="text-xl font-bold">{actualDnaType || 'Processing...'}</div>
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-sm font-medium opacity-80 mb-2">Your Sub-DNA</div>
+                    <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4 border border-white/30">
+                      <div className="text-xl font-bold">{actualSubtype || '—'}</div>
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-sm font-medium opacity-80 mb-2">Awareness of your opposite</div>
+                    <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4 border border-white/30">
+                      <div className="text-xl font-bold">{calculateOppositeAwareness()}</div>
+                    </div>
+                  </div>
                 </div>
               </div>
               
-              {/* Energetic resonance quote without title */}
+              {/* Assessment Progress - Integrated into First Panel */}
+              <div className="w-full max-w-3xl mx-auto bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
+                <h3 className="text-lg font-bold mb-4 text-center">Assessment Progress</h3>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="font-medium">Initial DNA Detection Complete</span>
+                      <span className="opacity-80">100%</span>
+                    </div>
+                    <div className="w-full bg-white/20 rounded-full h-2">
+                      <div className="bg-white h-2 rounded-full w-full"></div>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="font-medium">Awareness of your opposite Complete</span>
+                      <span className="opacity-80">100%</span>
+                    </div>
+                    <div className="w-full bg-white/20 rounded-full h-2">
+                      <div className="bg-white h-2 rounded-full w-full"></div>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="font-medium">Subtype Analysis Complete</span>
+                      <span className="opacity-80">100%</span>
+                    </div>
+                    <div className="w-full bg-white/20 rounded-full h-2">
+                      <div className="bg-white h-2 rounded-full w-full"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Energetic resonance quote */}
               {profileData && (
-                <div className="mt-8">
+                <div className="mt-6">
                   <p className="text-xl italic font-light leading-relaxed">
                     "{profileData.snapshotLine}"
                   </p>
                 </div>
               )}
+              
             </div>
           </div>
         </Card>
 
-        {/* Assessment Progress */}
+        {/* Core DNA Profile */}
         <Card className="p-6">
-          <h3 className="text-xl font-bold mb-6">Assessment Progress</h3>
-          <div className="space-y-6">
-            <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <span className="font-medium text-gray-700">Initial DNA Detection Complete</span>
-                <span className="text-sm text-gray-500">100%</span>
-              </div>
-              <Progress value={100} className="h-2" />
+          <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+            <Brain className="w-5 h-5 text-purple-600" />
+            Core DNA Profile
+          </h3>
+          <div className="space-y-4">
+            <div className="bg-purple-50 rounded-lg p-4">
+              <h4 className="font-semibold text-purple-800 mb-2">Identity:</h4>
+              <p className="text-purple-700">
+                {profileData?.coreIdentity || 'Your core entrepreneurial identity and natural operating style.'}
+              </p>
             </div>
-            <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <span className="font-medium text-gray-700">Awareness of your opposite Complete</span>
-                <span className="text-sm text-gray-500">100%</span>
-              </div>
-              <Progress value={100} className="h-2" />
-            </div>
-            <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <span className="font-medium text-gray-700">Subtype Analysis Complete</span>
-                <span className="text-sm text-gray-500">100%</span>
-              </div>
-              <Progress value={100} className="h-2" />
+            <div className="bg-blue-50 rounded-lg p-4">
+              <h4 className="font-semibold text-blue-800 mb-2">Operating Style:</h4>
+              <p className="text-blue-700">
+                {profileData?.loopDescription || 'Your natural approach to business challenges and decision-making.'}
+              </p>
             </div>
           </div>
         </Card>
@@ -285,6 +316,62 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
                 Your challenges aren't weaknesses — they're signals for growth. Understanding these patterns helps you build sustainable systems.
               </p>
             )}
+          </div>
+        </Card>
+
+        {/* Evolution Path */}
+        <Card className="p-6">
+          <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+            <Users className="w-5 h-5 text-green-600" />
+            Evolution Path
+          </h3>
+          <div className="space-y-4">
+            <div className="bg-green-50 rounded-lg p-4">
+              <h4 className="font-semibold text-green-800 mb-2">Evolution Goal:</h4>
+              <p className="text-green-700">
+                {actualDnaType ? getEvolutionPath(actualDnaType) : 'Integrated Entrepreneur'} - Mastery of your natural operating system while building awareness of complementary approaches.
+              </p>
+            </div>
+            <div className="bg-yellow-50 rounded-lg p-4">
+              <h4 className="font-semibold text-yellow-800 mb-2">Next Milestone:</h4>
+              <p className="text-yellow-700">
+                Deepen your default loop mastery while developing strategic awareness of opposite-mode thinking patterns.
+              </p>
+            </div>
+          </div>
+        </Card>
+
+        {/* Mastery Levels */}
+        <Card className="p-6">
+          <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+            <Lightbulb className="w-5 h-5 text-orange-500" />
+            Mastery Levels
+          </h3>
+          <div className="space-y-4">
+            <div>
+              <div className="flex justify-between items-center mb-2">
+                <span className="font-medium">Loop Mastery</span>
+                <span className="text-sm text-gray-500">75%</span>
+              </div>
+              <Progress value={75} className="h-2" />
+              <p className="text-sm text-gray-600 mt-1">Your natural operating loop efficiency</p>
+            </div>
+            <div>
+              <div className="flex justify-between items-center mb-2">
+                <span className="font-medium">Opposite Awareness</span>
+                <span className="text-sm text-gray-500">{profileData?.oppositeAwareness || 50}%</span>
+              </div>
+              <Progress value={profileData?.oppositeAwareness || 50} className="h-2" />
+              <p className="text-sm text-gray-600 mt-1">Understanding of complementary approaches</p>
+            </div>
+            <div>
+              <div className="flex justify-between items-center mb-2">
+                <span className="font-medium">Integration Potential</span>
+                <span className="text-sm text-gray-500">{Math.round((75 + (profileData?.oppositeAwareness || 50)) / 2)}%</span>
+              </div>
+              <Progress value={Math.round((75 + (profileData?.oppositeAwareness || 50)) / 2)} className="h-2" />
+              <p className="text-sm text-gray-600 mt-1">Capacity for balanced decision-making</p>
+            </div>
           </div>
         </Card>
 
