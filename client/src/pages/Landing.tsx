@@ -40,14 +40,20 @@ export default function Landing() {
             muted
             playsInline
             className="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto transform -translate-x-1/2 -translate-y-1/2 object-cover opacity-100"
-            onLoadedData={() => console.log('Background video loaded successfully')}
+            onLoadedData={(e) => {
+              console.log('Background video loaded successfully');
+              console.log('Video element:', e.target);
+            }}
             onError={(e) => {
               console.error('Background video failed to load:', e);
+              console.log('Error target:', e.target);
             }}
+            onCanPlay={() => console.log('Video can start playing')}
+            onLoadStart={() => console.log('Video load started')}
           >
-            <source src="/hero-background.mov" type="video/quicktime" />
-            <source src="/hero-background.mov" type="video/mp4" />
             <source src="/logo-animation.mp4" type="video/mp4" />
+            <source src="/logo-loop.mp4" type="video/mp4" />
+            <source src="/hero-background.mov" type="video/quicktime" />
           </video>
         </div>
         
