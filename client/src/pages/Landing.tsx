@@ -31,7 +31,7 @@ export default function Landing() {
     <div className="min-h-screen bg-white">{/* Removed old duplicate header */}
 
       {/* Hero Section */}
-      <BrandSection className="spacing-section relative overflow-hidden bg-gradient-to-br from-white via-gray-50 to-white">
+      <BrandSection className="spacing-section relative overflow-hidden">
         {/* Background Video - Clear and Sharp */}
         <div className="absolute inset-0 z-0">
           <video
@@ -44,7 +44,7 @@ export default function Landing() {
               console.error('Background video failed to load:', e);
             }}
           >
-            <source src="/hero-background.mov?v=2" type="video/quicktime" />
+            <source src="/timeline-white-bg.mov?t=1751362945" type="video/quicktime" />
             <source src="/logo-animation.mp4" type="video/mp4" />
             <source src="/logo-loop.mp4" type="video/mp4" />
           </video>
