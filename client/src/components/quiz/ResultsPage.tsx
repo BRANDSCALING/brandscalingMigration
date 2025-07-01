@@ -8,7 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { QuizState } from './QuizContainer';
 import { AUTHENTIC_DNA_PROFILES, AUTHENTIC_DNA_LOOPS, getAuthenticProfileData } from '@/../../shared/authenticResultsData';
-import { CheckCircle, Clock, Lightbulb, Target, Zap, Users, Brain, Star } from 'lucide-react';
+import { CheckCircle, Clock, Lightbulb, Target, Zap, Users, Brain, Star, TrendingUp, Calendar } from 'lucide-react';
 
 interface Props {
   quizState: QuizState;
@@ -90,18 +90,18 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
   const handleDashboardRedirect = () => {
     // Get authentication details from localStorage
     const studentId = localStorage.getItem('studentId');
+    const studentEmail = localStorage.getItem('studentEmail');
     const accessTier = localStorage.getItem('accessTier');
-    const authToken = localStorage.getItem('authToken');
     
-    console.log('Dashboard redirect - Auth check:', { studentId, accessTier, hasToken: !!authToken });
+    console.log('Dashboard redirect - Auth check:', { studentId, studentEmail, accessTier });
     
-    if (studentId && authToken) {
+    if (studentId && studentEmail) {
       // Valid authentication - redirect based on access tier
       if (accessTier === 'entry') {
         console.log('Redirecting to entry dashboard');
         setLocation('/entry');
       } else {
-        console.log('Redirecting to student dashboard');
+        console.log('Redirecting to student dashboard');  
         setLocation('/student');
       }
     } else {
@@ -400,6 +400,65 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
             )}
           </div>
         </Card>
+
+        {/* 7-Day Identity Reset Panel (Blurred Identity Only) */}
+        {(actualDnaType === 'blurred' || actualDnaType === 'Blurred Identity') && (
+          <Card className="p-6 bg-gradient-to-r from-purple-50 to-blue-50 border-2 border-purple-200">
+            <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-purple-800">
+              <Calendar className="w-5 h-5" />
+              {profileData?.ctaTitle || '7 Days to Default Clarity'}
+            </h3>
+            <div className="space-y-4">
+              <p className="text-purple-700 font-medium italic">
+                "{profileData?.conclusionLine || 'You\'re not broken. You\'ve just been blurred.'}"
+              </p>
+              <div className="bg-white rounded-lg p-4 border border-purple-200">
+                <p className="text-gray-700 mb-4">
+                  {profileData?.ctaText || 'You\'ll receive one daily prompt and training exercise to help calibrate your identity. Track how you move, how you decide, and how you feel in both systems. You don\'t need to balance both — you need to find your true default and deepen it.'}
+                </p>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Button className="bg-purple-600 hover:bg-purple-700 text-white flex-1">
+                    Start 7-Day Reset
+                  </Button>
+                  <Button variant="outline" className="border-purple-300 text-purple-700 hover:bg-purple-50 flex-1">
+                    Learn More
+                  </Button>
+                </div>
+              </div>
+              <div className="text-sm text-purple-600 bg-purple-100 rounded-lg p-3">
+                <p><strong>What to expect:</strong> Daily prompts to help you experience both Architect and Alchemist rhythms, structured exercises to identify your natural default, and guidance to deepen your authentic operating system.</p>
+              </div>
+            </div>
+          </Card>
+        )}
+        
+        {/* Evolution Path (Non-Blurred Identity) */}
+        {!(actualDnaType === 'blurred' || actualDnaType === 'Blurred Identity') && (
+          <Card className="p-6">
+            <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-green-500" />
+              Evolution Path
+            </h3>
+            <div className="space-y-4">
+              <div className="bg-green-50 rounded-lg p-4">
+                <h4 className="font-semibold text-green-800 mb-2">Next Level Development:</h4>
+                <p className="text-green-700">
+                  {profileData?.nextSteps || 'Continue developing your natural strengths while building awareness of complementary approaches.'}
+                </p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-blue-50 rounded-lg p-3">
+                  <h5 className="font-medium text-blue-800 mb-2">Deepen Your Strengths</h5>
+                  <p className="text-blue-700 text-sm">Master your natural operating loop and build systematic excellence in your zone of genius.</p>
+                </div>
+                <div className="bg-orange-50 rounded-lg p-3">
+                  <h5 className="font-medium text-orange-800 mb-2">Expand Your Range</h5>
+                  <p className="text-orange-700 text-sm">Develop awareness of complementary approaches to enhance your natural abilities.</p>
+                </div>
+              </div>
+            </div>
+          </Card>
+        )}
 
         {/* Continue Your Journey Button */}
         <div className="text-center py-8">
