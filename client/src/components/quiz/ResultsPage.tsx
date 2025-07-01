@@ -402,7 +402,7 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
         </Card>
 
         {/* 7-Day Identity Reset Panel (Blurred Identity Only) */}
-        {(actualDnaType === 'blurred' || actualDnaType === 'Blurred Identity') && (
+        {(actualDnaType?.toLowerCase().includes('blurred') || actualSubtype?.includes('overthinker') || actualSubtype?.includes('performer') || actualSubtype?.includes('self-forsaker')) && (
           <Card className="p-6 bg-gradient-to-r from-purple-50 to-blue-50 border-2 border-purple-200">
             <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-purple-800">
               <Calendar className="w-5 h-5" />
@@ -433,7 +433,7 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
         )}
         
         {/* Evolution Path (Non-Blurred Identity) */}
-        {!(actualDnaType === 'blurred' || actualDnaType === 'Blurred Identity') && (
+        {!(actualDnaType?.toLowerCase().includes('blurred') || actualSubtype?.includes('overthinker') || actualSubtype?.includes('performer') || actualSubtype?.includes('self-forsaker')) && (
           <Card className="p-6">
             <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
               <TrendingUp className="w-5 h-5 text-green-500" />
@@ -443,7 +443,7 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
               <div className="bg-green-50 rounded-lg p-4">
                 <h4 className="font-semibold text-green-800 mb-2">Next Level Development:</h4>
                 <p className="text-green-700">
-                  {profileData?.nextSteps || 'Continue developing your natural strengths while building awareness of complementary approaches.'}
+                  {'Continue developing your natural strengths while building awareness of complementary approaches.'}
                 </p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
