@@ -41,7 +41,13 @@ export default function EntryDashboard() {
   // Fetch Entry tier courses with lessons
   const { data: courses = [], isLoading } = useQuery({
     queryKey: ['/api/courses/entry'],
-    queryFn: () => apiRequest('GET', '/api/courses/entry'),
+    queryFn: async () => {
+      const response = await fetch('/api/courses/entry');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    },
   });
 
   const entryTierCourses = [
@@ -54,6 +60,11 @@ export default function EntryDashboard() {
   const filteredCourses = courses.filter((course: Course) => 
     entryTierCourses.includes(course.title)
   );
+
+  // Debug logging
+  console.log('Raw courses from API:', courses);
+  console.log('Entry tier course titles:', entryTierCourses);
+  console.log('Filtered courses:', filteredCourses);
 
   if (isLoading) {
     return (
