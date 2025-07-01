@@ -222,7 +222,7 @@ export const AUTHENTIC_DNA_QUESTIONS: QuizQuestion[] = [
   },
   {
     id: 21,
-    text: "As a child, how did you organize your room or personal space?",
+    text: "When asked to clean your room or organise your space as a child, what best describes your approach?",
     answers: {
       A: { text: "I did it in one big emotional burst — the chaos would build until I had to act.", type: "alchemist", subtype: "visionary-oracle" },
       B: { text: "I made a plan or system first, then tackled it piece by piece.", type: "alchemist", subtype: "ultimate-alchemist" },
