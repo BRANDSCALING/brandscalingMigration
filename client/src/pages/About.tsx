@@ -16,7 +16,7 @@ export default function About() {
 
           <hr className="my-16 border-t-2 border-brand-purple" />
 
-          <div className="mb-16 bg-alchemist-gradient p-8 rounded-lg text-white">
+          <div className="mb-16 gradient-alchemist p-8 rounded-lg text-white">
             <h2 className="text-3xl font-bold mb-4 text-white">Fariza Javed — The Alchemist</h2>
             <p className="text-lg font-bold mb-6 text-white/90">Warm. Magnetic. Empowering.</p>
             <p className="mb-6 text-lg text-white/90">
@@ -32,7 +32,7 @@ export default function About() {
 
           <hr className="my-16 border-t-2 border-brand-purple" />
 
-          <div className="mb-16 bg-architect-gradient p-8 rounded-lg text-white">
+          <div className="mb-16 gradient-architect p-8 rounded-lg text-white">
             <h2 className="text-3xl font-bold mb-4 text-white">Hanif Khan — The Architect</h2>
             <p className="text-lg font-bold mb-6 text-white/90">Strategic. Analytical. Systems-Driven.</p>
             <p className="mb-6 text-lg text-white/90">
@@ -48,7 +48,7 @@ export default function About() {
 
           <hr className="my-16 border-t-2 border-brand-purple" />
 
-          <div className="mb-16 bg-brandscaling-gradient p-8 rounded-lg text-white">
+          <div className="mb-16 gradient-brandscaling p-8 rounded-lg text-white">
             <h2 className="text-3xl font-bold mb-4 text-white flex items-center"><span className="mr-3">🤝</span>Together: The Founders of the Brandscaling Operating System</h2>
             <p className="mb-6 text-white/90">
               Fariza and Hanif built Brandscaling around a revolutionary insight:
@@ -79,14 +79,14 @@ export default function About() {
             </p>
 
             <div className="space-y-12">
-              <div className="bg-brandscaling-gradient p-8 rounded-lg text-white">
+              <div className="gradient-brandscaling p-8 rounded-lg text-white">
                 <h3 className="text-2xl font-bold mb-4 text-white flex items-center"><span className="mr-3">🔁</span>The Architect–Alchemist Model™</h3>
                 <p className="mb-4 text-white/90">A proprietary lens for how entrepreneurs think, operate, and scale.</p>
                 <p className="mb-4 text-white/90">Every founder is guided to discover their <span className="font-bold text-white">Entrepreneurial DNA</span>—then learns through tailored frameworks built for that exact style.</p>
                 <p className="italic text-white/95">→ No more one-size-fits-all strategies.</p>
               </div>
 
-              <div className="bg-alchemist-gradient p-8 rounded-lg text-white">
+              <div className="gradient-alchemist p-8 rounded-lg text-white">
                 <h3 className="text-2xl font-bold mb-4 text-white flex items-center"><span className="mr-3">♾️</span>The Infinite Scaling Methodology™</h3>
                 <p className="mb-4 text-white/90">A multi-layered pyramid showing how to scale in sequence:</p>
                 <p className="font-bold mb-4 text-white">Profit Maximisation → Automate → Asset Builder → Multiple Exits → Platform → Ecosystem → Infinite Layer</p>
@@ -94,7 +94,7 @@ export default function About() {
                 <blockquote className="italic text-white/95">Most models teach "more." This teaches better sequencing, better wiring, and better scale.</blockquote>
               </div>
 
-              <div className="bg-architect-gradient p-8 rounded-lg text-white">
+              <div className="gradient-architect p-8 rounded-lg text-white">
                 <h3 className="text-2xl font-bold mb-4 text-white flex items-center"><span className="mr-3">💥</span>The F.U.S.E. Framework™ for Founders</h3>
                 <p className="font-bold mb-4 text-white">Partner-Led Scaling. Built for Embedding.</p>
                 <p className="mb-4 text-white/90">You're not here to sell another service. You're here to become infrastructure inside someone else's business.</p>
