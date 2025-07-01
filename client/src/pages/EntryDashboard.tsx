@@ -40,11 +40,8 @@ export default function EntryDashboard() {
 
   // Fetch Entry tier courses with lessons
   const { data: courses = [], isLoading } = useQuery({
-    queryKey: ['/api/courses/with-lessons'],
-    queryFn: () => apiRequest('GET', '/api/courses/with-lessons'),
-    select: (data: Course[]) => data.filter(course => 
-      course.accessTier === 'beginner' && course.isPublished
-    ),
+    queryKey: ['/api/courses/entry'],
+    queryFn: () => apiRequest('GET', '/api/courses/entry'),
   });
 
   const entryTierCourses = [

@@ -45,8 +45,9 @@ export default function Landing() {
               console.error('Background video failed to load:', e);
             }}
           >
+            <source src="/hero-background.mov" type="video/quicktime" />
+            <source src="/hero-background.mov" type="video/mp4" />
             <source src="/logo-animation.mp4" type="video/mp4" />
-            <source src="/logo-loop.mp4" type="video/mp4" />
           </video>
         </div>
         

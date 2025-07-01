@@ -262,13 +262,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/courses/with-lessons', requireAuth, async (req, res) => {
+  app.get('/api/courses/with-lessons', async (req, res) => {
     try {
       const courses = await storage.getCoursesWithLessons();
       res.json(courses);
     } catch (error) {
       console.error('Error fetching courses with lessons:', error);
       res.status(500).json({ message: 'Failed to fetch courses with lessons' });
+    }
+  });
+
+  // Entry tier courses endpoint (no auth required)
+  app.get('/api/courses/entry', async (req, res) => {
+    try {
+      const courses = await storage.getCoursesWithLessons();
+      const entryCourses = courses.filter(course => 
+        course.accessTier === 'beginner' && course.isPublished
+      );
+      res.json(entryCourses);
+    } catch (error) {
+      console.error('Error fetching entry courses:', error);
+      res.status(500).json({ message: 'Failed to fetch entry courses' });
     }
   });
 
