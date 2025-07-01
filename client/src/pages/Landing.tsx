@@ -24,7 +24,7 @@ export default function Landing() {
 
       {/* Hero Section */}
       <BrandSection className="spacing-section relative overflow-hidden bg-white">
-        {/* Background Video - Clear and Sharp */}
+        {/* Background Video - Mobile Responsive */}
         <div className="absolute inset-0 z-0 bg-white">
           {/* White background fallback */}
           <div className="absolute inset-0 bg-white z-0"></div>
@@ -34,7 +34,7 @@ export default function Landing() {
             muted
             playsInline
             key="hero-video-white-bg"
-            className="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto transform -translate-x-1/2 -translate-y-1/2 object-cover opacity-100 z-10"
+            className="absolute top-1/2 left-1/2 w-full h-full transform -translate-x-1/2 -translate-y-1/2 object-cover opacity-100 z-10 hidden md:block"
             src="/hero-video-1751363433.mov"
             onLoadedData={() => console.log('White background video loaded')}
             onError={(e) => {
@@ -42,6 +42,8 @@ export default function Landing() {
               console.log('Falling back to white background');
             }}
           />
+          {/* Mobile: Show only white background without video to avoid awkward positioning */}
+          <div className="block md:hidden absolute inset-0 bg-white z-10"></div>
         </div>
         
         <div className="container-brandscaling text-center relative z-10">
