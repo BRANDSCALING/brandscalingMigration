@@ -7,14 +7,14 @@ export default function About() {
       <main className="font-poppins">
         <section className="py-16 px-6 max-w-6xl mx-auto text-slate-700">
           <div className="text-center mb-16">
-            <h1 className="text-5xl font-bold mb-4 text-brand-purple">Meet the Duo Behind the Brandscaling Method™</h1>
-            <h2 className="text-2xl font-bold text-brand-orange mb-8">Alchemist Meets Architect. Emotion Meets Execution.</h2>
+            <h1 className="text-5xl font-bold mb-4 text-architect">Meet the Duo Behind the Brandscaling Method™</h1>
+            <h2 className="text-2xl font-bold text-alchemist mb-8">Alchemist Meets Architect. Emotion Meets Execution.</h2>
             <p className="text-lg max-w-4xl mx-auto">
               Together, Fariza Javed and Hanif Khan built Brandscaling to further expand their own portfolio of investments and help entrepreneurs scale without distortion—by aligning structure with energy, profit with purpose, and frameworks with frequency.
             </p>
           </div>
 
-          <hr className="my-16 border-t-2 border-brand-purple" />
+          <hr className="my-16 border-t-2 border-architect" />
 
           <div className="mb-16 gradient-alchemist p-8 rounded-lg text-white">
             <h2 className="text-3xl font-bold mb-4 text-white">Fariza Javed — The Alchemist</h2>
@@ -30,7 +30,7 @@ export default function About() {
             </p>
           </div>
 
-          <hr className="my-16 border-t-2 border-brand-purple" />
+          <hr className="my-16 border-t-2 border-architect" />
 
           <div className="mb-16 gradient-architect p-8 rounded-lg text-white">
             <h2 className="text-3xl font-bold mb-4 text-white">Hanif Khan — The Architect</h2>
@@ -46,7 +46,7 @@ export default function About() {
             </p>
           </div>
 
-          <hr className="my-16 border-t-2 border-brand-purple" />
+          <hr className="my-16 border-t-2 border-architect" />
 
           <div className="mb-16 gradient-brandscaling p-8 rounded-lg text-white">
             <h2 className="text-3xl font-bold mb-4 text-white flex items-center"><span className="mr-3">🤝</span>Together: The Founders of the Brandscaling Operating System</h2>
@@ -70,10 +70,10 @@ export default function About() {
             </p>
           </div>
 
-          <hr className="my-16 border-t-2 border-brand-purple" />
+          <hr className="my-16 border-t-2 border-architect" />
 
           <div className="mb-16">
-            <h2 className="text-3xl font-bold mb-8 text-brand-purple flex items-center">Original Frameworks Created by Hanif & Fariza</h2>
+            <h2 className="text-3xl font-bold mb-8 text-architect flex items-center">Original Frameworks Created by Hanif & Fariza</h2>
             <p className="mb-8 text-lg">
               Unlike typical business programs that recycle surface-level tactics, the Brandscaling system is entirely original—built from scratch, based on years of hands-on work with real founders scaling infinitely.
             </p>
@@ -111,7 +111,7 @@ export default function About() {
                 <blockquote className="italic text-white/95">F.U.S.E. isn't about adding offers. It's about embedding into ecosystems.</blockquote>
               </div>
 
-              <div className="bg-alchemist-gradient p-8 rounded-lg text-white">
+              <div className="gradient-alchemist p-8 rounded-lg text-white">
                 <h3 className="text-2xl font-bold mb-4 text-white flex items-center"><span className="mr-3">💸</span>The Profit Maximisation Blueprint™</h3>
                 <p className="mb-6 text-white/90">More than making money—this is about building a machine that keeps it, compounds it, and protects your energy while doing it.</p>
                 <div className="mb-6">
@@ -138,10 +138,10 @@ export default function About() {
             </div>
           </div>
 
-          <hr className="my-16 border-t-2 border-brand-purple" />
+          <hr className="my-16 border-t-2 border-architect" />
 
           <div className="mb-16">
-            <h2 className="text-3xl font-bold mb-8 text-brand-purple flex items-center"><span className="mr-3">🔐</span>What Makes These Frameworks Unique?</h2>
+            <h2 className="text-3xl font-bold mb-8 text-architect flex items-center"><span className="mr-3">🔐</span>What Makes These Frameworks Unique?</h2>
             <div className="space-y-6">
               <div className="flex items-start">
                 <span className="text-2xl mr-4">✳️</span>
