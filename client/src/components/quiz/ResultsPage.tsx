@@ -88,16 +88,25 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
   }, [quizState]);
 
   const handleDashboardRedirect = () => {
+    // Get authentication details from localStorage
     const studentId = localStorage.getItem('studentId');
-    if (studentId) {
-      // Check access tier to determine redirect
-      const accessTier = localStorage.getItem('accessTier') || 'student';
+    const accessTier = localStorage.getItem('accessTier');
+    const authToken = localStorage.getItem('authToken');
+    
+    console.log('Dashboard redirect - Auth check:', { studentId, accessTier, hasToken: !!authToken });
+    
+    if (studentId && authToken) {
+      // Valid authentication - redirect based on access tier
       if (accessTier === 'entry') {
+        console.log('Redirecting to entry dashboard');
         setLocation('/entry');
       } else {
+        console.log('Redirecting to student dashboard');
         setLocation('/student');
       }
     } else {
+      // No valid authentication - redirect to auth page
+      console.log('No valid auth - redirecting to sign in');
       setLocation('/auth');
     }
   };

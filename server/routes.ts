@@ -293,6 +293,100 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Student dashboard endpoint
+  app.get('/api/dashboard', requireAuth, async (req, res) => {
+    try {
+      const userId = req.user!.uid;
+      const userEmail = req.user!.email;
+      
+      // Get student details from localStorage mapping
+      const validStudents = [
+        { 
+          email: 'munawarrasoolabbasi@gmail.com', 
+          firstName: 'Munawar',
+          lastName: 'Abbasi',
+          accessTier: 'beginner'
+        },
+        { 
+          email: 'sarah.testing@brandscaling.com', 
+          firstName: 'Sarah',
+          lastName: 'Johnson',
+          accessTier: 'beginner'
+        },
+        { 
+          email: 'journeytest@brandscaling.com', 
+          firstName: 'Journey',
+          lastName: 'Test',
+          accessTier: 'expert'
+        },
+        { 
+          email: 'farijaved@yahoo.co.uk', 
+          firstName: 'Fariza',
+          lastName: 'Javed',
+          accessTier: 'expert'
+        }
+      ];
+
+      const student = validStudents.find(s => s.email === userEmail);
+      
+      if (!student) {
+        return res.status(401).json({ message: "Student not found" });
+      }
+
+      // Get student's courses based on access tier
+      const courses = await storage.getCoursesWithLessons();
+      const accessibleCourses = courses.filter(course => {
+        if (student.accessTier === 'expert') return true; // Expert access to all
+        if (student.accessTier === 'beginner') return course.accessTier === 'beginner';
+        return false;
+      });
+
+      // Return student dashboard data
+      const dashboardData = {
+        user: {
+          firstName: student.firstName,
+          lastName: student.lastName,
+          email: student.email,
+          dominantType: "Architect", // Default, will be updated from quiz results
+          readinessLevel: "Intermediate",
+          accessTier: student.accessTier,
+          assessmentComplete: true,
+          profileImageUrl: null
+        },
+        courses: accessibleCourses.map(course => ({
+          id: course.id,
+          title: course.title,
+          description: course.description,
+          accessTier: course.accessTier,
+          architectVideoUrl: course.architectVideoUrl,
+          alchemistVideoUrl: course.alchemistVideoUrl,
+          architectWorkbookUrl: course.architectWorkbookUrl,
+          alchemistWorkbookUrl: course.alchemistWorkbookUrl
+        })),
+        progress: [],
+        payments: [],
+        announcements: [
+          {
+            id: "announce-1",
+            title: "Welcome to Brandscaling!",
+            message: "Your entrepreneurial journey starts here.",
+            createdAt: new Date()
+          }
+        ],
+        stats: {
+          totalCourses: accessibleCourses.length,
+          completedModules: 0,
+          totalSpent: student.accessTier === 'expert' ? 99900 : 4900 // Expert tier £999, Entry tier £49
+        }
+      };
+      
+      res.json(dashboardData);
+    } catch (error) {
+      console.error("Error fetching dashboard:", error);
+      res.status(500).json({ message: "Failed to fetch dashboard data" });
+    }
+  });
+
   // Return the app for the main server to use
   return app as any;
 }
