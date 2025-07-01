@@ -202,22 +202,22 @@ export const AUTHENTIC_DNA_QUESTIONS: QuizQuestion[] = [
   // Q19-Q22: Validation Questions (Visionary Oracle subtype)
   {
     id: 19,
-    text: "You're given a blank room and asked to design it however you like. What happens first?",
+    text: "You're given a blank room and asked to design it however you want — no deadline, no instructions, just freedom. What do you naturally do first?",
     answers: {
-      A: { text: "I get excited and start moving things around to see what feels right.", type: "alchemist", subtype: "visionary-oracle" },
-      B: { text: "I sketch it out first, then arrange everything to match my vision perfectly.", type: "alchemist", subtype: "magnetic-perfectionist" },
-      C: { text: "I tune into the energy of the space and let that guide where things go.", type: "alchemist", subtype: "energetic-empath" },
-      D: { text: "I think about the purpose of the room first, then design around that function.", type: "alchemist", subtype: "ultimate-alchemist" }
+      A: { text: "I stand in the space and feel what it needs. Then I begin placing things intuitively.", type: "alchemist", subtype: "visionary-oracle" },
+      B: { text: "I imagine the finished look instantly, then begin collecting images or pieces to match the vision.", type: "alchemist", subtype: "magnetic-perfectionist" },
+      C: { text: "I begin sketching it out in a step-by-step plan so I don't waste energy.", type: "alchemist", subtype: "energetic-empath" },
+      D: { text: "I overthink each decision and delay starting until I'm sure it'll look right.", type: "alchemist", subtype: "ultimate-alchemist" }
     }
   },
   {
     id: 20,
-    text: "Think back to school homework. How did you usually approach it?",
+    text: "Think back to your school years. How did you usually approach a long homework assignment?",
     answers: {
-      A: { text: "I did it in bursts — either all at once or not at all.", type: "alchemist", subtype: "visionary-oracle" },
-      B: { text: "I planned it out carefully and worked through it step by step.", type: "alchemist", subtype: "magnetic-perfectionist" },
-      C: { text: "I needed the right mood or environment before I could focus.", type: "alchemist", subtype: "energetic-empath" },
-      D: { text: "I found ways to make it interesting or connected it to something I cared about.", type: "alchemist", subtype: "ultimate-alchemist" }
+      A: { text: "I waited until inspiration hit, then worked in a creative sprint.", type: "alchemist", subtype: "visionary-oracle" },
+      B: { text: "I wrote and rewrote sections until it was perfect — even if it was last minute.", type: "alchemist", subtype: "magnetic-perfectionist" },
+      C: { text: "I mapped the sections, added energy when I felt aligned, and adjusted as I went.", type: "alchemist", subtype: "energetic-empath" },
+      D: { text: "I needed to be alone, clear the space, and feel right before even beginning.", type: "alchemist", subtype: "ultimate-alchemist" }
     }
   },
   {
