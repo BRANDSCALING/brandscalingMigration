@@ -33,21 +33,19 @@ export default function Landing() {
       {/* Hero Section */}
       <BrandSection className="spacing-section relative overflow-hidden">
         {/* Background Video - Clear and Sharp */}
-        <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 z-0 bg-white">
           <video
             autoPlay
             loop
             muted
             playsInline
+            key="hero-video-refresh"
             className="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto transform -translate-x-1/2 -translate-y-1/2 object-cover opacity-100"
+            src="/hero-video-1751363433.mov"
             onError={(e) => {
               console.error('Background video failed to load:', e);
             }}
-          >
-            <source src="/timeline-white-bg.mov?t=1751362945" type="video/quicktime" />
-            <source src="/logo-animation.mp4" type="video/mp4" />
-            <source src="/logo-loop.mp4" type="video/mp4" />
-          </video>
+          />
         </div>
         
         <div className="container-brandscaling text-center relative z-10">
