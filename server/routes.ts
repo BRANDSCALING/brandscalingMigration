@@ -7,6 +7,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const storage = new DatabaseStorage();
 
   // Middleware for authentication
+  // Authentication middleware to set req.user from headers
+  app.use('/api', (req, res, next) => {
+    // Skip auth middleware for public routes
+    const publicPaths = ['/auth/user', '/auth/admin-login', '/auth/student-login', '/auth/student-signup', '/dev/create-admin', '/ai-agents/chat', '/workbooks/upload', '/workbooks/progress', '/workbooks/status', '/quiz/entrepreneurial-dna/submit', '/quiz/entrepreneurial-dna/eligibility', '/test/email', '/test/simulate-purchase'];
+    
+    if (publicPaths.some(path => req.path === path || req.path.startsWith(path))) {
+      // Set anonymous user for workbook and quiz routes
+      if (req.path.startsWith('/workbooks') || req.path.includes('/quiz/')) {
+        req.user = { uid: `anonymous-${Date.now()}`, email: 'anonymous@quiz.com', role: 'user' };
+      }
+      return next();
+    }
+    
+    // Check for admin session
+    const adminId = req.headers['x-admin-id'];
+    if (adminId === 'admin-dev-12345') {
+      req.user = {
+        uid: 'admin-dev-12345',
+        email: 'admin@brandscaling.com',
+        role: 'admin'
+      };
+      return next();
+    }
+    
+    // Check for student session
+    const studentId = req.headers['x-student-id'] as string;
+    const studentEmail = req.headers['x-student-email'] as string;
+    if (studentId && studentEmail) {
+      req.user = {
+        uid: studentId,
+        email: studentEmail,
+        role: 'student'
+      };
+      return next();
+    }
+    
+    // No authentication found - will be caught by requireAuth middleware
+    next();
+  });
+
   const requireAuth = (req: any, res: any, next: any) => {
     if (req.user) {
       next();
@@ -358,10 +398,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           title: course.title,
           description: course.description,
           accessTier: course.accessTier,
-          architectVideoUrl: course.architectVideoUrl,
-          alchemistVideoUrl: course.alchemistVideoUrl,
-          architectWorkbookUrl: course.architectWorkbookUrl,
-          alchemistWorkbookUrl: course.alchemistWorkbookUrl
+          imageUrl: course.imageUrl,
+          level: course.level,
+          track: course.track
         })),
         progress: [],
         payments: [],
