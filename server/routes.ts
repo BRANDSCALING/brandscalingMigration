@@ -138,6 +138,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           firstName: 'Journey',
           lastName: 'Test',
           accessTier: 'expert'
+        },
+        { 
+          email: 'farijaved@yahoo.co.uk', 
+          password: 'fariza@123',
+          firstName: 'Fariza',
+          lastName: 'Javed',
+          accessTier: 'expert'
         }
       ];
 
