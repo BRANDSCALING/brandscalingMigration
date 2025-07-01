@@ -24,26 +24,40 @@ export default function Landing() {
 
       {/* Hero Section */}
       <BrandSection className="spacing-section relative overflow-hidden bg-white">
-        {/* Background Video - Mobile Responsive */}
+        {/* Background Video - Mobile and Desktop */}
         <div className="absolute inset-0 z-0 bg-white">
           {/* White background fallback */}
           <div className="absolute inset-0 bg-white z-0"></div>
+          
+          {/* Desktop Video - Full coverage */}
           <video
             autoPlay
             loop
             muted
             playsInline
-            key="hero-video-white-bg"
+            key="hero-video-desktop"
             className="absolute top-1/2 left-1/2 w-full h-full transform -translate-x-1/2 -translate-y-1/2 object-cover opacity-100 z-10 hidden md:block"
             src="/hero-video-1751363433.mov"
-            onLoadedData={() => console.log('White background video loaded')}
+            onLoadedData={() => console.log('Desktop video loaded')}
             onError={(e) => {
-              console.error('Background video failed to load:', e);
-              console.log('Falling back to white background');
+              console.error('Desktop video failed to load:', e);
             }}
           />
-          {/* Mobile: Show only white background without video to avoid awkward positioning */}
-          <div className="block md:hidden absolute inset-0 bg-white z-10"></div>
+          
+          {/* Mobile Video - Centered and contained */}
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            key="hero-video-mobile"
+            className="absolute top-1/2 left-1/2 w-auto h-auto max-w-full max-h-full transform -translate-x-1/2 -translate-y-1/2 object-contain opacity-100 z-10 block md:hidden"
+            src="/hero-video-1751363433.mov"
+            onLoadedData={() => console.log('Mobile video loaded')}
+            onError={(e) => {
+              console.error('Mobile video failed to load:', e);
+            }}
+          />
         </div>
         
         <div className="container-brandscaling text-center relative z-10">
