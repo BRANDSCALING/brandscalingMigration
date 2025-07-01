@@ -16,15 +16,7 @@ export default function Landing() {
   };
 
   const handleDnaQuizClick = () => {
-    if (!user) {
-      // Scroll to pricing section if not logged in
-      const pricingElement = document.getElementById('pricing');
-      if (pricingElement) {
-        pricingElement.scrollIntoView({ behavior: 'smooth' });
-      }
-    } else {
-      setLocation('/entrepreneurial-dna-quiz');
-    }
+    setLocation('/entrepreneurial-dna-quiz');
   };
 
   return (
