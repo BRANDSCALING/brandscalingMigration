@@ -107,12 +107,6 @@ export default function Header() {
             <Link href="/courses" className="text-gray-700 hover:text-architect transition-colors font-medium">
               Courses
             </Link>
-            <Link href="/ai-agents" className="text-gray-700 hover:text-alchemist transition-colors font-medium">
-              AI Advisors
-            </Link>
-            <Link href="/workbooks" className="text-gray-700 hover:text-alchemist transition-colors font-medium">
-              Workbooks
-            </Link>
             <Link href="/entrepreneurial-dna-quiz">
               <Button variant="outline" className="border-architect-indigo text-architect-indigo hover:bg-architect-indigo hover:text-white">
                 Discover Your E-DNA
@@ -158,20 +152,6 @@ export default function Header() {
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Courses
-              </Link>
-              <Link 
-                href="/ai-agents" 
-                className="text-gray-700 hover:text-alchemist font-medium py-2"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                AI Advisors
-              </Link>
-              <Link 
-                href="/workbooks" 
-                className="text-gray-700 hover:text-alchemist font-medium py-2"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Workbooks
               </Link>
               <Link 
                 href="/entrepreneurial-dna-quiz" 
