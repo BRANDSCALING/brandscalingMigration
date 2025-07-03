@@ -96,14 +96,9 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
     console.log('Dashboard redirect - Auth check:', { studentId, studentEmail, accessTier });
     
     if (studentId && studentEmail) {
-      // Valid authentication - redirect based on access tier
-      if (accessTier === 'entry') {
-        console.log('Redirecting to entry dashboard');
-        setLocation('/entry');
-      } else {
-        console.log('Redirecting to student dashboard');  
-        setLocation('/student');
-      }
+      // Valid authentication - redirect to Student Dashboard
+      console.log('Redirecting to student dashboard');  
+      setLocation('/student');
     } else {
       // No valid authentication - redirect to auth page
       console.log('No valid auth - redirecting to sign in');

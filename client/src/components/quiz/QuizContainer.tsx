@@ -134,14 +134,9 @@ const QuizContainer = () => {
         description: `Your DNA type is: ${response.defaultType}`,
       });
 
-      // Redirect to appropriate dashboard after delay
+      // Redirect to Student Dashboard after delay
       setTimeout(() => {
-        const accessTier = localStorage.getItem('accessTier') || 'beginner';
-        if (accessTier === 'entry') {
-          setLocation('/entry');
-        } else {
-          setLocation('/student');
-        }
+        setLocation('/student');
       }, 5000);
 
     } catch (error) {

@@ -66,12 +66,8 @@ export default function Header() {
     
     if (localUser.role === 'admin') return '/admin';
     
-    // Check access tier for students
+    // All students go to the main Student Dashboard
     if (localUser.role === 'student') {
-      const accessTier = localUser.accessTier;
-      if (accessTier === 'beginner' || accessTier === 'entry') {
-        return '/entry';
-      }
       return '/student';
     }
     

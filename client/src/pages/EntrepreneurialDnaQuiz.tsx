@@ -72,14 +72,9 @@ export default function EntrepreneurialDnaQuiz() {
             variant: "destructive"
           });
           
-          // Redirect to appropriate dashboard after delay
+          // Redirect to Student Dashboard after delay
           setTimeout(() => {
-            const accessTier = localStorage.getItem('accessTier') || 'entry';
-            if (accessTier === 'entry') {
-              setLocation('/entry');
-            } else {
-              setLocation('/student');
-            }
+            setLocation('/student');
           }, 3000);
         }
       } catch (error) {
