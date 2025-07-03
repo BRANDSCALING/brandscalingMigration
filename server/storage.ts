@@ -667,6 +667,9 @@ export class DatabaseStorage implements IStorage {
 
   async saveQuizResult(userId: string, result: any): Promise<void> {
     try {
+      // First, ensure the user exists in the database
+      await this.ensureUserExists(userId);
+      
       await db.insert(quizResults).values({
         quizId: 1, // Entrepreneurial DNA Quiz ID
         userId,
@@ -674,6 +677,8 @@ export class DatabaseStorage implements IStorage {
         score: result.scores?.architect || 0,
         results: {
           defaultType: result.defaultType,
+          dnaType: result.dnaType,
+          subtype: result.subtype,
           scores: {
             architect: result.scores?.architect || 0,
             alchemist: result.scores?.alchemist || 0,
@@ -687,6 +692,30 @@ export class DatabaseStorage implements IStorage {
     } catch (error) {
       console.error('Error saving quiz result:', error);
       throw error;
+    }
+  }
+
+  async ensureUserExists(userId: string): Promise<void> {
+    try {
+      // Check if user exists
+      const existingUser = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+      
+      if (existingUser.length === 0) {
+        // Create a basic user record for quiz storage
+        await db.insert(users).values({
+          id: userId,
+          email: `${userId}@temporary.com`,
+          firstName: 'Student',
+          lastName: 'User',
+          role: 'student',
+          accessTier: 'beginner',
+          createdAt: new Date()
+        });
+        console.log('Created user record for:', userId);
+      }
+    } catch (error) {
+      console.error('Error ensuring user exists:', error);
+      // Don't throw here - let the quiz result save attempt continue
     }
   }
 
