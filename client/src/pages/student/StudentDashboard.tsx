@@ -460,73 +460,122 @@ export default function StudentDashboard() {
           </CardContent>
         </Card>
 
-        {/* Quiz Results Section */}
+        {/* Quiz Results Section - Beautiful Purple Gradient Design */}
         {quizResults?.hasResult && quizResults.dnaType && (
-          <Card className="mb-8 border-purple-200 bg-purple-50/30">
-            <CardHeader>
+          <div className="mb-8 bg-gradient-to-br from-purple-600 via-purple-700 to-purple-800 rounded-xl p-8 text-white shadow-xl">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-8">
               <div className="flex items-center space-x-3">
-                <div className="p-2 bg-purple-100 rounded-lg">
-                  <Brain className="h-6 w-6 text-purple-600" />
-                </div>
+                <Brain className="h-6 w-6 text-purple-200" />
                 <div>
-                  <CardTitle className="text-purple-900">Your DNA Assessment Results</CardTitle>
-                  <CardDescription className="text-purple-700">
+                  <h3 className="text-xl font-bold">Your DNA Assessment Results</h3>
+                  <p className="text-purple-200 text-sm">
                     Completed on {quizResults.completedAt ? new Date(quizResults.completedAt).toLocaleDateString() : 'Recently'}
-                  </CardDescription>
+                  </p>
                 </div>
               </div>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-purple-900 mb-1">
+              <div className="text-right">
+                <div className="text-sm text-purple-200 mb-1">Scores</div>
+                <div className="text-xs text-purple-300 space-y-1">
+                  <div>Architect: {quizResults.scores?.architect || 0}</div>
+                  <div>Alchemist: {quizResults.scores?.alchemist || 0}</div>
+                  <div>Blurred: {quizResults.scores?.blurred || 0}</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Main Results Display */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              {/* Default DNA */}
+              <div className="text-center">
+                <div className="text-sm text-purple-200 mb-2">Default DNA</div>
+                <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4 border border-white/30">
+                  <div className="text-2xl font-bold">
                     {quizResults.dnaType.charAt(0).toUpperCase() + quizResults.dnaType.slice(1)}
                   </div>
-                  <div className="text-sm text-purple-600">Primary DNA Type</div>
-                  {quizResults.subtype && (
-                    <div className="mt-2 text-sm text-gray-600">
-                      {quizResults.subtype.split('-').map((word: string) => 
+                </div>
+              </div>
+
+              {/* Sub-DNA */}
+              <div className="text-center">
+                <div className="text-sm text-purple-200 mb-2">Your Sub-DNA</div>
+                <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4 border border-white/30">
+                  <div className="text-2xl font-bold">
+                    {quizResults.subtype ? 
+                      quizResults.subtype.split('-').map((word: string) => 
                         word.charAt(0).toUpperCase() + word.slice(1)
-                      ).join(' ')}
-                    </div>
-                  )}
-                </div>
-                
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-purple-900 mb-1">
-                    {quizResults.awarenessScore || 0}%
-                  </div>
-                  <div className="text-sm text-purple-600">Awareness Score</div>
-                  <Progress value={quizResults.awarenessScore || 0} className="mt-2" />
-                </div>
-                
-                <div className="text-center">
-                  <div className="space-y-2">
-                    <div className="text-sm text-gray-600">
-                      <strong>Architect:</strong> {quizResults.scores?.architect || 0}
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      <strong>Alchemist:</strong> {quizResults.scores?.alchemist || 0}
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      <strong>Blurred:</strong> {quizResults.scores?.blurred || 0}
-                    </div>
+                      ).join(' ') : 'Not Available'
+                    }
                   </div>
                 </div>
               </div>
-              
-              <div className="flex justify-center mt-6">
-                <Button 
-                  variant="outline" 
-                  onClick={() => setLocation('/entrepreneurial-dna-quiz')}
-                  className="flex items-center space-x-2"
-                >
-                  <Brain className="h-4 w-4" />
-                  <span>View Full Results</span>
-                </Button>
+
+              {/* Awareness of Opposite */}
+              <div className="text-center">
+                <div className="text-sm text-purple-200 mb-2">Awareness of your opposite</div>
+                <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4 border border-white/30">
+                  <div className="text-2xl font-bold">
+                    {quizResults.awarenessScore || 75}%
+                  </div>
+                </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+
+            {/* Assessment Progress */}
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
+              <h4 className="text-lg font-semibold mb-4 text-center">Assessment Progress</h4>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm">Initial DNA Detection Complete</span>
+                  <span className="text-sm font-semibold">100%</span>
+                </div>
+                <div className="w-full bg-white/20 rounded-full h-2">
+                  <div className="bg-white h-2 rounded-full" style={{width: '100%'}}></div>
+                </div>
+
+                <div className="flex justify-between items-center">
+                  <span className="text-sm">Awareness of your opposite Complete</span>
+                  <span className="text-sm font-semibold">100%</span>
+                </div>
+                <div className="w-full bg-white/20 rounded-full h-2">
+                  <div className="bg-white h-2 rounded-full" style={{width: '100%'}}></div>
+                </div>
+
+                <div className="flex justify-between items-center">
+                  <span className="text-sm">Subtype Analysis Complete</span>
+                  <span className="text-sm font-semibold">100%</span>
+                </div>
+                <div className="w-full bg-white/20 rounded-full h-2">
+                  <div className="bg-white h-2 rounded-full" style={{width: '100%'}}></div>
+                </div>
+              </div>
+            </div>
+
+            {/* Inspirational Quote */}
+            <div className="text-center mt-8 italic text-purple-100">
+              {quizResults.dnaType === 'blurred' && 
+                '"You don\'t feel clear — because you\'ve been trained to override your truth."'
+              }
+              {quizResults.dnaType === 'architect' && 
+                '"Your systematic mind is your superpower — use it to build lasting impact."'
+              }
+              {quizResults.dnaType === 'alchemist' && 
+                '"Your intuitive gifts create transformation — trust your creative instincts."'
+              }
+            </div>
+
+            {/* Action Button */}
+            <div className="text-center mt-6">
+              <Button 
+                variant="outline" 
+                className="bg-white/20 border-white/30 text-white hover:bg-white/30 backdrop-blur-sm"
+                onClick={() => setLocation('/entrepreneurial-dna-quiz')}
+              >
+                <Brain className="h-4 w-4 mr-2" />
+                View Full Results
+              </Button>
+            </div>
+          </div>
         )}
 
         {/* Authentic Course Content */}
