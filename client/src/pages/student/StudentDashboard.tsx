@@ -564,7 +564,17 @@ export default function StudentDashboard() {
               }
             </div>
 
-
+            {/* Action Button */}
+            <div className="text-center mt-6">
+              <Button 
+                variant="outline" 
+                className="bg-white/20 border-white/30 text-white hover:bg-white/30 backdrop-blur-sm"
+                onClick={() => setLocation('/entrepreneurial-dna-quiz')}
+              >
+                <Brain className="h-4 w-4 mr-2" />
+                View Full Results
+              </Button>
+            </div>
           </div>
         )}
 
