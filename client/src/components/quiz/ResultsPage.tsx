@@ -412,7 +412,10 @@ const ResultsPage: React.FC<Props> = ({ quizState }) => {
                   {profileData?.ctaText || 'You\'ll receive one daily prompt and training exercise to help calibrate your identity. Track how you move, how you decide, and how you feel in both systems. You don\'t need to balance both — you need to find your true default and deepen it.'}
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3">
-                  <Button className="bg-purple-600 hover:bg-purple-700 text-white flex-1">
+                  <Button 
+                    className="bg-purple-600 hover:bg-purple-700 text-white flex-1"
+                    onClick={() => setLocation('/7-day-reset')}
+                  >
                     Start 7-Day Reset
                   </Button>
                   <Button variant="outline" className="border-purple-300 text-purple-700 hover:bg-purple-50 flex-1">

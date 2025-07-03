@@ -446,7 +446,7 @@ export default function StudentDashboard() {
                 onClick={() => {
                   if (dnaPersonalization.color === 'red') {
                     // Route to 7-Day Reset Challenge
-                    setLocation('/reset-challenge');
+                    setLocation('/7-day-reset');
                   } else {
                     // Route to DNA quiz
                     setLocation('/entrepreneurial-dna-quiz');
