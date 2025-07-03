@@ -430,20 +430,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/quiz/results', requireAuth, async (req, res) => {
     try {
       const userId = req.user!.uid;
+      console.log('Fetching quiz results for user:', userId);
       const quizResult = await storage.getLatestQuizResult(userId);
       
+      console.log('Quiz result found:', quizResult);
+      
       if (!quizResult) {
+        console.log('No quiz result found for user:', userId);
         return res.json({ hasResult: false });
       }
 
-      res.json({
+      const response = {
         hasResult: true,
-        dnaType: quizResult.results?.defaultType || 'Unknown',
+        dnaType: quizResult.results?.defaultType || quizResult.results?.dnaType || 'Unknown',
         subtype: quizResult.results?.subtype || '',
         awarenessScore: quizResult.results?.awarenessPercentage || 0,
         scores: quizResult.results?.scores || {},
         completedAt: quizResult.createdAt
-      });
+      };
+      
+      console.log('Sending quiz results response:', response);
+      res.json(response);
     } catch (error) {
       console.error("Error fetching quiz results:", error);
       res.status(500).json({ message: "Failed to fetch quiz results" });

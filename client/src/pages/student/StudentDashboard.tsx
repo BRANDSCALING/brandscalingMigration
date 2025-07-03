@@ -236,7 +236,18 @@ export default function StudentDashboard() {
     retry: false
   });
 
-  const { data: quizResults } = useQuery({
+  const { data: quizResults } = useQuery<{
+    hasResult: boolean;
+    dnaType?: string;
+    subtype?: string;
+    awarenessScore?: number;
+    scores?: {
+      architect?: number;
+      alchemist?: number;
+      blurred?: number;
+    };
+    completedAt?: string;
+  }>({
     queryKey: ['/api/quiz/results'],
     enabled: isAuthenticated
   });
@@ -450,7 +461,7 @@ export default function StudentDashboard() {
         </Card>
 
         {/* Quiz Results Section */}
-        {quizResults?.hasResult && (
+        {quizResults?.hasResult && quizResults.dnaType && (
           <Card className="mb-8 border-purple-200 bg-purple-50/30">
             <CardHeader>
               <div className="flex items-center space-x-3">
@@ -460,7 +471,7 @@ export default function StudentDashboard() {
                 <div>
                   <CardTitle className="text-purple-900">Your DNA Assessment Results</CardTitle>
                   <CardDescription className="text-purple-700">
-                    Completed on {new Date(quizResults.completedAt).toLocaleDateString()}
+                    Completed on {quizResults.completedAt ? new Date(quizResults.completedAt).toLocaleDateString() : 'Recently'}
                   </CardDescription>
                 </div>
               </div>
@@ -474,7 +485,7 @@ export default function StudentDashboard() {
                   <div className="text-sm text-purple-600">Primary DNA Type</div>
                   {quizResults.subtype && (
                     <div className="mt-2 text-sm text-gray-600">
-                      {quizResults.subtype.split('-').map(word => 
+                      {quizResults.subtype.split('-').map((word: string) => 
                         word.charAt(0).toUpperCase() + word.slice(1)
                       ).join(' ')}
                     </div>
@@ -483,10 +494,10 @@ export default function StudentDashboard() {
                 
                 <div className="text-center">
                   <div className="text-2xl font-bold text-purple-900 mb-1">
-                    {quizResults.awarenessScore}%
+                    {quizResults.awarenessScore || 0}%
                   </div>
                   <div className="text-sm text-purple-600">Awareness Score</div>
-                  <Progress value={quizResults.awarenessScore} className="mt-2" />
+                  <Progress value={quizResults.awarenessScore || 0} className="mt-2" />
                 </div>
                 
                 <div className="text-center">
