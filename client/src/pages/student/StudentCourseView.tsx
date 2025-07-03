@@ -242,6 +242,65 @@ export default function StudentCourseView() {
 
   const courseData = getCourseData();
 
+  const getLessonContent = (lesson: Lesson): string => {
+    const contentMap: { [key: string]: string } = {
+      "F.U.S.E. Framework™ (Embedded Offer Design)": "Learn how to create irresistible offers by embedding solutions directly into customer problems. This foundational framework helps you design products and services that customers can't refuse because they solve real, pressing needs.",
+      "Profit Maximization Blueprint (Customer Creation Factory™)": "Discover the systematic approach to converting prospects into paying customers through proven psychological triggers and sales methodologies. Build your own customer creation system that scales.",
+      "Doctor-Patient Sales Model (Prescription & Pill)": "Master the art of consultative selling where you diagnose customer problems like a doctor and prescribe solutions like medicine. This ethical sales approach builds trust and increases conversion rates.",
+      "Social Media Systems": "Build automated social media systems that attract your ideal customers and nurture them through your sales funnel. Learn platform-specific strategies for maximum engagement.",
+      "Marketing Systems": "Create comprehensive marketing systems that work 24/7 to generate leads and customers. From content marketing to paid advertising, build your marketing machine.",
+      "Sales Psychology": "Understand the psychological principles that drive purchasing decisions. Learn to ethically influence prospects and overcome objections with confidence.",
+      "F - Find the Spark": "Discover how to identify market opportunities and problems worth solving. Learn research techniques to validate demand before you build.",
+      "U - Uncover the Need": "Deep dive into customer pain points and understand the emotional drivers behind purchasing decisions. Create detailed customer avatars.",
+      "S - Shape the Solution": "Design solutions that perfectly match customer needs. Learn to position your offer as the obvious choice for your target market.",
+      "E - Execute and Evolve": "Implement your solution in the market and continuously improve based on feedback. Build systems for sustainable growth and evolution."
+    };
+    
+    return contentMap[lesson.title] || "This lesson contains comprehensive content and practical exercises designed to help you master the concepts and apply them to your business immediately.";
+  };
+
+  const getLessonPoints = (lesson: Lesson): string[] => {
+    const pointsMap: { [key: string]: string[] } = {
+      "F.U.S.E. Framework™ (Embedded Offer Design)": [
+        "Understand the psychology of irresistible offers",
+        "Learn the 4-step offer design process", 
+        "Master embedded solution techniques",
+        "Create offers customers can't refuse"
+      ],
+      "Profit Maximization Blueprint (Customer Creation Factory™)": [
+        "Build automated customer acquisition systems",
+        "Implement proven conversion frameworks",
+        "Design scalable sales processes",
+        "Maximize customer lifetime value"
+      ],
+      "Doctor-Patient Sales Model (Prescription & Pill)": [
+        "Master consultative selling techniques",
+        "Learn diagnostic questioning methods",
+        "Build trust through problem-solving",
+        "Increase conversion rates ethically"
+      ],
+      "F - Find the Spark": [
+        "Identify profitable market opportunities",
+        "Validate demand before building",
+        "Research market gaps effectively",
+        "Discover your unique positioning"
+      ],
+      "U - Uncover the Need": [
+        "Understand customer pain points deeply",
+        "Map emotional buying triggers",
+        "Create detailed customer avatars",
+        "Identify unmet market needs"
+      ]
+    };
+    
+    return pointsMap[lesson.title] || [
+      "Master key concepts and frameworks",
+      "Apply practical implementation strategies", 
+      "Build systematic business processes",
+      "Achieve measurable results quickly"
+    ];
+  };
+
   useEffect(() => {
     if (courseData?.lessons && !selectedLesson) {
       const firstLesson = courseData.lessons.find((lesson: Lesson) => 
@@ -403,57 +462,65 @@ export default function StudentCourseView() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-6">
-                  {/* Video Player */}
-                  {selectedLesson.videoUrl && (
-                    <div>
-                      <h4 className="font-semibold mb-3">Video Content</h4>
-                      <div className="aspect-video bg-black rounded-lg flex items-center justify-center">
-                        <div className="text-center text-white">
-                          <Play className="w-16 h-16 mx-auto mb-4 opacity-75" />
-                          <p className="text-sm opacity-75">Video Player</p>
-                          <p className="text-xs opacity-50 mt-1">{selectedLesson.videoUrl}</p>
+                  {/* Lesson Content */}
+                  <div>
+                    <h4 className="font-semibold mb-3">Lesson Overview</h4>
+                    <Card className="p-6">
+                      <div className="space-y-4">
+                        <p className="text-gray-700 leading-relaxed">
+                          {getLessonContent(selectedLesson)}
+                        </p>
+                        
+                        {/* Key Learning Points */}
+                        <div className="bg-blue-50 p-4 rounded-lg">
+                          <h5 className="font-medium text-blue-900 mb-2">Key Learning Points:</h5>
+                          <ul className="text-sm text-blue-800 space-y-1">
+                            {getLessonPoints(selectedLesson).map((point, index) => (
+                              <li key={index} className="flex items-start">
+                                <Check className="w-4 h-4 text-blue-600 mr-2 mt-0.5 flex-shrink-0" />
+                                {point}
+                              </li>
+                            ))}
+                          </ul>
                         </div>
                       </div>
-                    </div>
-                  )}
+                    </Card>
+                  </div>
 
-                  {/* Workbook Download */}
-                  {selectedLesson.workbookUrl && (
-                    <div>
-                      <h4 className="font-semibold mb-3">Course Materials</h4>
-                      <Card className="p-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-                            <Download className="w-5 h-5 text-primary" />
-                          </div>
-                          <div className="flex-1">
-                            <p className="font-medium">Lesson Workbook</p>
-                            <p className="text-sm text-muted-foreground">
-                              Download materials for this lesson
-                            </p>
-                          </div>
-                          <Button variant="outline" size="sm">
-                            <Download className="w-4 h-4 mr-2" />
-                            Download
-                          </Button>
+                  {/* Interactive Content Area */}
+                  <div>
+                    <h4 className="font-semibold mb-3">Interactive Learning</h4>
+                    <Card className="p-6">
+                      <div className="text-center space-y-4">
+                        <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto">
+                          <Play className="w-8 h-8 text-blue-600" />
                         </div>
-                      </Card>
-                    </div>
-                  )}
-
-                  {/* Lesson Actions */}
-                  <div className="flex gap-3 pt-4 border-t">
-                    {!selectedLesson.completed ? (
-                      <Button>
-                        <Check className="w-4 h-4 mr-2" />
-                        Mark as Complete
-                      </Button>
-                    ) : (
-                      <Button variant="outline" disabled>
-                        <Check className="w-4 h-4 mr-2" />
-                        Completed
-                      </Button>
-                    )}
+                        <div>
+                          <h5 className="font-medium text-gray-900 mb-2">Ready to Begin?</h5>
+                          <p className="text-sm text-gray-600 mb-4">
+                            Start this lesson to access interactive content, exercises, and implementation guides.
+                          </p>
+                        </div>
+                        
+                        {!selectedLesson.completed ? (
+                          <div className="flex gap-3 justify-center">
+                            <Button className="bg-blue-600 hover:bg-blue-700">
+                              <Play className="w-4 h-4 mr-2" />
+                              Start Lesson
+                            </Button>
+                            <Button variant="outline">
+                              <Check className="w-4 h-4 mr-2" />
+                              Mark as Complete
+                            </Button>
+                          </div>
+                        ) : (
+                          <Button variant="outline" disabled>
+                            <Check className="w-4 h-4 mr-2" />
+                            Completed
+                          </Button>
+                        )}
+                      </div>
+                    </Card>
                   </div>
                 </div>
               </CardContent>
