@@ -9,6 +9,9 @@ app.use(express.urlencoded({ extended: false }));
 // Serve static files from public directory with proper MIME types
 app.use(express.static("public"));
 
+// Serve attached assets (PDFs, images, etc.)
+app.use('/attached_assets', express.static("attached_assets"));
+
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;

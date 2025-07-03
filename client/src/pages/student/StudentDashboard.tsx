@@ -28,7 +28,8 @@ import {
   Lock,
   Lightbulb,
   Rocket,
-  PlusCircle
+  PlusCircle,
+  Download
 } from 'lucide-react';
 
 interface DashboardData {
@@ -576,6 +577,86 @@ export default function StudentDashboard() {
               </Button>
             </div>
           </div>
+        )}
+
+        {/* 7-Day Identity Reset PDF Download Section (Blurred Users Only) */}
+        {quizResults?.hasResult && quizResults.dnaType === 'blurred' && (
+          <Card className="mb-8 bg-gradient-to-br from-red-50 to-purple-50 border-2 border-red-200">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-3 text-red-800">
+                <FileText className="h-6 w-6" />
+                7-Day Identity Reset Guide
+              </CardTitle>
+              <CardDescription className="text-red-700">
+                Exclusive resource for blurred identity recalibration
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="bg-white rounded-lg p-4 border border-red-200">
+                  <h4 className="font-semibold text-red-800 mb-2">
+                    "Identity Clarity Emergency" - Complete Guide
+                  </h4>
+                  <p className="text-gray-700 text-sm mb-4">
+                    A comprehensive 7-day program to move from "blurred" and adaptive identity to authentic clarity. 
+                    Includes daily exercises, reflection prompts, and the framework to find your true entrepreneurial operating system.
+                  </p>
+                  <div className="grid grid-cols-2 gap-4 text-xs text-gray-600 mb-4">
+                    <div>
+                      <strong>What's Included:</strong>
+                      <ul className="mt-1 space-y-1">
+                        <li>• 7 Daily Experiential Exercises</li>
+                        <li>• Architect vs Alchemist Testing</li>
+                        <li>• Decision-Making Deep Dive</li>
+                        <li>• Leadership Style Assessment</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <strong>Tools & Frameworks:</strong>
+                      <ul className="mt-1 space-y-1">
+                        <li>• Identity Contract Template</li>
+                        <li>• Daily Reflection Worksheets</li>
+                        <li>• Future Visioning Exercises</li>
+                        <li>• Authentic Operating System Guide</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Button 
+                    className="bg-red-600 hover:bg-red-700 text-white flex-1"
+                    onClick={() => {
+                      // Create download link for the PDF
+                      const link = document.createElement('a');
+                      link.href = '/attached_assets/7_Day_Identity_Reset_Professional_1751567134707.pdf';
+                      link.download = '7_Day_Identity_Reset_Professional.pdf';
+                      link.target = '_blank';
+                      document.body.appendChild(link);
+                      link.click();
+                      document.body.removeChild(link);
+                    }}
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    Download PDF Guide
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    className="border-red-300 text-red-700 hover:bg-red-50 flex-1"
+                    onClick={() => setLocation('/7-day-reset')}
+                  >
+                    <Calendar className="h-4 w-4 mr-2" />
+                    Start Interactive Program
+                  </Button>
+                </div>
+                
+                <div className="text-xs text-red-600 bg-red-100 rounded-lg p-3">
+                  <strong>For Blurred Identity Users:</strong> This guide is specifically designed for entrepreneurs 
+                  caught between operating modes. Use this alongside the interactive 7-Day Reset program for maximum clarity.
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         )}
 
         {/* Authentic Course Content */}
