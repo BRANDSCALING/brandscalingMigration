@@ -649,6 +649,22 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
+  async getLatestQuizResult(userId: string): Promise<any> {
+    try {
+      const [latestResult] = await db
+        .select()
+        .from(quizResults)
+        .where(eq(quizResults.userId, userId))
+        .orderBy(desc(quizResults.createdAt))
+        .limit(1);
+      
+      return latestResult;
+    } catch (error) {
+      console.error('Error fetching latest quiz result:', error);
+      return null;
+    }
+  }
+
   async saveQuizResult(userId: string, result: any): Promise<void> {
     try {
       await db.insert(quizResults).values({

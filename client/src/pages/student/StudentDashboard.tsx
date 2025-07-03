@@ -236,6 +236,11 @@ export default function StudentDashboard() {
     retry: false
   });
 
+  const { data: quizResults } = useQuery({
+    queryKey: ['/api/quiz/results'],
+    enabled: isAuthenticated
+  });
+
   if (error) {
     console.error('Dashboard error:', error);
     return (
@@ -443,6 +448,75 @@ export default function StudentDashboard() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Quiz Results Section */}
+        {quizResults?.hasResult && (
+          <Card className="mb-8 border-purple-200 bg-purple-50/30">
+            <CardHeader>
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-purple-100 rounded-lg">
+                  <Brain className="h-6 w-6 text-purple-600" />
+                </div>
+                <div>
+                  <CardTitle className="text-purple-900">Your DNA Assessment Results</CardTitle>
+                  <CardDescription className="text-purple-700">
+                    Completed on {new Date(quizResults.completedAt).toLocaleDateString()}
+                  </CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-purple-900 mb-1">
+                    {quizResults.dnaType.charAt(0).toUpperCase() + quizResults.dnaType.slice(1)}
+                  </div>
+                  <div className="text-sm text-purple-600">Primary DNA Type</div>
+                  {quizResults.subtype && (
+                    <div className="mt-2 text-sm text-gray-600">
+                      {quizResults.subtype.split('-').map(word => 
+                        word.charAt(0).toUpperCase() + word.slice(1)
+                      ).join(' ')}
+                    </div>
+                  )}
+                </div>
+                
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-purple-900 mb-1">
+                    {quizResults.awarenessScore}%
+                  </div>
+                  <div className="text-sm text-purple-600">Awareness Score</div>
+                  <Progress value={quizResults.awarenessScore} className="mt-2" />
+                </div>
+                
+                <div className="text-center">
+                  <div className="space-y-2">
+                    <div className="text-sm text-gray-600">
+                      <strong>Architect:</strong> {quizResults.scores?.architect || 0}
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      <strong>Alchemist:</strong> {quizResults.scores?.alchemist || 0}
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      <strong>Blurred:</strong> {quizResults.scores?.blurred || 0}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex justify-center mt-6">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setLocation('/entrepreneurial-dna-quiz')}
+                  className="flex items-center space-x-2"
+                >
+                  <Brain className="h-4 w-4" />
+                  <span>View Full Results</span>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Authentic Course Content */}
         <div className="space-y-8">
