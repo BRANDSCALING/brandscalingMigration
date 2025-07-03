@@ -30,9 +30,23 @@
 - **Access Tier**: Expert
 - **Status**: ✅ Working and tested
 
+### Account 5
+- **Email**: hav@sitefindr.co.uk
+- **Password**: 123456
+- **Name**: Hav User
+- **Access Tier**: Expert
+- **Status**: ✅ Working and tested
+
+### Account 6
+- **Email**: reshma@sitefindr.co.uk
+- **Password**: 123456
+- **Name**: Reshma User
+- **Access Tier**: Expert
+- **Status**: ✅ Working and tested
+
 ## Testing Results
 
-All four accounts have been successfully:
+All six accounts have been successfully:
 - Added to the authentication system
 - Configured with Expert tier access
 - Tested with login endpoint
