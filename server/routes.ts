@@ -441,9 +441,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get quiz results for student dashboard
-  app.get('/api/quiz/results', requireAuth, async (req, res) => {
+  app.get('/api/quiz/results', async (req, res) => {
     try {
-      const userId = req.user!.uid;
+      // Use the x-student-id header if available, otherwise try other auth methods
+      const studentId = req.headers['x-student-id'] as string;
+      const userId = studentId || req.user?.uid;
+      
+      console.log('Quiz results request - studentId:', studentId, 'userId:', userId, 'headers:', req.headers);
+      
+      if (!userId) {
+        return res.status(401).json({ message: "Authentication required" });
+      }
+      
       console.log('Fetching quiz results for user:', userId);
       const quizResult = await storage.getLatestQuizResult(userId);
       
