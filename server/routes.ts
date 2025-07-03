@@ -172,6 +172,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Check for specific test student credentials
       const validStudents = [
+        // Original test accounts
         { 
           email: 'munawarrasoolabbasi@gmail.com', 
           password: '123456',
@@ -198,6 +199,98 @@ export async function registerRoutes(app: Express): Promise<Server> {
           password: 'fariza@123',
           firstName: 'Fariza',
           lastName: 'Javed',
+          accessTier: 'expert'
+        },
+        // New student accounts - all with password: 123456
+        { 
+          email: 'vishaal@premierproperty.co.uk', 
+          password: '123456',
+          firstName: 'Vishaal',
+          lastName: 'Premier',
+          accessTier: 'expert'
+        },
+        { 
+          email: 'dion@dionwrightproperty.com', 
+          password: '123456',
+          firstName: 'Dion',
+          lastName: 'Wright',
+          accessTier: 'expert'
+        },
+        { 
+          email: 'hanif@uranexus.com', 
+          password: '123456',
+          firstName: 'Hanif',
+          lastName: 'Uran',
+          accessTier: 'expert'
+        },
+        { 
+          email: 'twinjgt@gmail.com', 
+          password: '123456',
+          firstName: 'Twin',
+          lastName: 'JGT',
+          accessTier: 'expert'
+        },
+        { 
+          email: 'geadzirasa@gmail.com', 
+          password: '123456',
+          firstName: 'Gead',
+          lastName: 'Zirasa',
+          accessTier: 'expert'
+        },
+        { 
+          email: 'hav@stefindr.co.uk', 
+          password: '123456',
+          firstName: 'Hav',
+          lastName: 'Stefindr',
+          accessTier: 'expert'
+        },
+        { 
+          email: 'info@edgehillbuilding.com', 
+          password: '123456',
+          firstName: 'Edge',
+          lastName: 'Hill',
+          accessTier: 'expert'
+        },
+        { 
+          email: 'jamie@edgehillpropertyfinance.com', 
+          password: '123456',
+          firstName: 'Jamie',
+          lastName: 'EdgeHill',
+          accessTier: 'expert'
+        },
+        { 
+          email: 'simant.soni@gmail.com', 
+          password: '123456',
+          firstName: 'Simant',
+          lastName: 'Soni',
+          accessTier: 'expert'
+        },
+        { 
+          email: 'fariza@edgehillgroup.co.uk', 
+          password: '123456',
+          firstName: 'Fariza',
+          lastName: 'EdgeHill',
+          accessTier: 'expert'
+        },
+        { 
+          email: 'kam@premierproperty.co.uk', 
+          password: '123456',
+          firstName: 'Kam',
+          lastName: 'Premier',
+          accessTier: 'expert'
+        },
+        { 
+          email: 'info@ukpropertytastic.co.uk', 
+          password: '123456',
+          firstName: 'UK',
+          lastName: 'Property',
+          accessTier: 'expert'
+        },
+        { 
+          email: 'josh@insurance-desk.com', 
+          password: '123456',
+          firstName: 'Josh',
+          lastName: 'Insurance',
           accessTier: 'expert'
         }
       ];
@@ -355,6 +448,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Get student details from localStorage mapping
       const validStudents = [
+        // Original test accounts
         { 
           email: 'munawarrasoolabbasi@gmail.com', 
           firstName: 'Munawar',
@@ -377,6 +471,85 @@ export async function registerRoutes(app: Express): Promise<Server> {
           email: 'farijaved@yahoo.co.uk', 
           firstName: 'Fariza',
           lastName: 'Javed',
+          accessTier: 'expert'
+        },
+        // New student accounts
+        { 
+          email: 'vishaal@premierproperty.co.uk', 
+          firstName: 'Vishaal',
+          lastName: 'Premier',
+          accessTier: 'expert'
+        },
+        { 
+          email: 'dion@dionwrightproperty.com', 
+          firstName: 'Dion',
+          lastName: 'Wright',
+          accessTier: 'expert'
+        },
+        { 
+          email: 'hanif@uranexus.com', 
+          firstName: 'Hanif',
+          lastName: 'Uran',
+          accessTier: 'expert'
+        },
+        { 
+          email: 'twinjgt@gmail.com', 
+          firstName: 'Twin',
+          lastName: 'JGT',
+          accessTier: 'expert'
+        },
+        { 
+          email: 'geadzirasa@gmail.com', 
+          firstName: 'Gead',
+          lastName: 'Zirasa',
+          accessTier: 'expert'
+        },
+        { 
+          email: 'hav@stefindr.co.uk', 
+          firstName: 'Hav',
+          lastName: 'Stefindr',
+          accessTier: 'expert'
+        },
+        { 
+          email: 'info@edgehillbuilding.com', 
+          firstName: 'Edge',
+          lastName: 'Hill',
+          accessTier: 'expert'
+        },
+        { 
+          email: 'jamie@edgehillpropertyfinance.com', 
+          firstName: 'Jamie',
+          lastName: 'EdgeHill',
+          accessTier: 'expert'
+        },
+        { 
+          email: 'simant.soni@gmail.com', 
+          firstName: 'Simant',
+          lastName: 'Soni',
+          accessTier: 'expert'
+        },
+        { 
+          email: 'fariza@edgehillgroup.co.uk', 
+          firstName: 'Fariza',
+          lastName: 'EdgeHill',
+          accessTier: 'expert'
+        },
+        { 
+          email: 'kam@premierproperty.co.uk', 
+          firstName: 'Kam',
+          lastName: 'Premier',
+          accessTier: 'expert'
+        },
+        { 
+          email: 'info@ukpropertytastic.co.uk', 
+          firstName: 'UK',
+          lastName: 'Property',
+          accessTier: 'expert'
+        },
+        { 
+          email: 'josh@insurance-desk.com', 
+          firstName: 'Josh',
+          lastName: 'Insurance',
           accessTier: 'expert'
         }
       ];
