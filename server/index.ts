@@ -9,8 +9,14 @@ app.use(express.urlencoded({ extended: false }));
 // Serve static files from public directory with proper MIME types
 app.use(express.static("public"));
 
-// Serve attached assets (PDFs, images, etc.)
-app.use('/attached_assets', express.static("attached_assets"));
+// Serve attached assets (PDFs, images, etc.) with inline display
+app.use('/attached_assets', express.static("attached_assets", {
+  setHeaders: (res, path) => {
+    if (path.endsWith('.pdf')) {
+      res.setHeader('Content-Disposition', 'inline');
+    }
+  }
+}));
 
 app.use((req, res, next) => {
   const start = Date.now();

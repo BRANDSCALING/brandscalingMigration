@@ -627,18 +627,12 @@ export default function StudentDashboard() {
                   <Button 
                     className="bg-red-600 hover:bg-red-700 text-white flex-1"
                     onClick={() => {
-                      // Create download link for the PDF
-                      const link = document.createElement('a');
-                      link.href = '/attached_assets/7_Day_Identity_Reset_Professional_1751567134707.pdf';
-                      link.download = '7_Day_Identity_Reset_Professional.pdf';
-                      link.target = '_blank';
-                      document.body.appendChild(link);
-                      link.click();
-                      document.body.removeChild(link);
+                      // Open PDF in new tab for viewing
+                      window.open('/attached_assets/7_Day_Identity_Reset_Professional_1751567134707.pdf', '_blank');
                     }}
                   >
-                    <Download className="h-4 w-4 mr-2" />
-                    Download PDF Guide
+                    <FileText className="h-4 w-4 mr-2" />
+                    View PDF Guide
                   </Button>
                   <Button 
                     variant="outline" 
