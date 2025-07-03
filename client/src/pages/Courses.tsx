@@ -8,46 +8,6 @@ import { BrandSection } from '@/components/BrandSystem';
 export default function Courses() {
   return (
     <div className="min-h-screen bg-white">
-      {/* Hero Section */}
-      <BrandSection className="spacing-section bg-gradient-to-br from-white via-gray-50 to-white">
-        <div className="container-brandscaling text-center">
-          <div className="max-w-4xl mx-auto">
-            <h1 className="text-h1 text-strategic-black mb-6 leading-tight font-bold">
-              The World's 1st AI-Powered Business 
-              <span className="gradient-brandscaling bg-clip-text text-transparent block">
-                Operating System
-              </span>
-            </h1>
-            <p className="text-body-large text-strategic-black mb-8 max-w-2xl mx-auto leading-relaxed font-medium">
-              Discover your <span className="text-architect font-bold">Entrepreneurial DNA</span> and scale from idea to 9-figures 
-              using proven <span className="text-alchemist font-bold">methodologies</span> and AI-powered guidance
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-              <Link href="/entrepreneurial-dna-quiz">
-                <Button size="lg" className="btn-cta-gradient text-white font-semibold px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all">
-                  Discover Your E-DNA
-                  <Brain className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
-              <Link href="#pricing">
-                <Button variant="outline" size="lg" className="border-2 border-scale-orange text-scale-orange hover:bg-scale-orange hover:text-white font-semibold px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all bg-white/95 backdrop-blur-sm">
-                  Explore Learning Paths
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
-            </div>
-
-            <div className="text-center">
-              <blockquote className="text-xl italic text-gray-600 border-l-4 border-scale-orange pl-6 max-w-3xl mx-auto">
-                "Purpose → Profit → Purpose. Every entrepreneur is either an Architect or an Alchemist. Which are you?"
-              </blockquote>
-              <cite className="text-sm text-gray-500 mt-2 block">— The Architect & The Alchemist</cite>
-            </div>
-          </div>
-        </div>
-      </BrandSection>
-
       {/* Choose Your Growth Path Section */}
       <BrandSection id="pricing" className="spacing-section bg-white">
         <div className="container-brandscaling">
