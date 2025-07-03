@@ -320,6 +320,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
           firstName: 'Sohail',
           lastName: 'K',
           accessTier: 'expert'
+        },
+        { 
+          email: 'james@brandscaling.com', 
+          password: '123456',
+          firstName: 'James',
+          lastName: 'User',
+          accessTier: 'expert'
+        },
+        { 
+          email: 'shoail@brandscaling.com', 
+          password: '123456',
+          firstName: 'Shoail',
+          lastName: 'User',
+          accessTier: 'expert'
         }
       ];
 
@@ -590,6 +604,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
           email: 'sohail.k@live.co.uk', 
           firstName: 'Sohail',
           lastName: 'K',
+          accessTier: 'expert'
+        },
+        { 
+          email: 'james@brandscaling.com', 
+          firstName: 'James',
+          lastName: 'User',
+          accessTier: 'expert'
+        },
+        { 
+          email: 'shoail@brandscaling.com', 
+          firstName: 'Shoail',
+          lastName: 'User',
           accessTier: 'expert'
         }
       ];

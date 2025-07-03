@@ -16,9 +16,23 @@
 - **Access Tier**: Expert
 - **Status**: ✅ Working and tested
 
+### Account 3
+- **Email**: james@brandscaling.com
+- **Password**: 123456
+- **Name**: James User
+- **Access Tier**: Expert
+- **Status**: ✅ Working and tested
+
+### Account 4
+- **Email**: shoail@brandscaling.com
+- **Password**: 123456
+- **Name**: Shoail User
+- **Access Tier**: Expert
+- **Status**: ✅ Working and tested
+
 ## Testing Results
 
-Both accounts have been successfully:
+All four accounts have been successfully:
 - Added to the authentication system
 - Configured with Expert tier access
 - Tested with login endpoint
