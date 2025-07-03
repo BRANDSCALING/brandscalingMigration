@@ -306,6 +306,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
           firstName: 'Josh',
           lastName: 'Insurance',
           accessTier: 'expert'
+        },
+        { 
+          email: 'info@edgehillpropertyfinance.com', 
+          password: '123456',
+          firstName: 'EdgeHill',
+          lastName: 'Finance',
+          accessTier: 'expert'
+        },
+        { 
+          email: 'sohail.k@live.co.uk', 
+          password: '123456',
+          firstName: 'Sohail',
+          lastName: 'K',
+          accessTier: 'expert'
         }
       ];
 
@@ -564,6 +578,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
           email: 'josh@insurance-desk.com', 
           firstName: 'Josh',
           lastName: 'Insurance',
+          accessTier: 'expert'
+        },
+        { 
+          email: 'info@edgehillpropertyfinance.com', 
+          firstName: 'EdgeHill',
+          lastName: 'Finance',
+          accessTier: 'expert'
+        },
+        { 
+          email: 'sohail.k@live.co.uk', 
+          firstName: 'Sohail',
+          lastName: 'K',
           accessTier: 'expert'
         }
       ];
