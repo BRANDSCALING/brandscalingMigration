@@ -12,7 +12,7 @@ import CoursesPage from "@/pages/Courses";
 import Community from "@/pages/Community";
 
 
-import DeepQuiz from "@/pages/DeepQuiz";
+
 import EntrepreneurialDnaQuiz from "@/pages/EntrepreneurialDnaQuiz";
 import About from "@/pages/About";
 import Contact from "@/pages/Contact";
@@ -46,8 +46,7 @@ import AdminCourses from "@/pages/admin/AdminCourses";
 import AdminCommunity from "@/pages/admin/AdminCommunity";
 import AdminSettings from "@/pages/admin/AdminSettings";
 
-import CommunityComingSoon from "@/pages/community/CommunityComingSoon";
-import CollabComingSoon from "@/pages/collab/CollabComingSoon";
+
 
 function Router() {
   return (
@@ -147,6 +146,33 @@ function Router() {
         </Layout>
       </Route>
       <Route path="/student/course/:id">
+        <Layout>
+          <StudentCourseView />
+        </Layout>
+      </Route>
+      
+      {/* Specific Course Routes */}
+      <Route path="/courses/infinite-scaling/profit-maximisation">
+        <Layout>
+          <StudentCourseView />
+        </Layout>
+      </Route>
+      <Route path="/courses/fuse-framework">
+        <Layout>
+          <StudentCourseView />
+        </Layout>
+      </Route>
+      <Route path="/courses/idea-to-launch/:moduleId">
+        <Layout>
+          <StudentCourseView />
+        </Layout>
+      </Route>
+      <Route path="/courses/smart-business-builder/:moduleId">
+        <Layout>
+          <StudentCourseView />
+        </Layout>
+      </Route>
+      <Route path="/courses/30-day-launch-plan">
         <Layout>
           <StudentCourseView />
         </Layout>
