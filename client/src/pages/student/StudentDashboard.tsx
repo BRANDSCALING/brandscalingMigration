@@ -600,8 +600,8 @@ export default function StudentDashboard() {
             </CardContent>
           </Card>
 
-          {/* Coming Soon Courses */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Smart Business Builder Course */}
+          <div className="space-y-6">
             {/* Smart Business Builder */}
             <Card className="border-orange-200 bg-orange-50/30">
               <CardHeader>
@@ -611,20 +611,174 @@ export default function StudentDashboard() {
                   </div>
                   <div>
                     <CardTitle className="text-orange-900 text-lg">Smart Business Builder™</CardTitle>
+                    <p className="text-orange-700 text-sm">AI-personalized Lean Canvas alternative based on E-DNA</p>
                   </div>
                 </div>
               </CardHeader>
               <CardContent>
-                <p className="text-orange-700 text-sm mb-4">
-                  AI-personalized Lean Canvas alternative based on E-DNA
-                </p>
-                <Badge variant="secondary" className="w-full justify-center">
-                  <Clock className="h-3 w-3 mr-1" />
-                  Coming Soon
-                </Badge>
+                <div className="space-y-3">
+                  {/* Module 2 */}
+                  <Accordion type="single" collapsible>
+                    <AccordionItem value="module-2">
+                      <AccordionTrigger className="text-left">
+                        <div className="flex items-center space-x-3">
+                          <div className="flex items-center justify-center w-8 h-8 bg-green-500 text-white rounded-full text-sm font-medium">
+                            2
+                          </div>
+                          <div>
+                            <div className="font-medium">Module 2: Name & Brand Identity Fast Track</div>
+                            <div className="text-sm text-gray-500">Instantly generate names, logos, colors, and brand presence</div>
+                          </div>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <div className="ml-11 pt-4 space-y-3">
+                          <p className="text-gray-600">Create your complete brand identity in minutes with AI-powered tools tailored to your DNA type.</p>
+                          <Button className="w-full" variant="outline">
+                            <ExternalLink className="h-4 w-4 mr-2" />
+                            Start Module
+                          </Button>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+
+                  {/* Module 3 */}
+                  <Accordion type="single" collapsible>
+                    <AccordionItem value="module-3">
+                      <AccordionTrigger className="text-left">
+                        <div className="flex items-center space-x-3">
+                          <div className="flex items-center justify-center w-8 h-8 bg-green-500 text-white rounded-full text-sm font-medium">
+                            3
+                          </div>
+                          <div>
+                            <div className="font-medium">Module 3: Structure & Setup Layer</div>
+                            <div className="text-sm text-gray-500">Legally launch your business with full setup and compliance</div>
+                          </div>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <div className="ml-11 pt-4 space-y-3">
+                          <p className="text-gray-600">Set up your business structure, legal requirements, and compliance framework.</p>
+                          <Button className="w-full" variant="outline">
+                            <ExternalLink className="h-4 w-4 mr-2" />
+                            Start Module
+                          </Button>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+
+                  {/* Module 4 */}
+                  <Accordion type="single" collapsible>
+                    <AccordionItem value="module-4">
+                      <AccordionTrigger className="text-left">
+                        <div className="flex items-center space-x-3">
+                          <div className="flex items-center justify-center w-8 h-8 bg-green-500 text-white rounded-full text-sm font-medium">
+                            4
+                          </div>
+                          <div>
+                            <div className="font-medium">Module 4: Financial Foundations</div>
+                            <div className="text-sm text-gray-500">Create a clean, trackable money system from day one</div>
+                          </div>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <div className="ml-11 pt-4 space-y-3">
+                          <p className="text-gray-600">Build a robust financial foundation with proper accounting and money management systems.</p>
+                          <Button className="w-full" variant="outline">
+                            <ExternalLink className="h-4 w-4 mr-2" />
+                            Start Module
+                          </Button>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+
+                  {/* Module 5 */}
+                  <Accordion type="single" collapsible>
+                    <AccordionItem value="module-5">
+                      <AccordionTrigger className="text-left">
+                        <div className="flex items-center space-x-3">
+                          <div className="flex items-center justify-center w-8 h-8 bg-green-500 text-white rounded-full text-sm font-medium">
+                            5
+                          </div>
+                          <div>
+                            <div className="font-medium">Module 5: Your Digital Presence</div>
+                            <div className="text-sm text-gray-500">Get online fast with domains, hosting, email, and landing page</div>
+                          </div>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <div className="ml-11 pt-4 space-y-3">
+                          <p className="text-gray-600">Establish your digital footprint with professional online presence and infrastructure.</p>
+                          <Button className="w-full" variant="outline">
+                            <ExternalLink className="h-4 w-4 mr-2" />
+                            Start Module
+                          </Button>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+
+                  {/* Module 6 */}
+                  <Accordion type="single" collapsible>
+                    <AccordionItem value="module-6">
+                      <AccordionTrigger className="text-left">
+                        <div className="flex items-center space-x-3">
+                          <div className="flex items-center justify-center w-8 h-8 bg-green-500 text-white rounded-full text-sm font-medium">
+                            6
+                          </div>
+                          <div>
+                            <div className="font-medium">Module 6: Brand Presence Boot-Up</div>
+                            <div className="text-sm text-gray-500">Launch social channels + establish public credibility</div>
+                          </div>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <div className="ml-11 pt-4 space-y-3">
+                          <p className="text-gray-600">Build your brand presence across social media and establish credibility in your market.</p>
+                          <Button className="w-full" variant="outline">
+                            <ExternalLink className="h-4 w-4 mr-2" />
+                            Start Module
+                          </Button>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+
+                  {/* Module 7 */}
+                  <Accordion type="single" collapsible>
+                    <AccordionItem value="module-7">
+                      <AccordionTrigger className="text-left">
+                        <div className="flex items-center space-x-3">
+                          <div className="flex items-center justify-center w-8 h-8 bg-green-500 text-white rounded-full text-sm font-medium">
+                            7
+                          </div>
+                          <div>
+                            <div className="font-medium">Module 7: Execution Planner & AI Toolkit</div>
+                            <div className="text-sm text-gray-500">Your 30-day step-by-step execution planner + AI audit</div>
+                          </div>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <div className="ml-11 pt-4 space-y-3">
+                          <p className="text-gray-600">Get your complete 30-day execution plan with AI-powered tools and regular audits.</p>
+                          <Button className="w-full" variant="outline">
+                            <ExternalLink className="h-4 w-4 mr-2" />
+                            Start Module
+                          </Button>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                </div>
               </CardContent>
             </Card>
+          </div>
 
+          {/* Additional Courses */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* AI Mentor Access */}
             <Card className="border-yellow-200 bg-yellow-50/30">
               <CardHeader>

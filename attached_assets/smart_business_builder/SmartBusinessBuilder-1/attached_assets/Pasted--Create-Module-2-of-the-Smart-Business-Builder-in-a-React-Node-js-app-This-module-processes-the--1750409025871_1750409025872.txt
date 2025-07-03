@@ -1,0 +1,58 @@
+"Create Module 2 of the Smart Business Builder™ in a React + Node.js app. This module processes the user’s 10-step wizard responses and generates a business model using GPT. Include frontend + backend logic:
+
+---
+### 🔹 Frontend (React + Tailwind)
+- Create a component: `ModelOutputPanel.jsx`
+- Add a **button** labeled: `\"Build My Model\"`
+  - On click, send POST request to backend with:
+```json
+{
+  "userId": "user-123",
+  "dnaType": "Architect" or "Alchemist",
+  "answers": [array of all 10 answers from wizard]
+}
+```
+- While processing, show a loading spinner or message: `\"Building your custom business model...\"`
+- When response returns, display the following sections:
+  - **Business Model Summary** (formatted, 1-pager)
+  - **Fixes & Warnings**
+  - **Next Step Suggestions**
+  - **Confidence Score (1–10)**
+- Style sections using Tailwind:
+  - Use Architect Indigo for labels/titles if DNA = Architect
+  - Use Alchemist Orange for titles if DNA = Alchemist
+  - Card layout or container with white background and spacing
+- Include a `\"Save to Dashboard\"` and `\"Download PDF\"` button (PDF optional placeholder for now)
+
+---
+### 🔹 Backend (Node.js + Express + GPT API)
+- Create a POST route: `/api/generate-model`
+- Accept the request payload:
+```json
+{
+  "userId": "user-123",
+  "dnaType": "Architect" or "Alchemist",
+  "answers": ["step1", ..., "step10"]
+}
+```
+- Construct a prompt like:
+> \"Based on the user's Entrepreneurial DNA type and their inputs, restructure the following business idea into a viable, simplified business model. Make recommendations for clarity, monetization, and ease of launch. Use a tone aligned to the DNA profile. Include: Audience, Problem, Solution, Offer, Delivery Model, Revenue Model, Cost Drivers, Unique Advantage, Launch Priority Steps. Also return: Warnings or Risks, Pivot/Improvement Suggestions, Confidence Level (1–10).\"
+- Inject answers dynamically into prompt
+- Use GPT API to generate structured response
+- Return the structured output to frontend:
+```json
+{
+  "model": "Full rewritten 1-page business model",
+  "warnings": "Fixes or risk insights",
+  "suggestions": "Next steps",
+  "confidence": 8
+}
+```
+
+---
+### Folder Structure:
+- Frontend: `/src/components/ModelOutputPanel.jsx`
+- Backend: `/backend/routes/generateModel.js`
+
+---
+This module finalizes the Smart Business Builder by converting user input into a personalized, AI-enhanced business blueprint."

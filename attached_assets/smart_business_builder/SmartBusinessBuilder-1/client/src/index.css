@@ -1,0 +1,102 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(20, 14.3%, 4.1%);
+  --muted: hsl(60, 4.8%, 95.9%);
+  --muted-foreground: hsl(25, 5.3%, 44.7%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(20, 14.3%, 4.1%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(20, 14.3%, 4.1%);
+  --border: hsl(20, 5.9%, 90%);
+  --input: hsl(20, 5.9%, 90%);
+  --primary: #42047D;
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(60, 4.8%, 95.9%);
+  --secondary-foreground: hsl(24, 9.8%, 10%);
+  --accent: hsl(60, 4.8%, 95.9%);
+  --accent-foreground: hsl(24, 9.8%, 10%);
+  --destructive: hsl(0, 84.2%, 60.2%);
+  --destructive-foreground: hsl(60, 9.1%, 97.8%);
+  --ring: hsl(20, 14.3%, 4.1%);
+  --radius: 0.5rem;
+  
+  /* Brandscaling Color System */
+  --architect-indigo: #42047D;
+  --scale-orange: #F6782F;
+  --brandscaling-purple: hsl(259, 51%, 51%);
+  --brandscaling-coral: hsl(0, 73%, 70%);
+  --brandscaling-gradient: linear-gradient(135deg, #42047D 0%, #F6782F 100%);
+}
+
+.dark {
+  --background: hsl(240, 10%, 3.9%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(240, 3.7%, 15.9%);
+  --muted-foreground: hsl(240, 5%, 64.9%);
+  --popover: hsl(240, 10%, 3.9%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(240, 10%, 3.9%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(240, 3.7%, 15.9%);
+  --input: hsl(240, 3.7%, 15.9%);
+  --primary: #42047D;
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(240, 3.7%, 15.9%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(240, 3.7%, 15.9%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(240, 4.9%, 83.9%);
+  --radius: 0.5rem;
+  
+  /* Dark mode Brandscaling colors */
+  --architect-indigo: hsl(270, 95%, 35%);
+  --scale-orange: hsl(20, 91%, 65%);
+  --brandscaling-purple: hsl(259, 51%, 60%);
+  --brandscaling-coral: hsl(0, 73%, 75%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .text-architect-indigo {
+    color: var(--architect-indigo);
+  }
+  
+  .text-scale-orange {
+    color: var(--scale-orange);
+  }
+  
+  .bg-architect-indigo {
+    background-color: var(--architect-indigo);
+  }
+  
+  .bg-scale-orange {
+    background-color: var(--scale-orange);
+  }
+  
+  .bg-brandscaling-gradient {
+    background: var(--brandscaling-gradient);
+  }
+  
+  .border-architect-indigo {
+    border-color: var(--architect-indigo);
+  }
+  
+  .border-scale-orange {
+    border-color: var(--scale-orange);
+  }
+}

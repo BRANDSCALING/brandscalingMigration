@@ -1,0 +1,71 @@
+"// MODULE 1: Business Clarity Prompt Integration into Smart Business Builder
+// Replit-ready prompt to add Module 1 as the entry point inside existing Smart Business Builder app.
+
+---
+
+### 🔹 Purpose:
+Add a simple first screen where the user answers 1 foundational question to activate the rest of the course.
+It also determines their Entrepreneurial DNA (Architect or Alchemist).
+
+---
+
+### 📆 Frontend Implementation (React)
+
+**Page Name:** `Module1_BusinessClarity`
+
+1. **Intro Panel**
+- Header: `Let’s begin with Clarity.`
+- Subtext: `Your Entrepreneurial DNA sets the tone for how you build.`
+- Gradient underline (Architect → Alchemist)
+
+2. **Prompt Input Box**
+- Label: `What kind of business do you *feel* called to build?`
+- Textarea, 4–6 lines
+- Placeholder: `Write as if you're speaking to a future co-founder...`
+
+3. **DNA Selector (Toggle Buttons)**
+- Label: `Which style feels most natural to you?`
+- Option A: `🧠 Architect`
+  - Description: `I think in systems, frameworks, and structure.`
+- Option B: `💫 Alchemist`
+  - Description: `I build from presence, energy, and resonance.`
+- Highlight selection visually (use Brandscaling colors)
+
+4. **Continue Button**
+- CTA: `Start Building`
+- Button color: Architect Indigo (#42047D)
+- On click:
+  - Save both inputs (business clarity + DNA type)
+  - Route to Module 2 (Smart Business Builder form)
+
+---
+
+### 🔧 Backend (Node.js)
+
+- Update PostgreSQL schema to store:
+```js
+{
+  user_id,
+  business_vision: string,
+  dna_type: 'Architect' | 'Alchemist',
+  timestamp
+}
+```
+- Endpoint: `POST /api/business-clarity`
+- Action:
+  - Accepts business clarity and DNA type from frontend
+  - Saves to database
+  - Returns confirmation or error
+
+---
+
+### 🌟 Style & Brand Notes
+- Fonts: Inter for body, Playfair Display for header
+- Color: Use Architect Indigo (#42047D) and Alchemist Orange (#F6782F)
+- Icons: Emoji for DNA toggle
+- Layout: Clean, mobile-first
+
+---
+
+This module unlocks the Builder only after clarity is entered and DNA is selected.
+Also serves as psychological anchor for user commitment."

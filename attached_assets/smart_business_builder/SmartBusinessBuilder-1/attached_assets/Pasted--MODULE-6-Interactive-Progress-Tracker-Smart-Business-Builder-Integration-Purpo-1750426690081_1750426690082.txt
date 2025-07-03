@@ -1,0 +1,77 @@
+"// MODULE 6: Interactive Progress Tracker — Smart Business Builder Integration
+
+---
+### 🔹 Purpose:
+Turn user journey into a visual, trackable dashboard reflecting their effort, energy, and clarity over time.
+
+---
+### 📆 Frontend Implementation (React)
+**Page Name:** `Module6_ProgressTracker`
+
+1. **Intro Panel**
+- Header: `Your Progress, Tracked`
+- Subtext: `See how far you've come. Tune into what fuels you next.`
+
+2. **Module Checklist View**
+- Label: `Your Module Completion Tracker`
+- 7 checkbox rows for:
+  - Module 1: Clarity
+  - Module 2: Business Builder
+  - Module 3: Product Design
+  - Module 4: Go-to-Market
+  - Module 5: Growth Loop
+  - Module 6: Tracker
+  - Module 7: Completion
+- Auto-check completed ones based on backend save status
+
+3. **Energy Rating Slider**
+- Label: `How energized do you feel right now?`
+- Range 1–10 with colored scale:
+  - 1–3: Low (Grey), 4–6: Medium (Orange), 7–10: High (Indigo)
+
+4. **Reflection Textarea**
+- Label: `What's fueling or draining your energy this week?`
+- Multiline textarea, placeholder: “Be honest with yourself...”
+
+5. **E-DNA Awareness Callout**
+- If DNA = Architect: Show system/process prompt
+  - `Where do you need more structure to feel clear?`
+- If DNA = Alchemist: Show emotional alignment prompt
+  - `Where do you feel off-track or unaligned?`
+
+6. **Save Button**
+- CTA: `Save My Tracker`
+- Button color: Strategic Black (#0B0B0B)
+- On click:
+  - Save all to backend or localStorage
+  - Display toast: `Progress saved successfully`
+
+7. **Optional: Export to PDF**
+- Add small link: `Download This as PDF`
+- Uses `html2pdf.js` to export reflection + energy + checklist
+
+---
+### 🔧 Backend (Node.js)
+**New fields to add:**
+```js
+{
+  user_id,
+  modules_completed: [1,2,3,4,5,6,7],
+  energy_level: number,
+  energy_reflection: string,
+  dna_reflection: string,
+  timestamp
+}
+```
+- Endpoint: `POST /api/tracker`
+- Accepts tracker state from frontend and stores under user_id
+
+---
+### 🌟 Style & Brand Notes
+- Fonts: Inter + Playfair
+- Colors: Indigo (#42047D), Orange (#F6782F), Black (#0B0B0B)
+- Icons: Checklist, energy bolt, sparkles
+- Layout: One scrollable page, mobile-first
+
+---
+This module gives users an integrated space to reflect, reset, and stay aligned as they move through the Idea-to-Launch Kit. Optional export to PDF adds value for off-app review or sharing."
