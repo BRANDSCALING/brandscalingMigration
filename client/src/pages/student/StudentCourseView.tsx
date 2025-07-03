@@ -40,6 +40,8 @@ export default function StudentCourseView() {
   
   const courseId = params?.id ? parseInt(params.id) : null;
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
+  const [lessonStarted, setLessonStarted] = useState<boolean>(false);
+  const [lessonCompleted, setLessonCompleted] = useState<boolean>(false);
 
   // Determine course type and generate appropriate data
   const getCourseData = (): Course => {
@@ -338,6 +340,17 @@ export default function StudentCourseView() {
     }
   };
 
+  const handleStartLesson = () => {
+    setLessonStarted(true);
+  };
+
+  const handleCompleteLesson = () => {
+    setLessonCompleted(true);
+    if (selectedLesson) {
+      selectedLesson.completed = true;
+    }
+  };
+
   return (
     <div className="container mx-auto p-6 max-w-7xl">
       <div className="mb-6">
@@ -491,33 +504,85 @@ export default function StudentCourseView() {
                   <div>
                     <h4 className="font-semibold mb-3">Interactive Learning</h4>
                     <Card className="p-6">
-                      <div className="text-center space-y-4">
-                        <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto">
-                          <Play className="w-8 h-8 text-blue-600" />
+                      {!lessonStarted ? (
+                        <div className="text-center space-y-4">
+                          <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto">
+                            <Play className="w-8 h-8 text-blue-600" />
+                          </div>
+                          <div>
+                            <h5 className="font-medium text-gray-900 mb-2">Ready to Begin?</h5>
+                            <p className="text-sm text-gray-600 mb-4">
+                              Start this lesson to access interactive content, exercises, and implementation guides.
+                            </p>
+                          </div>
                         </div>
-                        <div>
-                          <h5 className="font-medium text-gray-900 mb-2">Ready to Begin?</h5>
-                          <p className="text-sm text-gray-600 mb-4">
-                            Start this lesson to access interactive content, exercises, and implementation guides.
-                          </p>
+                      ) : (
+                        <div className="space-y-6">
+                          <div className="text-center">
+                            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                              <BookOpen className="w-8 h-8 text-green-600" />
+                            </div>
+                            <h5 className="font-medium text-gray-900 mb-2">Lesson In Progress</h5>
+                            <p className="text-sm text-gray-600">
+                              You're now accessing the full lesson content. Complete the activities below.
+                            </p>
+                          </div>
+                          
+                          {/* Lesson Activities */}
+                          <div className="bg-gray-50 p-4 rounded-lg">
+                            <h6 className="font-medium text-gray-900 mb-3">Lesson Activities:</h6>
+                            <div className="space-y-3">
+                              <div className="flex items-center space-x-3">
+                                <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center">
+                                  <span className="text-white text-xs font-bold">1</span>
+                                </div>
+                                <span className="text-sm">Review the framework components</span>
+                              </div>
+                              <div className="flex items-center space-x-3">
+                                <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center">
+                                  <span className="text-white text-xs font-bold">2</span>
+                                </div>
+                                <span className="text-sm">Complete the practical exercises</span>
+                              </div>
+                              <div className="flex items-center space-x-3">
+                                <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center">
+                                  <span className="text-white text-xs font-bold">3</span>
+                                </div>
+                                <span className="text-sm">Apply concepts to your business</span>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                        
-                        {!selectedLesson.completed ? (
+                      )}
+                      
+                      <div className="pt-4">
+                        {!selectedLesson.completed && !lessonCompleted ? (
                           <div className="flex gap-3 justify-center">
-                            <Button className="bg-blue-600 hover:bg-blue-700">
-                              <Play className="w-4 h-4 mr-2" />
-                              Start Lesson
-                            </Button>
-                            <Button variant="outline">
-                              <Check className="w-4 h-4 mr-2" />
-                              Mark as Complete
-                            </Button>
+                            {!lessonStarted ? (
+                              <Button 
+                                className="bg-blue-600 hover:bg-blue-700"
+                                onClick={handleStartLesson}
+                              >
+                                <Play className="w-4 h-4 mr-2" />
+                                Start Lesson
+                              </Button>
+                            ) : (
+                              <Button 
+                                variant="outline"
+                                onClick={handleCompleteLesson}
+                              >
+                                <Check className="w-4 h-4 mr-2" />
+                                Mark as Complete
+                              </Button>
+                            )}
                           </div>
                         ) : (
-                          <Button variant="outline" disabled>
-                            <Check className="w-4 h-4 mr-2" />
-                            Completed
-                          </Button>
+                          <div className="flex justify-center">
+                            <Button variant="outline" disabled>
+                              <Check className="w-4 h-4 mr-2" />
+                              Completed
+                            </Button>
+                          </div>
                         )}
                       </div>
                     </Card>
