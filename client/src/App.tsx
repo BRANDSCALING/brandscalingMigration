@@ -51,13 +51,15 @@ import AdminSettings from "@/pages/admin/AdminSettings";
 function Router() {
   return (
     <Switch>
-      {/* Quiz - Top Priority */}
+      {/* Quiz - Top Priority - No Header/Footer for distraction-free experience */}
       <Route
         path="/entrepreneurial-dna-quiz"
         component={() => (
-          <Layout>
-            <EntrepreneurialDnaQuiz />
-          </Layout>
+          <div className="min-h-screen bg-white">
+            <main className="flex-1">
+              <EntrepreneurialDnaQuiz />
+            </main>
+          </div>
         )}
       />
 
