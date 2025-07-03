@@ -501,14 +501,14 @@ export default function StudentDashboard() {
                                 </div>
                               ))}
                             </div>
-                            <div className="pt-4 flex space-x-3">
-                              <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                            <div className="pt-4">
+                              <Button 
+                                size="sm" 
+                                className="bg-blue-600 hover:bg-blue-700"
+                                onClick={() => setLocation('/courses/infinite-scaling/profit-maximisation')}
+                              >
                                 <Play className="h-4 w-4 mr-2" />
                                 Start Layer 1
-                              </Button>
-                              <Button size="sm" variant="outline">
-                                <FileText className="h-4 w-4 mr-2" />
-                                Download Workbook
                               </Button>
                             </div>
                           </div>
@@ -549,14 +549,14 @@ export default function StudentDashboard() {
                   </div>
                 ))}
               </div>
-              <div className="pt-4 flex space-x-3">
-                <Button size="sm" className="bg-purple-600 hover:bg-purple-700">
+              <div className="pt-4">
+                <Button 
+                  size="sm" 
+                  className="bg-purple-600 hover:bg-purple-700"
+                  onClick={() => setLocation('/courses/fuse-framework')}
+                >
                   <Play className="h-4 w-4 mr-2" />
                   Start FUSE Framework
-                </Button>
-                <Button size="sm" variant="outline">
-                  <FileText className="h-4 w-4 mr-2" />
-                  Download Guide
                 </Button>
               </div>
             </CardContent>
@@ -590,7 +590,11 @@ export default function StudentDashboard() {
                         <p className="text-sm text-gray-600">{module.description}</p>
                       </div>
                     </div>
-                    <Button size="sm" variant="outline">
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      onClick={() => setLocation(`/courses/idea-to-launch/${module.id}`)}
+                    >
                       <Play className="h-4 w-4 mr-2" />
                       Start
                     </Button>
@@ -634,7 +638,11 @@ export default function StudentDashboard() {
                       <AccordionContent>
                         <div className="ml-11 pt-4 space-y-3">
                           <p className="text-gray-600">Create your complete brand identity in minutes with AI-powered tools tailored to your DNA type.</p>
-                          <Button className="w-full" variant="outline">
+                          <Button 
+                            className="w-full" 
+                            variant="outline"
+                            onClick={() => setLocation('/courses/smart-business-builder/module-2')}
+                          >
                             <ExternalLink className="h-4 w-4 mr-2" />
                             Start Module
                           </Button>
@@ -660,7 +668,11 @@ export default function StudentDashboard() {
                       <AccordionContent>
                         <div className="ml-11 pt-4 space-y-3">
                           <p className="text-gray-600">Set up your business structure, legal requirements, and compliance framework.</p>
-                          <Button className="w-full" variant="outline">
+                          <Button 
+                            className="w-full" 
+                            variant="outline"
+                            onClick={() => setLocation('/courses/smart-business-builder/module-3')}
+                          >
                             <ExternalLink className="h-4 w-4 mr-2" />
                             Start Module
                           </Button>
@@ -686,7 +698,11 @@ export default function StudentDashboard() {
                       <AccordionContent>
                         <div className="ml-11 pt-4 space-y-3">
                           <p className="text-gray-600">Build a robust financial foundation with proper accounting and money management systems.</p>
-                          <Button className="w-full" variant="outline">
+                          <Button 
+                            className="w-full" 
+                            variant="outline"
+                            onClick={() => setLocation('/courses/smart-business-builder/module-4')}
+                          >
                             <ExternalLink className="h-4 w-4 mr-2" />
                             Start Module
                           </Button>
@@ -712,7 +728,11 @@ export default function StudentDashboard() {
                       <AccordionContent>
                         <div className="ml-11 pt-4 space-y-3">
                           <p className="text-gray-600">Establish your digital footprint with professional online presence and infrastructure.</p>
-                          <Button className="w-full" variant="outline">
+                          <Button 
+                            className="w-full" 
+                            variant="outline"
+                            onClick={() => setLocation('/courses/smart-business-builder/module-5')}
+                          >
                             <ExternalLink className="h-4 w-4 mr-2" />
                             Start Module
                           </Button>
@@ -738,7 +758,11 @@ export default function StudentDashboard() {
                       <AccordionContent>
                         <div className="ml-11 pt-4 space-y-3">
                           <p className="text-gray-600">Build your brand presence across social media and establish credibility in your market.</p>
-                          <Button className="w-full" variant="outline">
+                          <Button 
+                            className="w-full" 
+                            variant="outline"
+                            onClick={() => setLocation('/courses/smart-business-builder/module-6')}
+                          >
                             <ExternalLink className="h-4 w-4 mr-2" />
                             Start Module
                           </Button>
@@ -764,7 +788,11 @@ export default function StudentDashboard() {
                       <AccordionContent>
                         <div className="ml-11 pt-4 space-y-3">
                           <p className="text-gray-600">Get your complete 30-day execution plan with AI-powered tools and regular audits.</p>
-                          <Button className="w-full" variant="outline">
+                          <Button 
+                            className="w-full" 
+                            variant="outline"
+                            onClick={() => setLocation('/courses/smart-business-builder/module-7')}
+                          >
                             <ExternalLink className="h-4 w-4 mr-2" />
                             Start Module
                           </Button>
@@ -818,7 +846,11 @@ export default function StudentDashboard() {
                 <p className="text-indigo-700 text-sm mb-4">
                   Complete 30-day execution plan with daily actions and milestones
                 </p>
-                <Button size="sm" className="w-full bg-indigo-600 hover:bg-indigo-700">
+                <Button 
+                  size="sm" 
+                  className="w-full bg-indigo-600 hover:bg-indigo-700"
+                  onClick={() => setLocation('/courses/30-day-launch-plan')}
+                >
                   <Play className="h-4 w-4 mr-2" />
                   Start Plan
                 </Button>
