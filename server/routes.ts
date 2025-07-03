@@ -103,8 +103,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Store quiz result for authenticated users
       if (userId !== 'anonymous-user') {
         try {
-          // Note: saveEntrepreneurialDnaQuizResult needs to be implemented in storage
           console.log('Saving quiz result for user:', userId);
+          const quizResultData = {
+            defaultType: dnaType,
+            dnaType: dnaType,
+            subtype: subtypeResult,
+            awarenessPercentage: awarenessPercentage,
+            scores: {
+              architect: 0,
+              alchemist: 0,
+              blurred: 0,
+              neutral: 0
+            },
+            answers: answersObject
+          };
+          await storage.saveQuizResult(userId, quizResultData);
+          console.log('Quiz result saved successfully for user:', userId);
         } catch (error) {
           console.error('Error saving quiz result:', error);
         }
