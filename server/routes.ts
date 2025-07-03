@@ -58,7 +58,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Entrepreneurial DNA Quiz endpoints
   app.get('/api/quiz/entrepreneurial-dna/eligibility', async (req, res) => {
     try {
-      res.json({ canRetake: true });
+      // Use the x-student-id header if available, otherwise try other auth methods
+      const studentId = req.headers['x-student-id'] as string;
+      const userId = studentId || req.user?.uid || 'anonymous-user';
+      
+      console.log('Checking quiz eligibility for user:', userId);
+      
+      try {
+        const eligibility = await storage.checkEntrepreneurialDnaQuizEligibility(userId);
+        console.log('Eligibility result:', eligibility);
+        res.json(eligibility);
+      } catch (dbError) {
+        console.warn('Database check failed, defaulting to restricted access:', dbError);
+        // On database error, be conservative and restrict access
+        res.json({ canRetake: false, nextRetakeDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() });
+      }
     } catch (error) {
       console.error("Error checking quiz eligibility:", error);
       res.status(500).json({ message: "Failed to check quiz eligibility" });
