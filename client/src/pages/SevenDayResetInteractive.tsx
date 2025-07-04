@@ -209,9 +209,10 @@ const SevenDayResetInteractive = () => {
     },
   });
 
-  // Get completed days and started days from progress data
+  // Get completed days, started days, and responses from progress data
   const completedDays = (progressData as any)?.completedDays || [];
   const startedDays = (progressData as any)?.startedDays || [];
+  const responses = (progressData as any)?.responses || {};
   const progress = (completedDays.length / resetDays.length) * 100;
 
   // Check if a day can be started (hierarchical)
@@ -250,6 +251,67 @@ const SevenDayResetInteractive = () => {
       const files = Array.from(event.target.files || []);
       setUploadedFiles(files);
     };
+
+    // Check if this day is completed and show responses
+    const isCompleted = completedDays.includes(day.day);
+    const dayResponses = responses[day.day];
+
+    if (isCompleted && dayResponses) {
+      return (
+        <Card className="mt-6 border-green-300 bg-green-50">
+          <CardHeader>
+            <CardTitle className="text-green-800 flex items-center gap-2">
+              <CheckCircle2 className="w-5 h-5" />
+              Day {day.day} - {day.title} (Completed)
+            </CardTitle>
+            <CardDescription>
+              Completed on {new Date(dayResponses.completedAt).toLocaleDateString()} at{' '}
+              {new Date(dayResponses.completedAt).toLocaleTimeString()}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              {/* Task Description */}
+              <div className="p-4 bg-white rounded-lg border">
+                <h4 className="font-semibold text-gray-700 mb-2">Task:</h4>
+                <p className="text-gray-600">{day.task}</p>
+              </div>
+
+              {/* Submitted Responses */}
+              <div className="space-y-4">
+                <h4 className="font-semibold text-gray-700">Your Submitted Responses:</h4>
+                {day.reflection.map((prompt, index) => (
+                  <div key={index} className="p-4 bg-white rounded-lg border">
+                    <h5 className="font-medium text-gray-700 mb-2">{prompt}</h5>
+                    <p className="text-gray-600 italic">
+                      "{dayResponses.reflectionResponses[index] || 'No response provided'}"
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Additional Notes */}
+              {dayResponses.notes && (
+                <div className="p-4 bg-white rounded-lg border">
+                  <h5 className="font-medium text-gray-700 mb-2">Additional Notes:</h5>
+                  <p className="text-gray-600 italic">"{dayResponses.notes}"</p>
+                </div>
+              )}
+
+              <div className="flex gap-2 pt-4">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setCurrentDay(null)}
+                  className="flex-1"
+                >
+                  Close
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      );
+    }
 
     return (
       <Card className="mt-6 border-purple-300 bg-purple-50">
@@ -519,11 +581,11 @@ const SevenDayResetInteractive = () => {
                           <Button 
                             size="sm" 
                             variant="outline" 
-                            disabled
-                            className="flex-1 bg-green-50 border-green-200 text-green-600"
+                            onClick={() => setCurrentDay(day.day)}
+                            className="flex-1 bg-green-50 border-green-200 text-green-600 hover:bg-green-100"
                           >
                             <CheckCircle2 className="w-3 h-3 mr-1" />
-                            Completed
+                            View Responses
                           </Button>
                         ) : (
                           <Button 

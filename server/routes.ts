@@ -846,6 +846,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // In-memory storage for 7-day reset progress
+  const userSevenDayProgress: { [userId: string]: {
+    completedDays: number[];
+    startedDays: number[];
+    responses: { [day: number]: {
+      reflectionResponses: string[];
+      notes: string;
+      completedAt: string;
+    }};
+  }} = {};
+
   // 7-Day Identity Reset API endpoints
   app.get('/api/seven-day-reset/progress', async (req, res) => {
     try {
@@ -856,14 +867,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Authentication required" });
       }
 
-      // For now, return mock data until database is updated
-      const mockProgress = {
+      // Get user's actual progress or initialize
+      const userProgress = userSevenDayProgress[userId] || {
         completedDays: [],
         startedDays: [],
-        totalDays: 7
+        responses: {}
       };
 
-      res.json(mockProgress);
+      res.json({
+        completedDays: userProgress.completedDays,
+        startedDays: userProgress.startedDays,
+        responses: userProgress.responses,
+        totalDays: 7
+      });
     } catch (error) {
       console.error("Error fetching 7-day reset progress:", error);
       res.status(500).json({ message: "Failed to fetch progress" });
@@ -884,7 +900,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid day number" });
       }
 
-      // For now, return success until database is updated
+      // Initialize user progress if not exists
+      if (!userSevenDayProgress[userId]) {
+        userSevenDayProgress[userId] = {
+          completedDays: [],
+          startedDays: [],
+          responses: {}
+        };
+      }
+
+      // Add day to started days if not already started or completed
+      if (!userSevenDayProgress[userId].startedDays.includes(day) && 
+          !userSevenDayProgress[userId].completedDays.includes(day)) {
+        userSevenDayProgress[userId].startedDays.push(day);
+        console.log(`Added day ${day} to startedDays for user ${userId}. Current started days:`, userSevenDayProgress[userId].startedDays);
+      } else {
+        console.log(`Day ${day} already started or completed for user ${userId}`);
+      }
+
       console.log(`Starting day ${day} for user ${userId}`);
       
       res.json({ 
@@ -946,8 +979,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "All reflection responses must be at least 10 characters long" });
       }
 
-      // For now, just log the completion - the frontend handles progress tracking
-      // TODO: Implement proper database storage later
+      // Initialize user progress if not exists
+      if (!userSevenDayProgress[userId]) {
+        userSevenDayProgress[userId] = {
+          completedDays: [],
+          startedDays: [],
+          responses: {}
+        };
+      }
+
+      // Store the responses
+      userSevenDayProgress[userId].responses[day] = {
+        reflectionResponses,
+        notes,
+        completedAt: new Date().toISOString()
+      };
+
+      // Add to completed days if not already completed
+      if (!userSevenDayProgress[userId].completedDays.includes(day)) {
+        userSevenDayProgress[userId].completedDays.push(day);
+      }
+
+      // Remove from started days if it was there
+      const startedIndex = userSevenDayProgress[userId].startedDays.indexOf(day);
+      if (startedIndex > -1) {
+        userSevenDayProgress[userId].startedDays.splice(startedIndex, 1);
+      }
 
       console.log(`Day ${day} completed successfully for user ${userId}`);
       
