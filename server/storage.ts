@@ -612,31 +612,42 @@ export class DatabaseStorage implements IStorage {
   // Quiz eligibility methods
   async checkEntrepreneurialDnaQuizEligibility(userId: string): Promise<{ canRetake: boolean; nextRetakeDate?: string }> {
     try {
-      // Get the most recent quiz result for this user
-      const [mostRecentResult] = await db
-        .select()
-        .from(quizResults)
-        .where(eq(quizResults.userId, userId))
-        .orderBy(desc(quizResults.createdAt))
-        .limit(1);
+      // Use the same logic as getLatestQuizResult to find quiz results by any associated userId
+      const mostRecentResult = await this.getLatestQuizResult(userId);
 
       if (!mostRecentResult) {
         // User has never taken the quiz
+        console.log(`No quiz results found for user ${userId}, allowing quiz`);
         return { canRetake: true };
       }
+
+      console.log(`Found quiz result for eligibility check:`, {
+        userId: mostRecentResult.userId,
+        createdAt: mostRecentResult.createdAt,
+        currentUserId: userId
+      });
 
       // Check if 30 days have passed since the last quiz
       const lastQuizDate = new Date(mostRecentResult.createdAt);
       const now = new Date();
       const daysSinceLastQuiz = Math.floor((now.getTime() - lastQuizDate.getTime()) / (1000 * 60 * 60 * 24));
       
+      console.log(`Quiz eligibility calculation:`, {
+        lastQuizDate: lastQuizDate.toISOString(),
+        now: now.toISOString(),
+        daysSinceLastQuiz,
+        canRetake: daysSinceLastQuiz >= 30
+      });
+      
       if (daysSinceLastQuiz >= 30) {
+        console.log(`30 days have passed, allowing retake`);
         return { canRetake: true };
       } else {
         // Calculate next retake date (30 days from last quiz)
         const nextRetakeDate = new Date(lastQuizDate);
         nextRetakeDate.setDate(nextRetakeDate.getDate() + 30);
         
+        console.log(`30-day restriction active, next retake: ${nextRetakeDate.toISOString()}`);
         return { 
           canRetake: false, 
           nextRetakeDate: nextRetakeDate.toISOString() 

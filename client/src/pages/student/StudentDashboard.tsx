@@ -266,6 +266,14 @@ export default function StudentDashboard() {
     enabled: isAuthenticated
   });
 
+  const { data: eligibility } = useQuery<{
+    canRetake: boolean;
+    nextRetakeDate?: string;
+  }>({
+    queryKey: ['/api/quiz/entrepreneurial-dna/eligibility'],
+    enabled: isAuthenticated
+  });
+
   if (error) {
     console.error('Dashboard error:', error);
     return (
@@ -467,8 +475,17 @@ export default function StudentDashboard() {
                     // Route to 7-Day Reset Challenge
                     setLocation('/7-day-reset');
                   } else {
-                    // Route to DNA quiz
-                    setLocation('/entrepreneurial-dna-quiz');
+                    // Check eligibility before routing to DNA quiz
+                    if (eligibility?.canRetake === false) {
+                      // User cannot retake quiz yet
+                      const nextDate = eligibility.nextRetakeDate 
+                        ? new Date(eligibility.nextRetakeDate).toLocaleDateString()
+                        : 'in the future';
+                      alert(`You can retake the Entrepreneurial DNA Quiz on ${nextDate}. The quiz can only be taken once every 30 days to ensure accurate results.`);
+                    } else {
+                      // User can take the quiz
+                      setLocation('/entrepreneurial-dna-quiz');
+                    }
                   }
                 }}
               >

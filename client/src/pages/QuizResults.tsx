@@ -21,6 +21,11 @@ interface QuizResultsData {
   completedAt?: string;
 }
 
+interface EligibilityData {
+  canRetake: boolean;
+  nextRetakeDate?: string;
+}
+
 export default function QuizResults() {
   const [, setLocation] = useLocation();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -40,6 +45,24 @@ export default function QuizResults() {
     queryKey: ['/api/quiz/results'],
     enabled: isAuthenticated
   });
+
+  const { data: eligibility } = useQuery<EligibilityData>({
+    queryKey: ['/api/quiz/entrepreneurial-dna/eligibility'],
+    enabled: isAuthenticated
+  });
+
+  const handleRetakeClick = () => {
+    if (!eligibility || !eligibility.canRetake) {
+      if (eligibility?.nextRetakeDate) {
+        const nextDate = new Date(eligibility.nextRetakeDate).toLocaleDateString();
+        alert(`You can retake the quiz again on ${nextDate} (30 days after your last attempt).`);
+      } else {
+        alert('You cannot retake the quiz at this time. Please wait 30 days from your last attempt.');
+      }
+      return;
+    }
+    setLocation('/entrepreneurial-dna-quiz');
+  };
 
   if (isLoading) {
     return (
@@ -291,8 +314,12 @@ export default function QuizResults() {
           <Button onClick={() => setLocation('/student')} variant="outline">
             Back to Dashboard
           </Button>
-          <Button onClick={() => setLocation('/entrepreneurial-dna-quiz')}>
-            Retake Assessment
+          <Button 
+            onClick={handleRetakeClick}
+            disabled={!eligibility || !eligibility.canRetake}
+            className={(!eligibility || !eligibility.canRetake) ? 'opacity-50 cursor-not-allowed' : ''}
+          >
+            {(!eligibility || !eligibility.canRetake) ? 'Retake Available in 30 Days' : 'Retake Assessment'}
           </Button>
         </div>
 
