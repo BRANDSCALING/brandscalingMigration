@@ -405,6 +405,34 @@ export const emailCampaignLogs = pgTable("email_campaign_logs", {
   sentAt: timestamp("sent_at").defaultNow(),
 });
 
+// 7-Day Identity Reset Progress
+export const sevenDayResetProgress = pgTable("seven_day_reset_progress", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  day: integer("day").notNull(), // 1-7
+  isStarted: boolean("is_started").default(false),
+  isCompleted: boolean("is_completed").default(false),
+  reflectionResponses: jsonb("reflection_responses"), // array of user responses to reflection prompts
+  uploadedFiles: jsonb("uploaded_files"), // for Day 3 and 6 file uploads
+  notes: text("notes"), // additional user notes
+  startedAt: timestamp("started_at"),
+  completedAt: timestamp("completed_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// 7-Day Reset Identity Contract (final result)
+export const sevenDayResetContract = pgTable("seven_day_reset_contract", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  identityType: varchar("identity_type"), // Architect, Alchemist, or Hybrid
+  contractText: text("contract_text").notNull(),
+  nextActionStep: text("next_action_step"),
+  signedAt: timestamp("signed_at").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   progress: many(userProgress),
@@ -414,6 +442,8 @@ export const usersRelations = relations(users, ({ many }) => ({
   conversations: many(aiConversations),
   eventAttendees: many(eventAttendees),
   blogPosts: many(blogPosts),
+  sevenDayResetProgress: many(sevenDayResetProgress),
+  sevenDayResetContract: many(sevenDayResetContract),
 }));
 
 export const coursesRelations = relations(courses, ({ many }) => ({
@@ -505,6 +535,20 @@ export const businessModelsRelations = relations(businessModels, ({ one }) => ({
   }),
 }));
 
+export const sevenDayResetProgressRelations = relations(sevenDayResetProgress, ({ one }) => ({
+  user: one(users, {
+    fields: [sevenDayResetProgress.userId],
+    references: [users.id],
+  }),
+}));
+
+export const sevenDayResetContractRelations = relations(sevenDayResetContract, ({ one }) => ({
+  user: one(users, {
+    fields: [sevenDayResetContract.userId],
+    references: [users.id],
+  }),
+}));
+
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).omit({
   createdAt: true,
@@ -591,6 +635,18 @@ export const insertBusinessModelSchema = createInsertSchema(businessModels).omit
   updatedAt: true,
 });
 
+export const insertSevenDayResetProgressSchema = createInsertSchema(sevenDayResetProgress).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertSevenDayResetContractSchema = createInsertSchema(sevenDayResetContract).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 // Types
 export type UpsertUser = z.infer<typeof upsertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -659,3 +715,9 @@ export type InsertLmsModule = typeof lmsModules.$inferInsert;
 
 export type LmsProgress = typeof lmsProgress.$inferSelect;
 export type InsertLmsProgress = typeof lmsProgress.$inferInsert;
+
+export type SevenDayResetProgress = typeof sevenDayResetProgress.$inferSelect;
+export type InsertSevenDayResetProgress = z.infer<typeof insertSevenDayResetProgressSchema>;
+
+export type SevenDayResetContract = typeof sevenDayResetContract.$inferSelect;
+export type InsertSevenDayResetContract = z.infer<typeof insertSevenDayResetContractSchema>;

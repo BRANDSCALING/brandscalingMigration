@@ -13,7 +13,8 @@ import {
   Menu, 
   X,
   LogOut,
-  MessageSquare
+  MessageSquare,
+  Calendar
 } from "lucide-react";
 
 interface AdminLayoutProps {
@@ -24,6 +25,7 @@ const sidebarItems = [
   { path: "/admin", label: "Dashboard", icon: BarChart3 },
   { path: "/admin/courses", label: "Courses", icon: BookOpen },
   { path: "/admin/community", label: "Community", icon: MessageSquare },
+  { path: "/admin/seven-day-reset", label: "7-Day Reset", icon: Calendar },
   { path: "/admin/leads", label: "Leads", icon: Users },
   { path: "/admin/email-campaigns", label: "Email Campaigns", icon: Mail },
   { path: "/admin/email-templates", label: "Templates", icon: FileText },

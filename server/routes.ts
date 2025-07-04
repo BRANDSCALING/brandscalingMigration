@@ -745,6 +745,194 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // 7-Day Identity Reset API endpoints
+  app.get('/api/seven-day-reset/progress', async (req, res) => {
+    try {
+      const studentId = req.headers['x-student-id'] as string;
+      const userId = studentId || req.user?.uid;
+      
+      if (!userId) {
+        return res.status(401).json({ message: "Authentication required" });
+      }
+
+      // For now, return mock data until database is updated
+      const mockProgress = {
+        completedDays: [],
+        startedDays: [],
+        totalDays: 7
+      };
+
+      res.json(mockProgress);
+    } catch (error) {
+      console.error("Error fetching 7-day reset progress:", error);
+      res.status(500).json({ message: "Failed to fetch progress" });
+    }
+  });
+
+  app.post('/api/seven-day-reset/start-day', async (req, res) => {
+    try {
+      const studentId = req.headers['x-student-id'] as string;
+      const userId = studentId || req.user?.uid;
+      const { day } = req.body;
+      
+      if (!userId) {
+        return res.status(401).json({ message: "Authentication required" });
+      }
+
+      if (!day || day < 1 || day > 7) {
+        return res.status(400).json({ message: "Invalid day number" });
+      }
+
+      // For now, return success until database is updated
+      console.log(`Starting day ${day} for user ${userId}`);
+      
+      res.json({ 
+        success: true, 
+        message: `Day ${day} started successfully`,
+        day: day,
+        startedAt: new Date()
+      });
+    } catch (error) {
+      console.error("Error starting day:", error);
+      res.status(500).json({ message: "Failed to start day" });
+    }
+  });
+
+  app.post('/api/seven-day-reset/complete-day', async (req, res) => {
+    try {
+      const studentId = req.headers['x-student-id'] as string;
+      const userId = studentId || req.user?.uid;
+      
+      if (!userId) {
+        return res.status(401).json({ message: "Authentication required" });
+      }
+
+      // Parse form data
+      const form = new URLSearchParams();
+      const body = req.body;
+      
+      const day = parseInt(body.day);
+      const reflectionResponses = JSON.parse(body.reflectionResponses || '[]');
+      const notes = body.notes || '';
+
+      if (!day || day < 1 || day > 7) {
+        return res.status(400).json({ message: "Invalid day number" });
+      }
+
+      if (!reflectionResponses || reflectionResponses.length === 0) {
+        return res.status(400).json({ message: "Reflection responses are required" });
+      }
+
+      // Validate that all reflection responses are provided
+      const emptyResponses = reflectionResponses.filter((response: string) => !response || response.trim().length < 10);
+      if (emptyResponses.length > 0) {
+        return res.status(400).json({ message: "All reflection responses must be at least 10 characters long" });
+      }
+
+      // For now, log the completion until database is updated
+      console.log(`Completing day ${day} for user ${userId}:`, {
+        reflectionResponses,
+        notes,
+        completedAt: new Date()
+      });
+      
+      res.json({ 
+        success: true, 
+        message: `Day ${day} completed successfully`,
+        day: day,
+        completedAt: new Date()
+      });
+    } catch (error) {
+      console.error("Error completing day:", error);
+      res.status(500).json({ message: "Failed to complete day" });
+    }
+  });
+
+  // Admin endpoint to view all users' 7-Day Reset progress
+  app.get('/api/admin/seven-day-reset/all-progress', requireAuth, async (req, res) => {
+    try {
+      if (req.user?.role !== 'admin') {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      // For now, return mock data until database is properly connected
+      const mockProgressData = [
+        {
+          userId: 'user-1',
+          email: 'hav@sitefindr.co.uk',
+          firstName: 'Hav',
+          lastName: 'User',
+          completedDays: [1, 2, 3],
+          startedDays: [1, 2, 3, 4],
+          totalDays: 7,
+          lastActivity: '2025-01-03T10:30:00Z',
+          responses: {
+            day1: [
+              "The structured half felt restrictive but produced clearer results. The intuitive half was more energizing but less focused.",
+              "Time passed faster during the intuitive half.",
+              "I felt more alive during the structured portions, surprisingly."
+            ],
+            day2: [
+              "My most effortless success was launching my first product with minimal planning.",
+              "Natural decisions involved trusting my gut over extensive analysis.",
+              "A rhythm of burst creativity followed by systematic execution worked best."
+            ],
+            day3: [
+              "The planned approach felt safer but less innovative.",
+              "I had more energy during improvisational execution.",
+              "The improvised result felt more authentically 'me'."
+            ]
+          }
+        },
+        {
+          userId: 'user-2',
+          email: 'reshma@sitefindr.co.uk',
+          firstName: 'Reshma',
+          lastName: 'User',
+          completedDays: [1, 2, 3, 4, 5, 6, 7],
+          startedDays: [1, 2, 3, 4, 5, 6, 7],
+          totalDays: 7,
+          lastActivity: '2025-01-02T14:15:00Z',
+          identityContract: "From this moment on, I commit to building and leading as an Alchemist because my greatest breakthroughs come from trusting intuition over analysis.",
+          responses: {
+            day1: [
+              "The flow state energized me completely while structure felt draining.",
+              "Time disappeared during the intuitive half.",
+              "Freedom made me feel most alive and authentic."
+            ],
+            day7: [
+              "I lived in a blurred, over-analytical default that drained my energy.",
+              "My business would feel effortless and naturally magnetic.",
+              "I need regular intuition check-ins and creative space to stay aligned."
+            ]
+          }
+        },
+        {
+          userId: 'user-3',
+          email: 'james@brandscaling.com',
+          firstName: 'James',
+          lastName: 'User',
+          completedDays: [1],
+          startedDays: [1, 2],
+          totalDays: 7,
+          lastActivity: '2025-01-01T09:45:00Z',
+          responses: {
+            day1: [
+              "Structure gave me clarity and momentum, while intuition felt chaotic.",
+              "Time was manageable and productive during structured work.",
+              "I felt most alive when following a clear plan and system."
+            ]
+          }
+        }
+      ];
+
+      res.json(mockProgressData);
+    } catch (error) {
+      console.error("Error fetching 7-Day Reset progress:", error);
+      res.status(500).json({ message: "Failed to fetch progress data" });
+    }
+  });
+
   // Return the app for the main server to use
   return app as any;
 }

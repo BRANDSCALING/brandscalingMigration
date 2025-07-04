@@ -35,7 +35,7 @@ import StudentCourseView from "@/pages/student/StudentCourseView";
 import StudentWorkbooks from "@/pages/student/StudentWorkbooks";
 import StudentCommunity from "@/pages/student/StudentCommunity";
 import EntryDashboard from "@/pages/EntryDashboard";
-import SevenDayReset from "@/pages/SevenDayReset";
+import SevenDayResetInteractive from "@/pages/SevenDayResetInteractive";
 
 // Admin Modules
 import AdminLayout from "@/pages/admin/AdminLayout";
@@ -46,6 +46,7 @@ import Leads from "@/pages/admin/Leads";
 import AdminCourses from "@/pages/admin/AdminCourses";
 import AdminCommunity from "@/pages/admin/AdminCommunity";
 import AdminSettings from "@/pages/admin/AdminSettings";
+import AdminSevenDayReset from "@/pages/admin/AdminSevenDayReset";
 
 
 
@@ -183,7 +184,7 @@ function Router() {
       
       {/* 7-Day Reset Route */}
       <Route path="/7-day-reset">
-        <SevenDayReset />
+        <SevenDayResetInteractive />
       </Route>
 
       {/* Entry Tier Routes */}
@@ -255,6 +256,14 @@ function Router() {
         component={() => (
           <AdminLayout>
             <AdminSettings />
+          </AdminLayout>
+        )}
+      />
+      <Route
+        path="/admin/seven-day-reset"
+        component={() => (
+          <AdminLayout>
+            <AdminSevenDayReset />
           </AdminLayout>
         )}
       />
