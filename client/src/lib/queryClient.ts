@@ -18,7 +18,7 @@ export async function apiRequest(
   // Check for admin session first
   const adminId = localStorage.getItem('adminId');
   if (adminId) {
-    headers['x-admin-id'] = 'admin-dev-12345';
+    headers['x-admin-id'] = adminId === 'master-admin-2025' ? 'master-admin-2025' : 'admin-dev-12345';
   }
   // Check for student session
   else {
