@@ -318,7 +318,10 @@ export default function StudentDashboard() {
 
 
   const getDNAPersonalization = () => {
-    const { dominantType, subtype, awarenessScore } = user;
+    // Use quiz results data (most current) if available, otherwise fall back to user data
+    const dominantType = quizResults?.hasResult ? quizResults.dnaType : user.dominantType;
+    const subtype = quizResults?.hasResult ? quizResults.subtype : user.subtype;
+    const awarenessScore = quizResults?.hasResult ? quizResults.awarenessScore : user.awarenessScore;
     
     if (dominantType === 'blurred') {
       return {
