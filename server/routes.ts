@@ -754,7 +754,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       ];
 
+      console.log('Dashboard - req.user object:', req.user);
       console.log('Dashboard - Looking for student with email:', userEmail);
+      console.log('Dashboard - UserId from req.user:', userId);
       console.log('Valid students emails:', validStudents.map(s => s.email));
       
       const student = validStudents.find(s => s.email === userEmail);
@@ -764,7 +766,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Student not found" });
       }
       
-      console.log('Found student:', student);
+      console.log('Found student from validStudents array:', student);
 
       // Get student's courses based on access tier
       const courses = await storage.getCoursesWithLessons();
@@ -812,6 +814,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       };
       
+      // Add cache control headers to prevent caching
+      res.set({
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      });
+      
+      console.log('Sending dashboard response for email:', userEmail, 'firstName:', dashboardData.user.firstName);
       res.json(dashboardData);
     } catch (error) {
       console.error("Error fetching dashboard:", error);
@@ -886,6 +896,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         startedDays: [],
         responses: {}
       };
+
+      // Add cache control headers to prevent caching
+      res.set({
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      });
 
       res.json({
         completedDays: userProgress.completedDays,

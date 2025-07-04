@@ -47,6 +47,9 @@ const SevenDayResetInteractive = () => {
   // Fetch user's 7-day reset progress
   const { data: progressData, isLoading } = useQuery({
     queryKey: ["/api/seven-day-reset/progress"],
+    refetchOnMount: true,
+    staleTime: 0,
+    gcTime: 0
   });
 
   // Get user authentication

@@ -232,10 +232,23 @@ export default function StudentDashboard() {
   }, [setLocation]);
   
   const { data: dashboardData, isLoading, error } = useQuery<DashboardData>({
-    queryKey: ['/api/dashboard'],
+    queryKey: ['/api/dashboard', localStorage.getItem('studentEmail')],
     enabled: isAuthenticated,
-    retry: false
+    retry: false,
+    refetchOnMount: true,
+    staleTime: 0,
+    gcTime: 0
   });
+  
+  // Debug logging
+  useEffect(() => {
+    if (dashboardData) {
+      console.log('Dashboard data received:', dashboardData);
+      console.log('User firstName from dashboard:', dashboardData.user?.firstName);
+      console.log('User email from dashboard:', dashboardData.user?.email);
+      console.log('localStorage studentEmail:', localStorage.getItem('studentEmail'));
+    }
+  }, [dashboardData]);
 
   const { data: quizResults } = useQuery<{
     hasResult: boolean;
