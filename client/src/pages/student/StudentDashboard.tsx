@@ -579,8 +579,8 @@ export default function StudentDashboard() {
           </div>
         )}
 
-        {/* 7-Day Identity Reset Section (For Blurred Users and Those Who Haven't Taken Quiz) */}
-        {(!quizResults?.hasResult || quizResults.dnaType === 'blurred') && (
+        {/* 7-Day Identity Reset Section (Only for Blurred Users) */}
+        {quizResults?.hasResult && quizResults.dnaType === 'blurred' && (
           <Card className="mb-8 bg-gradient-to-br from-red-50 to-purple-50 border-2 border-red-200">
             <CardHeader>
               <CardTitle className="flex items-center gap-3 text-red-800">
@@ -588,10 +588,7 @@ export default function StudentDashboard() {
                 7-Day Identity Reset Guide
               </CardTitle>
               <CardDescription className="text-red-700">
-                {quizResults?.hasResult && quizResults.dnaType === 'blurred' 
-                  ? "Exclusive resource for blurred identity recalibration"
-                  : "Identity clarity program - perfect for finding your true entrepreneurial operating system"
-                }
+                Exclusive resource for blurred identity recalibration
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -637,12 +634,8 @@ export default function StudentDashboard() {
                 </div>
                 
                 <div className="text-xs text-red-600 bg-red-100 rounded-lg p-3">
-                  {quizResults?.hasResult && quizResults.dnaType === 'blurred' 
-                    ? <><strong>For Blurred Identity Users:</strong> This guide is specifically designed for entrepreneurs 
-                      caught between operating modes. Use this alongside the interactive 7-Day Reset program for maximum clarity.</>
-                    : <><strong>Identity Clarity Program:</strong> Perfect for entrepreneurs seeking to discover their true 
-                      operating system. Complete this 7-day program to find clarity between Architect and Alchemist modes.</>
-                  }
+                  <strong>For Blurred Identity Users:</strong> This guide is specifically designed for entrepreneurs 
+                  caught between operating modes. Use this alongside the interactive 7-Day Reset program for maximum clarity.
                 </div>
               </div>
             </CardContent>
