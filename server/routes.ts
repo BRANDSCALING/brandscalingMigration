@@ -436,6 +436,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           firstName: 'Reshma',
           lastName: 'User',
           accessTier: 'expert'
+        },
+        { 
+          email: 'ali@gmail.com', 
+          password: '123456',
+          firstName: 'Ali',
+          lastName: 'User',
+          accessTier: 'expert'
         }
       ];
 
@@ -736,6 +743,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         { 
           email: 'reshma@sitefindr.co.uk', 
           firstName: 'Reshma',
+          lastName: 'User',
+          accessTier: 'expert'
+        },
+        { 
+          email: 'ali@gmail.com', 
+          firstName: 'Ali',
           lastName: 'User',
           accessTier: 'expert'
         }

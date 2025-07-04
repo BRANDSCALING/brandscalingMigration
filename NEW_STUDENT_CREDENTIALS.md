@@ -44,9 +44,16 @@
 - **Access Tier**: Expert
 - **Status**: ✅ Working and tested
 
+### Account 7
+- **Email**: ali@gmail.com
+- **Password**: 123456
+- **Name**: Ali User
+- **Access Tier**: Expert
+- **Status**: ✅ Working and tested
+
 ## Testing Results
 
-All six accounts have been successfully:
+All seven accounts have been successfully:
 - Added to the authentication system
 - Configured with Expert tier access
 - Tested with login endpoint
