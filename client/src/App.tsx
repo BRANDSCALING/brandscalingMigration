@@ -36,6 +36,7 @@ import StudentWorkbooks from "@/pages/student/StudentWorkbooks";
 import StudentCommunity from "@/pages/student/StudentCommunity";
 import EntryDashboard from "@/pages/EntryDashboard";
 import SevenDayResetInteractive from "@/pages/SevenDayResetInteractive";
+import QuizResults from "@/pages/QuizResults";
 
 // Admin Modules
 import AdminLayout from "@/pages/admin/AdminLayout";
@@ -185,6 +186,11 @@ function Router() {
       {/* 7-Day Reset Route */}
       <Route path="/7-day-reset">
         <SevenDayResetInteractive />
+      </Route>
+
+      {/* Quiz Results Route */}
+      <Route path="/quiz-results">
+        <QuizResults />
       </Route>
 
       {/* Entry Tier Routes */}

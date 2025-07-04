@@ -334,7 +334,7 @@ export default function StudentDashboard() {
       };
     }
     
-    const typeCapitalized = dominantType.charAt(0).toUpperCase() + dominantType.slice(1);
+    const typeCapitalized = dominantType ? dominantType.charAt(0).toUpperCase() + dominantType.slice(1) : 'Unknown';
     const subtypeDisplay = subtype ? ` – ${subtype.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}` : '';
     
     return {
@@ -342,8 +342,10 @@ export default function StudentDashboard() {
       subtitle: awarenessScore ? `${awarenessScore}% aware of your opposite mode` : "Assessment complete",
       description: dominantType === 'architect' 
         ? "You excel at structured thinking and systematic execution. Consider developing your intuitive side for greater magnetism."
-        : "You lead with intuition and creative energy. Developing systematic thinking will help you scale efficiently.",
-      color: dominantType === 'architect' ? "blue" : "orange",
+        : dominantType === 'alchemist'
+        ? "You lead with intuition and creative energy. Developing systematic thinking will help you scale efficiently."
+        : "Assessment complete. Explore your entrepreneurial strengths and development opportunities.",
+      color: dominantType === 'architect' ? "blue" : dominantType === 'alchemist' ? "orange" : "blue",
       action: "Retake Assessment",
       actionIcon: Brain
     };
@@ -573,7 +575,7 @@ export default function StudentDashboard() {
               <Button 
                 variant="outline" 
                 className="bg-white/20 border-white/30 text-white hover:bg-white/30 backdrop-blur-sm"
-                onClick={() => setLocation('/entrepreneurial-dna-quiz')}
+                onClick={() => setLocation('/quiz-results')}
               >
                 <Brain className="h-4 w-4 mr-2" />
                 View Full Results
