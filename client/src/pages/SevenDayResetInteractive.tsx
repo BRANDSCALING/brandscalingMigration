@@ -1,19 +1,42 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation } from 'wouter';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { useToast } from '@/hooks/use-toast';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { ArrowLeft, Calendar, Clock, Target, CheckCircle2, Play, Upload, FileText, Lock } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { useLocation } from "wouter";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { useToast } from "@/hooks/use-toast";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  ArrowLeft,
+  Calendar,
+  Clock,
+  Target,
+  CheckCircle2,
+  Play,
+  Upload,
+  FileText,
+  Lock,
+} from "lucide-react";
 
 const SevenDayResetInteractive = () => {
   const [, setLocation] = useLocation();
@@ -23,44 +46,48 @@ const SevenDayResetInteractive = () => {
 
   // Fetch user's 7-day reset progress
   const { data: progressData, isLoading } = useQuery({
-    queryKey: ['/api/seven-day-reset/progress'],
+    queryKey: ["/api/seven-day-reset/progress"],
   });
 
   // Get user authentication
   const { data: user } = useQuery({
-    queryKey: ['/api/auth/user'],
+    queryKey: ["/api/auth/user"],
   });
 
-  const userId = (user as any)?.uid || '';
+  const userId = (user as any)?.uid || "";
 
   const resetDays = [
     {
       day: 1,
       title: "Contrast Activation: Force vs Flow",
       duration: "Full workday",
-      objective: "Surface your core operating preference through felt experience",
+      objective:
+        "Surface your core operating preference through felt experience",
       task: "Spend half your workday following a rigid, structured plan. Spend the other half being completely intuitive and responsive. Track energy, results, resistance.",
       reflection: [
         "Which half of the day energized you more?",
         "When did time pass faster or slower?",
-        "Did you feel more alive in structure or in freedom?"
+        "Did you feel more alive in structure or in freedom?",
       ],
-      purpose: "Surface your core operating preference through felt experience, not ideas.",
-      hasFileUpload: false
+      purpose:
+        "Surface your core operating preference through felt experience, not ideas.",
+      hasFileUpload: false,
     },
     {
       day: 2,
       title: "Authenticity Archaeology",
       duration: "2-3 hours",
-      objective: "Recall embodied success from the past to find traces of your original DNA",
+      objective:
+        "Recall embodied success from the past to find traces of your original DNA",
       task: "Journal 3 business memories where you felt deeply aligned. Note what you were doing, what type of decisions you made, and the rhythm of your day.",
       reflection: [
         "When was your business success most effortless?",
         "What decisions felt most natural?",
-        "What rhythm energized you most?"
+        "What rhythm energized you most?",
       ],
-      purpose: "Recall embodied success from the past to find traces of your original DNA.",
-      hasFileUpload: false
+      purpose:
+        "Recall embodied success from the past to find traces of your original DNA.",
+      hasFileUpload: false,
     },
     {
       day: 3,
@@ -71,10 +98,11 @@ const SevenDayResetInteractive = () => {
       reflection: [
         "Which approach felt more natural?",
         "Where did you have more energy during execution?",
-        "Which result felt like 'you'?"
+        "Which result felt like 'you'?",
       ],
-      purpose: "Re-experience both styles in a focused task. One will feel like home.",
-      hasFileUpload: true
+      purpose:
+        "Re-experience both styles in a focused task. One will feel like home.",
+      hasFileUpload: true,
     },
     {
       day: 4,
@@ -85,10 +113,11 @@ const SevenDayResetInteractive = () => {
       reflection: [
         "Am I waiting for more information (Architect)?",
         "Am I waiting for more alignment (Alchemist)?",
-        "Which decision approach energized me most?"
+        "Which decision approach energized me most?",
       ],
-      purpose: "Reveal which decision approach you naturally trust (and which drains you).",
-      hasFileUpload: false
+      purpose:
+        "Reveal which decision approach you naturally trust (and which drains you).",
+      hasFileUpload: false,
     },
     {
       day: 5,
@@ -99,10 +128,11 @@ const SevenDayResetInteractive = () => {
       reflection: [
         "Which version resonated more with others?",
         "Where did people feel moved to act?",
-        "Which style felt more authentic to you?"
+        "Which style felt more authentic to you?",
       ],
-      purpose: "Leadership style isn't about competence — it's about connection. Which way do you move people?",
-      hasFileUpload: false
+      purpose:
+        "Leadership style isn't about competence — it's about connection. Which way do you move people?",
+      hasFileUpload: false,
     },
     {
       day: 6,
@@ -113,30 +143,41 @@ const SevenDayResetInteractive = () => {
       reflection: [
         "What does each future feel like?",
         "What excites or repels you about each?",
-        "Which path calls to your deepest self?"
+        "Which path calls to your deepest self?",
       ],
-      purpose: "Strip away bias. Visualize the natural future your soul is building toward.",
-      hasFileUpload: true
+      purpose:
+        "Strip away bias. Visualize the natural future your soul is building toward.",
+      hasFileUpload: true,
     },
     {
       day: 7,
       title: "Integration & Identity Declaration",
       duration: "1-2 hours",
       objective: "Declare your dominant DNA and create your identity contract",
-      task: "Declare your dominant DNA (Architect, Alchemist, or Hybrid). Write your identity contract and first 24-hour action step.",
+      task: "Declare your dominant DNA (Architect, Alchemist, or Blurred). Write your identity contract and first 24-hour action step.",
       reflection: [
         "What default have you lived in (blurred, adapted, or clear)?",
         "What would your business feel like if you stayed 100% in your core DNA?",
-        "What support do you need to stay aligned?"
+        "What support do you need to stay aligned?",
       ],
-      purpose: "You don't need to become someone new. You just need to return to the most natural way you already work best.",
-      hasFileUpload: false
-    }
+      purpose:
+        "You don't need to become someone new. You just need to return to the most natural way you already work best.",
+      hasFileUpload: false,
+    },
   ];
 
   // Form schema for day responses
   const dayFormSchema = z.object({
-    reflectionResponses: z.array(z.string().min(10, "Please provide a detailed response (at least 10 characters)")).min(1),
+    reflectionResponses: z
+      .array(
+        z
+          .string()
+          .min(
+            10,
+            "Please provide a detailed response (at least 10 characters)",
+          ),
+      )
+      .min(1),
     notes: z.string().optional(),
     uploadedFiles: z.array(z.any()).optional(),
   });
@@ -146,20 +187,22 @@ const SevenDayResetInteractive = () => {
   // Mutations for saving progress
   const startDayMutation = useMutation({
     mutationFn: async (dayNumber: number) => {
-      const response = await fetch('/api/seven-day-reset/start-day', {
-        method: 'POST',
+      const response = await fetch("/api/seven-day-reset/start-day", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'x-student-id': userId,
+          "Content-Type": "application/json",
+          "x-student-id": userId,
         },
         body: JSON.stringify({ day: dayNumber }),
       });
-      if (!response.ok) throw new Error('Failed to start day');
+      if (!response.ok) throw new Error("Failed to start day");
       return response.json();
     },
     onSuccess: (data, dayNumber) => {
       setCurrentDay(dayNumber);
-      queryClient.invalidateQueries({ queryKey: ['/api/seven-day-reset/progress'] });
+      queryClient.invalidateQueries({
+        queryKey: ["/api/seven-day-reset/progress"],
+      });
       toast({
         title: "Day Started!",
         description: `Day ${dayNumber} has been started. Complete all reflection questions to finish.`,
@@ -168,7 +211,7 @@ const SevenDayResetInteractive = () => {
       setTimeout(() => {
         const formElement = document.getElementById(`day-form-${dayNumber}`);
         if (formElement) {
-          formElement.scrollIntoView({ behavior: 'smooth' });
+          formElement.scrollIntoView({ behavior: "smooth" });
         }
       }, 100);
     },
@@ -183,25 +226,27 @@ const SevenDayResetInteractive = () => {
 
   const completeDayMutation = useMutation({
     mutationFn: async ({ day, data }: { day: number; data: DayFormData }) => {
-      const response = await fetch('/api/seven-day-reset/complete-day', {
-        method: 'POST',
+      const response = await fetch("/api/seven-day-reset/complete-day", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'x-student-id': userId,
+          "Content-Type": "application/json",
+          "x-student-id": userId,
         },
         body: JSON.stringify({
           day,
           reflectionResponses: data.reflectionResponses,
-          notes: data.notes || '',
-          uploadedFiles: data.uploadedFiles || []
+          notes: data.notes || "",
+          uploadedFiles: data.uploadedFiles || [],
         }),
       });
-      if (!response.ok) throw new Error('Failed to complete day');
+      if (!response.ok) throw new Error("Failed to complete day");
       return response.json();
     },
     onSuccess: (data, { day }) => {
       setCurrentDay(null);
-      queryClient.invalidateQueries({ queryKey: ['/api/seven-day-reset/progress'] });
+      queryClient.invalidateQueries({
+        queryKey: ["/api/seven-day-reset/progress"],
+      });
       toast({
         title: "Day Completed!",
         description: `Day ${day} has been completed successfully.`,
@@ -230,16 +275,18 @@ const SevenDayResetInteractive = () => {
 
   // Check if a day is currently started but not completed
   const isDayStarted = (dayNumber: number) => {
-    return startedDays.includes(dayNumber) && !completedDays.includes(dayNumber);
+    return (
+      startedDays.includes(dayNumber) && !completedDays.includes(dayNumber)
+    );
   };
 
   // Day form component
-  const DayForm = ({ day }: { day: typeof resetDays[0] }) => {
+  const DayForm = ({ day }: { day: (typeof resetDays)[0] }) => {
     const form = useForm<DayFormData>({
       resolver: zodResolver(dayFormSchema),
       defaultValues: {
-        reflectionResponses: new Array(day.reflection.length).fill(''),
-        notes: '',
+        reflectionResponses: new Array(day.reflection.length).fill(""),
+        notes: "",
         uploadedFiles: [],
       },
     });
@@ -265,14 +312,18 @@ const SevenDayResetInteractive = () => {
 
     if (isCompleted && dayResponses) {
       return (
-        <Card className="mt-6 border-green-300 bg-green-50" id={`day-form-${day.day}`}>
+        <Card
+          className="mt-6 border-green-300 bg-green-50"
+          id={`day-form-${day.day}`}
+        >
           <CardHeader>
             <CardTitle className="text-green-800 flex items-center gap-2">
               <CheckCircle2 className="w-5 h-5" />
               Day {day.day} - {day.title} (Completed)
             </CardTitle>
             <CardDescription>
-              Completed on {new Date(dayResponses.completedAt).toLocaleDateString()} at{' '}
+              Completed on{" "}
+              {new Date(dayResponses.completedAt).toLocaleDateString()} at{" "}
               {new Date(dayResponses.completedAt).toLocaleTimeString()}
             </CardDescription>
           </CardHeader>
@@ -286,12 +337,17 @@ const SevenDayResetInteractive = () => {
 
               {/* Submitted Responses */}
               <div className="space-y-4">
-                <h4 className="font-semibold text-gray-700">Your Submitted Responses:</h4>
+                <h4 className="font-semibold text-gray-700">
+                  Your Submitted Responses:
+                </h4>
                 {day.reflection.map((prompt, index) => (
                   <div key={index} className="p-4 bg-white rounded-lg border">
                     <h5 className="font-medium text-gray-700 mb-2">{prompt}</h5>
                     <p className="text-gray-600 italic">
-                      "{dayResponses.reflectionResponses[index] || 'No response provided'}"
+                      "
+                      {dayResponses.reflectionResponses[index] ||
+                        "No response provided"}
+                      "
                     </p>
                   </div>
                 ))}
@@ -300,14 +356,16 @@ const SevenDayResetInteractive = () => {
               {/* Additional Notes */}
               {dayResponses.notes && (
                 <div className="p-4 bg-white rounded-lg border">
-                  <h5 className="font-medium text-gray-700 mb-2">Additional Notes:</h5>
+                  <h5 className="font-medium text-gray-700 mb-2">
+                    Additional Notes:
+                  </h5>
                   <p className="text-gray-600 italic">"{dayResponses.notes}"</p>
                 </div>
               )}
 
               <div className="flex gap-2 pt-4">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={() => setCurrentDay(null)}
                   className="flex-1"
                 >
@@ -321,10 +379,17 @@ const SevenDayResetInteractive = () => {
     }
 
     return (
-      <Card className="mt-6 border-purple-300 bg-purple-50" id={`day-form-${day.day}`}>
+      <Card
+        className="mt-6 border-purple-300 bg-purple-50"
+        id={`day-form-${day.day}`}
+      >
         <CardHeader>
-          <CardTitle className="text-purple-800">Day {day.day} - {day.title}</CardTitle>
-          <CardDescription>Complete all fields to finish this day</CardDescription>
+          <CardTitle className="text-purple-800">
+            Day {day.day} - {day.title}
+          </CardTitle>
+          <CardDescription>
+            Complete all fields to finish this day
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -337,7 +402,9 @@ const SevenDayResetInteractive = () => {
 
               {/* Reflection Questions */}
               <div className="space-y-4">
-                <h4 className="font-semibold text-gray-700">Reflection Prompts:</h4>
+                <h4 className="font-semibold text-gray-700">
+                  Reflection Prompts:
+                </h4>
                 {day.reflection.map((prompt, index) => (
                   <FormField
                     key={index}
@@ -387,11 +454,16 @@ const SevenDayResetInteractive = () => {
                           Click to upload or drag and drop
                         </Label>
                       </div>
-                      <p className="text-xs text-gray-500">PDF, DOC, TXT, or image files</p>
+                      <p className="text-xs text-gray-500">
+                        PDF, DOC, TXT, or image files
+                      </p>
                       {uploadedFiles.length > 0 && (
                         <div className="mt-2">
                           {uploadedFiles.map((file, index) => (
-                            <div key={index} className="flex items-center gap-2 text-sm text-green-600">
+                            <div
+                              key={index}
+                              className="flex items-center gap-2 text-sm text-green-600"
+                            >
                               <FileText className="w-4 h-4" />
                               {file.name}
                             </div>
@@ -427,7 +499,9 @@ const SevenDayResetInteractive = () => {
                 className="w-full bg-purple-600 hover:bg-purple-700"
                 disabled={completeDayMutation.isPending}
               >
-                {completeDayMutation.isPending ? 'Saving...' : `Complete Day ${day.day}`}
+                {completeDayMutation.isPending
+                  ? "Saving..."
+                  : `Complete Day ${day.day}`}
               </Button>
             </form>
           </Form>
@@ -452,10 +526,10 @@ const SevenDayResetInteractive = () => {
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            onClick={() => setLocation('/student')}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setLocation("/student")}
             className="text-purple-600 hover:text-purple-800"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
@@ -474,7 +548,7 @@ const SevenDayResetInteractive = () => {
           <p className="text-lg text-gray-700 max-w-3xl mx-auto mb-6">
             A week to stop guessing who you are — and finally feel what fits.
           </p>
-          
+
           {/* Progress Bar */}
           <div className="max-w-md mx-auto">
             <div className="flex justify-between items-center mb-2">
@@ -497,14 +571,16 @@ const SevenDayResetInteractive = () => {
           </CardHeader>
           <CardContent>
             <p className="text-gray-700 text-lg">
-              Move from "blurred" and adaptive identity to authentic clarity by embodying both 
-              Architect and Alchemist rhythms across 7 experiential days.
+              Move from "blurred" and adaptive identity to authentic clarity by
+              embodying both Architect and Alchemist rhythms across 7
+              experiential days.
             </p>
             <div className="mt-4 p-4 bg-white/60 rounded-lg">
               <h4 className="font-semibold text-purple-800 mb-2">Remember:</h4>
               <p className="text-gray-700">
-                We're not asking "Are you an Architect or Alchemist?" We're asking: 
-                Which operating system liberates your energy and results?
+                We're not asking "Are you an Architect or Alchemist?" We're
+                asking: Which operating system liberates your energy and
+                results?
               </p>
             </div>
           </CardContent>
@@ -519,23 +595,29 @@ const SevenDayResetInteractive = () => {
             const isCurrentDay = currentDay === day.day;
 
             return (
-              <Card 
-                key={day.day} 
+              <Card
+                key={day.day}
                 className={`transition-all duration-200 hover:shadow-lg ${
                   isCompleted
-                    ? 'border-green-200 bg-green-50' 
+                    ? "border-green-200 bg-green-50"
                     : isStarted || isCurrentDay
-                      ? 'border-purple-300 bg-purple-50 ring-2 ring-purple-200' 
+                      ? "border-purple-300 bg-purple-50 ring-2 ring-purple-200"
                       : canStart
-                        ? 'border-gray-200 hover:border-purple-200'
-                        : 'border-gray-100 bg-gray-50'
+                        ? "border-gray-200 hover:border-purple-200"
+                        : "border-gray-100 bg-gray-50"
                 }`}
               >
                 <CardHeader>
                   <div className="flex items-center justify-between">
-                    <Badge 
+                    <Badge
                       variant={isCompleted ? "default" : "secondary"}
-                      className={isCompleted ? "bg-green-500" : canStart ? "" : "bg-gray-400"}
+                      className={
+                        isCompleted
+                          ? "bg-green-500"
+                          : canStart
+                            ? ""
+                            : "bg-gray-400"
+                      }
                     >
                       Day {day.day}
                       {isCompleted && <CheckCircle2 className="w-3 h-3 ml-1" />}
@@ -552,12 +634,16 @@ const SevenDayResetInteractive = () => {
                 <CardContent>
                   <div className="space-y-4">
                     <div>
-                      <h4 className="font-semibold text-sm text-gray-700 mb-2">Task:</h4>
+                      <h4 className="font-semibold text-sm text-gray-700 mb-2">
+                        Task:
+                      </h4>
                       <p className="text-sm text-gray-600">{day.task}</p>
                     </div>
-                    
+
                     <div>
-                      <h4 className="font-semibold text-sm text-gray-700 mb-2">Reflection Prompts:</h4>
+                      <h4 className="font-semibold text-sm text-gray-700 mb-2">
+                        Reflection Prompts:
+                      </h4>
                       <ul className="text-sm text-gray-600 space-y-1">
                         {day.reflection.map((prompt, index) => (
                           <li key={index} className="flex items-start gap-2">
@@ -572,29 +658,35 @@ const SevenDayResetInteractive = () => {
                       <p className="text-xs text-gray-500 italic mb-3">
                         <strong>Purpose:</strong> {day.purpose}
                       </p>
-                      
+
                       <div className="flex gap-2">
                         {!isCompleted && canStart ? (
-                          <Button 
-                            size="sm" 
+                          <Button
+                            size="sm"
                             onClick={() => startDayMutation.mutate(day.day)}
                             className="flex-1 bg-purple-600 hover:bg-purple-700"
                             disabled={isStarted || startDayMutation.isPending}
                           >
                             <Play className="w-3 h-3 mr-1" />
-                            {isStarted ? `Continue Day ${day.day}` : `Start Day ${day.day}`}
+                            {isStarted
+                              ? `Continue Day ${day.day}`
+                              : `Start Day ${day.day}`}
                           </Button>
                         ) : isCompleted ? (
-                          <Button 
-                            size="sm" 
-                            variant="outline" 
+                          <Button
+                            size="sm"
+                            variant="outline"
                             onClick={() => {
                               setCurrentDay(day.day);
                               // Scroll to the response panel after a brief delay
                               setTimeout(() => {
-                                const formElement = document.getElementById(`day-form-${day.day}`);
+                                const formElement = document.getElementById(
+                                  `day-form-${day.day}`,
+                                );
                                 if (formElement) {
-                                  formElement.scrollIntoView({ behavior: 'smooth' });
+                                  formElement.scrollIntoView({
+                                    behavior: "smooth",
+                                  });
                                 }
                               }, 100);
                             }}
@@ -604,9 +696,9 @@ const SevenDayResetInteractive = () => {
                             View Responses
                           </Button>
                         ) : (
-                          <Button 
-                            size="sm" 
-                            variant="outline" 
+                          <Button
+                            size="sm"
+                            variant="outline"
                             disabled
                             className="flex-1 bg-gray-50 border-gray-200 text-gray-400"
                           >
@@ -625,7 +717,7 @@ const SevenDayResetInteractive = () => {
 
         {/* Active Day Form */}
         {currentDay && (
-          <DayForm day={resetDays.find(d => d.day === currentDay)!} />
+          <DayForm day={resetDays.find((d) => d.day === currentDay)!} />
         )}
 
         {/* Show started day form */}
@@ -640,7 +732,7 @@ const SevenDayResetInteractive = () => {
                       You have Day {dayNum} in progress. Complete it below:
                     </p>
                   </div>
-                  <DayForm day={resetDays.find(d => d.day === dayNum)!} />
+                  <DayForm day={resetDays.find((d) => d.day === dayNum)!} />
                 </div>
               ))}
           </>
@@ -650,8 +742,12 @@ const SevenDayResetInteractive = () => {
         {completedDays.length === resetDays.length && (
           <Card className="mt-8 border-gold-200 bg-gradient-to-r from-yellow-50 to-gold-50">
             <CardHeader>
-              <CardTitle className="text-gold-800">🎉 Identity Reset Complete!</CardTitle>
-              <CardDescription>Time to create your Identity Contract</CardDescription>
+              <CardTitle className="text-gold-800">
+                🎉 Identity Reset Complete!
+              </CardTitle>
+              <CardDescription>
+                Time to create your Identity Contract
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -660,7 +756,8 @@ const SevenDayResetInteractive = () => {
                 </p>
                 <div className="p-4 bg-white rounded-lg border-2 border-dashed border-gold-300">
                   <p className="text-gray-600 italic">
-                    "From this moment on, I commit to building and leading as a(n) ____________ because ____________."
+                    "From this moment on, I commit to building and leading as
+                    a(n) ____________ because ____________."
                   </p>
                 </div>
                 <p className="text-sm text-gray-600">

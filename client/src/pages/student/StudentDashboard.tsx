@@ -579,8 +579,8 @@ export default function StudentDashboard() {
           </div>
         )}
 
-        {/* 7-Day Identity Reset PDF Download Section (Blurred Users Only) */}
-        {quizResults?.hasResult && quizResults.dnaType === 'blurred' && (
+        {/* 7-Day Identity Reset Section (For Blurred Users and Those Who Haven't Taken Quiz) */}
+        {(!quizResults?.hasResult || quizResults.dnaType === 'blurred') && (
           <Card className="mb-8 bg-gradient-to-br from-red-50 to-purple-50 border-2 border-red-200">
             <CardHeader>
               <CardTitle className="flex items-center gap-3 text-red-800">
@@ -588,7 +588,10 @@ export default function StudentDashboard() {
                 7-Day Identity Reset Guide
               </CardTitle>
               <CardDescription className="text-red-700">
-                Exclusive resource for blurred identity recalibration
+                {quizResults?.hasResult && quizResults.dnaType === 'blurred' 
+                  ? "Exclusive resource for blurred identity recalibration"
+                  : "Identity clarity program - perfect for finding your true entrepreneurial operating system"
+                }
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -623,20 +626,9 @@ export default function StudentDashboard() {
                   </div>
                 </div>
                 
-                <div className="flex flex-col sm:flex-row gap-3">
+                <div className="flex justify-center">
                   <Button 
-                    className="bg-red-600 hover:bg-red-700 text-white flex-1"
-                    onClick={() => {
-                      // Open PDF in new tab for viewing
-                      window.open('/attached_assets/7_Day_Identity_Reset_Professional_1751567134707.pdf', '_blank');
-                    }}
-                  >
-                    <FileText className="h-4 w-4 mr-2" />
-                    View PDF Guide
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    className="border-red-300 text-red-700 hover:bg-red-50 flex-1"
+                    className="bg-red-600 hover:bg-red-700 text-white px-8 py-3"
                     onClick={() => setLocation('/7-day-reset')}
                   >
                     <Calendar className="h-4 w-4 mr-2" />
@@ -645,8 +637,12 @@ export default function StudentDashboard() {
                 </div>
                 
                 <div className="text-xs text-red-600 bg-red-100 rounded-lg p-3">
-                  <strong>For Blurred Identity Users:</strong> This guide is specifically designed for entrepreneurs 
-                  caught between operating modes. Use this alongside the interactive 7-Day Reset program for maximum clarity.
+                  {quizResults?.hasResult && quizResults.dnaType === 'blurred' 
+                    ? <><strong>For Blurred Identity Users:</strong> This guide is specifically designed for entrepreneurs 
+                      caught between operating modes. Use this alongside the interactive 7-Day Reset program for maximum clarity.</>
+                    : <><strong>Identity Clarity Program:</strong> Perfect for entrepreneurs seeking to discover their true 
+                      operating system. Complete this 7-day program to find clarity between Architect and Alchemist modes.</>
+                  }
                 </div>
               </div>
             </CardContent>
