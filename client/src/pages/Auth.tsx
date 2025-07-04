@@ -75,13 +75,49 @@ export default function Auth() {
       localStorage.setItem('studentId', data.student.id);
       localStorage.setItem('studentEmail', data.student.email);
       
-      toast({
-        title: "Welcome Back!",
-        description: "Redirecting to your Entrepreneurial DNA Quiz."
-      });
-      
-      // Redirect directly to quiz after login
-      setLocation('/entrepreneurial-dna-quiz');
+      // Check if user has already completed the quiz
+      try {
+        const quizResponse = await fetch('/api/quiz/results', {
+          headers: {
+            'x-student-id': data.student.id,
+            'x-student-email': data.student.email
+          }
+        });
+        
+        if (quizResponse.ok) {
+          const quizData = await quizResponse.json();
+          
+          if (quizData.hasResult) {
+            // User has completed quiz, redirect to dashboard
+            toast({
+              title: "Welcome Back!",
+              description: "Redirecting to your student dashboard."
+            });
+            setLocation('/student');
+          } else {
+            // User hasn't completed quiz, redirect to quiz
+            toast({
+              title: "Welcome Back!",
+              description: "Let's complete your Entrepreneurial DNA Quiz."
+            });
+            setLocation('/entrepreneurial-dna-quiz');
+          }
+        } else {
+          // If quiz check fails, default to quiz
+          toast({
+            title: "Welcome Back!",
+            description: "Redirecting to your Entrepreneurial DNA Quiz."
+          });
+          setLocation('/entrepreneurial-dna-quiz');
+        }
+      } catch (quizError) {
+        // If quiz check fails, default to quiz
+        toast({
+          title: "Welcome Back!",
+          description: "Redirecting to your Entrepreneurial DNA Quiz."
+        });
+        setLocation('/entrepreneurial-dna-quiz');
+      }
     } catch (error: any) {
       toast({
         title: "Login Failed",

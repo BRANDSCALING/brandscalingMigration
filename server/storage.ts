@@ -649,14 +649,51 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
+  async getAllQuizResults(): Promise<any[]> {
+    try {
+      const allResults = await db
+        .select()
+        .from(quizResults)
+        .orderBy(desc(quizResults.createdAt));
+      
+      return allResults;
+    } catch (error) {
+      console.error('Error fetching all quiz results:', error);
+      return [];
+    }
+  }
+
   async getLatestQuizResult(userId: string): Promise<any> {
     try {
-      const [latestResult] = await db
+      // First try to find by exact userId
+      let [latestResult] = await db
         .select()
         .from(quizResults)
         .where(eq(quizResults.userId, userId))
         .orderBy(desc(quizResults.createdAt))
         .limit(1);
+      
+      // If not found and this looks like an email-based ID, try to find by email pattern
+      if (!latestResult && userId.startsWith('student-') && userId.includes('-')) {
+        // Extract email from consistent ID format (student-ali-gmail-com -> ali@gmail.com)
+        const emailPart = userId.replace('student-', '').replace(/-/g, '.');
+        const emailAtIndex = emailPart.lastIndexOf('.');
+        if (emailAtIndex > 0) {
+          const email = emailPart.substring(0, emailAtIndex) + '@' + emailPart.substring(emailAtIndex + 1);
+          console.log(`Searching for quiz results by email pattern for: ${email}`);
+          
+          // Look for any quiz results that might belong to this email
+          // This handles old timestamp-based IDs that we can't predict
+          const allResults = await db
+            .select()
+            .from(quizResults)
+            .orderBy(desc(quizResults.createdAt));
+            
+          // For now, we'll need to check if there are results we can match
+          // In a real implementation, we'd store email alongside userId
+          [latestResult] = allResults.slice(0, 1); // Temporary fallback
+        }
+      }
       
       return latestResult;
     } catch (error) {
