@@ -22,10 +22,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     
     // Check for admin session
     const adminId = req.headers['x-admin-id'];
-    if (adminId === 'admin-dev-12345') {
+    if (adminId === 'admin-dev-12345' || adminId === 'master-admin-2025') {
       req.user = {
-        uid: 'admin-dev-12345',
-        email: 'admin@brandscaling.com',
+        uid: adminId,
+        email: adminId === 'master-admin-2025' ? 'master@brandscaling.com' : 'admin@brandscaling.com',
         role: 'admin'
       };
       return next();
@@ -34,6 +34,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     // Check for student session
     const studentId = req.headers['x-student-id'] as string;
     const studentEmail = req.headers['x-student-email'] as string;
+    
+    // Master student credentials (bypass all restrictions)
+    if (studentId === 'master-student-2025' || studentEmail === 'master@brandscaling.com') {
+      req.user = {
+        uid: 'master-student-2025',
+        email: 'master@brandscaling.com',
+        role: 'student',
+        tier: 'master'
+      };
+      return next();
+    }
+    
     if (studentId && studentEmail) {
       req.user = {
         uid: studentId,
@@ -63,6 +75,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = studentId || req.user?.uid || 'anonymous-user';
       
       console.log('Checking quiz eligibility for user:', userId);
+      
+      // Master user bypass - can always retake quiz
+      if (userId === 'master-student-2025' || req.headers['x-student-email'] === 'master@brandscaling.com') {
+        console.log('Master user detected - bypassing restrictions');
+        return res.json({ canRetake: true, nextRetakeDate: null });
+      }
       
       try {
         const eligibility = await storage.checkEntrepreneurialDnaQuizEligibility(userId);
@@ -180,12 +198,65 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Student authentication endpoints
+  // Admin authentication endpoint
+  app.post('/api/auth/admin-login', async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      
+      // Check for valid admin credentials
+      const validAdmins = [
+        { 
+          email: 'admin@brandscaling.com', 
+          password: 'admin2025',
+          firstName: 'Admin',
+          lastName: 'User',
+          id: 'admin-dev-12345'
+        },
+        { 
+          email: 'master@brandscaling.com', 
+          password: 'master2025',
+          firstName: 'Master',
+          lastName: 'Admin',
+          id: 'master-admin-2025'
+        }
+      ];
+      
+      const admin = validAdmins.find(a => a.email === email && a.password === password);
+      
+      if (admin) {
+        res.json({
+          success: true,
+          admin: {
+            id: admin.id,
+            email: admin.email,
+            firstName: admin.firstName,
+            lastName: admin.lastName,
+            role: 'admin'
+          }
+        });
+      } else {
+        res.status(401).json({ success: false, message: 'Invalid admin credentials' });
+      }
+    } catch (error) {
+      console.error("Admin login error:", error);
+      res.status(500).json({ success: false, message: "Admin login failed" });
+    }
+  });
+
   app.post('/api/auth/student-login', async (req, res) => {
     try {
       const { email, password } = req.body;
       
       // Check for specific test student credentials
       const validStudents = [
+        // Master credentials - full access to everything
+        { 
+          email: 'master@brandscaling.com', 
+          password: 'master2025',
+          firstName: 'Master',
+          lastName: 'Admin',
+          accessTier: 'master'
+        },
         // Original test accounts
         { 
           email: 'munawarrasoolabbasi@gmail.com', 
