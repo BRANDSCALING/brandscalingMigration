@@ -176,24 +176,18 @@ const SevenDayResetInteractive = () => {
 
   const completeDayMutation = useMutation({
     mutationFn: async ({ day, data }: { day: number; data: DayFormData }) => {
-      const formData = new FormData();
-      formData.append('day', day.toString());
-      formData.append('reflectionResponses', JSON.stringify(data.reflectionResponses));
-      formData.append('notes', data.notes || '');
-      
-      // Add uploaded files if any
-      if (data.uploadedFiles) {
-        data.uploadedFiles.forEach((file, index) => {
-          formData.append(`file_${index}`, file);
-        });
-      }
-
       const response = await fetch('/api/seven-day-reset/complete-day', {
         method: 'POST',
         headers: {
+          'Content-Type': 'application/json',
           'x-student-id': userId,
         },
-        body: formData,
+        body: JSON.stringify({
+          day,
+          reflectionResponses: data.reflectionResponses,
+          notes: data.notes || '',
+          uploadedFiles: data.uploadedFiles || []
+        }),
       });
       if (!response.ok) throw new Error('Failed to complete day');
       return response.json();

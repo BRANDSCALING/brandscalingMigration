@@ -18,7 +18,7 @@ import {
   stripePurchases,
   payments,
   emailLogs,
-
+  sevenDayResetProgress,
   businessModels,
   uploadedWorkbooks,
   type User,

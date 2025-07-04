@@ -878,13 +878,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Authentication required" });
       }
 
-      // Parse form data
-      const form = new URLSearchParams();
-      const body = req.body;
-      
-      const day = parseInt(body.day);
-      const reflectionResponses = JSON.parse(body.reflectionResponses || '[]');
-      const notes = body.notes || '';
+      // Handle both FormData and JSON body
+      let day: number;
+      let reflectionResponses: string[];
+      let notes: string;
+
+      // Check if this is multipart form data (from multer)
+      if (req.body.day && typeof req.body.day === 'string') {
+        // FormData from frontend (handled by multer)
+        day = parseInt(req.body.day);
+        try {
+          reflectionResponses = JSON.parse(req.body.reflectionResponses || '[]');
+        } catch (error) {
+          reflectionResponses = [];
+        }
+        notes = req.body.notes || '';
+      } else {
+        // JSON body
+        day = req.body.day;
+        reflectionResponses = req.body.reflectionResponses || [];
+        notes = req.body.notes || '';
+      }
+
+      console.log('Complete day request:', { day, reflectionResponses, notes });
 
       if (!day || day < 1 || day > 7) {
         return res.status(400).json({ message: "Invalid day number" });
@@ -900,12 +916,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "All reflection responses must be at least 10 characters long" });
       }
 
-      // For now, log the completion until database is updated
-      console.log(`Completing day ${day} for user ${userId}:`, {
-        reflectionResponses,
-        notes,
-        completedAt: new Date()
-      });
+      // For now, just log the completion - the frontend handles progress tracking
+      // TODO: Implement proper database storage later
+
+      console.log(`Day ${day} completed successfully for user ${userId}`);
       
       res.json({ 
         success: true, 
