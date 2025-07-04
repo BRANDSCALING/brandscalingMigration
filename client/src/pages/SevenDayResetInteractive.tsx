@@ -164,6 +164,13 @@ const SevenDayResetInteractive = () => {
         title: "Day Started!",
         description: `Day ${dayNumber} has been started. Complete all reflection questions to finish.`,
       });
+      // Scroll to the form section after a brief delay
+      setTimeout(() => {
+        const formElement = document.getElementById(`day-form-${dayNumber}`);
+        if (formElement) {
+          formElement.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
     },
     onError: () => {
       toast({
@@ -258,7 +265,7 @@ const SevenDayResetInteractive = () => {
 
     if (isCompleted && dayResponses) {
       return (
-        <Card className="mt-6 border-green-300 bg-green-50">
+        <Card className="mt-6 border-green-300 bg-green-50" id={`day-form-${day.day}`}>
           <CardHeader>
             <CardTitle className="text-green-800 flex items-center gap-2">
               <CheckCircle2 className="w-5 h-5" />
@@ -314,7 +321,7 @@ const SevenDayResetInteractive = () => {
     }
 
     return (
-      <Card className="mt-6 border-purple-300 bg-purple-50">
+      <Card className="mt-6 border-purple-300 bg-purple-50" id={`day-form-${day.day}`}>
         <CardHeader>
           <CardTitle className="text-purple-800">Day {day.day} - {day.title}</CardTitle>
           <CardDescription>Complete all fields to finish this day</CardDescription>
@@ -581,7 +588,16 @@ const SevenDayResetInteractive = () => {
                           <Button 
                             size="sm" 
                             variant="outline" 
-                            onClick={() => setCurrentDay(day.day)}
+                            onClick={() => {
+                              setCurrentDay(day.day);
+                              // Scroll to the response panel after a brief delay
+                              setTimeout(() => {
+                                const formElement = document.getElementById(`day-form-${day.day}`);
+                                if (formElement) {
+                                  formElement.scrollIntoView({ behavior: 'smooth' });
+                                }
+                              }, 100);
+                            }}
                             className="flex-1 bg-green-50 border-green-200 text-green-600 hover:bg-green-100"
                           >
                             <CheckCircle2 className="w-3 h-3 mr-1" />
