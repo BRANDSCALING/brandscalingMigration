@@ -60,11 +60,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   const requireAuth = (req: any, res: any, next: any) => {
+    // Check for Firebase auth
     if (req.user) {
       next();
-    } else {
-      res.status(401).json({ message: 'Authentication required' });
+      return;
     }
+    
+    // Check for student headers authentication
+    const studentId = req.headers['x-student-id'] as string;
+    const studentEmail = req.headers['x-student-email'] as string;
+    
+    if (studentId && studentEmail) {
+      // Create a mock user object for compatibility
+      req.user = {
+        uid: studentId,
+        email: studentEmail,
+        role: 'student'
+      };
+      next();
+      return;
+    }
+    
+    res.status(401).json({ message: 'Authentication required' });
   };
 
   // Entrepreneurial DNA Quiz endpoints
@@ -575,6 +592,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Get student details from localStorage mapping
       const validStudents = [
+        // Master credentials - full access to everything
+        { 
+          email: 'master@brandscaling.com', 
+          firstName: 'Master',
+          lastName: 'Admin',
+          accessTier: 'master'
+        },
         // Original test accounts
         { 
           email: 'munawarrasoolabbasi@gmail.com', 
@@ -717,11 +741,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       ];
 
+      console.log('Dashboard - Looking for student with email:', userEmail);
+      console.log('Valid students emails:', validStudents.map(s => s.email));
+      
       const student = validStudents.find(s => s.email === userEmail);
       
       if (!student) {
+        console.log('Student not found in validStudents array');
         return res.status(401).json({ message: "Student not found" });
       }
+      
+      console.log('Found student:', student);
 
       // Get student's courses based on access tier
       const courses = await storage.getCoursesWithLessons();
