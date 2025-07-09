@@ -51,9 +51,16 @@
 - **Access Tier**: Expert
 - **Status**: ✅ Working and tested
 
+### Account 8
+- **Email**: rubab@gmail.com
+- **Password**: 112233
+- **Name**: Rubab User
+- **Access Tier**: Expert
+- **Status**: ✅ Working and tested
+
 ## Testing Results
 
-All seven accounts have been successfully:
+All eight accounts have been successfully:
 - Added to the authentication system
 - Configured with Expert tier access
 - Tested with login endpoint

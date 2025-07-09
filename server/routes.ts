@@ -443,6 +443,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           firstName: 'Ali',
           lastName: 'User',
           accessTier: 'expert'
+        },
+        { 
+          email: 'rubab@gmail.com', 
+          password: '112233',
+          firstName: 'Rubab',
+          lastName: 'User',
+          accessTier: 'expert'
         }
       ];
 
@@ -749,6 +756,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         { 
           email: 'ali@gmail.com', 
           firstName: 'Ali',
+          lastName: 'User',
+          accessTier: 'expert'
+        },
+        { 
+          email: 'rubab@gmail.com', 
+          firstName: 'Rubab',
           lastName: 'User',
           accessTier: 'expert'
         }
