@@ -1,0 +1,166 @@
+/* Brandscaling 2025 Theme Colors - Copy this to your CSS file */
+
+:root {
+  /* Brandscaling 2025 Brand Colors */
+  --architect-indigo: 245 72% 62%; /* #4F7CFF - Blue/Indigo */
+  --founder-red: 0 84% 60%; /* #F53E3E - Vibrant Red */
+  --deep-plum: 280 50% 40%; /* #8B5A9F - Deep Purple/Plum */
+  --scale-orange: 25 95% 53%; /* #FF7A00 - Vibrant Orange */
+  --precision-pink: 320 84% 70%; /* #F55FC7 - Hot Pink */
+  --strategic-black: 0 0% 9%; /* #171717 - Near Black */
+  --pure-white: 0 0% 100%; /* #FFFFFF - Pure White */
+  
+  /* Architect Theme (Blue/Purple) */
+  --architect: var(--architect-indigo);
+  --architect-gradient: linear-gradient(135deg, hsl(var(--architect-indigo)) 0%, hsl(var(--deep-plum)) 100%);
+  
+  /* Alchemist Theme (Orange/Pink) */
+  --alchemist: var(--scale-orange);
+  --alchemist-gradient: linear-gradient(135deg, hsl(var(--scale-orange)) 0%, hsl(var(--precision-pink)) 100%);
+  
+  /* Brandscaling Gradient (Full spectrum) */
+  --brandscaling-gradient: linear-gradient(135deg, 
+    hsl(var(--architect-indigo)) 0%, 
+    hsl(var(--deep-plum)) 25%, 
+    hsl(var(--founder-red)) 50%, 
+    hsl(var(--scale-orange)) 75%, 
+    hsl(var(--precision-pink)) 100%);
+    
+  /* Neutral/Background Colors */
+  --background: var(--pure-white);
+  --foreground: var(--strategic-black);
+  --card: var(--pure-white);
+  --card-foreground: var(--strategic-black);
+  --primary: var(--architect-indigo);
+  --primary-foreground: var(--pure-white);
+  --secondary: 210 40% 96%;
+  --secondary-foreground: var(--strategic-black);
+  --muted: 210 40% 96%;
+  --muted-foreground: 215 16% 47%;
+  --accent: var(--scale-orange);
+  --accent-foreground: var(--pure-white);
+  --destructive: var(--founder-red);
+  --destructive-foreground: var(--pure-white);
+  --border: 214 32% 91%;
+  --input: 214 32% 91%;
+  --ring: var(--architect-indigo);
+  --radius: 0.5rem;
+}
+
+/* Utility Classes */
+.text-architect { color: hsl(var(--architect-indigo)); }
+.text-alchemist { color: hsl(var(--scale-orange)); }
+.text-strategic-black { color: hsl(var(--strategic-black)); }
+.text-pure-white { color: hsl(var(--pure-white)); }
+
+.bg-architect { background-color: hsl(var(--architect-indigo)); }
+.bg-alchemist { background-color: hsl(var(--scale-orange)); }
+.bg-strategic-black { background-color: hsl(var(--strategic-black)); }
+.bg-pure-white { background-color: hsl(var(--pure-white)); }
+
+.gradient-brandscaling { background: var(--brandscaling-gradient); }
+.gradient-architect { background: var(--architect-gradient); }
+.gradient-alchemist { background: var(--alchemist-gradient); }
+
+/* Button Styles */
+.btn-architect {
+  background: hsl(var(--architect-indigo));
+  color: hsl(var(--pure-white));
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-architect:hover {
+  background: hsl(245 72% 55%);
+  transform: translateY(-2px);
+}
+
+.btn-alchemist {
+  background: hsl(var(--scale-orange));
+  color: hsl(var(--pure-white));
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-alchemist:hover {
+  background: hsl(25 95% 48%);
+  transform: translateY(-2px);
+}
+
+.btn-brandscaling {
+  background: var(--brandscaling-gradient);
+  color: hsl(var(--pure-white));
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-brandscaling:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+/* Card Styles */
+.card-architect {
+  border: 2px solid hsl(var(--architect-indigo));
+  border-radius: 12px;
+  padding: 24px;
+  background: rgba(79, 124, 255, 0.05);
+}
+
+.card-alchemist {
+  border: 2px solid hsl(var(--scale-orange));
+  border-radius: 12px;
+  padding: 24px;
+  background: rgba(255, 122, 0, 0.05);
+}
+
+/* Typography */
+.text-h1 { 
+  font-size: 4rem; 
+  line-height: 1.1; 
+  letter-spacing: -0.025em; 
+  font-weight: 700;
+}
+
+.text-h2 { 
+  font-size: 2.5rem; 
+  line-height: 1.2; 
+  letter-spacing: -0.025em; 
+  font-weight: 600;
+}
+
+.text-h3 { 
+  font-size: 1.875rem; 
+  line-height: 1.3; 
+  letter-spacing: -0.025em; 
+  font-weight: 600;
+}
+
+.text-body { 
+  font-size: 1.125rem; 
+  line-height: 1.6; 
+}
+
+.text-body-large { 
+  font-size: 1.25rem; 
+  line-height: 1.6; 
+}
+
+/* Responsive Typography */
+@media (max-width: 768px) {
+  .text-h1 { font-size: 2.5rem; }
+  .text-h2 { font-size: 2rem; }
+  .text-h3 { font-size: 1.5rem; }
+}
