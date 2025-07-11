@@ -1,0 +1,52 @@
+Calculation_Type,Rule_Name,Description,Questions_Used,Condition,Result,Score_Requirement,Default_Fallback
+DNA_Type_Calculation,Architect_Score,Count architect-type answers in Q1-Q6,Q1-Q6,architect_score >= 4,architect,4+,blurred
+DNA_Type_Calculation,Alchemist_Score,Count alchemist-type answers in Q1-Q6,Q1-Q6,alchemist_score >= 4,alchemist,4+,blurred
+DNA_Type_Calculation,Blurred_Identity,Both architect and alchemist < 4,Q1-Q6,architect_score < 4 AND alchemist_score < 4,blurred,<4 either,blurred
+Subtype_Calculation,Architect_Default,Default subtype when no clear winner,Q13-Q22,maxCount = 0 AND dnaType = architect,master-strategist,0,master-strategist
+Subtype_Calculation,Alchemist_Default,Default subtype when no clear winner,Q13-Q22,maxCount = 0 AND dnaType = alchemist,visionary-oracle,0,visionary-oracle
+Subtype_Calculation,Blurred_Default,Default subtype when no clear winner,Q13-Q22,maxCount = 0 AND dnaType = blurred,overthinker,0,overthinker
+Subtype_Calculation,Dominant_Subtype,Most common valid subtype from Q13-Q22,Q13-Q22,maxCount > 0 AND validSubtype,dominantSubtype,1+,default_by_type
+Answer_Mapping,Q1_A,Weekend preparation - systematic,Q1,"I mentally run through what I need and pack once — essentials are covered.",architect,,
+Answer_Mapping,Q1_B,Weekend preparation - anxious planning,Q1,"I write a full list, check everything off, repack a few times, still feel uneasy.",blurred,,
+Answer_Mapping,Q1_C,Weekend preparation - spontaneous,Q1,"I throw things in last minute and trust it'll be fine.",alchemist,,
+Answer_Mapping,Q1_D,Weekend preparation - overwhelmed,Q1,"I pack, unpack, and get overwhelmed deciding what I even need.",blurred,,
+Answer_Mapping,Q2_A,Hurt feelings - quiet withdrawal,Q2,"I won't say anything — they'll figure it out or I'll quietly move on.",architect,,
+Answer_Mapping,Q2_B,Hurt feelings - expressive,Q2,"I'll express it — maybe now, maybe later — but it will come out.",alchemist,,
+Answer_Mapping,Q2_C,Hurt feelings - reactive then doubtful,Q2,"I react suddenly, then second-guess if I was overdramatic.",blurred,,
+Answer_Mapping,Q2_D,Hurt feelings - stuck indecision,Q2,"I feel stuck about whether I should say something or not.",blurred,,
+Answer_Mapping,Q3_A,Room of strangers - strategic observation,Q3,"I observe quietly, scan the room, and engage when it makes strategic sense.",architect,,
+Answer_Mapping,Q3_B,Room of strangers - energy tuning,Q3,"I tune into the energy — I might light up the room or stay quiet, depending how I feel.",alchemist,,
+Answer_Mapping,Q3_C,Room of strangers - passive waiting,Q3,"I pause and wait for someone to approach — I'm not sure how to show up.",neutral,,
+Answer_Mapping,Q3_D,Room of strangers - confidence switching,Q3,"I keep switching between acting confident and feeling unsure — I want to be seen but don't know how.",blurred,,
+Answer_Mapping,Q4_A,6am commitment - unwavering stick,Q4,"I stick to it. Fatigue doesn't override commitment unless it's serious.",architect,,
+Answer_Mapping,Q4_B,6am commitment - purpose reassessment,Q4,"I ask myself if the reason still matters — if not, I adjust without guilt.",alchemist,,
+Answer_Mapping,Q4_C,6am commitment - guilt cycle,Q4,"I sleep in, feel bad, and try again tomorrow.",neutral,,
+Answer_Mapping,Q4_D,6am commitment - torn between,Q4,"I feel torn — I want to keep going but can't force myself either.",blurred,,
+Answer_Mapping,Q5_A,Project success - satisfied completion,Q5,"If the result is strong, I'm satisfied — no need to change anything.",architect,,
+Answer_Mapping,Q5_B,Project success - improvement focus,Q5,"I immediately wonder how it could have been even better.",alchemist,,
+Answer_Mapping,Q5_C,Project success - uneasy satisfaction,Q5,"I feel good but uneasy — maybe I missed something important.",blurred,,
+Answer_Mapping,Q5_D,Project success - external validation dependency,Q5,"I feel proud for a moment, then wonder if I was just lucky.",blurred,,
+Answer_Mapping,Q6_A,Unprecedented goal - path requirement,Q6,"I need to see a path or example — otherwise I'm not sure it's achievable.",architect,,
+Answer_Mapping,Q6_B,Unprecedented goal - step focus,Q6,"Even if no one's done it, I know it's possible — I just need the steps.",alchemist,,
+Answer_Mapping,Q6_C,Unprecedented goal - doubtful trying,Q6,"I doubt myself, but I still try in case it works out.",blurred,,
+Answer_Mapping,Q6_D,Unprecedented goal - daily switching,Q6,"I switch between confidence and confusion depending on the day.",blurred,,
+Subtype_Mapping,master-strategist,Master Strategist - strategic foresight,Architect,"Thought → Emotion → Thought","You don't follow structure — you design it.",Q13-Q18
+Subtype_Mapping,systemised-builder,Systemised Builder - consistent execution,Architect,"Thought → Emotion → Thought","You don't chase momentum — you build it, brick by brick.",Q13-Q18
+Subtype_Mapping,internal-analyzer,Internal Analyzer - deep logic,Architect,"Thought → Emotion → Thought","You don't just want to get it right — you need to know why it's right.",Q13-Q18
+Subtype_Mapping,ultimate-strategist,Ultimate Strategist - operational mastery,Architect,"Thought → Emotion → Thought","You don't move often — but when you do, everything moves with you.",Q13-Q18
+Subtype_Mapping,visionary-oracle,Visionary Oracle - intuitive foresight,Alchemist,"Emotion → Thought → Emotion","Sees the future, struggles to finish.",Q19-Q22
+Subtype_Mapping,magnetic-perfectionist,Magnetic Perfectionist - aligned refinement,Alchemist,"Emotion → Thought → Emotion","Organised to deliver aligned perfection.",Q19-Q22
+Subtype_Mapping,energetic-empath,Energetic Empath - healing energy,Alchemist,"Emotion → Thought → Emotion","Heals with energy, absorbs with intensity.",Q19-Q22
+Subtype_Mapping,ultimate-alchemist,Ultimate Alchemist - complete gifts,Alchemist,"Emotion → Thought → Emotion","Carries every Alchemist gift — and full awareness of structure.",Q19-Q22
+Subtype_Mapping,overthinker,Overthinker - analysis paralysis,Blurred,Disconnected,"Trapped in thought loops, struggles with decisions.",Default
+Subtype_Mapping,performer,Performer - external validation,Blurred,Disconnected,"Seeks external approval, inconsistent identity.",Default
+Subtype_Mapping,self-forsaker,Self-Forsaker - self-abandonment,Blurred,Disconnected,"Abandons own needs for others.",Default
+Subtype_Mapping,self-betrayer,Self-Betrayer - self-sabotage,Blurred,Disconnected,"Sabotages own success and potential.",Default
+Valid_Subtypes,architect_subtypes,Valid subtypes for Architect DNA type,architect,"master-strategist, systemised-builder, internal-analyzer, ultimate-strategist",,
+Valid_Subtypes,alchemist_subtypes,Valid subtypes for Alchemist DNA type,alchemist,"visionary-oracle, magnetic-perfectionist, energetic-empath, ultimate-alchemist",,
+Valid_Subtypes,blurred_subtypes,Valid subtypes for Blurred DNA type,blurred,"overthinker, performer, self-forsaker, self-betrayer",,
+Awareness_Calculation,awareness_percentage,Fixed awareness percentage for all results,Q7-Q12,Always returns 75%,75,Static,75
+Score_Calculation,overall_score,Overall quiz score calculation,All,Currently returns 0,0,Static,0
+Operating_Loop,architect_loop,Architect thinking pattern,Architect,"Thought → Emotion → Thought","Think first, check feelings logically, re-validate before acting",,
+Operating_Loop,alchemist_loop,Alchemist feeling pattern,Alchemist,"Emotion → Thought → Emotion","Feel first, reflect on feeling, act if energy intact",,
+Operating_Loop,blurred_loop,Blurred disconnected pattern,Blurred,Disconnected,"Jump between thoughts and feelings without stable rhythm",,
