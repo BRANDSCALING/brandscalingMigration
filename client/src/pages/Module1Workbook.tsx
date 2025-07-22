@@ -50,7 +50,6 @@ export default function Module1Workbook() {
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const queryClient = useQueryClient();
-  const { mode, setMode } = useDNAMode();
 
   // Check authentication
   useEffect(() => {
@@ -225,22 +224,12 @@ export default function Module1Workbook() {
       <div className="flex">
         {/* Desktop Sidebar */}
         <div className="hidden lg:block">
-          <ProgressSidebar
-            sections={sections}
-            currentSectionIndex={currentSectionIndex}
-            completedSections={session?.completedSections || []}
-            onSectionClick={handleSectionChange}
-          />
+          <ProgressSidebar session={session} />
         </div>
 
         {/* Mobile Progress */}
         <div className="lg:hidden">
-          <MobileProgress
-            sections={sections}
-            currentSectionIndex={currentSectionIndex}
-            completedSections={session?.completedSections || []}
-            onSectionClick={handleSectionChange}
-          />
+          <MobileProgress session={session} />
         </div>
 
         {/* Main Content */}
