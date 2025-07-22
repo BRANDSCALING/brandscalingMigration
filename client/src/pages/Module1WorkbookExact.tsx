@@ -3,7 +3,64 @@ import { useLocation } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, ChevronLeft, ChevronRight, CheckCircle2 } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
+import ProgressSidebar from "@/components/workbook/progress-sidebar";
+import Module1Welcome from "@/components/workbook/module1-welcome";
+import BusinessFilter from "@/components/workbook/business-filter";
+
+// Get completion status for components
+const getCompletedSections = (session?: WorkbookSession): string[] => {
+  if (!session) return [];
+  
+  const completed = [];
+  
+  // Section 1.1: Business Filter
+  if (session.businessFilter && 
+      session.businessFilter.problem !== null && 
+      session.businessFilter.person !== null && 
+      session.businessFilter.profit !== null && 
+      session.businessFilter.pull !== null) {
+    completed.push("section-1-1");
+  }
+  
+  // Section 1.2: E-DNA Reflection
+  if (session.ednaReflection && (
+      session.ednaReflection.architectReflection1 ||
+      session.ednaReflection.architectReflection2 ||
+      session.ednaReflection.alchemistReflection1 ||
+      session.ednaReflection.alchemistReflection2)) {
+    completed.push("section-1-2");
+  }
+  
+  // Section 1.3: Clarity Prompts
+  if (session.clarityPrompts && 
+      session.clarityPrompts.businessIdea && 
+      session.clarityPrompts.audience) {
+    completed.push("section-1-3");
+  }
+  
+  // Section 1.4: Offer Builder
+  if (session.offerBuilder && 
+      session.offerBuilder.transformation && 
+      session.offerBuilder.vehicle && 
+      session.offerBuilder.price) {
+    completed.push("section-1-4");
+  }
+  
+  // Section 1.5: Viability Scorecard
+  if (session.viabilityScores && 
+      Object.values(session.viabilityScores).some(score => score > 0)) {
+    completed.push("section-1-5");
+  }
+  
+  // Section 1.6: Name & Logo Builder
+  if (session.nameLogoBuilder && 
+      (session.nameLogoBuilder.businessName || session.nameLogoBuilder.tagline)) {
+    completed.push("section-1-6");
+  }
+  
+  return completed;
+};
 
 interface WorkbookSession {
   id: string;
@@ -16,6 +73,7 @@ interface WorkbookSession {
   offerBuilder?: any;
   viabilityScores?: any;
   nameLogoBuilder?: any;
+  energyLevel?: number;
   completedSections: string[];
   currentSection: number;
   totalSections: number;
@@ -25,50 +83,33 @@ interface WorkbookSession {
 
 export default function Module1WorkbookExact() {
   const [, setLocation] = useLocation();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [selectedDNAMode, setSelectedDNAMode] = useState<'architect' | 'alchemist'>('architect');
-  const [businessFilterAnswers, setBusinessFilterAnswers] = useState({
-    problem: null as boolean | null,
-    person: null as boolean | null,
-    profit: null as boolean | null,
-    pull: null as boolean | null
-  });
-  const queryClient = useQueryClient();
-
-  // Check authentication
-  useEffect(() => {
-    const studentId = localStorage.getItem('studentId');
-    const studentEmail = localStorage.getItem('studentEmail');
-    
-    if (studentId && studentEmail) {
-      setIsAuthenticated(true);
-    } else {
-      setLocation('/auth');
-    }
-  }, [setLocation]);
-
-  // Get workbook session
-  const { data: session, isLoading } = useQuery<WorkbookSession>({
-    queryKey: ['/api/workbook/session'],
-    enabled: isAuthenticated,
+  
+  // Fetch workbook session
+  const { data: session, isLoading: sessionLoading, error: sessionError } = useQuery({
+    queryKey: ["/api/workbook/session"],
+    refetchOnMount: true,
   });
 
-  if (!isAuthenticated || isLoading) {
+  if (sessionLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-600 to-indigo-800 flex items-center justify-center">
-        <div className="text-center text-white">
-          <h2 className="text-2xl font-bold mb-2">Loading Module 1...</h2>
-          <p>Preparing your workbook experience</p>
-        </div>
+        <div className="text-white text-xl">Loading your workbook...</div>
+      </div>
+    );
+  }
+
+  if (sessionError || !session) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-600 to-indigo-800 flex items-center justify-center">
+        <div className="text-white text-xl">Error loading workbook session. Please try again.</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-600 to-indigo-800">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-purple-700 to-indigo-800 border-b border-white/20">
+    <div className="min-h-screen">
+      {/* Fixed Header */}
+      <div className="fixed top-0 left-0 right-0 bg-gradient-to-r from-purple-700 to-indigo-800 border-b border-white/20 z-30">
         <div className="px-4 py-3">
           <div className="flex items-center justify-between max-w-7xl mx-auto">
             <Button
@@ -95,377 +136,271 @@ export default function Module1WorkbookExact() {
         </div>
       </div>
 
-      <div className="flex h-[calc(100vh-80px)]">
-        {/* Collapsible Sidebar */}
-        <div className={`bg-purple-700/50 backdrop-blur-sm border-r border-white/20 transition-all duration-300 ${
-          sidebarCollapsed ? 'w-12' : 'w-80'
-        }`}>
-          {/* Sidebar Toggle */}
-          <div className="p-4 border-b border-white/20">
-            <button
-              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-              className="text-white hover:bg-white/10 p-2 rounded-lg w-full flex items-center justify-center"
-            >
-              {sidebarCollapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
-            </button>
-          </div>
-
-          {!sidebarCollapsed && (
-            <div className="p-4">
-              {/* Module Progress */}
-              <div className="mb-6">
-                <h3 className="text-white font-bold text-lg mb-2">Module Progress</h3>
-                <div className="text-white/80 text-sm">14%</div>
-                <div className="w-full bg-white/20 rounded-full h-2 mt-2">
-                  <div className="bg-white h-2 rounded-full transition-all duration-300" style={{ width: '14%' }}></div>
-                </div>
-              </div>
-
-              {/* Modules */}
-              <div className="space-y-3">
-                <h4 className="text-white font-semibold text-sm uppercase tracking-wide">Modules</h4>
-                
-                {/* Module 1 - Active */}
-                <div className="bg-white/10 border border-white/20 rounded-lg p-3">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-white font-bold text-sm">Module 1</span>
-                    <span className="text-xs bg-white text-purple-700 px-2 py-1 rounded font-medium">
-                      Business Foundation
-                    </span>
-                  </div>
-                  
-                  {/* Progress Items */}
-                  <div className="space-y-2">
-                    {[
-                      { id: 'welcome', title: 'Welcome to Module 1', desc: 'Introduction to Build the Foundation' },
-                      { id: 'business-filter', title: 'What Makes a Business Idea Work?', desc: '4-part viable business filter' },
-                      { id: 'edna-lens', title: 'The E-DNA Lens for Idea Clarity', desc: 'Entrepreneurial DNA analysis' },
-                      { id: 'clarity-prompts', title: 'Business Idea Clarity Prompts', desc: 'AI-powered insights' },
-                      { id: 'offer-builder', title: 'Offer Builder Canvas', desc: '5-part framework' },
-                      { id: 'viability-scorecard', title: 'Idea Viability Scorecard', desc: 'Completed', completed: true },
-                      { id: 'name-logo', title: 'AI Sprint — Name + Logo Builder', desc: 'Business naming & branding' },
-                      { id: 'progress-summary', title: 'Your Progress Summary', desc: 'Review completion status' }
-                    ].map((item) => (
-                      <div key={item.id} className="flex items-start space-x-2">
-                        <div className={`w-4 h-4 rounded border-2 flex-shrink-0 mt-0.5 ${
-                          item.completed ? 'bg-green-500 border-green-500' : 'border-white/40'
-                        }`}>
-                          {item.completed && (
-                            <CheckCircle2 className="w-3 h-3 text-white" />
-                          )}
-                        </div>
-                        <div>
-                          <div className="text-white/90 text-xs font-medium leading-tight cursor-pointer hover:text-white">
-                            {item.title}
-                          </div>
-                          <div className="text-white/60 text-xs">{item.desc}</div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Energy Level */}
-                <div className="bg-white/5 rounded-lg p-3 mt-4">
-                  <h4 className="text-white font-semibold text-sm mb-3">Energy Level</h4>
-                  <div className="text-white/70 text-xs mb-2">Energised (7/10)</div>
-                  <div className="text-white/60 text-xs italic">"You're building momentum! Keep going."</div>
-                  
-                  <button className="w-full mt-4 bg-purple-600 hover:bg-purple-700 text-white text-sm py-2 px-3 rounded-lg">
-                    Start Module 2
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
+      {/* Main Layout */}
+      <div className="pt-[80px] min-h-screen bg-gradient-to-br from-purple-600 to-indigo-800">
+        {/* Progress Sidebar */}
+        <ProgressSidebar session={session} />
 
         {/* Main Content Area */}
-        <div className="flex-1 bg-white overflow-y-auto">
-          <div className="max-w-4xl mx-auto p-6">
-            {/* Welcome Section */}
-            <div className="mb-12" id="welcome">
-              <div className="text-center mb-8">
-                <h1 className="text-4xl font-bold text-gray-900 mb-4">
-                  Welcome to Module 1
-                </h1>
-                <h2 className="text-3xl font-bold text-gray-900 mb-6">
-                  Build the Foundation
-                </h2>
-                <p className="text-xl text-gray-600 leading-relaxed max-w-3xl mx-auto">
-                  This module helps you go from vague idea to clarity, confidence, and viability — before you invest time or money.
+        <div className="ml-80 bg-white min-h-screen">
+          <div className="max-w-4xl mx-auto p-8 space-y-16">
+            {/* Module 1 Welcome */}
+            <Module1Welcome 
+              completedSections={getCompletedSections(session)}
+              dnaMode={session?.dnaMode}
+              onStartClick={() => {
+                const element = document.getElementById("business-filter");
+                if (element) {
+                  element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+              }}
+            />
+
+            {/* Business Filter Section */}
+            <BusinessFilter session={session} />
+
+            {/* E-DNA Reflection Section */}
+            <div id="edna-reflection" className="space-y-8">
+              <div className="bg-purple-700 text-white rounded-xl p-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="bg-white text-purple-700 rounded-full w-8 h-8 flex items-center justify-center text-lg font-bold">
+                    2
+                  </div>
+                  <h2 className="text-2xl font-bold">The E-DNA Lens for Idea Clarity</h2>
+                </div>
+                <p className="text-purple-100">
+                  Understanding how your entrepreneurial DNA affects your business approach and decision-making process.
                 </p>
               </div>
 
-              {/* Philosophy Quote */}
-              <div className="mb-8">
-                <Card className="border-l-4 border-purple-500 bg-purple-50">
-                  <CardContent className="p-6">
-                    <blockquote className="text-lg italic text-gray-700 text-center leading-relaxed">
-                      "A business idea works when it solves a real problem — for a real person — in a way that makes you money — and doesn't drain your energy."
-                    </blockquote>
-                    <cite className="block text-center text-sm font-medium text-gray-600 mt-4">
-                      — Brandscaling Philosophy
-                    </cite>
-                  </CardContent>
-                </Card>
+              <Card className="bg-white border-purple-200 p-6">
+                <h3 className="text-lg font-bold mb-4">DNA Reflection Questions</h3>
+                <p className="text-gray-600 mb-6">
+                  Based on your {session?.dnaMode === 'architect' ? 'Architect' : 'Alchemist'} DNA, reflect on these specific questions:
+                </p>
+
+                {session?.dnaMode === 'architect' ? (
+                  <div className="space-y-4">
+                    <div className="bg-blue-50 p-4 rounded-lg">
+                      <h4 className="font-semibold text-blue-800 mb-2">Architect Reflection 1</h4>
+                      <p className="text-blue-700 text-sm">How can you build systems and processes around this idea to ensure scalability and efficiency?</p>
+                    </div>
+                    <div className="bg-blue-50 p-4 rounded-lg">
+                      <h4 className="font-semibold text-blue-800 mb-2">Architect Reflection 2</h4>
+                      <p className="text-blue-700 text-sm">What potential risks and challenges do you foresee, and how would you mitigate them?</p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="bg-orange-50 p-4 rounded-lg">
+                      <h4 className="font-semibold text-orange-800 mb-2">Alchemist Reflection 1</h4>
+                      <p className="text-orange-700 text-sm">How does this idea align with your intuitive sense of what the market needs right now?</p>
+                    </div>
+                    <div className="bg-orange-50 p-4 rounded-lg">
+                      <h4 className="font-semibold text-orange-800 mb-2">Alchemist Reflection 2</h4>
+                      <p className="text-orange-700 text-sm">What creative approaches could you use to differentiate this idea in the marketplace?</p>
+                    </div>
+                  </div>
+                )}
+              </Card>
+            </div>
+
+            {/* Clarity Prompts Section */}
+            <div id="clarity-prompts" className="space-y-8">
+              <div className="bg-purple-700 text-white rounded-xl p-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="bg-white text-purple-700 rounded-full w-8 h-8 flex items-center justify-center text-lg font-bold">
+                    3
+                  </div>
+                  <h2 className="text-2xl font-bold">Business Idea Clarity Prompts</h2>
+                </div>
+                <p className="text-purple-100">
+                  AI-powered insights to refine and strengthen your business concept.
+                </p>
               </div>
 
-              {/* What You'll Be Working Through */}
-              <div className="mb-8">
-                <h2 className="text-2xl font-bold text-gray-900 text-center mb-6">
-                  What You'll Be Working Through
-                </h2>
+              <Card className="bg-gradient-to-r from-purple-50 to-indigo-50 border-purple-200 p-6">
+                <h3 className="font-bold text-lg mb-4">AI-Powered Business Analysis</h3>
+                <p className="text-gray-600 mb-4">
+                  Use these targeted prompts to get specific AI feedback on different aspects of your business idea.
+                </p>
+
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="bg-white p-4 rounded-lg border">
+                    <h4 className="font-semibold mb-2">Market Validation Prompt</h4>
+                    <p className="text-sm text-gray-600 mb-2">Get AI analysis on market demand and competition.</p>
+                    <Button size="sm" className="bg-purple-600 hover:bg-purple-700">
+                      Generate Prompt
+                    </Button>
+                  </div>
+                  
+                  <div className="bg-white p-4 rounded-lg border">
+                    <h4 className="font-semibold mb-2">Revenue Model Prompt</h4>
+                    <p className="text-sm text-gray-600 mb-2">Explore monetization strategies and pricing.</p>
+                    <Button size="sm" className="bg-purple-600 hover:bg-purple-700">
+                      Generate Prompt
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            </div>
+
+            {/* Offer Builder Section */}
+            <div id="offer-builder" className="space-y-8">
+              <div className="bg-purple-700 text-white rounded-xl p-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="bg-white text-purple-700 rounded-full w-8 h-8 flex items-center justify-center text-lg font-bold">
+                    4
+                  </div>
+                  <h2 className="text-2xl font-bold">Offer Builder Canvas</h2>
+                </div>
+                <p className="text-purple-100">
+                  Structure your business offering using our 5-part framework.
+                </p>
+              </div>
+
+              <Card className="bg-white border-purple-200 p-6">
+                <h3 className="text-lg font-bold mb-6">5-Part Offer Framework</h3>
                 
-                <div className="grid gap-4">
+                <div className="space-y-6">
                   {[
-                    { title: "What Makes a Business Idea Work?", desc: "4-part viable business filter" },
-                    { title: "The E-DNA Lens for Idea Clarity", desc: "Entrepreneurial DNA analysis" },
-                    { title: "Business Idea Clarity Prompts", desc: "AI-powered insights" },
-                    { title: "Offer Builder Canvas", desc: "5-part framework" },
-                    { title: "Idea Viability Scorecard", desc: "Score your idea across 8 key pillars" },
-                    { title: "AI Sprint — Name + Logo Builder", desc: "Branding your business" }
+                    { title: "Transformation", description: "What change do you create for your customers?" },
+                    { title: "Vehicle", description: "How do you deliver this transformation?" },
+                    { title: "Price", description: "What do you charge for this value?" },
+                    { title: "Guarantee", description: "How do you reduce their risk?" },
+                    { title: "Urgency", description: "Why should they act now?" }
                   ].map((item, index) => (
-                    <Card key={index} className="bg-purple-50 border-purple-200 hover:shadow-md transition-all">
-                      <CardContent className="p-4">
-                        <h3 className="font-bold text-lg text-gray-900">{item.title}</h3>
-                        <p className="text-sm text-gray-600">{item.desc}</p>
-                      </CardContent>
-                    </Card>
+                    <div key={item.title} className="bg-purple-50 p-4 rounded-lg">
+                      <div className="flex items-center space-x-3 mb-2">
+                        <div className="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+                          {index + 1}
+                        </div>
+                        <h4 className="font-semibold">{item.title}</h4>
+                      </div>
+                      <p className="text-gray-600 text-sm">{item.description}</p>
+                    </div>
                   ))}
                 </div>
+              </Card>
+            </div>
+
+            {/* Viability Scorecard Section */}
+            <div id="viability-scorecard" className="space-y-8">
+              <div className="bg-purple-700 text-white rounded-xl p-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="bg-white text-purple-700 rounded-full w-8 h-8 flex items-center justify-center text-lg font-bold">
+                    5
+                  </div>
+                  <h2 className="text-2xl font-bold">Idea Viability Scorecard</h2>
+                </div>
+                <p className="text-purple-100">
+                  Score your business concept across 8 key pillars of viability.
+                </p>
               </div>
-            </div>
 
-            {/* DNA Mode Selection */}
-            <div className="mb-12" id="dna-selection">
-              <Card className="bg-purple-50 border-purple-200">
-                <CardHeader>
-                  <CardTitle className="text-center">Choose Your Entrepreneurial DNA</CardTitle>
-                  <p className="text-center text-gray-600">
-                    Select your natural approach to building a business. This will customize your experience throughout the workbook.
-                  </p>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex justify-center gap-4">
-                    <div className="text-center">
-                      <div className="text-sm text-gray-600 mb-2">Your E-DNA:</div>
-                      <div className="flex gap-4">
-                        <Button
-                          variant={selectedDNAMode === 'architect' ? 'default' : 'outline'}
-                          className={selectedDNAMode === 'architect' ? 'bg-purple-600 hover:bg-purple-700' : ''}
-                          onClick={() => setSelectedDNAMode('architect')}
-                        >
-                          Architect
-                        </Button>
-                        <Button
-                          variant={selectedDNAMode === 'alchemist' ? 'default' : 'outline'}
-                          className={selectedDNAMode === 'alchemist' ? 'bg-orange-500 hover:bg-orange-600' : ''}
-                          onClick={() => setSelectedDNAMode('alchemist')}
-                        >
-                          Alchemist
-                        </Button>
+              <Card className="bg-white border-purple-200 p-6">
+                <h3 className="text-lg font-bold mb-6">8-Pillar Assessment</h3>
+                
+                <div className="grid gap-4 md:grid-cols-2">
+                  {[
+                    "Market Demand", "Competition Analysis", "Revenue Potential", "Delivery Capability",
+                    "Personal Alignment", "Resource Requirements", "Risk Assessment", "Growth Potential"
+                  ].map((pillar, index) => (
+                    <div key={pillar} className="bg-gray-50 p-4 rounded-lg">
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="font-medium">{pillar}</h4>
+                        <div className="text-sm text-gray-500">0/10</div>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div className="bg-purple-600 h-2 rounded-full" style={{ width: '0%' }}></div>
                       </div>
                     </div>
-                  </div>
-                </CardContent>
+                  ))}
+                </div>
               </Card>
             </div>
 
-            {/* Business Filter Section */}
-            <div className="mb-12" id="business-filter">
-              <Card className="bg-purple-700 text-white">
-                <CardHeader>
-                  <div className="flex items-center space-x-2">
-                    <div className="bg-white text-purple-700 rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">1</div>
-                    <CardTitle>What Makes a Business Idea Work?</CardTitle>
+            {/* Name & Logo Builder Section */}
+            <div id="name-logo-builder" className="space-y-8">
+              <div className="bg-purple-700 text-white rounded-xl p-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="bg-white text-purple-700 rounded-full w-8 h-8 flex items-center justify-center text-lg font-bold">
+                    6
                   </div>
-                  <p className="text-purple-100">
-                    To help entrepreneurs understand the difference between an inspiring idea and a viable business. This page builds clarity, confidence, and alignment before moving forward.
-                  </p>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="bg-white/10 p-4 rounded-lg">
-                    <h4 className="font-semibold mb-2">Quick Insight</h4>
-                    <p className="text-sm italic">
-                      "A business idea works when it solves a real problem, for a real person, in a way that makes you money — and doesn't drain your energy." — Brandscaling Philosophy
-                    </p>
-                    <p className="text-sm mt-2">
-                      Most entrepreneurs focus on what they love, but forget the other layers: profitability, delivery model, energy alignment, and market need. This section sets the foundation for a business idea that works in real life — not just in your head.
-                    </p>
+                  <h2 className="text-2xl font-bold">AI Sprint — Name + Logo Builder</h2>
+                </div>
+                <p className="text-purple-100">
+                  Create your business name and visual identity with AI assistance.
+                </p>
+              </div>
+
+              <Card className="bg-gradient-to-r from-purple-50 to-indigo-50 border-purple-200 p-6">
+                <h3 className="font-bold text-lg mb-4">Business Naming & Branding</h3>
+                
+                <div className="space-y-6">
+                  <div className="bg-white p-4 rounded-lg border">
+                    <h4 className="font-semibold mb-2">Business Name Generator</h4>
+                    <p className="text-sm text-gray-600 mb-4">Generate unique names based on your business concept.</p>
+                    <Button className="bg-purple-600 hover:bg-purple-700">
+                      Generate Names
+                    </Button>
                   </div>
-
-                  <div className="bg-white/10 p-4 rounded-lg">
-                    <h4 className="font-semibold mb-3">
-                      {selectedDNAMode === 'architect' ? 'Architect Mode: Strategic Analysis' : 'Alchemist Mode: Intuitive Flow'}
-                    </h4>
-                    {selectedDNAMode === 'architect' ? (
-                      <div>
-                        <p className="font-medium text-purple-200 mb-2">Core Risk: Over-focus on logic, skip emotional pull</p>
-                        <p className="text-sm">Remember: You need magnetism, not just function. The market is human.</p>
-                      </div>
-                    ) : (
-                      <div>
-                        <p className="font-medium text-orange-200 mb-2">Core Risk: Follow passion, skip practical delivery</p>
-                        <p className="text-sm">Remember: Great energy needs great structure. Passion without profit burns out.</p>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Business Filter Questions */}
-                  <div className="space-y-6">
-                    {[
-                      {
-                        key: 'problem',
-                        title: 'Problem',
-                        question: 'Does this solve a real problem (or deep desire) for a specific person?',
-                        help: 'If the answer is vague, you need more clarity.'
-                      },
-                      {
-                        key: 'person',
-                        title: 'Person',
-                        question: 'Do I know who this is for? Can I describe them?',
-                        help: 'If your answer is "everyone", you need to write this down.'
-                      },
-                      {
-                        key: 'profit',
-                        title: 'Profit',
-                        question: 'Am I personally energized and excited to do this?',
-                        help: 'This is where alignment happens. Don\'t skip it.'
-                      },
-                      {
-                        key: 'pull',
-                        title: 'Pull',
-                        question: 'Am I personally energized and excited to do this?',
-                        help: 'This is where alignment happens. Don\'t skip it.'
-                      }
-                    ].map((item) => (
-                      <Card key={item.key} className="bg-white text-gray-900">
-                        <CardContent className="p-4">
-                          <div className="flex items-center space-x-3 mb-3">
-                            <div className="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
-                              {item.title.charAt(0)}
-                            </div>
-                            <h4 className="font-semibold">{item.title}</h4>
-                          </div>
-                          <p className="font-medium mb-3">{item.question}</p>
-                          
-                          <div className="flex space-x-4 mb-2">
-                            <label className="flex items-center space-x-2">
-                              <input
-                                type="radio"
-                                name={item.key}
-                                value="yes"
-                                checked={businessFilterAnswers[item.key as keyof typeof businessFilterAnswers] === true}
-                                onChange={() => setBusinessFilterAnswers(prev => ({
-                                  ...prev,
-                                  [item.key]: true
-                                }))}
-                                className="text-green-500"
-                              />
-                              <span>Yes</span>
-                            </label>
-                            <label className="flex items-center space-x-2">
-                              <input
-                                type="radio"
-                                name={item.key}
-                                value="no"
-                                checked={businessFilterAnswers[item.key as keyof typeof businessFilterAnswers] === false}
-                                onChange={() => setBusinessFilterAnswers(prev => ({
-                                  ...prev,
-                                  [item.key]: false
-                                }))}
-                                className="text-red-500"
-                              />
-                              <span>No</span>
-                            </label>
-                          </div>
-                          
-                          <p className="text-xs text-gray-600">{item.help}</p>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-
-                  {/* AI Clarity Section */}
-                  <Card className="bg-white/10">
-                    <CardContent className="p-4">
-                      <h4 className="font-semibold mb-3 text-white">Get AI Clarity</h4>
-                      <p className="text-sm text-purple-100 mb-3">
-                        Edit the prompt below and get instant AI feedback:
-                      </p>
-                      
-                      <textarea
-                        className="w-full h-24 p-3 rounded-lg bg-white text-gray-900 text-sm"
-                        placeholder="• What: I want to provide coaching and AI business automation for law firms • Why: Legal processes are slow, repetitive, and overwhelming • Target: UK solicitors who lack tech expertise • Who: I'm a business consultant who's worked in fintech • How I imagine making money: [Insert] • Can you help me review this and tell me what's missing?"
-                      />
-                      
-                      <div className="flex space-x-2 mt-3">
-                        <Button className="bg-purple-600 hover:bg-purple-700">Get AI Response</Button>
-                        <Button variant="outline" className="bg-white/20 border-white/30 text-white hover:bg-white/30">
-                          Copy Prompt
-                        </Button>
-                      </div>
-                      
-                      <div className="mt-4">
-                        <h5 className="font-medium text-white mb-2">Your AI Response Space</h5>
-                        <div className="bg-white/20 rounded-lg p-4 min-h-[100px] text-sm">
-                          <p className="text-purple-100 italic">Paste your AI response and insights here...</p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Progress Summary */}
-            <div className="mb-12" id="progress-summary">
-              <Card className="bg-gradient-to-r from-orange-400 to-red-500 text-white">
-                <CardContent className="p-8">
-                  <h2 className="text-2xl font-bold mb-6">Your Progress Summary</h2>
                   
-                  <div className="bg-white/90 text-gray-900 rounded-lg p-6">
-                    <table className="w-full">
-                      <thead>
-                        <tr className="border-b">
-                          <th className="text-left py-2">Section</th>
-                          <th className="text-right py-2">Completed</th>
-                        </tr>
-                      </thead>
-                      <tbody className="space-y-2">
-                        {[
-                          { title: "1.1: What Makes a Business Idea Work?" },
-                          { title: "1.2: The E-DNA Lens for Idea Clarity" },
-                          { title: "1.3: Business Idea Clarity Prompts" },
-                          { title: "1.4: Offer Builder Canvas" },
-                          { title: "1.5: Idea Viability Scorecard", completed: true },
-                          { title: "1.6: AI Sprint — Name + Logo Builder" }
-                        ].map((item, index) => (
-                          <tr key={index} className="border-b border-gray-200">
-                            <td className="py-2">{item.title}</td>
-                            <td className="text-right py-2">
-                              <input type="checkbox" checked={item.completed || false} readOnly className="rounded" />
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                    
-                    <div className="mt-6 pt-4 border-t">
-                      <h4 className="font-semibold mb-2">Next Steps</h4>
-                      <p className="text-sm text-gray-600">
-                        Once you've filled in all sections, you're ready to move forward with your refined business idea and clear offer.
-                      </p>
-                      
-                      <div className="text-center mt-4">
-                        <p className="text-sm text-gray-600">This workbook is based on the</p>
-                        <p className="font-bold text-purple-600">Brandscaling Idea to Launch Kit Starter</p>
-                        <p className="text-sm text-gray-600">Module 1</p>
-                      </div>
-                    </div>
+                  <div className="bg-white p-4 rounded-lg border">
+                    <h4 className="font-semibold mb-2">Logo Concept Creator</h4>
+                    <p className="text-sm text-gray-600 mb-4">Create logo concepts that align with your brand vision.</p>
+                    <Button className="bg-purple-600 hover:bg-purple-700">
+                      Create Logo Concepts
+                    </Button>
                   </div>
-                </CardContent>
+                </div>
+              </Card>
+            </div>
+
+            {/* Progress Summary Section */}
+            <div id="progress-summary" className="space-y-8">
+              <div className="bg-gradient-to-r from-green-600 to-emerald-700 text-white rounded-xl p-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="bg-white text-green-700 rounded-full w-8 h-8 flex items-center justify-center text-lg font-bold">
+                    ✓
+                  </div>
+                  <h2 className="text-2xl font-bold">Your Progress Summary</h2>
+                </div>
+                <p className="text-green-100">
+                  Review your completion status and prepare for Module 2.
+                </p>
+              </div>
+
+              <Card className="bg-white border-green-200 p-6">
+                <h3 className="text-lg font-bold mb-6">Module 1 Completion Status</h3>
+                
+                <div className="space-y-4">
+                  {[
+                    { section: "Business Filter", completed: false },
+                    { section: "E-DNA Reflection", completed: false },
+                    { section: "Clarity Prompts", completed: false },
+                    { section: "Offer Builder", completed: false },
+                    { section: "Viability Scorecard", completed: true },
+                    { section: "Name & Logo Builder", completed: false }
+                  ].map((item) => (
+                    <div key={item.section} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <span className="font-medium">{item.section}</span>
+                      <span className={`px-2 py-1 rounded text-sm font-medium ${
+                        item.completed 
+                          ? 'bg-green-100 text-green-800' 
+                          : 'bg-gray-200 text-gray-600'
+                      }`}>
+                        {item.completed ? 'Complete' : 'Pending'}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-6 text-center">
+                  <Button size="lg" className="bg-purple-600 hover:bg-purple-700">
+                    Continue to Module 2
+                  </Button>
+                </div>
               </Card>
             </div>
           </div>
