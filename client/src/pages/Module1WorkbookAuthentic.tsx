@@ -303,24 +303,24 @@ export default function Module1WorkbookAuthentic() {
               </div>
             </div>
 
-            {/* Placeholder for other sections */}
+            {/* Placeholder for other sections - to be implemented */}
             <div id="business-filter" className="hidden">
-              <BusinessFilter />
+              {session && <BusinessFilter session={session} />}
             </div>
             <div id="edna-reflection" className="hidden">
-              <EdnaReflection />
+              {session && <EdnaReflection session={session} />}
             </div>
             <div id="clarity-prompts" className="hidden">
-              <ClarityPrompts />
+              {session && <ClarityPrompts session={session} />}
             </div>
             <div id="offer-builder" className="hidden">
-              <OfferBuilder />
+              {session && <OfferBuilder session={session} />}
             </div>
             <div id="viability-scorecard" className="hidden">
-              <ViabilityScorecard />
+              {session && <ViabilityScorecard session={session} />}
             </div>
             <div id="name-logo-builder" className="hidden">
-              <NameLogoBuilder />
+              {session && <NameLogoBuilder session={session} />}
             </div>
           </div>
         </div>

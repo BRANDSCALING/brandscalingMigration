@@ -117,133 +117,228 @@ export default function Module1WorkbookSimple() {
   const currentSection = sections[currentSectionIndex];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-6xl mx-auto px-6 py-4">
+    <div className="min-h-screen">
+      {/* Purple Header with Navigation - Matching Reference Design */}
+      <div className="bg-gradient-to-r from-purple-600 to-indigo-700">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <Button
-                variant="outline"
+                variant="ghost"
                 size="sm"
                 onClick={() => setLocation('/student')}
-                className="flex items-center"
+                className="text-white hover:bg-white/10 flex items-center"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back to Dashboard
               </Button>
-              
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Module 1: Build the Foundation</h1>
-                <p className="text-gray-600">Section {currentSectionIndex + 1} of {sections.length}</p>
+            </div>
+            
+            <div className="text-center flex-1">
+              <div className="text-white/90 text-sm font-medium uppercase tracking-wider">
+                THE IDEA-TO-LAUNCH KIT™
+              </div>
+              <div className="text-white text-lg font-bold">
+                Module 1
               </div>
             </div>
+            
+            <div className="w-32"></div> {/* Spacer for centering */}
           </div>
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-6 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Progress Sidebar */}
-          <div className="lg:col-span-1">
-            <Card className="sticky top-8">
-              <CardHeader>
-                <CardTitle className="text-lg">Progress</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {sections.map((section, index) => (
-                    <div
-                      key={section.id}
-                      className={`p-3 rounded-lg cursor-pointer transition-colors ${
-                        index === currentSectionIndex
-                          ? 'bg-blue-100 border-2 border-blue-500'
-                          : session?.completedSections?.includes(section.id)
-                          ? 'bg-green-50 border-2 border-green-200'
-                          : 'bg-gray-50 hover:bg-gray-100'
-                      }`}
-                      onClick={() => handleSectionChange(index)}
-                    >
-                      <div className="flex items-center space-x-2">
-                        {session?.completedSections?.includes(section.id) ? (
-                          <CheckCircle className="h-5 w-5 text-green-500" />
-                        ) : (
-                          <div className="h-5 w-5 rounded-full border-2 border-gray-300" />
-                        )}
-                        <div>
-                          <div className="font-medium text-sm">{section.title}</div>
-                          <div className="text-xs text-gray-500">{section.description}</div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+      {/* Main Content Container with Purple Background */}
+      <div className="bg-gradient-to-b from-purple-600 via-purple-700 to-indigo-800 min-h-screen">
+        {/* Mobile Progress Bar */}
+        <div className="md:hidden bg-white/10 border-b border-white/20">
+          <div className="px-4 py-2">
+            <div className="flex items-center justify-between text-white text-sm">
+              <span>Module Progress</span>
+              <span className="font-bold">14%</span>
+            </div>
+            <div className="w-full bg-white/20 rounded-full h-1.5 mt-2">
+              <div 
+                className="bg-white h-1.5 rounded-full transition-all duration-300"
+                style={{ width: '14%' }}
+              ></div>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex">
+          {/* Desktop Sidebar with Purple Theme */}
+          <div className="hidden md:block w-80 bg-white/5 backdrop-blur-sm border-r border-white/10">
+            <div className="p-6">
+              <div className="mb-6">
+                <h3 className="text-white font-bold text-lg mb-2">Module Progress</h3>
+                <div className="text-white/80 text-sm">14%</div>
+                <div className="w-full bg-white/20 rounded-full h-2 mt-2">
+                  <div 
+                    className="bg-white h-2 rounded-full transition-all duration-300"
+                    style={{ width: '14%' }}
+                  ></div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+
+              <div className="space-y-3">
+                <h4 className="text-white font-semibold text-sm uppercase tracking-wide">Modules</h4>
+                
+                {/* Module 1 - Active */}
+                <div className="bg-white/10 border border-white/20 rounded-lg p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-white font-bold text-sm">Module 1</span>
+                    <span className="text-xs bg-white text-purple-700 px-2 py-1 rounded font-medium">
+                      Business Foundation
+                    </span>
+                  </div>
+                  
+                  {/* Progress Items */}
+                  <div className="space-y-2">
+                    {sections.map((section, index) => (
+                      <div key={section.id} className="flex items-start space-x-2">
+                        <div className={`w-4 h-4 rounded border-2 flex-shrink-0 mt-0.5 ${
+                          session?.completedSections?.includes(section.id) 
+                            ? 'bg-green-500 border-green-500' 
+                            : 'border-white/40'
+                        }`}>
+                          {session?.completedSections?.includes(section.id) && (
+                            <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                            </svg>
+                          )}
+                        </div>
+                        <span className="text-white/90 text-xs leading-tight cursor-pointer hover:text-white" 
+                              onClick={() => handleSectionChange(index)}>
+                          {section.title}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Main Content */}
-          <div className="lg:col-span-3">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-xl">{currentSection.title}</CardTitle>
-                <p className="text-gray-600">{currentSection.description}</p>
-              </CardHeader>
-              <CardContent>
-                {/* Section Content */}
-                <div className="space-y-6">
-                  <div className="bg-blue-50 p-6 rounded-lg">
-                    <h3 className="font-bold mb-3">Section: {currentSection.title}</h3>
-                    <p className="text-gray-700 mb-4">
-                      This section will help you {currentSection.description.toLowerCase()}.
-                    </p>
-                    
-                    {currentSectionIndex === 0 && (
-                      <div className="space-y-4">
-                        <h4 className="font-semibold">Welcome to Module 1: Build the Foundation!</h4>
-                        <p>In this module, you'll work through 6 key sections to build a solid foundation for your business:</p>
-                        <ul className="list-disc pl-6 space-y-2">
-                          <li>Validate your business idea with our 4-part filter</li>
-                          <li>Reflect on how your E-DNA type impacts your approach</li>
-                          <li>Get AI-powered clarity on your business concept</li>
-                          <li>Build your core offer using our proven framework</li>
-                          <li>Score your idea's viability across key pillars</li>
-                          <li>Create your business name and visual identity</li>
-                        </ul>
-                      </div>
-                    )}
-                    
-                    {currentSectionIndex > 0 && (
-                      <div className="bg-white p-4 rounded border">
-                        <p className="text-center text-gray-600">
-                          Section content for "{currentSection.title}" will be implemented here.
-                          <br />
-                          <small className="text-xs">This is a placeholder while the full workbook components are being integrated.</small>
-                        </p>
-                      </div>
-                    )}
-                  </div>
+          {/* Main Content Area - White Background */}
+          <div className="flex-1 bg-white min-h-screen">
+            {/* Welcome Section */}
+            <div className="py-16">
+              <div className="max-w-3xl mx-auto px-6">
+                {/* Hero Header */}
+                <div className="text-center mb-12">
+                  <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                    Welcome to Module 1
+                  </h1>
+                  <h2 className="text-3xl font-bold text-gray-900 mb-6">
+                    Build the Foundation
+                  </h2>
+                  <p className="text-xl text-gray-600 leading-relaxed">
+                    This module helps you go from vague idea to clarity, confidence, and viability — before you invest time or money.
+                  </p>
+                </div>
 
-                  {/* Navigation */}
-                  <div className="flex justify-between pt-6">
-                    <Button
-                      variant="outline"
-                      onClick={() => handleSectionChange(Math.max(0, currentSectionIndex - 1))}
-                      disabled={currentSectionIndex === 0}
-                    >
-                      Previous
-                    </Button>
-
-                    <Button
-                      onClick={handleNextSection}
-                      disabled={currentSectionIndex >= sections.length - 1}
-                    >
-                      {currentSectionIndex >= sections.length - 1 ? 'Complete Module' : 'Next Section'}
-                    </Button>
+                {/* Philosophy Quote Box */}
+                <div className="mb-12">
+                  <div className="bg-purple-50 border-l-4 border-purple-500 p-8 rounded-xl shadow-sm">
+                    <blockquote className="text-lg italic font-serif text-gray-700 text-center leading-relaxed">
+                      "A business idea works when it solves a real problem — for a real person — in a way that makes you money — and doesn't drain your energy."
+                    </blockquote>
+                    <cite className="block text-center text-sm font-medium text-gray-600 mt-4">
+                      — Brandscaling Philosophy
+                    </cite>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+
+                {/* What You'll Be Working Through */}
+                <div className="mb-12">
+                  <h2 className="text-2xl font-bold text-gray-900 text-center mb-8">
+                    What You'll Be Working Through
+                  </h2>
+                  
+                  <div className="space-y-4">
+                    {sections.map((section, index) => (
+                      <div 
+                        key={section.id}
+                        className={`border p-6 rounded-xl hover:shadow-md transition-all duration-200 cursor-pointer ${
+                          index === currentSectionIndex
+                            ? 'bg-purple-100 border-purple-300'
+                            : session?.completedSections?.includes(section.id)
+                            ? 'bg-green-50 border-green-200'
+                            : 'bg-purple-50 border-purple-200'
+                        }`}
+                        onClick={() => handleSectionChange(index)}
+                      >
+                        <div className="flex items-center space-x-4">
+                          <div className="flex-1">
+                            <h3 className="font-bold text-lg text-gray-900">
+                              {section.title}
+                            </h3>
+                            <p className="text-sm text-gray-600">
+                              {section.description}
+                            </p>
+                          </div>
+                          {session?.completedSections?.includes(section.id) && (
+                            <CheckCircle className="h-6 w-6 text-green-500" />
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Current Section Content */}
+                {currentSectionIndex === 0 && (
+                  <div className="text-center mb-12">
+                    <Button 
+                      className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 text-lg rounded-lg"
+                      onClick={() => handleSectionChange(1)}
+                    >
+                      Next Section
+                    </Button>
+                  </div>
+                )}
+
+                {currentSectionIndex > 0 && (
+                  <div className="space-y-6">
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-xl">{currentSection.title}</CardTitle>
+                        <p className="text-gray-600">{currentSection.description}</p>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="bg-purple-50 p-6 rounded-lg">
+                          <p className="text-center text-gray-600 mb-4">
+                            Section content for "{currentSection.title}" will be implemented here.
+                            <br />
+                            <small className="text-xs">This is a placeholder while the full workbook components are being integrated.</small>
+                          </p>
+                        </div>
+
+                        {/* Navigation */}
+                        <div className="flex justify-between pt-6">
+                          <Button
+                            variant="outline"
+                            onClick={() => handleSectionChange(Math.max(0, currentSectionIndex - 1))}
+                            disabled={currentSectionIndex === 0}
+                          >
+                            Previous
+                          </Button>
+
+                          <Button
+                            className="bg-purple-600 hover:bg-purple-700"
+                            onClick={handleNextSection}
+                            disabled={currentSectionIndex >= sections.length - 1}
+                          >
+                            {currentSectionIndex >= sections.length - 1 ? 'Complete Module' : 'Next Section'}
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>
