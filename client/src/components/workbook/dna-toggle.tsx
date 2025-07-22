@@ -13,7 +13,7 @@ export default function DNAToggle() {
           onClick={() => setMode("architect")}
           className={`flex items-center space-x-1 sm:space-x-2 px-2 sm:px-4 py-1.5 sm:py-2 rounded-full transition-all text-xs sm:text-sm ${
             isArchitect 
-              ? "bg-indigo-600 text-white shadow-sm" 
+              ? "bg-purple-600 text-white shadow-sm" 
               : "text-gray-600 hover:text-gray-800"
           }`}
         >

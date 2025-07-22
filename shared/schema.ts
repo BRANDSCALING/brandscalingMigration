@@ -421,6 +421,33 @@ export const sevenDayResetProgress = pgTable("seven_day_reset_progress", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Module 1 Workbook Session
+export const workbookSessions = pgTable("workbook_sessions", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  
+  // Business Filter (Section 1.1)
+  businessFilter: jsonb("business_filter"), // { problem: boolean, person: boolean, profit: boolean, pull: boolean, customPrompt?: string, aiResponse?: string }
+  
+  // E-DNA Reflection (Section 1.2)
+  ednaReflection: jsonb("edna_reflection"), // { architectReflection1?: string, architectReflection2?: string, alchemistReflection1?: string, alchemistReflection2?: string }
+  
+  // Clarity Prompts (Section 1.3)
+  clarityPrompts: jsonb("clarity_prompts"), // { businessIdea?: string, audience?: string, problem?: string, transformation?: string, vehicle?: string, emotion?: string, blocker?: string }
+  
+  // Offer Builder (Section 1.4)
+  offerBuilder: jsonb("offer_builder"), // { transformation?: string, vehicle?: string, price?: string, timeline?: string, delivery?: string }
+  
+  // Viability Scorecard (Section 1.5)
+  viabilityScores: jsonb("viability_scores"), // { clarity: number, demand: number, differentiation: number, delivery: number, scalability: number, profitability: number, competition: number, energy: number }
+  
+  // Name Logo Builder (Section 1.6)
+  nameLogoBuilder: jsonb("name_logo_builder"), // { finalDecisions?: { chosenBusinessName?: string, chosenTagline?: string, chosenColors?: string[] }, nameRatings?: Record<string, number> }
+  
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // 7-Day Reset Identity Contract (final result)
 export const sevenDayResetContract = pgTable("seven_day_reset_contract", {
   id: serial("id").primaryKey(),
@@ -444,6 +471,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   blogPosts: many(blogPosts),
   sevenDayResetProgress: many(sevenDayResetProgress),
   sevenDayResetContract: many(sevenDayResetContract),
+  workbookSessions: many(workbookSessions),
 }));
 
 export const coursesRelations = relations(courses, ({ many }) => ({
@@ -545,6 +573,13 @@ export const sevenDayResetProgressRelations = relations(sevenDayResetProgress, (
 export const sevenDayResetContractRelations = relations(sevenDayResetContract, ({ one }) => ({
   user: one(users, {
     fields: [sevenDayResetContract.userId],
+    references: [users.id],
+  }),
+}));
+
+export const workbookSessionsRelations = relations(workbookSessions, ({ one }) => ({
+  user: one(users, {
+    fields: [workbookSessions.userId],
     references: [users.id],
   }),
 }));
@@ -721,3 +756,6 @@ export type InsertSevenDayResetProgress = z.infer<typeof insertSevenDayResetProg
 
 export type SevenDayResetContract = typeof sevenDayResetContract.$inferSelect;
 export type InsertSevenDayResetContract = z.infer<typeof insertSevenDayResetContractSchema>;
+
+export type WorkbookSession = typeof workbookSessions.$inferSelect;
+export type InsertWorkbookSession = typeof workbookSessions.$inferInsert;

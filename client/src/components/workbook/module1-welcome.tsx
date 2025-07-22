@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import { CheckCircle, ChevronRight } from "lucide-react";
+import { CheckCircle, ChevronRight, X } from "lucide-react";
 import { useState } from "react";
 import { useDNAMode } from "@/hooks/use-dna-mode";
 
@@ -42,6 +42,7 @@ const sections = [
 ];
 
 export default function Module1Welcome({ completedSections = [], onStartClick }: Module1WelcomeProps) {
+  const [showCoaching, setShowCoaching] = useState(false);
   const { isArchitect } = useDNAMode();
   
   const handleStartClick = () => {
@@ -117,30 +118,18 @@ export default function Module1Welcome({ completedSections = [], onStartClick }:
               return (
                 <Card 
                   key={section.id}
-                  className="p-4 sm:p-6 transition-all duration-200 hover:shadow-md cursor-pointer bg-purple-50 border-purple-200 hover:shadow-md"
+                  className="p-4 sm:p-6 transition-all duration-200 hover:shadow-md cursor-pointer bg-purple-50 border-purple-200"
                   onClick={() => handleSectionClick(section.id)}
                 >
                   <div className="flex items-center space-x-3 sm:space-x-4">
-                    <div className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center ${
-                      isCompleted ? 'bg-green-500' : 'bg-gray-300'
-                    }`}>
-                      {isCompleted ? (
-                        <CheckCircle className="w-4 h-4 text-white" />
-                      ) : (
-                        <div className="w-2 h-2 bg-white rounded-full" />
-                      )}
-                    </div>
-                    
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-1">
+                    <div className="flex-1">
+                      <h3 className="font-bold text-base sm:text-lg text-gray-900">
                         {section.title}
                       </h3>
-                      <p className="text-sm sm:text-base text-gray-600">
+                      <p className="text-xs sm:text-sm text-gray-600">
                         {section.description}
                       </p>
                     </div>
-                    
-                    <ChevronRight className="flex-shrink-0 w-5 h-5 text-gray-400" />
                   </div>
                 </Card>
               );
@@ -148,19 +137,73 @@ export default function Module1Welcome({ completedSections = [], onStartClick }:
           </div>
         </div>
 
-        {/* CTA Section */}
-        <div className="text-center">
-          <div 
-            className="inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer text-base sm:text-lg"
-            onClick={handleStartClick}
-          >
-            Start Module 1
-            <ChevronRight className="ml-2 w-5 h-5" />
-          </div>
-          <p className="mt-3 sm:mt-4 text-sm sm:text-base text-gray-600">
-            Let's build a solid foundation for your business idea.
-          </p>
-        </div>
+        {/* Slide-in Coaching Panel */}
+        {showCoaching && (
+          <>
+            {/* Overlay */}
+            <div 
+              className="fixed inset-0 bg-black bg-opacity-50 z-[100]"
+              onClick={() => setShowCoaching(false)}
+            />
+            
+            {/* Slide-in Panel */}
+            <div className="fixed right-0 top-20 h-[calc(100vh-5rem)] w-full sm:w-96 max-w-sm bg-white shadow-xl z-[110] transform transition-transform duration-300 ease-in-out">
+              <div className="p-6 h-full overflow-y-auto">
+                {/* Panel Header */}
+                <div className="flex items-center justify-between mb-6 border-b border-gray-200 pb-4">
+                  <h3 className="text-xl font-bold text-gray-900">Strategic Coaching</h3>
+                  <button
+                    onClick={() => setShowCoaching(false)}
+                    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                  >
+                    <X className="w-5 h-5 text-gray-500" />
+                  </button>
+                </div>
+
+                {/* DNA-Specific Content */}
+                <div className={`p-6 rounded-lg border-l-4 ${
+                  isArchitect 
+                    ? "bg-purple-50 border-purple-500" 
+                    : "bg-orange-50 border-orange-500"
+                }`}>
+                  <h4 className={`font-semibold mb-4 ${
+                    isArchitect ? "text-purple-600" : "text-orange-500"
+                  }`}>
+                    {isArchitect ? "Architect Mode: Strategic Analysis" : "Alchemist Mode: Intuitive Approach"}
+                  </h4>
+                  
+                  {isArchitect ? (
+                    <div className="space-y-3 text-gray-700">
+                      <p className="font-medium">Risk: Over-optimizing and skipping emotion</p>
+                      <ul className="space-y-2 text-sm">
+                        <li>• You might focus too much on systems and miss emotional appeal</li>
+                        <li>• Remember to consider what makes people feel excited about your idea</li>
+                        <li>• Don't skip the "pull" factor - what draws people in emotionally</li>
+                        <li>• Balance logic with storytelling and connection</li>
+                      </ul>
+                    </div>
+                  ) : (
+                    <div className="space-y-3 text-gray-700">
+                      <p className="font-medium">Risk: Skipping delivery or market demand</p>
+                      <ul className="space-y-2 text-sm">
+                        <li>• You might focus on passion and miss practical delivery</li>
+                        <li>• Remember to validate actual market demand, not just personal excitement</li>
+                        <li>• Don't skip the "profit" factor - how will this actually make money</li>
+                        <li>• Balance intuition with structured business thinking</li>
+                      </ul>
+                    </div>
+                  )}
+                </div>
+
+                <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                  <p className="text-sm text-gray-600 italic">
+                    Use this awareness as you work through Module 1. Great ideas need both structure and resonance.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

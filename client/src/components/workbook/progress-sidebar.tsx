@@ -17,19 +17,6 @@ const modules = {
       { id: "section-1-6", title: "AI Sprint — Name + Logo Builder", description: "Business naming & branding" },
       { id: "progress-summary", title: "Your Progress Summary", description: "Review completion status" },
     ]
-  },
-  2: {
-    title: "Build Your Brand",
-    sections: [
-      { id: "section-2-1", title: "What Is a Brand (Really)?", description: "Emotional + strategic brand clarity" },
-      { id: "section-2-2", title: "Name & Brand Identity Fast Track", description: "Name, tagline, tone, colors" },
-      { id: "section-2-3", title: "Logo & Visual Identity Builder", description: "Logo, fonts, palettes, templates" },
-      { id: "section-2-4", title: "Brand Story & Guideline Builder", description: "Messaging, values, tone, audience" },
-      { id: "section-2-5", title: "Social Profile Setup & Launch System", description: "Align your online presence" },
-      { id: "section-2-6", title: "Link Infrastructure System", description: "Build a clean \"link-in-bio\" experience" },
-      { id: "section-2-7", title: "Brand Bio & Profile Builder", description: "Conversion-optimized bios" },
-      { id: "section-2-8", title: "The Content Launch Checklist", description: "Post ideas to launch with clarity" },
-    ]
   }
 };
 
@@ -39,17 +26,17 @@ interface ProgressSidebarProps {
 
 export default function ProgressSidebar({ session }: ProgressSidebarProps) {
   const [energyLevel, setEnergyLevel] = useState(session?.energyLevel || 7);
-  const [isCollapsed, setIsCollapsed] = useState(false); // Start expanded
+  const [isCollapsed, setIsCollapsed] = useState(true);
   const [location, setLocation] = useLocation();
   const queryClient = useQueryClient();
   
   // Determine current module from URL
-  const currentModule = location.includes("/module/2") ? 2 : 1;
+  const currentModule = 1;
 
   const updateSessionMutation = useMutation({
     mutationFn: async (updates: Partial<WorkbookSession>) => {
       if (!session?.id) throw new Error("No session ID");
-      return apiRequest("PATCH", `/api/workbook/session/${session.id}`, updates);
+      return apiRequest("PATCH", `/api/workbook/session`, updates);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/workbook/session"] });
@@ -74,7 +61,7 @@ export default function ProgressSidebar({ session }: ProgressSidebarProps) {
     
     const completed = [];
     
-    // Section 1.1: Business Filter
+    // Section 1.1: Business Filter - check if all 4 questions are answered
     if (session.businessFilter && 
         session.businessFilter.problem !== null && 
         session.businessFilter.person !== null && 
@@ -83,7 +70,7 @@ export default function ProgressSidebar({ session }: ProgressSidebarProps) {
       completed.push("section-1-1");
     }
     
-    // Section 1.2: E-DNA Reflection
+    // Section 1.2: E-DNA Reflection - check if any reflection is filled
     if (session.ednaReflection && (
         session.ednaReflection.architectReflection1 ||
         session.ednaReflection.architectReflection2 ||
@@ -92,14 +79,14 @@ export default function ProgressSidebar({ session }: ProgressSidebarProps) {
       completed.push("section-1-2");
     }
     
-    // Section 1.3: Clarity Prompts
+    // Section 1.3: Clarity Prompts - check if key fields are filled
     if (session.clarityPrompts && 
         session.clarityPrompts.businessIdea && 
         session.clarityPrompts.audience) {
       completed.push("section-1-3");
     }
     
-    // Section 1.4: Offer Builder
+    // Section 1.4: Offer Builder - check if basic offer structure is filled
     if (session.offerBuilder && 
         session.offerBuilder.transformation && 
         session.offerBuilder.vehicle && 
@@ -107,7 +94,7 @@ export default function ProgressSidebar({ session }: ProgressSidebarProps) {
       completed.push("section-1-4");
     }
     
-    // Section 1.5: Viability Scorecard
+    // Section 1.5: Viability Scorecard - check if any scores are entered
     if (session.viabilityScores && 
         (session.viabilityScores.clarity > 0 || 
          session.viabilityScores.demand > 0 || 
@@ -115,7 +102,7 @@ export default function ProgressSidebar({ session }: ProgressSidebarProps) {
       completed.push("section-1-5");
     }
     
-    // Section 1.6: Name + Logo Builder
+    // Section 1.6: Name + Logo Builder - check if any names or decisions are made
     if (session.nameLogoBuilder && (
         session.nameLogoBuilder.finalDecisions?.chosenBusinessName ||
         session.nameLogoBuilder.nameRatings)) {
@@ -126,186 +113,133 @@ export default function ProgressSidebar({ session }: ProgressSidebarProps) {
   };
 
   const completedSections = getSectionCompletion();
-  const currentModuleSections = modules[currentModule as keyof typeof modules].sections;
+  const currentModuleSections = modules[currentModule as keyof typeof modules]?.sections || [];
   const completionPercentage = Math.round((completedSections.length / currentModuleSections.length) * 100);
 
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
+  // Navigation function to scroll to sections
+  const navigateToSection = (sectionId: string) => {
+    const sectionMap: { [key: string]: string } = {
+      "section-1-1": "business-filter",
+      "section-1-2": "edna-reflection", 
+      "section-1-3": "clarity-prompts",
+      "section-1-4": "offer-builder",
+      "section-1-5": "viability-scorecard",
+      "section-1-6": "name-logo-builder"
+    };
+    
+    const elementId = sectionMap[sectionId];
+    const element = document.getElementById(elementId);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
 
   return (
-    <div className={`bg-white/95 backdrop-blur-sm shadow-lg border-r border-gray-200 transition-all duration-300 ${
-      isCollapsed ? 'w-16' : 'w-80'
-    } fixed left-0 top-0 h-full z-30 flex flex-col`}>
-      
+    <>
       {/* Toggle Button */}
       <button
         onClick={() => setIsCollapsed(!isCollapsed)}
-        className="absolute -right-3 top-8 bg-white shadow-md rounded-full p-1.5 border border-gray-200 hover:bg-gray-50 transition-colors"
+        className={`fixed top-1/2 transform -translate-y-1/2 z-20 bg-purple-600 text-white p-3 rounded-r-lg shadow-lg hover:bg-purple-700 transition-all duration-300 hidden md:flex items-center ${
+          isCollapsed ? 'left-0' : 'left-80'
+        }`}
+        aria-label={isCollapsed ? "Open progress sidebar" : "Close progress sidebar"}
       >
-        {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+        {isCollapsed ? (
+          <>
+            <BarChart3 className="w-5 h-5 mr-2" />
+            <ChevronRight className="w-4 h-4" />
+          </>
+        ) : (
+          <ChevronLeft className="w-4 h-4" />
+        )}
       </button>
 
-      <div className="p-6 border-b border-gray-200">
-        {!isCollapsed && (
-          <>
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg w-10 h-10 flex items-center justify-center font-bold text-lg">
-                {currentModule}
+      {/* Sidebar */}
+      <div className={`w-80 bg-white/90 backdrop-blur-sm shadow-xl border-r border-gray-200 fixed h-full overflow-y-auto z-10 hidden md:block transition-transform duration-300 ${
+        isCollapsed ? '-translate-x-full' : 'translate-x-0'
+      }`}>
+        <div className="p-6">
+          {/* Brand Header */}
+          <div className="mb-8">
+            <div className="flex items-center space-x-3 mb-2">
+              <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-lg">IL</span>
               </div>
               <div>
-                <h2 className="text-lg font-bold text-gray-900">Module {currentModule}</h2>
-                <p className="text-sm text-gray-600">{modules[currentModule as keyof typeof modules].title}</p>
+                <h1 className="font-bold text-gray-900 text-lg">THE IDEA-TO-LAUNCH KIT™</h1>
+                <p className="text-gray-600 text-sm">Module {currentModule}</p>
               </div>
             </div>
+          </div>
 
+          {/* Progress Tracker */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-semibold text-gray-900 text-lg">Module Progress</h3>
+              <div className="text-sm font-medium text-purple-600">{completionPercentage}%</div>
+            </div>
+            
             {/* Progress Bar */}
-            <div className="mb-4">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-sm font-medium text-gray-700">Progress</span>
-                <span className="text-sm font-bold text-purple-600">{completionPercentage}%</span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div 
-                  className="bg-gradient-to-r from-purple-600 to-indigo-600 h-2 rounded-full transition-all duration-300" 
-                  style={{ width: `${completionPercentage}%` }}
-                ></div>
-              </div>
-            </div>
-          </>
-        )}
-
-        {isCollapsed && (
-          <div className="flex flex-col items-center">
-            <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg w-10 h-10 flex items-center justify-center font-bold text-lg mb-2">
-              {currentModule}
-            </div>
-            <div className="w-8 bg-gray-200 rounded-full h-2">
+            <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
               <div 
-                className="bg-gradient-to-r from-purple-600 to-indigo-600 h-2 rounded-full transition-all duration-300" 
+                className="bg-purple-600 h-2 rounded-full transition-all duration-300"
                 style={{ width: `${completionPercentage}%` }}
               ></div>
             </div>
-          </div>
-        )}
-      </div>
-
-      {/* Energy Level */}
-      {!isCollapsed && (
-        <div className="px-6 py-4 border-b border-gray-200">
-          <div className="flex items-center space-x-2 mb-3">
-            <BarChart3 className="h-4 w-4 text-purple-600" />
-            <span className="text-sm font-medium text-gray-700">Energy Level</span>
-          </div>
-          
-          <div className="space-y-2">
-            <div className="flex justify-between items-center">
-              <span className="text-xs text-gray-500">Low</span>
-              <span className="text-xs text-gray-500">High</span>
+            
+            <div className="space-y-3">
+              {currentModuleSections.map((section, index) => {
+                const isCompleted = completedSections.includes(section.id);
+                
+                return (
+                  <div 
+                    key={section.id}
+                    onClick={() => navigateToSection(section.id)}
+                    className={`flex items-center space-x-3 p-3 rounded-lg transition-colors cursor-pointer hover:bg-gray-50 ${
+                      isCompleted ? "bg-green-50 border border-green-200" : ""
+                    }`}
+                  >
+                    <input 
+                      type="checkbox" 
+                      checked={isCompleted}
+                      readOnly
+                      className="w-5 h-5 text-purple-600 rounded border-gray-300 focus:ring-purple-600 pointer-events-none" 
+                    />
+                    <div className="flex-1">
+                      <p className={`font-medium text-sm ${isCompleted ? "text-green-800" : "text-gray-900"}`}>
+                        {section.title}
+                      </p>
+                      <p className={`text-xs ${isCompleted ? "text-green-600" : "text-gray-500"}`}>
+                        {isCompleted ? "Completed" : section.description}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-            <input
-              type="range"
-              min="1"
-              max="10"
-              value={energyLevel}
-              onChange={(e) => handleEnergyChange(parseInt(e.target.value))}
-              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
-              style={{
-                background: `linear-gradient(to right, #dc2626 0%, #ef4444 20%, #f59e0b 40%, #10b981 60%, #059669 80%, #047857 100%)`
-              }}
-            />
-            <div className="text-center">
-              <div className="text-lg font-bold text-purple-600">{energyLevel}/10</div>
-              <div className="text-xs text-gray-600 mt-1">{getEnergyStatus(energyLevel)}</div>
+          </div>
+
+          {/* Energy Tracker */}
+          <div className="mt-8 p-4 bg-purple-50 rounded-lg">
+            <h4 className="font-semibold text-gray-900 mb-3">Energy Level</h4>
+            <div className="space-y-3">
+              <input 
+                type="range" 
+                min="1" 
+                max="10" 
+                value={energyLevel}
+                onChange={(e) => handleEnergyChange(Number(e.target.value))}
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+              />
+              <div className="flex justify-between text-xs text-gray-600">
+                <span>Drained</span>
+                <span className="font-medium text-purple-600">Energized ({energyLevel}/10)</span>
+              </div>
+              <p className="text-sm text-gray-700 italic">"{getEnergyStatus(energyLevel)}"</p>
             </div>
           </div>
         </div>
-      )}
-
-      {/* Sections List */}
-      <div className="flex-1 overflow-y-auto">
-        {!isCollapsed && (
-          <div className="p-4 space-y-2">
-            <h3 className="text-sm font-semibold text-gray-700 mb-3">Sections</h3>
-            {currentModuleSections.map((section, index) => {
-              const isCompleted = completedSections.includes(section.id);
-              return (
-                <button
-                  key={section.id}
-                  onClick={() => scrollToSection(section.id)}
-                  className={`w-full text-left p-3 rounded-lg border transition-all duration-200 hover:shadow-md ${
-                    isCompleted 
-                      ? 'bg-green-50 border-green-200 hover:bg-green-100' 
-                      : 'bg-gray-50 border-gray-200 hover:bg-gray-100'
-                  }`}
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center space-x-2 mb-1">
-                        <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                          isCompleted ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'
-                        }`}>
-                          {index + 1}.{currentModule}
-                        </span>
-                        {isCompleted && (
-                          <div className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
-                            <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                            </svg>
-                          </div>
-                        )}
-                      </div>
-                      <div className="text-sm font-medium text-gray-900 mb-1 line-clamp-2">
-                        {section.title}
-                      </div>
-                      <div className="text-xs text-gray-600 line-clamp-2">
-                        {section.description}
-                      </div>
-                    </div>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        )}
-
-        {isCollapsed && (
-          <div className="p-2 space-y-2">
-            {currentModuleSections.map((section, index) => {
-              const isCompleted = completedSections.includes(section.id);
-              return (
-                <button
-                  key={section.id}
-                  onClick={() => scrollToSection(section.id)}
-                  className={`w-full p-2 rounded-lg border transition-all duration-200 ${
-                    isCompleted 
-                      ? 'bg-green-50 border-green-200' 
-                      : 'bg-gray-50 border-gray-200'
-                  }`}
-                >
-                  <div className="flex flex-col items-center space-y-1">
-                    <span className={`text-xs font-medium px-1.5 py-0.5 rounded-full ${
-                      isCompleted ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'
-                    }`}>
-                      {index + 1}.{currentModule}
-                    </span>
-                    {isCompleted && (
-                      <div className="w-3 h-3 bg-green-500 rounded-full flex items-center justify-center">
-                        <svg className="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                    )}
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        )}
       </div>
-    </div>
+    </>
   );
 }

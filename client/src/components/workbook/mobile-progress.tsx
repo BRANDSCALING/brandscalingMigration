@@ -104,13 +104,13 @@ export default function MobileProgress({ session }: MobileProgressProps) {
               <span>Module Progress</span>
               <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
             </button>
-            <span className="text-sm font-bold text-indigo-600">{completionPercentage}%</span>
+            <span className="text-sm font-bold text-purple-600">{completionPercentage}%</span>
           </div>
           
           {/* Progress Bar */}
           <div className="w-full bg-gray-200 rounded-full h-1.5">
             <div 
-              className="bg-gradient-to-r from-purple-600 to-indigo-600 h-1.5 rounded-full transition-all duration-300"
+              className="bg-purple-600 h-1.5 rounded-full transition-all duration-300"
               style={{ width: `${completionPercentage}%` }}
             ></div>
           </div>
@@ -122,24 +122,25 @@ export default function MobileProgress({ session }: MobileProgressProps) {
             <div className="p-4 space-y-2">
               {sections.map((section) => {
                 const isCompleted = completedSections.includes(section.id);
+                
                 return (
                   <button
                     key={section.id}
                     onClick={() => navigateToSection(section.id)}
-                    className={`w-full text-left flex items-center justify-between p-3 rounded-lg border transition-all ${
+                    className={`w-full text-left flex items-center justify-between p-3 rounded-lg transition-colors ${
                       isCompleted 
-                        ? 'bg-green-50 border-green-200' 
-                        : 'bg-gray-50 border-gray-200'
+                        ? "bg-green-50 text-green-800 border border-green-200" 
+                        : "bg-gray-50 hover:bg-gray-100 text-gray-700"
                     }`}
                   >
-                    <span className="font-medium text-gray-900">{section.title}</span>
-                    {isCompleted && (
-                      <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
-                        <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                    )}
+                    <span className="font-medium text-sm">{section.title}</span>
+                    <span className={`text-xs px-2 py-1 rounded-full ${
+                      isCompleted 
+                        ? "bg-green-100 text-green-800" 
+                        : "bg-gray-200 text-gray-600"
+                    }`}>
+                      {isCompleted ? "✓" : "•"}
+                    </span>
                   </button>
                 );
               })}

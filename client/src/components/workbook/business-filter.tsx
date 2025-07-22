@@ -6,7 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { AIService } from "@/lib/ai-service";
 import type { WorkbookSession } from "@shared/schema";
+import type { BusinessFilter } from "@/types/workbook";
 
 interface BusinessFilterProps {
   session: WorkbookSession | undefined;
@@ -17,7 +19,7 @@ export default function BusinessFilter({ session }: BusinessFilterProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
-  const [filter, setFilter] = useState(
+  const [filter, setFilter] = useState<BusinessFilter>(
     session?.businessFilter || { 
       problem: null, 
       person: null, 
@@ -42,8 +44,7 @@ Can you help me refine this and tell me what's missing?`
 
   const updateSessionMutation = useMutation({
     mutationFn: async (updates: Partial<WorkbookSession>) => {
-      if (!session?.id) throw new Error("No session ID");
-      return apiRequest("PATCH", `/api/workbook/session/${session.id}`, updates);
+      return apiRequest("PATCH", `/api/workbook/session`, updates);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/workbook/session"] });
@@ -54,7 +55,7 @@ Can you help me refine this and tell me what's missing?`
     },
   });
 
-  const handleFilterChange = (key: string, value: boolean) => {
+  const handleFilterChange = (key: keyof BusinessFilter, value: boolean) => {
     const updatedFilter = { ...filter, [key]: value };
     setFilter(updatedFilter);
     updateSessionMutation.mutate({ businessFilter: updatedFilter });
@@ -72,6 +73,39 @@ Can you help me refine this and tell me what's missing?`
     updateSessionMutation.mutate({ businessFilter: updatedFilter });
   };
 
+  // AI generation mutation
+  const generateAIResponseMutation = useMutation({
+    mutationFn: (prompt: string) => AIService.generateResponse(prompt),
+    onSuccess: (response) => {
+      setAiResponse(response);
+      const updatedFilter = { ...filter, aiResponse: response, customPrompt: promptText };
+      updateSessionMutation.mutate({ businessFilter: updatedFilter });
+      toast({
+        title: "AI Response Generated!",
+        description: "Your business idea analysis is ready.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Generation Failed",
+        description: error instanceof Error ? error.message : "Failed to generate AI response",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const getAiResponse = () => {
+    if (!promptText.trim()) {
+      toast({
+        title: "No Prompt",
+        description: "Please enter a prompt before generating AI response.",
+        variant: "destructive",
+      });
+      return;
+    }
+    generateAIResponseMutation.mutate(promptText);
+  };
+
   const copyPrompt = () => {
     navigator.clipboard.writeText(promptText);
     toast({
@@ -82,119 +116,160 @@ Can you help me refine this and tell me what's missing?`
 
   const questions = [
     {
-      key: "problem",
+      key: "problem" as keyof BusinessFilter,
       title: "Problem",
       question: "Does this solve a real problem (or deep desire) for a specific person?",
       tip: "If the answer is vague, you need more clarity."
     },
     {
-      key: "person",
-      title: "Person",
-      question: "Can you name the exact person (avatar) this is for?",
-      tip: "If you can't name them specifically, it's too broad."
+      key: "person" as keyof BusinessFilter,
+      title: "Person", 
+      question: "Do I know who this is for? Can I describe them?",
+      tip: "If your answer is \"everyone,\" you need to niche down."
     },
     {
-      key: "profit",
+      key: "profit" as keyof BusinessFilter,
       title: "Profit",
-      question: "Is there a clear path to making money from this?",
-      tip: "Revenue model must be obvious and realistic."
+      question: "Can I clearly see how this makes money and scales?",
+      tip: "If you're unsure, you'll define this in Section 1.5."
     },
     {
-      key: "pull",
+      key: "pull" as keyof BusinessFilter,
       title: "Pull",
-      question: "Does this energize you rather than drain you?",
-      tip: "If it feels heavy now, it will feel heavier later."
+      question: "Am I personally energized and excited to do this?",
+      tip: "This is where alignment comes in. Don't skip it."
     }
   ];
 
   return (
-    <section id="business-filter" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sm:p-8">
-      <div className="mb-8">
+    <Card id="business-filter" className="p-4 sm:p-6 lg:p-8 bg-purple-50 border-purple-200">
+      <div className="mb-6 sm:mb-8">
         <div className="flex items-center space-x-3 mb-4">
-          <div className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-lg font-bold">
-            1
-          </div>
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">What Makes a Business Idea Work?</h2>
+          <div className="w-7 h-7 sm:w-8 sm:h-8 bg-purple-600 text-white rounded-full flex items-center justify-center text-xs sm:text-sm font-bold">1.1</div>
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900">What Makes a Business Idea Work?</h2>
         </div>
-        <p className="text-gray-600 text-lg">
-          The 4-Part Viable Business Filter — Your idea must pass all four tests.
+        <p className="text-gray-600 text-base sm:text-lg mb-4">
+          To help entrepreneurs understand the difference between an inspiring idea and a viable business. 
+          This page builds clarity, confidence, and alignment before moving forward.
         </p>
+        <div className="p-3 sm:p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <h3 className="font-semibold text-gray-900 mb-2">Quick Insight</h3>
+          <p className="text-gray-700 italic">
+            "A business idea works when it solves a real problem, for a real person, in a way that 
+            makes you money — and doesn't drain your energy." — Brandscaling Philosophy
+          </p>
+          <p className="text-gray-700 mt-2">
+            Most entrepreneurs focus on what they love, but forget the other layers: profitability, 
+            delivery model, energy alignment, and market need. This section sets the foundation 
+            for a business idea that works in real life — not just in your head.
+          </p>
+        </div>
       </div>
 
-      <div className="space-y-6">
-        {questions.map((q) => (
-          <Card key={q.key} className="p-6 bg-gray-50 border border-gray-200">
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">{q.title}</h3>
-                <p className="text-gray-700 mb-4">{q.question}</p>
-                <p className="text-sm text-gray-500 italic">{q.tip}</p>
-              </div>
-              
-              <div className="flex space-x-4">
-                <Button
-                  onClick={() => handleFilterChange(q.key, true)}
-                  variant={filter[q.key as keyof typeof filter] === true ? "default" : "outline"}
-                  className={filter[q.key as keyof typeof filter] === true ? "bg-green-600 hover:bg-green-700" : ""}
-                >
-                  ✓ Yes
-                </Button>
-                <Button
-                  onClick={() => handleFilterChange(q.key, false)}
-                  variant={filter[q.key as keyof typeof filter] === false ? "default" : "outline"}
-                  className={filter[q.key as keyof typeof filter] === false ? "bg-red-600 hover:bg-red-700" : ""}
-                >
-                  ✗ No
-                </Button>
-              </div>
-            </div>
-          </Card>
-        ))}
-      </div>
-
-      <div className="mt-8 p-6 bg-purple-50 rounded-lg border border-purple-200">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">AI Business Idea Analysis</h3>
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Customize your prompt for AI analysis:
-            </label>
-            <Textarea
-              value={promptText}
-              onChange={(e) => handlePromptChange(e.target.value)}
-              placeholder="Describe your business idea..."
-              rows={6}
-              className="w-full"
-            />
-            <div className="mt-2 flex space-x-2">
-              <Button onClick={copyPrompt} variant="outline" size="sm">
-                Copy Prompt
-              </Button>
-            </div>
-          </div>
-          
-          {aiResponse && (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                AI Analysis:
-              </label>
-              <Textarea
-                value={aiResponse}
-                onChange={(e) => handleAiResponseChange(e.target.value)}
-                placeholder="AI response will appear here..."
-                rows={8}
-                className="w-full bg-white"
-              />
-            </div>
+      {/* E-DNA Insights Box */}
+      <div className={`mb-6 sm:mb-8 p-4 sm:p-6 rounded-lg border ${
+        isArchitect 
+          ? "bg-purple-100 border-purple-300" 
+          : "bg-orange-50 border-orange-200"
+      }`}>
+        <h3 className={`font-semibold mb-4 ${
+          isArchitect ? "text-purple-600" : "text-orange-500"
+        }`}>
+          {isArchitect ? "Architect Mode: Strategic Analysis" : "Alchemist Mode: Intuitive Flow"}
+        </h3>
+        <div className="space-y-2">
+          {isArchitect ? (
+            <>
+              <p className="text-gray-700"><strong>Core Risk:</strong> Over-focus on logic, skip emotional pull</p>
+              <p className="text-gray-700"><strong>Remember:</strong> You need magnetism, not just function. The market is human.</p>
+            </>
+          ) : (
+            <>
+              <p className="text-gray-700"><strong>Core Risk:</strong> Lost in inspiration, forget structure</p>
+              <p className="text-gray-700"><strong>Remember:</strong> Energy alone isn't enough. You need delivery power.</p>
+            </>
           )}
         </div>
       </div>
 
-      <div className="mt-8 text-center">
-        <p className="text-gray-600">
-          Complete all four filters to proceed to the next section.
-        </p>
+      {/* 4-Part Filter */}
+      <div className="space-y-4 sm:space-y-6">
+        {questions.map((q, index) => (
+          <div key={q.key} className="p-4 sm:p-6 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+            <div className="flex items-start space-x-3 sm:space-x-4">
+              <div className="w-7 h-7 sm:w-8 sm:h-8 bg-purple-600 text-white rounded-full flex items-center justify-center text-xs sm:text-sm font-bold">
+                {index + 1}
+              </div>
+              <div className="flex-1">
+                <h4 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">{q.title}</h4>
+                <p className="text-gray-600 mb-3 sm:mb-4 text-sm sm:text-base">{q.question}</p>
+                <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+                  <label className="flex items-center space-x-2 cursor-pointer">
+                    <input 
+                      type="radio" 
+                      name={q.key}
+                      checked={filter[q.key] === true}
+                      onChange={() => handleFilterChange(q.key, true)}
+                      className="text-purple-600 focus:ring-purple-600" 
+                    />
+                    <span className="text-sm font-medium text-green-600">Yes</span>
+                  </label>
+                  <label className="flex items-center space-x-2 cursor-pointer">
+                    <input 
+                      type="radio" 
+                      name={q.key}
+                      checked={filter[q.key] === false}
+                      onChange={() => handleFilterChange(q.key, false)}
+                      className="text-red-600 focus:ring-red-600" 
+                    />
+                    <span className="text-sm font-medium text-red-600">No</span>
+                  </label>
+                </div>
+                <p className="text-xs text-gray-500 mt-2">{q.tip}</p>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
-    </section>
+
+      {/* AI Assistance Section */}
+      <div className="mt-6 sm:mt-8 p-4 sm:p-6 bg-orange-50 border border-orange-200 rounded-lg">
+        <h3 className="font-semibold text-gray-900 mb-3">Get AI Clarity</h3>
+        <p className="text-gray-700 mb-4">Edit the prompt below and get instant AI feedback:</p>
+        <Textarea
+          value={promptText}
+          onChange={(e) => handlePromptChange(e.target.value)}
+          className="bg-white text-sm text-gray-700 font-mono mb-4 min-h-[120px] resize-none"
+          placeholder="Edit your prompt here..."
+        />
+        <div className="flex flex-col sm:flex-row gap-3 mb-4">
+          <Button 
+            onClick={getAiResponse}
+            disabled={generateAIResponseMutation.isPending}
+            className="bg-purple-600 text-white hover:bg-purple-700 disabled:opacity-50"
+          >
+            {generateAIResponseMutation.isPending ? "Getting AI Response..." : "Get AI Response"}
+          </Button>
+          <Button 
+            onClick={copyPrompt} 
+            variant="outline"
+            className="border-orange-500 text-orange-500 hover:bg-orange-50"
+          >
+            Copy Prompt
+          </Button>
+        </div>
+      </div>
+
+      {/* AI Response Space - Always Visible */}
+      <div className="mt-6 sm:mt-8 p-4 sm:p-6 bg-orange-50 border border-orange-200 rounded-lg">
+        <h3 className="font-semibold text-gray-900 mb-3">Your AI Response Space</h3>
+        <Textarea
+          value={aiResponse}
+          onChange={(e) => handleAiResponseChange(e.target.value)}
+          className="bg-white text-sm text-gray-700 min-h-[200px] resize-y"
+          placeholder="Paste your AI response and insights here..."
+        />
+      </div>
+    </Card>
   );
 }
