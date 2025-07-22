@@ -188,6 +188,9 @@ function Router() {
       <Route path="/module1">
         <Module1WorkbookExact />
       </Route>
+      <Route path="/module1-workbook">
+        <Module1WorkbookExact />
+      </Route>
       
       {/* 7-Day Reset Route */}
       <Route path="/7-day-reset">
