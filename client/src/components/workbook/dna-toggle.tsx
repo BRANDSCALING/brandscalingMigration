@@ -13,7 +13,7 @@ export default function DNAToggle() {
           onClick={() => setMode("architect")}
           className={`flex items-center space-x-1 sm:space-x-2 px-2 sm:px-4 py-1.5 sm:py-2 rounded-full transition-all text-xs sm:text-sm ${
             isArchitect 
-              ? "bg-architect-indigo text-white shadow-sm" 
+              ? "bg-indigo-600 text-white shadow-sm" 
               : "text-gray-600 hover:text-gray-800"
           }`}
         >
@@ -25,7 +25,7 @@ export default function DNAToggle() {
           onClick={() => setMode("alchemist")}
           className={`flex items-center space-x-1 sm:space-x-2 px-2 sm:px-4 py-1.5 sm:py-2 rounded-full transition-all text-xs sm:text-sm ${
             isAlchemist 
-              ? "bg-scale-orange text-white shadow-sm" 
+              ? "bg-orange-500 text-white shadow-sm" 
               : "text-gray-600 hover:text-gray-800"
           }`}
         >

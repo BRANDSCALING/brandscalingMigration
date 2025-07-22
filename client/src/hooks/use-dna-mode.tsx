@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, ReactNode } from "react";
-import type { DNAMode } from "@/types/workbook";
+
+type DNAMode = "architect" | "alchemist";
 
 interface DNAModeContextType {
   mode: DNAMode;

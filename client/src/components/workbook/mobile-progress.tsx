@@ -104,13 +104,13 @@ export default function MobileProgress({ session }: MobileProgressProps) {
               <span>Module Progress</span>
               <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
             </button>
-            <span className="text-sm font-bold text-architect-indigo">{completionPercentage}%</span>
+            <span className="text-sm font-bold text-indigo-600">{completionPercentage}%</span>
           </div>
           
           {/* Progress Bar */}
           <div className="w-full bg-gray-200 rounded-full h-1.5">
             <div 
-              className="bg-brand-gradient h-1.5 rounded-full transition-all duration-300"
+              className="bg-gradient-to-r from-purple-600 to-indigo-600 h-1.5 rounded-full transition-all duration-300"
               style={{ width: `${completionPercentage}%` }}
             ></div>
           </div>
@@ -122,23 +122,24 @@ export default function MobileProgress({ session }: MobileProgressProps) {
             <div className="p-4 space-y-2">
               {sections.map((section) => {
                 const isCompleted = completedSections.includes(section.id);
-                
                 return (
                   <button
                     key={section.id}
                     onClick={() => navigateToSection(section.id)}
-                    className={`w-full text-left p-3 rounded-lg transition-colors ${
+                    className={`w-full text-left flex items-center justify-between p-3 rounded-lg border transition-all ${
                       isCompleted 
-                        ? "bg-green-50 border border-green-200 text-green-800" 
-                        : "bg-gray-50 hover:bg-gray-100 text-gray-700"
+                        ? 'bg-green-50 border-green-200' 
+                        : 'bg-gray-50 border-gray-200'
                     }`}
                   >
-                    <div className="flex items-center justify-between">
-                      <span className="font-medium text-sm">{section.title}</span>
-                      {isCompleted && (
-                        <span className="text-xs text-green-600 font-medium">✓</span>
-                      )}
-                    </div>
+                    <span className="font-medium text-gray-900">{section.title}</span>
+                    {isCompleted && (
+                      <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
+                        <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    )}
                   </button>
                 );
               })}
@@ -146,14 +147,6 @@ export default function MobileProgress({ session }: MobileProgressProps) {
           </div>
         )}
       </div>
-
-      {/* Overlay to close dropdown when clicking outside */}
-      {isOpen && (
-        <div 
-          className="md:hidden fixed inset-0 bg-black bg-opacity-25 z-40 mt-16"
-          onClick={() => setIsOpen(false)}
-        />
-      )}
     </>
   );
 }

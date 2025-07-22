@@ -66,6 +66,7 @@
   --brandscaling-gradient: linear-gradient(135deg, hsl(var(--architect-indigo)) 0%, hsl(var(--scale-orange)) 100%);
   --alchemist-gradient: linear-gradient(135deg, hsl(var(--precision-pink)) 0%, hsl(var(--scale-orange)) 100%);
   --architect-gradient: linear-gradient(135deg, hsl(var(--architect-indigo)) 0%, hsl(var(--deep-plum)) 100%);
+  --brand-gradient: linear-gradient(135deg, hsl(var(--architect-indigo)) 0%, hsl(var(--scale-orange)) 100%);
 }
 
 .dark {
@@ -148,6 +149,17 @@
   }
   
   .gradient-brandscaling {
+    background: var(--brandscaling-gradient);
+  }
+  
+  .gradient-text {
+    background: var(--brandscaling-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .bg-brand-gradient {
     background: var(--brandscaling-gradient);
   }
   
