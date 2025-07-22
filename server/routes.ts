@@ -1170,6 +1170,113 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Module 1: Build the Foundation - Workbook API Endpoints
+  
+  // Get or create workbook session
+  app.get('/api/workbook/session', async (req, res) => {
+    try {
+      const studentId = req.headers['x-student-id'] as string;
+      const studentEmail = req.headers['x-student-email'] as string;
+      
+      if (!studentId || !studentEmail) {
+        return res.status(401).json({ message: "Authentication required" });
+      }
+
+      // Check if session exists in Supabase
+      let session = await storage.getWorkbookSession?.(studentId);
+      
+      if (!session) {
+        // Create new session
+        session = await storage.createWorkbookSession?.({
+          userId: studentId,
+          userEmail: studentEmail,
+          dnaMode: 'architect',
+          completedSections: [],
+          currentSection: 0,
+          totalSections: 6
+        });
+      }
+
+      res.json(session);
+    } catch (error) {
+      console.error("Error fetching workbook session:", error);
+      res.status(500).json({ message: "Failed to fetch session" });
+    }
+  });
+
+  // Update workbook session
+  app.patch('/api/workbook/session', async (req, res) => {
+    try {
+      const studentId = req.headers['x-student-id'] as string;
+      const updates = req.body;
+      
+      if (!studentId) {
+        return res.status(401).json({ message: "Authentication required" });
+      }
+
+      const updatedSession = await storage.updateWorkbookSession?.(studentId, {
+        ...updates,
+        updatedAt: new Date().toISOString()
+      });
+
+      res.json(updatedSession);
+    } catch (error) {
+      console.error("Error updating workbook session:", error);
+      res.status(500).json({ message: "Failed to update session" });
+    }
+  });
+
+  // AI Prompt processing for Module 1
+  app.post('/api/workbook/ai-prompt', async (req, res) => {
+    try {
+      const { prompt, dnaMode = 'architect' } = req.body;
+      
+      if (!prompt) {
+        return res.status(400).json({ message: "Prompt is required" });
+      }
+
+      // For now, return a mock response until OpenAI is properly integrated
+      const mockResponses = {
+        architect: "From a systematic perspective, here's my analysis: Your business idea shows strong structural foundations. I recommend focusing on scalable systems, clear metrics, and systematic validation processes. Consider breaking down your approach into measurable phases with specific milestones.",
+        alchemist: "From an intuitive standpoint, I sense great potential in your vision. Trust your instincts here - there's authentic passion driving this idea. Focus on the emotional connection with your audience and let the natural flow guide your next steps. Your unique perspective is your greatest asset."
+      };
+
+      const response = mockResponses[dnaMode as keyof typeof mockResponses] || mockResponses.architect;
+
+      res.json({ 
+        response,
+        success: true,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Error processing AI prompt:", error);
+      res.status(500).json({ message: "Failed to process prompt" });
+    }
+  });
+
+  // Track Module 1 progress
+  app.post('/api/workbook/progress', async (req, res) => {
+    try {
+      const studentId = req.headers['x-student-id'] as string;
+      const { moduleId, sectionId, completed = true } = req.body;
+      
+      if (!studentId) {
+        return res.status(401).json({ message: "Authentication required" });
+      }
+
+      // Update progress in database
+      await storage.updateUserProgress?.(studentId, moduleId, sectionId, completed);
+
+      res.json({ 
+        success: true,
+        message: "Progress updated successfully"
+      });
+    } catch (error) {
+      console.error("Error updating progress:", error);
+      res.status(500).json({ message: "Failed to update progress" });
+    }
+  });
+
   // Return the app for the main server to use
   return app as any;
 }

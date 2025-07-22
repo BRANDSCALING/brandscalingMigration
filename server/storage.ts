@@ -1058,6 +1058,43 @@ export class DatabaseStorage implements IStorage {
       .where(and(eq(businessModels.id, id), eq(businessModels.userId, userId)));
     return model;
   }
+
+  // Workbook session management (simplified in-memory for now)
+  private workbookSessions: Map<string, any> = new Map();
+
+  async getWorkbookSession(userId: string): Promise<any> {
+    return this.workbookSessions.get(userId) || null;
+  }
+
+  async createWorkbookSession(session: any): Promise<any> {
+    const newSession = {
+      ...session,
+      id: generateId(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    this.workbookSessions.set(session.userId, newSession);
+    return newSession;
+  }
+
+  async updateWorkbookSession(userId: string, updates: any): Promise<any> {
+    const existing = this.workbookSessions.get(userId);
+    if (!existing) {
+      throw new Error('Session not found');
+    }
+    const updated = {
+      ...existing,
+      ...updates,
+      updatedAt: new Date().toISOString()
+    };
+    this.workbookSessions.set(userId, updated);
+    return updated;
+  }
+
+  async updateUserProgress(userId: string, moduleId: string, sectionId: string, completed: boolean): Promise<void> {
+    // Simple progress tracking - can be enhanced later
+    console.log(`Progress updated for user ${userId}, module ${moduleId}, section ${sectionId}: ${completed}`);
+  }
 }
 
 export const storage = new DatabaseStorage();

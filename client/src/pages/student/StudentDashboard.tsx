@@ -153,8 +153,10 @@ const AUTHENTIC_COURSES = {
     modules: [
       {
         id: "module-1",
-        title: "Module 1: Business Clarity Engine™",
-        description: "Extract and validate a launchable business idea"
+        title: "Module 1: Build the Foundation",
+        description: "Business viability filter, E-DNA reflection, offer builder, and branding foundations",
+        available: true,
+        route: "/module1"
       },
       {
         id: "module-2",
@@ -826,7 +828,14 @@ export default function StudentDashboard() {
                     <Button 
                       size="sm" 
                       variant="outline"
-                      onClick={() => setLocation(`/courses/idea-to-launch/${module.id}`)}
+                      onClick={() => {
+                        // Check for Module 1 which now has a dedicated workbook
+                        if (module.route) {
+                          setLocation(module.route);
+                        } else {
+                          setLocation(`/courses/idea-to-launch/${module.id}`);
+                        }
+                      }}
                     >
                       <Play className="h-4 w-4 mr-2" />
                       Start
