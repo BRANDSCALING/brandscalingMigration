@@ -114,7 +114,7 @@ Then, summarize the final idea in 5 bullet points.`
 
   // AI generation mutation
   const generateAIResponseMutation = useMutation({
-    mutationFn: (prompt: string) => AIService.generateResponse(prompt),
+    mutationFn: (prompt: string) => AIService.generateResponse(prompt, isArchitect ? 'architect' : 'alchemist'),
     onSuccess: (response) => {
       console.log("AI Response received:", response);
       const updatedPrompts = { ...prompts, aiResponse: response };
