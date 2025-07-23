@@ -1235,13 +1235,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Prompt is required" });
       }
 
-      // For now, return a mock response until OpenAI is properly integrated
-      const mockResponses = {
-        architect: "From a systematic perspective, here's my analysis: Your business idea shows strong structural foundations. I recommend focusing on scalable systems, clear metrics, and systematic validation processes. Consider breaking down your approach into measurable phases with specific milestones.",
-        alchemist: "From an intuitive standpoint, I sense great potential in your vision. Trust your instincts here - there's authentic passion driving this idea. Focus on the emotional connection with your audience and let the natural flow guide your next steps. Your unique perspective is your greatest asset."
+      const anthropicApiKey = process.env.ANTHROPIC_API_KEY;
+      if (!anthropicApiKey) {
+        return res.status(500).json({ message: "Anthropic API key not configured" });
+      }
+
+      // Create DNA-specific system messages
+      const systemMessages = {
+        architect: "You are an expert business consultant with a systematic, analytical approach. Provide structured, logical advice focusing on scalability, metrics, and systematic validation. Use clear frameworks and actionable steps.",
+        alchemist: "You are an intuitive business mentor who focuses on vision, passion, and creative flow. Provide advice that honors emotional resonance, authentic expression, and natural business development. Trust instincts and energy."
       };
 
-      const response = mockResponses[dnaMode as keyof typeof mockResponses] || mockResponses.architect;
+      const systemMessage = systemMessages[dnaMode as keyof typeof systemMessages] || systemMessages.architect;
+
+      // Make request to Anthropic API
+      const anthropicResponse = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': anthropicApiKey,
+          'anthropic-version': '2023-06-01'
+        },
+        body: JSON.stringify({
+          model: 'claude-3-sonnet-20240229',
+          max_tokens: 1000,
+          system: systemMessage,
+          messages: [
+            {
+              role: 'user',
+              content: prompt
+            }
+          ]
+        })
+      });
+
+      if (!anthropicResponse.ok) {
+        console.error('Anthropic API error:', await anthropicResponse.text());
+        return res.status(500).json({ message: "Failed to generate AI response" });
+      }
+
+      const anthropicData = await anthropicResponse.json();
+      const response = anthropicData.content?.[0]?.text || "No response generated";
 
       res.json({ 
         response,
