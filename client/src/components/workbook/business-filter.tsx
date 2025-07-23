@@ -110,7 +110,12 @@ Can you help me refine this and tell me what's missing?`
   });
 
   const getAiResponse = () => {
+    console.log("BUTTON CLICKED - Starting AI generation process");
+    console.log("Current promptText:", promptText.substring(0, 100) + "...");
+    console.log("Current aiResponse state:", aiResponse.length, "characters");
+    
     if (!promptText.trim()) {
+      console.log("ERROR - No prompt text provided");
       toast({
         title: "No Prompt",
         description: "Please enter a prompt before generating AI response.",
@@ -118,6 +123,8 @@ Can you help me refine this and tell me what's missing?`
       });
       return;
     }
+    
+    console.log("CALLING generateAIResponseMutation.mutate with prompt");
     generateAIResponseMutation.mutate(promptText);
   };
 
