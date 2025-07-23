@@ -2,12 +2,14 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useDNAMode } from "@/hooks/use-dna-mode";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Copy, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { AIService } from "@/lib/ai-service";
 import type { WorkbookSession } from "@shared/schema";
-import type { NameLogoBuilder } from "@/types/workbook";
 
 interface NameLogoBuilderProps {
   session: WorkbookSession | undefined;
@@ -18,231 +20,485 @@ export default function NameLogoBuilder({ session }: NameLogoBuilderProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
-  const [builder, setBuilder] = useState<NameLogoBuilder>(
+  const [nameLogoData, setNameLogoData] = useState(
     session?.nameLogoBuilder || {
-      finalDecisions: {},
-      nameRatings: {}
+      businessNameOptions: ["", "", "", "", ""],
+      logoConceptDirections: ["", "", ""],
+      taglineOptions: ["", ""],
+      colorPalette: "",
+      nameRatings: {
+        name1EasyToSay: 0,
+        name1Memorable: 0,
+        name1Professional: 0,
+        name1DomainAvailable: 0,
+        name1FeelsRight: 0,
+        name1Total: 0,
+        name2EasyToSay: 0,
+        name2Memorable: 0,
+        name2Professional: 0,
+        name2DomainAvailable: 0,
+        name2FeelsRight: 0,
+        name2Total: 0,
+        name3EasyToSay: 0,
+        name3Memorable: 0,
+        name3Professional: 0,
+        name3DomainAvailable: 0,
+        name3FeelsRight: 0,
+        name3Total: 0,
+        name4EasyToSay: 0,
+        name4Memorable: 0,
+        name4Professional: 0,
+        name4DomainAvailable: 0,
+        name4FeelsRight: 0,
+        name4Total: 0,
+        name5EasyToSay: 0,
+        name5Memorable: 0,
+        name5Professional: 0,
+        name5DomainAvailable: 0,
+        name5FeelsRight: 0,
+        name5Total: 0
+      },
+      finalDecisions: {
+        chosenBusinessName: "",
+        chosenLogoDirection: "",
+        chosenTagline: "",
+        chosenColorPalette: ""
+      },
+      customPrompt: "",
+      aiResponse: ""
     }
   );
 
-  const [newBusinessName, setNewBusinessName] = useState("");
+  // Editable prompt text
+  const [promptText, setPromptText] = useState(
+    session?.nameLogoBuilder?.customPrompt || 
+    `"I need help creating a name and logo concept for my business.
+
+Here's my business:
+• What I do: [insert your offer/service]
+• Who it's for: [insert target audience]
+• Key benefits: [insert main transformation/result]
+• Personality/tone: [insert how you want to be perceived]
+• Industry: [insert your industry/niche]
+
+Please suggest:
+• 5 business name options (check domain availability)
+• 3 logo concept directions (describe style, colors, symbols)
+• 2 tagline options
+• Color palette suggestions (include hex codes)
+
+Make sure everything feels professional but approachable, and works for both digital and print."`
+  );
+
+  // AI Response State
+  const [aiResponse, setAiResponse] = useState(
+    session?.nameLogoBuilder?.aiResponse || ""
+  );
 
   const updateSessionMutation = useMutation({
     mutationFn: async (updates: Partial<WorkbookSession>) => {
-      return apiRequest("PATCH", `/api/workbook/session`, updates);
+      if (!session?.id) throw new Error("No session ID");
+      return apiRequest("PATCH", `/api/workbook/session/${session.id}`, updates);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/workbook/session"] });
+    },
+  });
+
+  const handleBusinessNameChange = (index: number, value: string) => {
+    const updatedData = { ...nameLogoData };
+    updatedData.businessNameOptions[index] = value;
+    setNameLogoData(updatedData);
+    updateSessionMutation.mutate({ nameLogoBuilder: updatedData });
+  };
+
+  const handleLogoConceptChange = (index: number, value: string) => {
+    const updatedData = { ...nameLogoData };
+    updatedData.logoConceptDirections[index] = value;
+    setNameLogoData(updatedData);
+    updateSessionMutation.mutate({ nameLogoBuilder: updatedData });
+  };
+
+  const handleTaglineChange = (index: number, value: string) => {
+    const updatedData = { ...nameLogoData };
+    updatedData.taglineOptions[index] = value;
+    setNameLogoData(updatedData);
+    updateSessionMutation.mutate({ nameLogoBuilder: updatedData });
+  };
+
+  const handleColorPaletteChange = (value: string) => {
+    const updatedData = { ...nameLogoData, colorPalette: value };
+    setNameLogoData(updatedData);
+    updateSessionMutation.mutate({ nameLogoBuilder: updatedData });
+  };
+
+  const handleNameRatingChange = (field: string, value: number) => {
+    const updatedData = { ...nameLogoData };
+    updatedData.nameRatings[field as keyof typeof updatedData.nameRatings] = value;
+    
+    // Calculate totals for each name
+    for (let i = 1; i <= 5; i++) {
+      const total = 
+        (updatedData.nameRatings[`name${i}EasyToSay` as keyof typeof updatedData.nameRatings] || 0) +
+        (updatedData.nameRatings[`name${i}Memorable` as keyof typeof updatedData.nameRatings] || 0) +
+        (updatedData.nameRatings[`name${i}Professional` as keyof typeof updatedData.nameRatings] || 0) +
+        (updatedData.nameRatings[`name${i}DomainAvailable` as keyof typeof updatedData.nameRatings] || 0) +
+        (updatedData.nameRatings[`name${i}FeelsRight` as keyof typeof updatedData.nameRatings] || 0);
+      updatedData.nameRatings[`name${i}Total` as keyof typeof updatedData.nameRatings] = total;
+    }
+    
+    setNameLogoData(updatedData);
+    updateSessionMutation.mutate({ nameLogoBuilder: updatedData });
+  };
+
+  const handleFinalDecisionChange = (field: string, value: string) => {
+    const updatedData = { ...nameLogoData };
+    updatedData.finalDecisions[field as keyof typeof updatedData.finalDecisions] = value;
+    setNameLogoData(updatedData);
+    updateSessionMutation.mutate({ nameLogoBuilder: updatedData });
+  };
+
+  const handlePromptChange = (value: string) => {
+    setPromptText(value);
+    const updatedData = { ...nameLogoData, customPrompt: value };
+    updateSessionMutation.mutate({ nameLogoBuilder: updatedData });
+  };
+
+  const copyToClipboard = (text: string, type: string) => {
+    navigator.clipboard.writeText(text);
+    toast({
+      title: "Copied!",
+      description: `${type} copied to clipboard`,
+    });
+  };
+
+  // AI Generation Mutation
+  const generateAIResponseMutation = useMutation({
+    mutationFn: (prompt: string) => AIService.generateResponse(prompt),
+    onSuccess: (response) => {
+      console.log("AI Response received:", response);
+      setAiResponse(response);
+      const updatedData = { ...nameLogoData, customPrompt: promptText, aiResponse: response };
+      updateSessionMutation.mutate({ nameLogoBuilder: updatedData });
       toast({
-        title: "Progress saved",
-        description: "Your branding decisions have been saved.",
+        title: "AI Response Generated!",
+        description: "Your branding suggestions have been generated with AI insights.",
+      });
+    },
+    onError: (error) => {
+      console.error("AI Generation Error:", error);
+      toast({
+        title: "Generation Failed",
+        description: error instanceof Error ? error.message : "Failed to generate AI response",
+        variant: "destructive",
       });
     },
   });
 
-  const handleFinalDecisionChange = (key: keyof NameLogoBuilder["finalDecisions"], value: string) => {
-    const updatedBuilder = {
-      ...builder,
-      finalDecisions: {
-        ...builder.finalDecisions,
-        [key]: value
-      }
-    };
-    setBuilder(updatedBuilder);
-    updateSessionMutation.mutate({ nameLogoBuilder: updatedBuilder });
+  const handleGenerateWithAI = () => {
+    if (!promptText.trim()) {
+      toast({
+        title: "No Prompt",
+        description: "Please enter a prompt before generating AI response.",
+        variant: "destructive",
+      });
+      return;
+    }
+    generateAIResponseMutation.mutate(promptText);
   };
-
-  const addBusinessName = () => {
-    if (!newBusinessName.trim()) return;
-    
-    const updatedBuilder = {
-      ...builder,
-      nameRatings: {
-        ...builder.nameRatings,
-        [newBusinessName]: 5 // Default rating
-      }
-    };
-    setBuilder(updatedBuilder);
-    updateSessionMutation.mutate({ nameLogoBuilder: updatedBuilder });
-    setNewBusinessName("");
-  };
-
-  const rateBusinessName = (name: string, rating: number) => {
-    const updatedBuilder = {
-      ...builder,
-      nameRatings: {
-        ...builder.nameRatings,
-        [name]: rating
-      }
-    };
-    setBuilder(updatedBuilder);
-    updateSessionMutation.mutate({ nameLogoBuilder: updatedBuilder });
-  };
-
-  const removeBusinessName = (name: string) => {
-    const { [name]: removed, ...restRatings } = builder.nameRatings || {};
-    const updatedBuilder = {
-      ...builder,
-      nameRatings: restRatings
-    };
-    setBuilder(updatedBuilder);
-    updateSessionMutation.mutate({ nameLogoBuilder: updatedBuilder });
-  };
-
-  const businessNames = Object.keys(builder.nameRatings || {});
 
   return (
-    <Card id="name-logo-builder" className="p-4 sm:p-6 lg:p-8 bg-purple-50 border-purple-200">
-      <div className="mb-6 sm:mb-8">
+    <Card id="name-logo-builder" className="p-4 sm:p-6 lg:p-8 bg-[#F3F0FF] border-purple-200">
+      <div className="mb-8">
         <div className="flex items-center space-x-3 mb-4">
-          <div className="w-7 h-7 sm:w-8 sm:h-8 bg-purple-600 text-white rounded-full flex items-center justify-center text-xs sm:text-sm font-bold">1.6</div>
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-900">AI Sprint — Name + Logo Builder</h2>
+          <div className="w-8 h-8 bg-architect-indigo text-white rounded-full flex items-center justify-center text-sm font-bold">1.6</div>
+          <h2 className="text-2xl font-bold text-strategic-black">Name & Logo Builder</h2>
         </div>
-        <p className="text-gray-600 text-base sm:text-lg mb-4">
-          Generate and evaluate business names, taglines, and basic branding elements for your concept.
-        </p>
+        <p className="text-gray-600 text-lg mb-4">Create a memorable brand identity that works across all platforms</p>
         
-        <div className="p-3 sm:p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <h3 className="font-semibold text-gray-900 mb-2">Branding Sprint</h3>
+        {/* Purpose of This Section */}
+        <div className="p-6 bg-brand-gradient-light border border-purple-200 rounded-lg mb-6">
+          <h3 className="font-semibold text-strategic-black mb-3">Purpose of This Section</h3>
           <p className="text-gray-700">
-            Great branding communicates your value proposition, resonates with your audience, and is memorable. 
-            Start with names and basic elements - you can refine these later.
+            To help entrepreneurs quickly generate a professional name and visual identity for their business — without getting stuck in perfectionism or spending weeks on design.
           </p>
         </div>
-      </div>
 
-      {/* DNA-Specific Coaching */}
-      <div className={`mb-6 sm:mb-8 p-4 sm:p-6 rounded-lg border ${
-        isArchitect 
-          ? "bg-purple-100 border-purple-300" 
-          : "bg-orange-50 border-orange-200"
-      }`}>
-        <h3 className={`font-semibold mb-4 ${
-          isArchitect ? "text-purple-600" : "text-orange-500"
-        }`}>
-          {isArchitect ? "Architect Branding Tips" : "Alchemist Branding Tips"}
-        </h3>
-        <div className="text-gray-700">
-          {isArchitect ? (
-            <p>Focus on names that convey authority, systems, and results. Think about scalability and professionalism in your branding choices.</p>
-          ) : (
-            <p>Focus on names that evoke emotion, transformation, and connection. Think about the feeling and aspiration you want to create.</p>
-          )}
+        {/* Education Box */}
+        <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg mb-6">
+          <h3 className="font-semibold text-strategic-black mb-2">Education Box</h3>
+          <p className="text-gray-700 mb-2">
+            <strong>Your business name and logo are your first impression.</strong>
+          </p>
+          <p className="text-gray-700 mb-2">
+            They don't need to be perfect, but they do need to be:
+          </p>
+          <ul className="list-disc list-inside text-gray-700 mb-2 ml-4">
+            <li>Clear and memorable</li>
+            <li>Professional and credible</li>
+            <li>Scalable across platforms (social media, website, business cards)</li>
+          </ul>
+          <p className="text-gray-700">
+            This section gives you the tools to create a strong brand identity quickly, so you can focus on building your business.
+          </p>
+        </div>
+
+        {/* Dual DNA Coaching View */}
+        <div className="mb-8">
+          <h3 className="font-semibold text-strategic-black text-lg mb-4">Dual DNA Coaching View</h3>
+          
+          <div className="grid md:grid-cols-2 gap-6 mb-4">
+            {/* Architect View */}
+            <div className="p-6 bg-purple-50 border border-purple-200 rounded-lg">
+              <h4 className="font-semibold text-architect-indigo mb-4">Architect approach</h4>
+              <p className="text-gray-700">
+                <strong>You need:</strong> A clear, scalable name that works across systems, platforms, and assets
+              </p>
+            </div>
+
+            {/* Alchemist View */}
+            <div className="p-6 bg-orange-50 border border-orange-200 rounded-lg">
+              <h4 className="font-semibold text-scale-orange mb-4">Alchemist approach</h4>
+              <p className="text-gray-700">
+                <strong>You need:</strong> A magnetic brand identity that feels aligned, energizing, and emotionally resonant
+              </p>
+            </div>
+          </div>
+          
+          <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-4 mt-4">
+            <p className="text-gray-700 mb-2">
+              <strong>This step requires both Architect and Alchemist thinking.</strong>
+            </p>
+            <p className="text-gray-700 mb-2">
+              If you only use one mode, you'll either be:
+            </p>
+            <ul className="text-gray-700 list-disc list-inside mb-2 ml-4">
+              <li>Too functional and boring (Architect only)</li>
+              <li>Too abstract and unmemorable (Alchemist only)</li>
+            </ul>
+            <p className="text-gray-700">
+              <strong>Great brands combine both:</strong> Clear + Memorable, Professional + Energizing
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* Business Name Generator */}
-      <div className="mb-8">
-        <h3 className="font-semibold text-gray-900 mb-4">Business Name Ideas</h3>
+      {/* AI Branding Prompt Section */}
+      <div className="mb-8 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+        <h3 className="font-semibold text-strategic-black mb-2">AI Branding Prompt</h3>
+        <p className="text-sm text-gray-700 mb-3">Edit the prompt below and copy it to ChatGPT or use our AI generator:</p>
+        <Textarea
+          value={promptText}
+          onChange={(e) => handlePromptChange(e.target.value)}
+          className="bg-white text-sm text-gray-700 font-mono mb-4 min-h-[200px] resize-none"
+          placeholder="Edit your prompt here..."
+        />
         
-        <div className="flex space-x-2 mb-4">
-          <Input
-            value={newBusinessName}
-            onChange={(e) => setNewBusinessName(e.target.value)}
-            placeholder="Enter a business name idea..."
-            className="bg-white"
-            onKeyPress={(e) => e.key === 'Enter' && addBusinessName()}
-          />
-          <Button onClick={addBusinessName} className="bg-purple-600 hover:bg-purple-700">
-            Add Name
+        <div className="flex flex-col sm:flex-row gap-3 mb-4">
+          <Button
+            onClick={() => copyToClipboard(promptText, "Prompt")}
+            className={`${
+              isArchitect 
+                ? "bg-architect-indigo hover:bg-purple-variant" 
+                : "bg-scale-orange hover:bg-orange-600"
+            } text-white`}
+          >
+            <Copy className="w-4 h-4 mr-2" />
+            Copy Branding Prompt
+          </Button>
+          
+          <Button
+            onClick={handleGenerateWithAI}
+            disabled={generateAIResponseMutation.isPending}
+            className="bg-gradient-to-r from-purple-600 to-orange-500 hover:from-purple-700 hover:to-orange-600 text-white"
+          >
+            <Sparkles className="w-4 h-4 mr-2" />
+            {generateAIResponseMutation.isPending ? "Generating..." : "Generate with AI"}
           </Button>
         </div>
 
-        {businessNames.length > 0 && (
-          <div className="space-y-3">
-            {businessNames.map((name) => (
-              <div key={name} className="p-4 border border-gray-200 rounded-lg bg-white">
-                <div className="flex items-center justify-between mb-3">
-                  <h4 className="font-medium text-gray-900">{name}</h4>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => removeBusinessName(name)}
-                    className="text-red-600 hover:text-red-700"
-                  >
-                    Remove
-                  </Button>
-                </div>
-                
-                <div className="flex items-center space-x-4">
-                  <span className="text-sm text-gray-500">Rating:</span>
-                  <input
-                    type="range"
-                    min="1"
-                    max="10"
-                    value={builder.nameRatings?.[name] || 5}
-                    onChange={(e) => rateBusinessName(name, Number(e.target.value))}
-                    className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-                  />
-                  <span className="font-bold text-purple-600 min-w-[40px]">
-                    {builder.nameRatings?.[name] || 5}/10
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Final Branding Decisions */}
-      <div className="space-y-6">
-        <h3 className="font-semibold text-gray-900">Final Branding Decisions</h3>
-        
-        <div className="grid gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Chosen Business Name
-            </label>
-            <Input
-              value={builder.finalDecisions?.chosenBusinessName || ""}
-              onChange={(e) => handleFinalDecisionChange("chosenBusinessName", e.target.value)}
-              placeholder="Select your final business name..."
-              className="bg-white"
-            />
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Tagline/Subtitle
-            </label>
-            <Input
-              value={builder.finalDecisions?.chosenTagline || ""}
-              onChange={(e) => handleFinalDecisionChange("chosenTagline", e.target.value)}
-              placeholder="What's your memorable tagline?..."
-              className="bg-white"
-            />
-          </div>
-        </div>
-
-        {/* Brand Summary */}
-        {(builder.finalDecisions?.chosenBusinessName || builder.finalDecisions?.chosenTagline) && (
-          <div className="mt-8 p-4 sm:p-6 bg-green-50 border border-green-200 rounded-lg">
-            <h3 className="font-semibold text-gray-900 mb-3">Your Brand Identity</h3>
-            <div className="text-center">
-              {builder.finalDecisions?.chosenBusinessName && (
-                <div className="text-2xl font-bold text-gray-900 mb-2">
-                  {builder.finalDecisions.chosenBusinessName}
-                </div>
-              )}
-              {builder.finalDecisions?.chosenTagline && (
-                <div className="text-gray-600 italic">
-                  {builder.finalDecisions.chosenTagline}
-                </div>
-              )}
+        {/* AI Response Section */}
+        {(aiResponse || generateAIResponseMutation.isPending) && (
+          <div className="mt-4">
+            <h4 className="font-semibold text-strategic-black mb-3">AI Response:</h4>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <p className="text-sm text-gray-600 mb-2">Date: {new Date().toLocaleDateString()}</p>
+              <Textarea
+                value={aiResponse}
+                onChange={(e) => {
+                  setAiResponse(e.target.value);
+                  const updatedData = { ...nameLogoData, customPrompt: promptText, aiResponse: e.target.value };
+                  updateSessionMutation.mutate({ nameLogoBuilder: updatedData });
+                }}
+                placeholder="Your AI response will appear here, or paste your own response..."
+                className="w-full h-32 resize-y"
+              />
             </div>
           </div>
         )}
       </div>
 
-      {/* Next Steps */}
-      <div className="mt-8 p-4 bg-gray-50 rounded-lg">
-        <h4 className="font-medium text-gray-900 mb-2">Next Steps</h4>
-        <ul className="text-sm text-gray-600 space-y-1">
-          <li>• Check domain availability for your chosen name</li>
-          <li>• Design a simple logo (or use AI tools like Canva/Midjourney)</li>
-          <li>• Choose 2-3 brand colors that reflect your positioning</li>
-          <li>• Create basic brand guidelines for consistency</li>
-        </ul>
+      {/* Business Name Options */}
+      <div className="mb-8">
+        <h3 className="font-semibold text-strategic-black text-lg mb-4">5 Business Name Options</h3>
+        <div className="space-y-3">
+          {nameLogoData.businessNameOptions.map((name, index) => (
+            <div key={index} className="flex items-center space-x-3">
+              <span className="font-semibold text-architect-indigo text-sm w-8">{index + 1}.</span>
+              <Input
+                value={name}
+                onChange={(e) => handleBusinessNameChange(index, e.target.value)}
+                placeholder={`Business name option ${index + 1}`}
+                className="flex-1"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Logo Concept Directions */}
+      <div className="mb-8">
+        <h3 className="font-semibold text-strategic-black text-lg mb-4">3 Logo Concept Directions</h3>
+        <div className="space-y-4">
+          {nameLogoData.logoConceptDirections.map((concept, index) => (
+            <div key={index} className="space-y-2">
+              <label className="font-semibold text-architect-indigo text-sm">Concept {index + 1}:</label>
+              <Textarea
+                value={concept}
+                onChange={(e) => handleLogoConceptChange(index, e.target.value)}
+                placeholder={`Describe logo concept ${index + 1} (style, colors, symbols, feel)`}
+                rows={3}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Tagline Options */}
+      <div className="mb-8">
+        <h3 className="font-semibold text-strategic-black text-lg mb-4">2 Tagline Options</h3>
+        <div className="space-y-3">
+          {nameLogoData.taglineOptions.map((tagline, index) => (
+            <div key={index} className="flex items-center space-x-3">
+              <span className="font-semibold text-architect-indigo text-sm w-8">{index + 1}.</span>
+              <Input
+                value={tagline}
+                onChange={(e) => handleTaglineChange(index, e.target.value)}
+                placeholder={`Tagline option ${index + 1}`}
+                className="flex-1"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Color Palette */}
+      <div className="mb-8">
+        <h3 className="font-semibold text-strategic-black text-lg mb-4">Color Palette Suggestions</h3>
+        <Textarea
+          value={nameLogoData.colorPalette}
+          onChange={(e) => handleColorPaletteChange(e.target.value)}
+          placeholder="Describe your color palette with hex codes (e.g., Primary: #2563EB, Secondary: #F97316, Accent: #10B981)"
+          rows={3}
+        />
+      </div>
+
+      {/* Name Rating System */}
+      <div className="mb-8">
+        <h3 className="font-semibold text-strategic-black text-lg mb-4">Name Rating System</h3>
+        <p className="text-gray-700 mb-4">Rate your top 5 business names across these criteria (1-5 scale):</p>
+        
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse bg-white rounded-lg shadow-sm border border-purple-200">
+            <thead>
+              <tr className="bg-gradient-to-r from-purple-100 to-orange-100 border-b border-purple-200">
+                <th className="p-3 text-left font-semibold text-strategic-black border-r border-purple-200">Name</th>
+                <th className="p-3 text-center font-semibold text-strategic-black border-r border-purple-200">Easy to Say</th>
+                <th className="p-3 text-center font-semibold text-strategic-black border-r border-purple-200">Memorable</th>
+                <th className="p-3 text-center font-semibold text-strategic-black border-r border-purple-200">Professional</th>
+                <th className="p-3 text-center font-semibold text-strategic-black border-r border-purple-200">Domain Available</th>
+                <th className="p-3 text-center font-semibold text-strategic-black border-r border-purple-200">Feels Right</th>
+                <th className="p-3 text-center font-semibold text-strategic-black">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[1, 2, 3, 4, 5].map((nameIndex) => (
+                <tr key={nameIndex} className="border-b border-purple-100 hover:bg-purple-50 transition-colors">
+                  <td className="p-3 font-medium text-strategic-black border-r border-purple-100">
+                    {nameLogoData.businessNameOptions[nameIndex - 1] || `Name ${nameIndex}`}
+                  </td>
+                  {['EasyToSay', 'Memorable', 'Professional', 'DomainAvailable', 'FeelsRight'].map((criteria) => (
+                    <td key={criteria} className="p-3 text-center border-r border-purple-100">
+                      <div className="flex justify-center space-x-1">
+                        {[1, 2, 3, 4, 5].map((rating) => (
+                          <button
+                            key={rating}
+                            onClick={() => handleNameRatingChange(`name${nameIndex}${criteria}`, rating)}
+                            className={`w-6 h-6 rounded-full border text-xs font-semibold transition-colors ${
+                              nameLogoData.nameRatings[`name${nameIndex}${criteria}` as keyof typeof nameLogoData.nameRatings] === rating
+                                ? isArchitect
+                                  ? "bg-architect-indigo border-architect-indigo text-white"
+                                  : "bg-scale-orange border-scale-orange text-white"
+                                : "border-gray-300 text-gray-600 hover:border-gray-400"
+                            }`}
+                          >
+                            {rating}
+                          </button>
+                        ))}
+                      </div>
+                    </td>
+                  ))}
+                  <td className="p-3 text-center font-bold text-architect-indigo">
+                    {nameLogoData.nameRatings[`name${nameIndex}Total` as keyof typeof nameLogoData.nameRatings] || 0}/25
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Final Decisions */}
+      <div className="mb-8">
+        <h3 className="font-semibold text-strategic-black text-lg mb-4">Final Decisions</h3>
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-strategic-black mb-2">Chosen Business Name:</label>
+            <Input
+              value={nameLogoData.finalDecisions.chosenBusinessName}
+              onChange={(e) => handleFinalDecisionChange("chosenBusinessName", e.target.value)}
+              placeholder="Enter your final business name choice"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-strategic-black mb-2">Chosen Logo Direction:</label>
+            <Textarea
+              value={nameLogoData.finalDecisions.chosenLogoDirection}
+              onChange={(e) => handleFinalDecisionChange("chosenLogoDirection", e.target.value)}
+              placeholder="Describe your chosen logo concept"
+              rows={2}
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-strategic-black mb-2">Chosen Tagline:</label>
+            <Input
+              value={nameLogoData.finalDecisions.chosenTagline}
+              onChange={(e) => handleFinalDecisionChange("chosenTagline", e.target.value)}
+              placeholder="Enter your final tagline choice"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-strategic-black mb-2">Chosen Color Palette:</label>
+            <Input
+              value={nameLogoData.finalDecisions.chosenColorPalette}
+              onChange={(e) => handleFinalDecisionChange("chosenColorPalette", e.target.value)}
+              placeholder="Enter your final color palette (with hex codes)"
+            />
+          </div>
+        </div>
       </div>
     </Card>
   );

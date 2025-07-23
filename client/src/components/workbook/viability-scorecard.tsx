@@ -2,212 +2,395 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useDNAMode } from "@/hooks/use-dna-mode";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { Copy, Sparkles } from "lucide-react";
 import type { WorkbookSession } from "@shared/schema";
-import type { ViabilityScores } from "@/types/workbook";
+import { AIService } from "@/lib/ai-service";
 
-interface ViabilityScorecardProps {
+interface ViabilityScoreCardProps {
   session: WorkbookSession | undefined;
 }
 
-export default function ViabilityScorecard({ session }: ViabilityScorecardProps) {
+export default function ViabilityScorecard({ session }: ViabilityScoreCardProps) {
   const { isArchitect } = useDNAMode();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
-  const [scores, setScores] = useState<ViabilityScores>(
+  const [scores, setScores] = useState(
     session?.viabilityScores || {
       clarity: 0,
       demand: 0,
       differentiation: 0,
-      delivery: 0,
-      scalability: 0,
-      profitability: 0,
-      competition: 0,
-      energy: 0
+      deliveryFeasibility: 0,
+      emotionalPull: 0,
+      buyerUrgency: 0,
+      profitPotential: 0,
+      founderFit: 0,
+      totalScore: 0,
+      aiResponseSpace: ""
     }
+  );
+
+  const [aiResponseSpace, setAiResponseSpace] = useState(session?.viabilityScores?.aiResponseSpace || "");
+
+  // Editable prompt text
+  const [promptText, setPromptText] = useState(
+    session?.viabilityScores?.customPrompt || 
+    `"Here are my ratings across 8 offer viability areas:
+
+Clarity: [insert]
+Demand: [insert]
+Differentiation: [insert]
+Delivery: [insert]
+Emotional pull: [insert]
+Buyer urgency: [insert]
+Profit potential: [insert]
+Founder fit: [insert]
+
+Can you analyse where this idea is weak and suggest improvements that would raise my score to 35+?"`
   );
 
   const updateSessionMutation = useMutation({
     mutationFn: async (updates: Partial<WorkbookSession>) => {
-      return apiRequest("PATCH", `/api/workbook/session`, updates);
+      if (!session?.id) throw new Error("No session ID");
+      return apiRequest("PATCH", `/api/workbook/session/${session.id}`, updates);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/workbook/session"] });
+    },
+  });
+
+  const handleScoreChange = (factor: string, value: number) => {
+    const updatedScores = { ...scores, [factor]: value };
+    const totalScore = Object.keys(updatedScores)
+      .filter(key => key !== 'totalScore' && key !== 'aiResponseSpace')
+      .reduce((sum, key) => {
+        const scoreValue = updatedScores[key as keyof typeof updatedScores];
+        return sum + (typeof scoreValue === 'number' ? scoreValue : 0);
+      }, 0);
+    updatedScores.totalScore = totalScore;
+    setScores(updatedScores);
+    updateSessionMutation.mutate({ viabilityScores: { ...updatedScores, aiResponseSpace } });
+  };
+
+  const handleAiResponseChange = (value: string) => {
+    setAiResponseSpace(value);
+    updateSessionMutation.mutate({ viabilityScores: { ...scores, aiResponseSpace: value } });
+  };
+
+  const handlePromptChange = (value: string) => {
+    setPromptText(value);
+    updateSessionMutation.mutate({ viabilityScores: { ...scores, aiResponseSpace, customPrompt: value } });
+  };
+
+  const copyAiPrompt = () => {
+    navigator.clipboard.writeText(promptText);
+    toast({
+      title: "Prompt copied!",
+      description: "Your customized prompt has been copied to your clipboard.",
+    });
+  };
+
+  // AI Generation Mutation
+  const generateAIResponseMutation = useMutation({
+    mutationFn: (prompt: string) => AIService.generateResponse(prompt),
+    onSuccess: (response) => {
+      console.log("AI Response received:", response);
+      setAiResponseSpace(response);
+      updateSessionMutation.mutate({ 
+        viabilityScores: { 
+          ...scores, 
+          aiResponseSpace: response, 
+          customPrompt: promptText 
+        } 
+      });
       toast({
-        title: "Progress saved",
-        description: "Your viability scores have been saved.",
+        title: "AI Response Generated!",
+        description: "Your viability analysis has been generated with AI insights.",
+      });
+    },
+    onError: (error) => {
+      console.error("AI Generation Error:", error);
+      toast({
+        title: "Generation Failed",
+        description: error instanceof Error ? error.message : "Failed to generate AI response",
+        variant: "destructive",
       });
     },
   });
 
-  const handleScoreChange = (key: keyof ViabilityScores, value: number) => {
-    const updatedScores = { ...scores, [key]: value };
-    setScores(updatedScores);
-    updateSessionMutation.mutate({ viabilityScores: updatedScores });
+  const handleGenerateWithAI = () => {
+    if (!promptText.trim()) {
+      toast({
+        title: "No Prompt",
+        description: "Please enter a prompt before generating AI response.",
+        variant: "destructive",
+      });
+      return;
+    }
+    generateAIResponseMutation.mutate(promptText);
   };
 
-  const criteria = [
+  const getScoreInterpretation = (total: number) => {
+    if (total >= 35) {
+      return {
+        title: "Strong — launch ready",
+        description: "Minor refinements only.",
+        color: "bg-green-500"
+      };
+    } else if (total >= 28) {
+      return {
+        title: "Viable — refine the weak spots",
+        description: "Address low-scoring areas before launching.",
+        color: "bg-blue-500"
+      };
+    } else if (total >= 20) {
+      return {
+        title: "Needs work — pause and adjust",
+        description: "Significant improvements needed before proceeding.",
+        color: "bg-yellow-500"
+      };
+    } else {
+      return {
+        title: "Not viable — pivot or reassess",
+        description: "Build clarity before proceeding.",
+        color: "bg-red-500"
+      };
+    }
+  };
+
+  const totalScore = scores.totalScore || Object.keys(scores)
+    .filter(key => key !== 'totalScore' && key !== 'aiResponseSpace' && key !== 'actionPlanning')
+    .reduce((sum, key) => {
+      const scoreValue = scores[key as keyof typeof scores];
+      return sum + (typeof scoreValue === 'number' ? scoreValue : 0);
+    }, 0);
+
+  const factors = [
     {
-      key: "clarity" as keyof ViabilityScores,
+      key: "clarity" as const,
       title: "Clarity",
-      description: "How clear is your business concept and target audience?"
+      description: "Can you explain what it is, who it's for, and why it matters in 30 seconds?",
+      coachingNote: "No clarity = no sales."
     },
     {
-      key: "demand" as keyof ViabilityScores,
-      title: "Market Demand",
-      description: "How strong is the market demand for your solution?"
+      key: "demand" as const,
+      title: "Demand", 
+      description: "Is there visible demand? (searches, questions, buying behavior)",
+      coachingNote: "Check Google, Reddit, forums, competitors."
     },
     {
-      key: "differentiation" as keyof ViabilityScores,
-      title: "Differentiation", 
-      description: "How unique is your approach compared to alternatives?"
+      key: "differentiation" as const,
+      title: "Differentiation",
+      description: "Does this stand out from what already exists?",
+      coachingNote: "Doesn't have to be brand new — just clearly better or different."
     },
     {
-      key: "delivery" as keyof ViabilityScores,
-      title: "Delivery Capability",
-      description: "How confident are you in your ability to deliver results?"
+      key: "deliveryFeasibility" as const,
+      title: "Delivery Feasibility",
+      description: "Can you deliver this offer reliably and at scale?",
+      coachingNote: "Can YOU or a system/team fulfill this without breaking?"
     },
     {
-      key: "scalability" as keyof ViabilityScores,
-      title: "Scalability",
-      description: "How easily can this business model scale beyond you?"
+      key: "emotionalPull" as const,
+      title: "Emotional Pull",
+      description: "Does this feel aligned and exciting to build?",
+      coachingNote: "If you dread it, you won't grow it."
     },
     {
-      key: "profitability" as keyof ViabilityScores,
-      title: "Profitability",
-      description: "How clear is the path to profitable unit economics?"
+      key: "buyerUrgency" as const,
+      title: "Buyer Urgency",
+      description: "Is there a reason they'll buy now vs. later?",
+      coachingNote: "Is the pain high, or the timing right?"
     },
     {
-      key: "competition" as keyof ViabilityScores,
-      title: "Competitive Advantage",
-      description: "How defensible is your position in the market?"
+      key: "profitPotential" as const,
+      title: "Profit Potential",
+      description: "Is there enough margin to grow, hire, reinvest?",
+      coachingNote: "Don't build a hamster wheel."
     },
     {
-      key: "energy" as keyof ViabilityScores,
-      title: "Energy Alignment",
-      description: "How energized and motivated are you about this business?"
+      key: "founderFit" as const,
+      title: "Founder Fit",
+      description: "Are you the right person to build this, now?",
+      coachingNote: "Based on your skills, E-DNA, and current life season."
     }
   ];
 
-  const totalScore = Object.values(scores).reduce((sum, score) => sum + score, 0);
-  const averageScore = totalScore / criteria.length;
-
-  const getScoreColor = (score: number) => {
-    if (score >= 8) return "text-green-600";
-    if (score >= 6) return "text-yellow-600";
-    return "text-red-600";
-  };
-
-  const getOverallAssessment = (avg: number) => {
-    if (avg >= 8) return { color: "text-green-600", text: "Strong viability - ready to move forward" };
-    if (avg >= 6) return { color: "text-yellow-600", text: "Moderate viability - address weak areas" };
-    return { color: "text-red-600", text: "Needs work - focus on improvement areas" };
-  };
+  const interpretation = getScoreInterpretation(totalScore);
 
   return (
-    <Card id="viability-scorecard" className="p-4 sm:p-6 lg:p-8 bg-purple-50 border-purple-200">
+    <Card id="viability-scorecard" className="p-4 sm:p-6 lg:p-8 bg-[#F3F0FF] border-purple-200">
+      {/* Section Header */}
       <div className="mb-6 sm:mb-8">
         <div className="flex items-center space-x-3 mb-4">
-          <div className="w-7 h-7 sm:w-8 sm:h-8 bg-purple-600 text-white rounded-full flex items-center justify-center text-xs sm:text-sm font-bold">1.5</div>
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Idea Viability Scorecard</h2>
+          <div className="w-7 h-7 sm:w-8 sm:h-8 bg-architect-indigo text-white rounded-full flex items-center justify-center text-xs sm:text-sm font-bold">1.5</div>
+          <h2 className="text-xl sm:text-2xl font-bold text-strategic-black">Idea Viability Scorecard</h2>
         </div>
-        <p className="text-gray-600 text-base sm:text-lg mb-4">
-          Rate each aspect of your business idea from 1 (very weak) to 10 (very strong). Be honest - this helps identify what to focus on.
-        </p>
+        <p className="text-gray-600 text-base sm:text-lg mb-4 sm:mb-6">Test your idea before you waste time, money, or energy</p>
         
-        <div className="p-3 sm:p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <h3 className="font-semibold text-gray-900 mb-2">8-Pillar Assessment</h3>
+        {/* Purpose Section */}
+        <div className="p-4 sm:p-6 bg-brand-gradient-light border border-purple-200 rounded-lg mb-4 sm:mb-6">
+          <h3 className="font-semibold text-strategic-black mb-3">Purpose of This Section</h3>
           <p className="text-gray-700">
-            This scorecard covers the essential elements of a viable business: clarity, market demand, 
-            differentiation, delivery capability, scalability, profitability, competitive advantage, and energy alignment.
+            To help entrepreneurs pressure-test their idea or offer against 8 viability pillars — so they can confidently decide to move forward, refine it, or pivot before investing time and resources.
+          </p>
+        </div>
+
+        {/* Education Box */}
+        <div className="p-3 sm:p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <h3 className="font-semibold text-strategic-black mb-2">Education Box</h3>
+          <p className="text-gray-700 mb-2">
+            <strong>It's easy to fall in love with your idea.</strong>
+          </p>
+          <p className="text-gray-700 mb-2">
+            But success comes from building something that the market wants, can afford, and understands.
+          </p>
+          <p className="text-gray-700 mb-2">
+            This scorecard gives you an honest, structured check on your idea's readiness — using both Alchemist signals (pull, resonance, mission) and Architect signals (profit, delivery, demand).
+          </p>
+          <p className="text-gray-700">
+            Don't wait for the market to reject your idea. Use this tool to self-correct now.
           </p>
         </div>
       </div>
 
-      {/* DNA-Specific Coaching */}
-      <div className={`mb-6 sm:mb-8 p-4 sm:p-6 rounded-lg border ${
-        isArchitect 
-          ? "bg-purple-100 border-purple-300" 
-          : "bg-orange-50 border-orange-200"
-      }`}>
-        <h3 className={`font-semibold mb-4 ${
-          isArchitect ? "text-purple-600" : "text-orange-500"
-        }`}>
-          {isArchitect ? "Architect Focus Areas" : "Alchemist Focus Areas"}
-        </h3>
-        <div className="text-gray-700">
-          {isArchitect ? (
-            <p>Pay special attention to delivery capability, scalability, and profitability. These are your natural strengths, but don't neglect energy alignment and differentiation.</p>
-          ) : (
-            <p>Pay special attention to energy alignment, differentiation, and market demand. These are your natural strengths, but don't neglect delivery capability and scalability.</p>
-          )}
+      {/* Dual DNA Coaching View */}
+      <div className="mb-8">
+        <h3 className="font-semibold text-strategic-black text-lg mb-4">Dual DNA Coaching View</h3>
+        <p className="text-gray-700 mb-4">
+          Your Entrepreneurial DNA determines what you focus on naturally — and what you may ignore. This scorecard balances both:
+        </p>
+        
+        <div className="grid md:grid-cols-2 gap-6 mb-4">
+          <div className="p-6 bg-purple-50 border border-purple-200 rounded-lg">
+            <h4 className="font-semibold text-architect-indigo mb-4">Architect bias</h4>
+            <p className="text-gray-700">
+              You might over-focus on efficiency or profitability and ignore emotional appeal.
+            </p>
+          </div>
+
+          <div className="p-6 bg-orange-50 border border-orange-200 rounded-lg">
+            <h4 className="font-semibold text-scale-orange mb-4">Alchemist bias</h4>
+            <p className="text-gray-700">
+              You may focus on alignment and passion but forget about delivery, cost, or buyer urgency.
+            </p>
+          </div>
         </div>
+        
+        <p className="text-gray-700">
+          Great ideas need both structure and resonance — use this scorecard to zoom out and see the full picture.
+        </p>
       </div>
 
-      {/* Scoring Grid */}
-      <div className="space-y-4">
-        {criteria.map((criterion, index) => (
-          <div key={criterion.key} className="p-4 sm:p-6 border border-gray-200 rounded-lg">
-            <div className="flex items-start space-x-3 sm:space-x-4 mb-4">
-              <div className="w-7 h-7 sm:w-8 sm:h-8 bg-purple-600 text-white rounded-full flex items-center justify-center text-xs sm:text-sm font-bold">
-                {index + 1}
-              </div>
-              <div className="flex-1">
-                <h4 className="font-semibold text-gray-900 mb-2">{criterion.title}</h4>
-                <p className="text-gray-600 text-sm mb-4">{criterion.description}</p>
-                
-                <div className="flex items-center space-x-4">
-                  <span className="text-sm text-gray-500 min-w-[80px]">1 (weak)</span>
-                  <input
-                    type="range"
-                    min="1"
-                    max="10"
-                    value={scores[criterion.key]}
-                    onChange={(e) => handleScoreChange(criterion.key, Number(e.target.value))}
-                    className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-                  />
-                  <span className="text-sm text-gray-500 min-w-[80px]">10 (strong)</span>
-                  <span className={`font-bold text-lg min-w-[40px] ${getScoreColor(scores[criterion.key])}`}>
-                    {scores[criterion.key]}
-                  </span>
+      {/* The Viability Scorecard */}
+      <div className="mb-8">
+        <h3 className="font-semibold text-strategic-black text-lg mb-4">The Viability Scorecard (8 Pillars)</h3>
+        <p className="text-gray-700 mb-6">Rate each pillar from 1 to 5 (1 = weak, 5 = strong)</p>
+        
+        <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
+          {factors.map((factor) => (
+            <div key={factor.key} className="p-4 sm:p-6 bg-gradient-to-br from-purple-50 to-orange-50 border border-purple-200 rounded-lg">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3 sm:mb-4">
+                <div className="flex-1">
+                  <h4 className="font-semibold text-strategic-black mb-2 text-sm sm:text-base">{factor.title}</h4>
+                  <p className="text-gray-700 text-xs sm:text-sm mb-2">{factor.description}</p>
+                  <p className="text-xs text-gray-600">{factor.coachingNote}</p>
+                </div>
+                <div className="mt-2 sm:mt-0 sm:ml-4 text-center">
+                  <div className="text-lg sm:text-xl font-bold text-architect-indigo mb-1">
+                    {scores[factor.key] || 0}
+                  </div>
+                  <p className="text-xs text-gray-500">/ 5</p>
                 </div>
               </div>
+              
+              <div className="flex items-center justify-center sm:justify-start space-x-2 sm:space-x-3">
+                {[1, 2, 3, 4, 5].map((rating) => (
+                  <button
+                    key={rating}
+                    onClick={() => handleScoreChange(factor.key, rating)}
+                    className={`w-10 h-10 sm:w-8 sm:h-8 rounded-full border-2 flex items-center justify-center text-sm font-semibold transition-colors ${
+                      scores[factor.key] === rating
+                        ? isArchitect
+                          ? "bg-architect-indigo border-architect-indigo text-white"
+                          : "bg-scale-orange border-scale-orange text-white"
+                        : "border-gray-300 text-gray-600 hover:border-gray-400"
+                    }`}
+                  >
+                    {rating}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
 
-      {/* Overall Assessment */}
-      <div className="mt-8 p-4 sm:p-6 bg-gray-50 rounded-lg">
-        <div className="text-center">
-          <h3 className="font-semibold text-gray-900 mb-2">Overall Viability Score</h3>
-          <div className="text-4xl font-bold text-purple-600 mb-2">
-            {averageScore.toFixed(1)}/10
-          </div>
-          <div className={`font-medium ${getOverallAssessment(averageScore).color}`}>
-            {getOverallAssessment(averageScore).text}
+        {/* Total Score Display */}
+        <div className="text-center mb-8">
+          <div className="inline-block p-6 bg-white border border-purple-200 rounded-lg shadow-sm">
+            <div className="mb-4">
+              <div className="text-4xl font-bold text-architect-indigo mb-2">
+                {totalScore}/40
+              </div>
+              <p className="text-gray-600">Total Viability Score</p>
+            </div>
+            
+            <div className={`inline-block px-4 py-2 rounded-full text-white font-semibold ${interpretation.color}`}>
+              {interpretation.title}
+            </div>
+            <p className="text-gray-700 mt-2 text-sm">{interpretation.description}</p>
           </div>
         </div>
 
-        <div className="mt-6 text-center">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
-            <div>
-              <div className="font-medium text-gray-900">Total Score</div>
-              <div className="text-purple-600 font-bold">{totalScore}/80</div>
-            </div>
-            <div>
-              <div className="font-medium text-gray-900">Highest</div>
-              <div className="text-green-600 font-bold">{Math.max(...Object.values(scores))}</div>
-            </div>
-            <div>
-              <div className="font-medium text-gray-900">Lowest</div>
-              <div className="text-red-600 font-bold">{Math.min(...Object.values(scores))}</div>
-            </div>
-            <div>
-              <div className="font-medium text-gray-900">Range</div>
-              <div className="text-gray-600 font-bold">{Math.max(...Object.values(scores)) - Math.min(...Object.values(scores))}</div>
+        {/* AI Analysis Section */}
+        <div className="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+          <h3 className="font-semibold text-strategic-black mb-2">AI Analysis Prompt</h3>
+          <p className="text-sm text-gray-700 mb-3">Edit the prompt below and use it to get AI feedback on your scores:</p>
+          <Textarea
+            value={promptText}
+            onChange={(e) => handlePromptChange(e.target.value)}
+            className="bg-white text-sm text-gray-700 font-mono mb-4 min-h-[120px] resize-none"
+            placeholder="Edit your prompt here..."
+          />
+          
+          <div className="flex flex-col sm:flex-row gap-3 mb-4">
+            <Button
+              onClick={copyAiPrompt}
+              className={`${
+                isArchitect 
+                  ? "bg-architect-indigo hover:bg-purple-variant" 
+                  : "bg-scale-orange hover:bg-orange-600"
+              } text-white`}
+            >
+              <Copy className="w-4 h-4 mr-2" />
+              Copy Analysis Prompt
+            </Button>
+            
+            <Button
+              onClick={handleGenerateWithAI}
+              disabled={generateAIResponseMutation.isPending}
+              className="bg-gradient-to-r from-purple-600 to-orange-500 hover:from-purple-700 hover:to-orange-600 text-white"
+            >
+              <Sparkles className="w-4 h-4 mr-2" />
+              {generateAIResponseMutation.isPending ? "Generating..." : "Generate with AI"}
+            </Button>
+          </div>
+
+          {/* AI Response Section */}
+          <div className="mt-4">
+            <h4 className="font-semibold text-strategic-black mb-3">AI Response Space:</h4>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <p className="text-sm text-gray-600 mb-2">Date: {new Date().toLocaleDateString()}</p>
+              <Textarea
+                value={aiResponseSpace}
+                onChange={(e) => handleAiResponseChange(e.target.value)}
+                placeholder="Your AI analysis will appear here, or paste your own response..."
+                className="w-full h-32 resize-y"
+              />
             </div>
           </div>
         </div>
