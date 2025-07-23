@@ -1235,32 +1235,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Prompt is required" });
       }
 
-      const anthropicApiKey = process.env.ANTHROPIC_API_KEY;
-      if (!anthropicApiKey) {
-        return res.status(500).json({ message: "Anthropic API key not configured" });
+      const openaiApiKey = process.env.OPENAI_API_KEY;
+      if (!openaiApiKey) {
+        return res.status(500).json({ message: "OpenAI API key not configured" });
       }
 
       // Create DNA-specific system messages
       const systemMessages = {
-        architect: "You are an expert business consultant with a systematic, analytical approach. Provide structured, logical advice focusing on scalability, metrics, and systematic validation. Use clear frameworks and actionable steps.",
-        alchemist: "You are an intuitive business mentor who focuses on vision, passion, and creative flow. Provide advice that honors emotional resonance, authentic expression, and natural business development. Trust instincts and energy."
+        architect: "You are an expert business consultant with a systematic, analytical approach. Provide structured, logical advice focusing on scalability, metrics, and systematic validation. Use clear frameworks and actionable steps. Be concise and practical.",
+        alchemist: "You are an intuitive business mentor who focuses on vision, passion, and creative flow. Provide advice that honors emotional resonance, authentic expression, and natural business development. Trust instincts and energy. Be inspiring and authentic."
       };
 
       const systemMessage = systemMessages[dnaMode as keyof typeof systemMessages] || systemMessages.architect;
 
-      // Make request to Anthropic API
-      const anthropicResponse = await fetch('https://api.anthropic.com/v1/messages', {
+      // Make request to OpenAI API
+      console.log('Making OpenAI API request...');
+      
+      const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': anthropicApiKey,
-          'anthropic-version': '2023-06-01'
+          'Authorization': `Bearer ${openaiApiKey}`
         },
         body: JSON.stringify({
-          model: 'claude-3-sonnet-20240229',
+          model: 'gpt-4o', // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
           max_tokens: 1000,
-          system: systemMessage,
+          temperature: 0.7,
           messages: [
+            {
+              role: 'system',
+              content: systemMessage
+            },
             {
               role: 'user',
               content: prompt
@@ -1269,13 +1274,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         })
       });
 
-      if (!anthropicResponse.ok) {
-        console.error('Anthropic API error:', await anthropicResponse.text());
+      if (!openaiResponse.ok) {
+        const errorText = await openaiResponse.text();
+        console.error('OpenAI API error status:', openaiResponse.status);
+        console.error('OpenAI API error:', errorText);
         return res.status(500).json({ message: "Failed to generate AI response" });
       }
 
-      const anthropicData = await anthropicResponse.json();
-      const response = anthropicData.content?.[0]?.text || "No response generated";
+      const openaiData = await openaiResponse.json();
+      const response = openaiData.choices?.[0]?.message?.content || "No response generated";
 
       res.json({ 
         response,
