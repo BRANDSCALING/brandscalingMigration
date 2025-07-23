@@ -112,6 +112,9 @@ Can you help me refine this and tell me what's missing?`
     },
     onError: (error) => {
       console.error("Business Filter AI Generation Error:", error);
+      console.error("Error type:", typeof error);
+      console.error("Error message:", error instanceof Error ? error.message : error);
+      console.error("Full error object:", error);
       toast({
         title: "Generation Failed",
         description: error instanceof Error ? error.message : "Failed to generate AI response",
