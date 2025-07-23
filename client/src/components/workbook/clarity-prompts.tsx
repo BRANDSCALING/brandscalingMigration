@@ -1,14 +1,17 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useDNAMode } from "@/hooks/use-dna-mode";
 import { useState } from "react";
-import { Card } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { AIService } from "@/lib/ai-service";
+import { AIService, type ClarityResponse } from "@/lib/ai-service";
+import { Sparkles, Copy } from "lucide-react";
 import type { WorkbookSession } from "@shared/schema";
-import type { ClarityPrompts } from "@/types/workbook";
+import type { ClarityPrompts, AIResponse } from "@/types/workbook";
 
 interface ClarityPromptsProps {
   session: WorkbookSession | undefined;
@@ -19,175 +22,324 @@ export default function ClarityPrompts({ session }: ClarityPromptsProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
-  const [prompts, setPrompts] = useState<ClarityPrompts>(
-    session?.clarityPrompts || {}
-  );
+  const [prompts, setPrompts] = useState<ClarityPrompts>(() => {
+    const defaultPrompts = {
+      businessIdea: "",
+      audience: "",
+      problem: "",
+      transformation: "",
+      vehicle: "",
+      emotion: "",
+      blocker: "",
+      aiResponse: "",
+      clarityReflection: "",
+      customPrompt: `I need help refining my business idea into a clear, scalable concept that combines clarity, strategy, and emotional resonance.
 
-  const [aiResponse, setAiResponse] = useState("");
+Here's what I've got so far:
+• My business idea is: [insert]
+• Who it's for: [insert]
+• The problem I want to solve: [insert]
+• The transformation or result I'm aiming for: [insert]
+• What I might sell or deliver: [insert]
+• What I'd love the brand to feel like (emotionally): [insert, optional]
+• What's currently stopping me: [insert, optional]
 
-  const updateSessionMutation = useMutation({
-    mutationFn: async (updates: Partial<WorkbookSession>) => {
-      return apiRequest("PATCH", `/api/workbook/session`, updates);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/workbook/session"] });
-      toast({
-        title: "Progress saved",
-        description: "Your responses have been saved.",
-      });
-    },
+Now please help me:
+1. Refine the idea into a clean, simple business concept
+2. Suggest a logical delivery and monetization model
+3. Highlight any major risks, missing pieces, or unclear points
+4. Offer 2–3 ways I could test or launch this quickly
+5. Use a tone and structure that balances logic and flow
+
+Then, summarize the final idea in 5 bullet points.`
+    };
+    
+    const initialPrompts = session?.clarityPrompts ? 
+      { ...defaultPrompts, ...session.clarityPrompts } : 
+      defaultPrompts;
+      
+    console.log("Initial prompts loaded:", initialPrompts);
+    return initialPrompts;
   });
 
-  const handlePromptChange = (key: keyof ClarityPrompts, value: string) => {
-    const updatedPrompts = { ...prompts, [key]: value };
+  // Editable prompt text
+  const [promptText, setPromptText] = useState(
+    prompts.customPrompt || 
+    `I need help refining my business idea into a clear, scalable concept that combines clarity, strategy, and emotional resonance.
+
+Here's what I've got so far:
+• My business idea is: [insert]
+• Who it's for: [insert]
+• The problem I want to solve: [insert]
+• The transformation or result I'm aiming for: [insert]
+• What I might sell or deliver: [insert]
+• What I'd love the brand to feel like (emotionally): [insert, optional]
+• What's currently stopping me: [insert, optional]
+
+Now please help me:
+1. Refine the idea into a clean, simple business concept
+2. Suggest a logical delivery and monetization model
+3. Highlight any major risks, missing pieces, or unclear points
+4. Offer 2–3 ways I could test or launch this quickly
+5. Use a tone and structure that balances logic and flow
+
+Then, summarize the final idea in 5 bullet points.`
+  );
+
+  const handlePromptChange = (value: string) => {
+    setPromptText(value);
+    const updatedPrompts = { ...prompts, customPrompt: value };
     setPrompts(updatedPrompts);
     updateSessionMutation.mutate({ clarityPrompts: updatedPrompts });
   };
 
-  const generateAIInsightMutation = useMutation({
-    mutationFn: async () => {
-      const prompt = `Please analyze this business idea for clarity and viability:
+  const copyPrompt = () => {
+    navigator.clipboard.writeText(promptText);
+    toast({
+      title: "Prompt copied!",
+      description: "Your customized prompt has been copied to your clipboard.",
+    });
+  };
 
-Business Idea: ${prompts.businessIdea || 'Not provided'}
-Target Audience: ${prompts.audience || 'Not provided'}
-Problem it Solves: ${prompts.problem || 'Not provided'}
-Transformation/Outcome: ${prompts.transformation || 'Not provided'}
-Delivery Method: ${prompts.vehicle || 'Not provided'}
-
-Please provide:
-1. Clarity assessment (what's clear vs unclear)
-2. Viability insights 
-3. Key questions to explore further
-4. Specific recommendations for improvement`;
-
-      return AIService.generateResponse(prompt);
+  // Session update mutation
+  const updateSessionMutation = useMutation({
+    mutationFn: async (updates: Partial<WorkbookSession>) => {
+      if (!session?.id) throw new Error("No session ID");
+      return apiRequest("PATCH", `/api/workbook/session/${session.id}`, updates);
     },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/workbook/session"] });
+    },
+  });
+
+  // AI generation mutation
+  const generateAIResponseMutation = useMutation({
+    mutationFn: (prompt: string) => AIService.generateResponse(prompt),
     onSuccess: (response) => {
-      setAiResponse(response);
+      console.log("AI Response received:", response);
+      const updatedPrompts = { ...prompts, aiResponse: response };
+      console.log("Updated prompts:", updatedPrompts);
+      setPrompts(updatedPrompts);
+      updateSessionMutation.mutate({ clarityPrompts: updatedPrompts });
       toast({
-        title: "AI Insights Generated!",
+        title: "AI Response Generated!",
         description: "Your business clarity analysis is ready.",
       });
     },
     onError: (error) => {
+      console.error("AI Generation Error:", error);
       toast({
         title: "Generation Failed",
-        description: error instanceof Error ? error.message : "Failed to generate AI insights",
+        description: error instanceof Error ? error.message : "Failed to generate AI response",
         variant: "destructive",
       });
     },
   });
 
-  const fields = [
-    {
-      key: "businessIdea" as keyof ClarityPrompts,
-      label: "What is your business idea?",
-      placeholder: "Describe your business concept in 1-2 sentences..."
-    },
-    {
-      key: "audience" as keyof ClarityPrompts,
-      label: "Who is this for?",
-      placeholder: "Describe your target audience specifically..."
-    },
-    {
-      key: "problem" as keyof ClarityPrompts,
-      label: "What problem does this solve?",
-      placeholder: "What specific pain point or desire are you addressing?..."
-    },
-    {
-      key: "transformation" as keyof ClarityPrompts,
-      label: "What transformation do you provide?",
-      placeholder: "How will people be different after using your solution?..."
-    },
-    {
-      key: "vehicle" as keyof ClarityPrompts,
-      label: "How will you deliver this?",
-      placeholder: "What's your delivery method, format, or business model?..."
+  const handleGenerateWithAI = () => {
+    if (!promptText.trim()) {
+      toast({
+        title: "No Prompt",
+        description: "Please enter a prompt before generating AI response.",
+        variant: "destructive",
+      });
+      return;
     }
-  ];
+    generateAIResponseMutation.mutate(promptText);
+  };
 
   return (
-    <Card id="clarity-prompts" className="p-4 sm:p-6 lg:p-8 bg-purple-50 border-purple-200">
-      <div className="mb-6 sm:mb-8">
+    <Card id="clarity-prompts" className="p-4 sm:p-6 lg:p-8 bg-[#F3F0FF] border-purple-200">
+      <div className="mb-8">
         <div className="flex items-center space-x-3 mb-4">
-          <div className="w-7 h-7 sm:w-8 sm:h-8 bg-purple-600 text-white rounded-full flex items-center justify-center text-xs sm:text-sm font-bold">1.3</div>
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Business Idea Clarity Prompts</h2>
+          <div className="w-8 h-8 bg-architect-indigo text-white rounded-full flex items-center justify-center text-sm font-bold">1.3</div>
+          <h2 className="text-2xl font-bold text-strategic-black">Business Idea Clarity Prompts</h2>
         </div>
-        <p className="text-gray-600 text-base sm:text-lg mb-4">
-          Use these prompts to refine your business concept. The clearer your answers, the stronger your foundation.
+        <p className="text-gray-600 text-lg mb-6">
+          Use AI to extract, sharpen, and simplify your business idea — instantly.
         </p>
-        
-        <div className="p-3 sm:p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <h3 className="font-semibold text-gray-900 mb-2">Purpose</h3>
+
+        <div className="mb-6">
+          <h3 className="font-semibold text-strategic-black mb-3">Purpose of This Section</h3>
+          <p className="text-gray-700 mb-4">
+            To help you use a master ChatGPT prompt to clearly articulate your business idea — combining logic and energy — so you stop spinning and start building.
+          </p>
           <p className="text-gray-700">
-            These prompts help you move from a vague idea to specific, actionable clarity. 
-            Each question builds on the previous one to create a complete picture of your business concept.
+            This is a single, powerful prompt designed to:
+          </p>
+          <ul className="mt-2 space-y-1 text-gray-700">
+            <li>• Pull out your full idea</li>
+            <li>• Strengthen it with both Alchemist and Architect logic</li>
+            <li>• Highlight gaps, risks, and next-step opportunities</li>
+          </ul>
+        </div>
+
+        <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <h3 className="font-semibold text-strategic-black mb-2">Education Box</h3>
+          <p className="text-gray-700 mb-2">
+            <strong>When your idea is fuzzy, your business stays stuck.</strong>
+          </p>
+          <p className="text-gray-700">
+            Most entrepreneurs build too early, or doubt too long — because they can't articulate 
+            their idea fully. The Business Clarity Prompt below is your shortcut. It's built for 
+            both intuitive and logical thinkers — and gives you instant insight into your next move.
           </p>
         </div>
       </div>
 
-      {/* DNA-Specific Coaching */}
-      <div className={`mb-6 sm:mb-8 p-4 sm:p-6 rounded-lg border ${
-        isArchitect 
-          ? "bg-purple-100 border-purple-300" 
-          : "bg-orange-50 border-orange-200"
-      }`}>
-        <h3 className={`font-semibold mb-4 ${
-          isArchitect ? "text-purple-600" : "text-orange-500"
-        }`}>
-          {isArchitect ? "Architect Coaching" : "Alchemist Coaching"}
-        </h3>
-        <div className="text-gray-700">
-          {isArchitect ? (
-            <p>Focus on being specific and measurable in your responses. Avoid vague language and aim for concrete details that can be tested and validated.</p>
-          ) : (
-            <p>Let your intuition guide you, but ground it in reality. Think about the emotional journey your customers will experience alongside the practical outcomes.</p>
+      <div className="space-y-6">
+        <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+          <h4 className="font-semibold text-strategic-black mb-2">Unified Master Prompt (for ChatGPT / AI agent)</h4>
+          <p className="text-sm text-gray-700 mb-3">Edit the prompt below and copy it to ChatGPT:</p>
+          <Textarea
+            value={promptText}
+            onChange={(e) => handlePromptChange(e.target.value)}
+            className="bg-white text-sm text-gray-700 font-mono mb-4 min-h-[200px] resize-none"
+            placeholder="Edit your prompt here..."
+          />
+          
+          <div className="flex gap-3 flex-wrap">
+            <Button
+              onClick={copyPrompt}
+              className={`text-white ${
+                isArchitect 
+                  ? "bg-architect-indigo hover:bg-purple-variant" 
+                  : "bg-scale-orange hover:bg-orange-600"
+              }`}
+            >
+              <Copy className="w-4 h-4 mr-2" />
+              Copy Prompt
+            </Button>
+            
+            <Button
+              onClick={handleGenerateWithAI}
+              disabled={generateAIResponseMutation.isPending}
+              className="bg-gradient-to-r from-purple-600 to-orange-500 hover:from-purple-700 hover:to-orange-600 text-white"
+            >
+              <Sparkles className="w-4 h-4 mr-2" />
+              {generateAIResponseMutation.isPending ? "Generating..." : "Generate with AI"}
+            </Button>
+          </div>
+        </div>
+
+        {/* E-DNA Prompt Enhancers */}
+        <div className="mt-8">
+          <h3 className="font-semibold text-strategic-black text-lg mb-4">E-DNA Prompt Enhancers</h3>
+          
+          {/* Architect Enhancer - Only show when Architect mode is selected */}
+          {isArchitect && (
+            <div className="p-6 bg-purple-50 border border-purple-200 rounded-lg">
+              <h4 className="font-semibold text-architect-indigo mb-4">For Architects:</h4>
+              <p className="text-gray-700 mb-3">
+                Add these details to strengthen your prompt:
+              </p>
+              <ul className="text-gray-700 space-y-2">
+                <li>• What systems or processes would you build?</li>
+                <li>• What metrics would prove this works?</li>
+                <li>• What's your step-by-step delivery method?</li>
+                <li>• What are the biggest logical risks?</li>
+              </ul>
+            </div>
+          )}
+
+          {/* Alchemist Enhancer - Only show when Alchemist mode is selected */}
+          {!isArchitect && (
+            <div className="p-6 bg-orange-50 border border-orange-200 rounded-lg">
+              <h4 className="font-semibold text-scale-orange mb-4">For Alchemists:</h4>
+              <p className="text-gray-700 mb-3">
+                Add these details to strengthen your prompt:
+              </p>
+              <ul className="text-gray-700 space-y-2">
+                <li>• What does success feel like for your client?</li>
+                <li>• What story or transformation drives you?</li>
+                <li>• What's your intuitive vision of the end result?</li>
+                <li>• What emotional blocks might you face?</li>
+              </ul>
+            </div>
           )}
         </div>
-      </div>
 
-      {/* Clarity Questions */}
-      <div className="space-y-6">
-        {fields.map((field, index) => (
-          <div key={field.key} className="p-4 sm:p-6 border border-gray-200 rounded-lg">
-            <div className="flex items-start space-x-3 sm:space-x-4 mb-4">
-              <div className="w-7 h-7 sm:w-8 sm:h-8 bg-purple-600 text-white rounded-full flex items-center justify-center text-xs sm:text-sm font-bold">
-                {index + 1}
-              </div>
-              <div className="flex-1">
-                <label className="block text-sm font-medium text-gray-900 mb-2">
-                  {field.label}
-                </label>
-                <Textarea
-                  value={prompts[field.key] || ""}
-                  onChange={(e) => handlePromptChange(field.key, e.target.value)}
-                  className="bg-white text-sm text-gray-700 min-h-[100px]"
-                  placeholder={field.placeholder}
-                />
+        {/* AI Coaching Tip Box */}
+        <div className="mt-8 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <h3 className="font-semibold text-strategic-black mb-2">AI Coaching Tip Box</h3>
+          <p className="text-gray-700 mb-2"><strong>Tip:</strong></p>
+          <p className="text-gray-700">
+            If your response comes back too generic, try using your voice — talk out loud and transcribe, or describe your dream client like they're a friend.
+          </p>
+          <p className="text-gray-700 mt-2">
+            The better your input, the sharper the AI's output.
+          </p>
+        </div>
+
+        {/* Your AI Response Space */}
+        <div className="mt-8 p-6 bg-gray-50 border border-gray-200 rounded-lg">
+          <h3 className="font-semibold text-strategic-black mb-4">Your AI Response Space</h3>
+          
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="responseDate" className="text-sm font-medium">
+                Date:
+              </Label>
+              <Input
+                id="responseDate"
+                type="date"
+                className="mt-1 max-w-xs"
+              />
+            </div>
+            
+            <div>
+              <Label htmlFor="aiResponseSummary" className="text-sm font-medium">
+                AI Response Summary:
+              </Label>
+              <Textarea
+                id="aiResponseSummary"
+                value={prompts.aiResponse || ""}
+                onChange={(e) => {
+                  console.log("Manual change to AI response:", e.target.value);
+                  const updatedPrompts = { ...prompts, aiResponse: e.target.value };
+                  setPrompts(updatedPrompts);
+                  updateSessionMutation.mutate({ clarityPrompts: updatedPrompts });
+                }}
+                rows={8}
+                placeholder="Your AI response will appear here, or paste your own response..."
+                className="mt-2"
+              />
+              {/* Debug info */}
+              <div className="text-xs text-gray-500 mt-1">
+                Debug: aiResponse length: {(prompts.aiResponse || "").length}
               </div>
             </div>
           </div>
-        ))}
-      </div>
-
-      {/* AI Analysis Section */}
-      <div className="mt-8 space-y-4">
-        <div className="text-center">
-          <Button 
-            onClick={() => generateAIInsightMutation.mutate()}
-            disabled={generateAIInsightMutation.isPending}
-            className="bg-purple-600 text-white hover:bg-purple-700 disabled:opacity-50"
-          >
-            {generateAIInsightMutation.isPending ? "Generating AI Analysis..." : "Get AI Clarity Analysis"}
-          </Button>
         </div>
 
-        {aiResponse && (
-          <div className="p-4 sm:p-6 bg-green-50 border border-green-200 rounded-lg">
-            <h3 className="font-semibold text-gray-900 mb-3">AI Clarity Analysis</h3>
-            <div className="text-sm text-gray-700 whitespace-pre-wrap">{aiResponse}</div>
+        {/* Completion Box */}
+        <div className="mt-8 p-6 bg-green-50 border border-green-200 rounded-lg">
+          <h3 className="font-semibold text-strategic-black mb-4">Completion Box</h3>
+          <p className="text-gray-700 mb-4">After running the prompt, ask:</p>
+          <ul className="text-gray-700 mb-4 space-y-1">
+            <li>- What's clearer now?</li>
+            <li>- What changed about your idea?</li>
+            <li>- What still needs work?</li>
+          </ul>
+          
+          <div>
+            <Label htmlFor="completionAnswers" className="text-sm font-medium">
+              Your answers:
+            </Label>
+            <Textarea
+              id="completionAnswers"
+              value={prompts.clarityReflection || ""}
+              onChange={(e) => {
+                const updatedPrompts = { ...prompts, clarityReflection: e.target.value };
+                setPrompts(updatedPrompts);
+                updateSessionMutation.mutate({ clarityPrompts: updatedPrompts });
+              }}
+              rows={4}
+              placeholder="Reflect on what became clearer after using the AI prompt..."
+              className="mt-2"
+            />
           </div>
-        )}
+        </div>
       </div>
     </Card>
   );
