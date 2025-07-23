@@ -111,6 +111,17 @@ export default function Module1WorkbookExact() {
             <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6 sm:space-y-8">
               <Module1Welcome completedSections={getCompletedSections()} />
               
+              {/* DNA Toggle - Choose Your Entrepreneurial DNA */}
+              <div className="bg-white rounded-lg shadow-sm border border-purple-200 p-6 mb-8">
+                <div className="text-center">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Choose Your Entrepreneurial DNA</h3>
+                  <p className="text-gray-600 mb-6">Select your natural approach to building a business. This will customize your experience throughout the workbook.</p>
+                  <div className="flex justify-center">
+                    <DNAToggle />
+                  </div>
+                </div>
+              </div>
+              
               <div className="space-y-6 sm:space-y-8">
                 <BusinessFilter session={session} />
                 <EdnaReflection session={session} />
@@ -120,62 +131,78 @@ export default function Module1WorkbookExact() {
                 <NameLogoBuilder session={session} />
               </div>
 
-              {/* Progress Summary Section */}
-              <section id="progress-summary" className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sm:p-8">
-                <div className="mb-8">
-                  <div className="flex items-center space-x-3 mb-4">
-                    <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-lg font-bold">
-                      ✓
-                    </div>
-                    <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Your Progress Summary</h2>
-                  </div>
-                  <p className="text-gray-600 text-lg">
-                    Review your completion status and prepare for Module 2.
-                  </p>
-                </div>
-
-                <div className="grid gap-4">
-                  <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg p-4">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Module 1 Completion Status</h3>
-                    <div className="space-y-3">
-                      {[
-                        { id: "section-1-1", title: "What Makes a Business Idea Work?" },
-                        { id: "section-1-2", title: "The E-DNA Lens for Idea Clarity" },
-                        { id: "section-1-3", title: "Business Idea Clarity Prompts" },
-                        { id: "section-1-4", title: "Offer Builder Canvas" },
-                        { id: "section-1-5", title: "Idea Viability Scorecard" },
-                        { id: "section-1-6", title: "AI Sprint — Name + Logo Builder" },
-                      ].map((section) => {
-                        const isCompleted = getCompletedSections().includes(section.id);
-                        return (
-                          <div key={section.id} className="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200">
-                            <span className="font-medium text-gray-700">{section.title}</span>
-                            <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                              isCompleted 
-                                ? 'bg-green-100 text-green-800' 
-                                : 'bg-gray-100 text-gray-600'
-                            }`}>
-                              {isCompleted ? 'Complete' : 'Pending'}
-                            </span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-8 text-center">
-                  <p className="text-gray-600 mb-4">
-                    Once you've completed all sections, you're ready to move forward with your refined business idea and clear offer.
-                  </p>
+              {/* Progress Summary - Final Section */}
+              <div id="progress-summary" className="mt-12">
+                <div className="bg-white rounded-lg shadow-sm border border-purple-200 p-8">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Your Progress Summary</h2>
                   
-                  <div className="text-center">
-                    <p className="text-sm text-gray-500">This workbook is based on the</p>
-                    <p className="font-bold text-purple-600 text-lg">Brandscaling Idea to Launch Kit Starter</p>
-                    <p className="text-sm text-gray-500">Module 1</p>
+                  <div className="overflow-x-auto mb-8">
+                    <table className="w-full border-collapse bg-white rounded-lg shadow-sm border border-purple-200">
+                      <thead>
+                        <tr className="bg-gradient-to-r from-purple-100 to-orange-100 border-b border-purple-200">
+                          <th className="p-4 text-left font-semibold text-gray-900 border-r border-purple-200">Section</th>
+                          <th className="p-4 text-center font-semibold text-gray-900">Completed</th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white">
+                        <tr className="border-b border-purple-100 hover:bg-purple-50 transition-colors">
+                          <td className="p-4 text-gray-900 border-r border-purple-100">1.1: What Makes a Business Idea Work?</td>
+                          <td className="p-4 text-center">
+                            <input type="checkbox" checked={getCompletedSections().includes("section-1-1")} readOnly className="w-5 h-5 accent-purple-500" />
+                          </td>
+                        </tr>
+                        <tr className="border-b border-purple-100 hover:bg-purple-50 transition-colors">
+                          <td className="p-4 text-gray-900 border-r border-purple-100">1.2: The E-DNA Lens for Idea Clarity</td>
+                          <td className="p-4 text-center">
+                            <input type="checkbox" checked={getCompletedSections().includes("section-1-2")} readOnly className="w-5 h-5 accent-purple-500" />
+                          </td>
+                        </tr>
+                        <tr className="border-b border-purple-100 hover:bg-purple-50 transition-colors">
+                          <td className="p-4 text-gray-900 border-r border-purple-100">1.3: Business Idea Clarity Prompts</td>
+                          <td className="p-4 text-center">
+                            <input type="checkbox" checked={getCompletedSections().includes("section-1-3")} readOnly className="w-5 h-5 accent-purple-500" />
+                          </td>
+                        </tr>
+                        <tr className="border-b border-purple-100 hover:bg-purple-50 transition-colors">
+                          <td className="p-4 text-gray-900 border-r border-purple-100">1.4: Offer Builder Canvas</td>
+                          <td className="p-4 text-center">
+                            <input type="checkbox" checked={getCompletedSections().includes("section-1-4")} readOnly className="w-5 h-5 accent-purple-500" />
+                          </td>
+                        </tr>
+                        <tr className="border-b border-purple-100 hover:bg-purple-50 transition-colors">
+                          <td className="p-4 text-gray-900 border-r border-purple-100">1.5: Idea Viability Scorecard</td>
+                          <td className="p-4 text-center">
+                            <input type="checkbox" checked={getCompletedSections().includes("section-1-5")} readOnly className="w-5 h-5 accent-purple-500" />
+                          </td>
+                        </tr>
+                        <tr className="border-b border-purple-100 hover:bg-purple-50 transition-colors">
+                          <td className="p-4 text-gray-900 border-r border-purple-100">1.6: AI Sprint — Name + Logo Builder</td>
+                          <td className="p-4 text-center">
+                            <input type="checkbox" checked={getCompletedSections().includes("section-1-6")} readOnly className="w-5 h-5 accent-purple-500" />
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  
+                  {/* Next Steps - Separate Card */}
+                  <div className="bg-gradient-to-br from-blue-50 to-green-50 border border-blue-200 rounded-lg p-6 mb-8">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Next Steps</h3>
+                    <p className="text-gray-700">Once you've filled in all sections, you're ready to move forward with your refined business idea and clear offer.</p>
+                  </div>
+                  
+                  {/* Brandscaling Attribution - Beautiful Display */}
+                  <div className="text-center p-6 bg-gradient-to-r from-purple-50 to-orange-50 border border-purple-200 rounded-lg">
+                    <div className="inline-block">
+                      <p className="text-sm text-gray-600 mb-2">This workbook is based on the</p>
+                      <h4 className="text-lg font-bold bg-gradient-to-r from-purple-600 to-orange-500 bg-clip-text text-transparent">
+                        Brandscaling Idea to Launch Kit Starter
+                      </h4>
+                      <p className="text-sm text-gray-600 mt-1">Module 1</p>
+                    </div>
                   </div>
                 </div>
-              </section>
+              </div>
             </main>
           </div>
         </div>

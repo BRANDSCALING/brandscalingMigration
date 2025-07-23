@@ -148,6 +148,35 @@
     @apply bg-[hsl(var(--founder-red))] text-white hover:opacity-90 transition-all duration-200;
   }
   
+  /* Workbook specific classes */
+  .text-strategic-black {
+    @apply text-gray-900;
+  }
+  
+  .bg-architect-indigo {
+    @apply bg-purple-600;
+  }
+  
+  .text-architect-indigo {
+    @apply text-purple-600;
+  }
+  
+  .bg-scale-orange {
+    @apply bg-orange-500;
+  }
+  
+  .text-scale-orange {
+    @apply text-orange-500;
+  }
+  
+  .bg-brand-gradient {
+    @apply bg-gradient-to-r from-purple-600 to-orange-500;
+  }
+  
+  .brand-gradient-light {
+    @apply bg-gradient-to-r from-purple-50 to-orange-50;
+  }
+  
   .gradient-brandscaling {
     background: var(--brandscaling-gradient);
   }

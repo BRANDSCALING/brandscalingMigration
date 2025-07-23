@@ -142,11 +142,11 @@ Can you help me refine this and tell me what's missing?`
   ];
 
   return (
-    <Card id="business-filter" className="p-4 sm:p-6 lg:p-8 bg-purple-50 border-purple-200">
+    <Card id="business-filter" className="p-4 sm:p-6 lg:p-8 bg-[#F3F0FF] border-purple-200">
       <div className="mb-6 sm:mb-8">
         <div className="flex items-center space-x-3 mb-4">
-          <div className="w-7 h-7 sm:w-8 sm:h-8 bg-purple-600 text-white rounded-full flex items-center justify-center text-xs sm:text-sm font-bold">1.1</div>
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-900">What Makes a Business Idea Work?</h2>
+          <div className="w-7 h-7 sm:w-8 sm:h-8 bg-architect-indigo text-white rounded-full flex items-center justify-center text-xs sm:text-sm font-bold">1.1</div>
+          <h2 className="text-xl sm:text-2xl font-bold text-strategic-black">What Makes a Business Idea Work?</h2>
         </div>
         <p className="text-gray-600 text-base sm:text-lg mb-4">
           To help entrepreneurs understand the difference between an inspiring idea and a viable business. 
