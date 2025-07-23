@@ -76,12 +76,24 @@ Can you help me refine this and tell me what's missing?`
 
   // AI generation mutation
   const generateAIResponseMutation = useMutation({
-    mutationFn: (prompt: string) => AIService.generateResponse(prompt, isArchitect ? 'architect' : 'alchemist'),
+    mutationFn: (prompt: string) => {
+      console.log("Business Filter - Starting AI generation with prompt:", prompt.substring(0, 50) + "...");
+      console.log("Business Filter - DNA Mode:", isArchitect ? 'architect' : 'alchemist');
+      return AIService.generateResponse(prompt, isArchitect ? 'architect' : 'alchemist');
+    },
     onSuccess: (response) => {
       console.log("Business Filter AI Response received:", response);
+      console.log("Business Filter - Response length:", response.length);
+      console.log("Business Filter - Setting aiResponse state to:", response.substring(0, 100) + "...");
+      
       setAiResponse(response);
+      
       const updatedFilter = { ...filter, aiResponse: response, customPrompt: promptText };
+      console.log("Business Filter - Updated filter object:", updatedFilter);
+      
+      setFilter(updatedFilter);
       updateSessionMutation.mutate({ businessFilter: updatedFilter });
+      
       toast({
         title: "AI Response Generated!",
         description: "Your business idea analysis is ready.",
@@ -274,6 +286,10 @@ Can you help me refine this and tell me what's missing?`
           className="bg-white text-sm text-gray-700 min-h-[200px] resize-y"
           placeholder="Paste your AI response and insights here..."
         />
+        {/* Debug info */}
+        <div className="text-xs text-gray-500 mt-2">
+          Debug: aiResponse length: {aiResponse.length} | Loading: {generateAIResponseMutation.isPending ? 'Yes' : 'No'}
+        </div>
       </div>
     </Card>
   );
