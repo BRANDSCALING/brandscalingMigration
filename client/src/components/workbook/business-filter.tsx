@@ -76,9 +76,9 @@ Can you help me refine this and tell me what's missing?`
 
   // AI generation mutation
   const generateAIResponseMutation = useMutation({
-    mutationFn: (prompt: string) => AIService.generateResponse(prompt),
+    mutationFn: (prompt: string) => AIService.generateResponse(prompt, isArchitect ? 'architect' : 'alchemist'),
     onSuccess: (response) => {
-      console.log("AI Response received:", response);
+      console.log("Business Filter AI Response received:", response);
       setAiResponse(response);
       const updatedFilter = { ...filter, aiResponse: response, customPrompt: promptText };
       updateSessionMutation.mutate({ businessFilter: updatedFilter });
@@ -88,7 +88,7 @@ Can you help me refine this and tell me what's missing?`
       });
     },
     onError: (error) => {
-      console.error("AI Generation Error:", error);
+      console.error("Business Filter AI Generation Error:", error);
       toast({
         title: "Generation Failed",
         description: error instanceof Error ? error.message : "Failed to generate AI response",
