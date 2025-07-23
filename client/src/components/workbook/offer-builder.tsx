@@ -409,7 +409,7 @@ Suggest how to position this better?"`
           {/* AI Response Section */}
           {(aiResponse || generateAIResponseMutation.isPending) && (
             <div className="mt-4">
-              <h4 className="font-semibold text-strategic-black mb-3">AI Response:</h4>
+              <h4 className="font-semibold text-strategic-black mb-3">Generated AI Response:</h4>
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <p className="text-sm text-gray-600 mb-2">Date: {new Date().toLocaleDateString()}</p>
                 <Textarea
@@ -427,13 +427,13 @@ Suggest how to position this better?"`
           )}
         </div>
 
-        {/* Your AI Response Space */}
+        {/* Additional Notes Space */}
         <div className="p-6 bg-gray-50 border border-gray-200 rounded-lg">
-          <h3 className="font-semibold text-strategic-black mb-4">Your AI Response Space</h3>
+          <h3 className="font-semibold text-strategic-black mb-4">Additional Notes & Insights</h3>
           <Textarea
             id="aiResponseSpace"
             rows={6}
-            placeholder="Paste your AI response and insights here..."
+            placeholder="Add your own notes, insights, or additional AI responses here..."
             value={offer.aiResponseSpace}
             onChange={(e) => handleInputChange("aiResponseSpace", e.target.value)}
           />
