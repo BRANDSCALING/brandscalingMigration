@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Copy, Sparkles } from "lucide-react";
+import { Copy } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { AIService } from "@/lib/ai-service";
 import type { WorkbookSession } from "@shared/schema";
@@ -273,30 +273,102 @@ Make sure everything feels professional but approachable, and works for both dig
               If you only use one mode, you'll either be:
             </p>
             <ul className="text-gray-700 list-disc list-inside mb-2 ml-4">
-              <li>Too functional and boring (Architect only)</li>
-              <li>Too abstract and unmemorable (Alchemist only)</li>
+              <li>All emotion, no usability (Alchemist stuck in perfectionism)</li>
+              <li>All practicality, no connection (Architect rushing with a placeholder)</li>
             </ul>
-            <p className="text-gray-700">
-              <strong>Great brands combine both:</strong> Clear + Memorable, Professional + Energizing
+            <p className="text-gray-700 font-medium">
+              Use both sides — the perfect business name and brand lives in the middle.
             </p>
           </div>
         </div>
       </div>
 
-      {/* AI Branding Prompt Section */}
-      <div className="mb-8 p-4 bg-gray-50 border border-gray-200 rounded-lg">
-        <h3 className="font-semibold text-strategic-black mb-2">AI Branding Prompt</h3>
-        <p className="text-sm text-gray-700 mb-3">Edit the prompt below and copy it to ChatGPT or use our AI generator:</p>
+      {/* Step 1: Your Naming Criteria Checklist */}
+      <div className="mb-8">
+        <h3 className="font-semibold text-strategic-black text-lg mb-4">Step 1: Your Naming Criteria Checklist</h3>
+        <p className="text-gray-700 mb-6">Check off what matters to you before running prompts:</p>
+        
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse bg-white rounded-lg shadow-sm border border-purple-200">
+            <thead>
+              <tr className="bg-gradient-to-r from-purple-100 to-orange-100 border-b border-purple-200">
+                <th className="p-4 text-left font-semibold text-strategic-black border-r border-purple-200">Criteria</th>
+                <th className="p-4 text-center font-semibold text-strategic-black">Check</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white">
+              <tr className="border-b border-purple-100 hover:bg-purple-50 transition-colors">
+                <td className="p-4 text-gray-700 border-r border-purple-100">Available domain (preferably .co.uk or .com)</td>
+                <td className="p-4 text-center">
+                  <input type="checkbox" className="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 focus:ring-2" />
+                </td>
+              </tr>
+              <tr className="border-b border-purple-100 hover:bg-purple-50 transition-colors">
+                <td className="p-4 text-gray-700 border-r border-purple-100">Not too long (2-3 words max)</td>
+                <td className="p-4 text-center">
+                  <input type="checkbox" className="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 focus:ring-2" />
+                </td>
+              </tr>
+              <tr className="border-b border-purple-100 hover:bg-purple-50 transition-colors">
+                <td className="p-4 text-gray-700 border-r border-purple-100">Memorable and pronounceable</td>
+                <td className="p-4 text-center">
+                  <input type="checkbox" className="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 focus:ring-2" />
+                </td>
+              </tr>
+              <tr className="border-b border-purple-100 hover:bg-purple-50 transition-colors">
+                <td className="p-4 text-gray-700 border-r border-purple-100">Avoids spelling confusion</td>
+                <td className="p-4 text-center">
+                  <input type="checkbox" className="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 focus:ring-2" />
+                </td>
+              </tr>
+              <tr className="border-b border-purple-100 hover:bg-purple-50 transition-colors">
+                <td className="p-4 text-gray-700 border-r border-purple-100">Feels aligned with the offer</td>
+                <td className="p-4 text-center">
+                  <input type="checkbox" className="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 focus:ring-2" />
+                </td>
+              </tr>
+              <tr className="border-b border-purple-100 hover:bg-purple-50 transition-colors">
+                <td className="p-4 text-gray-700 border-r border-purple-100">Has clear, clean visual potential</td>
+                <td className="p-4 text-center">
+                  <input type="checkbox" className="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 focus:ring-2" />
+                </td>
+              </tr>
+              <tr className="border-b border-purple-100 hover:bg-purple-50 transition-colors">
+                <td className="p-4 text-gray-700 border-r border-purple-100">Social media handles available</td>
+                <td className="p-4 text-center">
+                  <input type="checkbox" className="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 focus:ring-2" />
+                </td>
+              </tr>
+              <tr className="hover:bg-purple-50 transition-colors">
+                <td className="p-4 text-gray-700 border-r border-purple-100">No major trademark conflicts</td>
+                <td className="p-4 text-center">
+                  <input type="checkbox" className="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 focus:ring-2" />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <p className="text-gray-700 mt-4">
+          <strong>Optional:</strong> Use Namecheckr.com to verify availability.
+        </p>
+      </div>
+
+      {/* Master Prompt for Name + Logo Builder */}
+      <div className="mb-8">
+        <h3 className="font-semibold text-strategic-black text-lg mb-4">Master Prompt for Name + Logo Builder</h3>
+        <p className="text-gray-700 mb-4">Copy this into ChatGPT:</p>
+        
         <Textarea
           value={promptText}
           onChange={(e) => handlePromptChange(e.target.value)}
-          className="bg-white text-sm text-gray-700 font-mono mb-4 min-h-[200px] resize-none"
+          className="bg-gray-50 text-sm text-gray-700 font-mono mb-4 min-h-[200px] resize-none"
           placeholder="Edit your prompt here..."
         />
         
-        <div className="flex flex-col sm:flex-row gap-3 mb-4">
+        <div className="flex flex-col sm:flex-row gap-3 mb-6">
           <Button
-            onClick={() => copyToClipboard(promptText, "Prompt")}
+            onClick={() => copyToClipboard(promptText, "Master prompt")}
             className={`${
               isArchitect 
                 ? "bg-architect-indigo hover:bg-purple-variant" 
@@ -304,152 +376,98 @@ Make sure everything feels professional but approachable, and works for both dig
             } text-white`}
           >
             <Copy className="w-4 h-4 mr-2" />
-            Copy Branding Prompt
+            Copy Master Prompt
           </Button>
           
           <Button
             onClick={handleGenerateWithAI}
             disabled={generateAIResponseMutation.isPending}
-            className="bg-gradient-to-r from-purple-600 to-orange-500 hover:from-purple-700 hover:to-orange-600 text-white"
+            className={`${
+              isArchitect 
+                ? "bg-purple-600 hover:bg-purple-700" 
+                : "bg-orange-600 hover:bg-orange-700"
+            } text-white`}
           >
-            <Sparkles className="w-4 h-4 mr-2" />
             {generateAIResponseMutation.isPending ? "Generating..." : "Generate with AI"}
           </Button>
         </div>
 
         {/* AI Response Section */}
-        {(aiResponse || generateAIResponseMutation.isPending) && (
-          <div className="mt-4">
-            <h4 className="font-semibold text-strategic-black mb-3">AI Response:</h4>
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <p className="text-sm text-gray-600 mb-2">Date: {new Date().toLocaleDateString()}</p>
-              <Textarea
-                value={aiResponse}
-                onChange={(e) => {
-                  setAiResponse(e.target.value);
-                  const updatedData = { ...nameLogoData, customPrompt: promptText, aiResponse: e.target.value };
-                  updateSessionMutation.mutate({ nameLogoBuilder: updatedData });
-                }}
-                placeholder="Your AI response will appear here, or paste your own response..."
-                className="w-full h-32 resize-y"
-              />
-            </div>
+        <div className="mb-6">
+          <h4 className="font-semibold text-strategic-black mb-3">AI Response:</h4>
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <p className="text-sm text-gray-600 mb-2">Date: {new Date().toLocaleDateString()}</p>
+            <Textarea
+              value={aiResponse}
+              onChange={(e) => {
+                setAiResponse(e.target.value);
+                const updatedData = { ...nameLogoData, customPrompt: promptText, aiResponse: e.target.value };
+                updateSessionMutation.mutate({ nameLogoBuilder: updatedData });
+              }}
+              placeholder={generateAIResponseMutation.isPending ? "Generating AI response..." : "Your AI response will appear here, or paste your own response..."}
+              className="w-full h-32 resize-y"
+              disabled={generateAIResponseMutation.isPending}
+            />
           </div>
-        )}
-      </div>
-
-      {/* Business Name Options */}
-      <div className="mb-8">
-        <h3 className="font-semibold text-strategic-black text-lg mb-4">5 Business Name Options</h3>
-        <div className="space-y-3">
-          {nameLogoData.businessNameOptions.map((name, index) => (
-            <div key={index} className="flex items-center space-x-3">
-              <span className="font-semibold text-architect-indigo text-sm w-8">{index + 1}.</span>
-              <Input
-                value={name}
-                onChange={(e) => handleBusinessNameChange(index, e.target.value)}
-                placeholder={`Business name option ${index + 1}`}
-                className="flex-1"
-              />
-            </div>
-          ))}
         </div>
       </div>
 
-      {/* Logo Concept Directions */}
+      {/* Your Name Options */}
       <div className="mb-8">
-        <h3 className="font-semibold text-strategic-black text-lg mb-4">3 Logo Concept Directions</h3>
-        <div className="space-y-4">
-          {nameLogoData.logoConceptDirections.map((concept, index) => (
-            <div key={index} className="space-y-2">
-              <label className="font-semibold text-architect-indigo text-sm">Concept {index + 1}:</label>
-              <Textarea
-                value={concept}
-                onChange={(e) => handleLogoConceptChange(index, e.target.value)}
-                placeholder={`Describe logo concept ${index + 1} (style, colors, symbols, feel)`}
-                rows={3}
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Tagline Options */}
-      <div className="mb-8">
-        <h3 className="font-semibold text-strategic-black text-lg mb-4">2 Tagline Options</h3>
-        <div className="space-y-3">
-          {nameLogoData.taglineOptions.map((tagline, index) => (
-            <div key={index} className="flex items-center space-x-3">
-              <span className="font-semibold text-architect-indigo text-sm w-8">{index + 1}.</span>
-              <Input
-                value={tagline}
-                onChange={(e) => handleTaglineChange(index, e.target.value)}
-                placeholder={`Tagline option ${index + 1}`}
-                className="flex-1"
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Color Palette */}
-      <div className="mb-8">
-        <h3 className="font-semibold text-strategic-black text-lg mb-4">Color Palette Suggestions</h3>
-        <Textarea
-          value={nameLogoData.colorPalette}
-          onChange={(e) => handleColorPaletteChange(e.target.value)}
-          placeholder="Describe your color palette with hex codes (e.g., Primary: #2563EB, Secondary: #F97316, Accent: #10B981)"
-          rows={3}
-        />
-      </div>
-
-      {/* Name Rating System */}
-      <div className="mb-8">
-        <h3 className="font-semibold text-strategic-black text-lg mb-4">Name Rating System</h3>
-        <p className="text-gray-700 mb-4">Rate your top 5 business names across these criteria (1-5 scale):</p>
+        <h3 className="font-semibold text-strategic-black text-lg mb-4">Your Name Options</h3>
         
         <div className="overflow-x-auto">
           <table className="w-full border-collapse bg-white rounded-lg shadow-sm border border-purple-200">
             <thead>
               <tr className="bg-gradient-to-r from-purple-100 to-orange-100 border-b border-purple-200">
-                <th className="p-3 text-left font-semibold text-strategic-black border-r border-purple-200">Name</th>
-                <th className="p-3 text-center font-semibold text-strategic-black border-r border-purple-200">Easy to Say</th>
-                <th className="p-3 text-center font-semibold text-strategic-black border-r border-purple-200">Memorable</th>
-                <th className="p-3 text-center font-semibold text-strategic-black border-r border-purple-200">Professional</th>
-                <th className="p-3 text-center font-semibold text-strategic-black border-r border-purple-200">Domain Available</th>
-                <th className="p-3 text-center font-semibold text-strategic-black border-r border-purple-200">Feels Right</th>
-                <th className="p-3 text-center font-semibold text-strategic-black">Total</th>
+                <th className="p-4 text-center font-semibold text-strategic-black border-r border-purple-200">Option</th>
+                <th className="p-4 text-left font-semibold text-strategic-black border-r border-purple-200">Name</th>
+                <th className="p-4 text-center font-semibold text-strategic-black border-r border-purple-200">Available?</th>
+                <th className="p-4 text-center font-semibold text-strategic-black">Rating (1-5)</th>
               </tr>
             </thead>
-            <tbody>
-              {[1, 2, 3, 4, 5].map((nameIndex) => (
-                <tr key={nameIndex} className="border-b border-purple-100 hover:bg-purple-50 transition-colors">
-                  <td className="p-3 font-medium text-strategic-black border-r border-purple-100">
-                    {nameLogoData.businessNameOptions[nameIndex - 1] || `Name ${nameIndex}`}
+            <tbody className="bg-white">
+              {[1, 2, 3, 4, 5].map((num) => (
+                <tr key={num} className="border-b border-purple-100 hover:bg-purple-50 transition-colors last:border-b-0">
+                  <td className="p-4 text-center font-medium text-strategic-black border-r border-purple-100">{num}</td>
+                  <td className="p-4 border-r border-purple-100">
+                    <Input
+                      value={nameLogoData.businessNameOptions[num - 1] || ""}
+                      onChange={(e) => handleBusinessNameChange(num - 1, e.target.value)}
+                      placeholder="______"
+                      className="border-none bg-transparent p-0 focus:ring-0 focus:outline-none shadow-none text-gray-700"
+                    />
                   </td>
-                  {['EasyToSay', 'Memorable', 'Professional', 'DomainAvailable', 'FeelsRight'].map((criteria) => (
-                    <td key={criteria} className="p-3 text-center border-r border-purple-100">
-                      <div className="flex justify-center space-x-1">
-                        {[1, 2, 3, 4, 5].map((rating) => (
-                          <button
-                            key={rating}
-                            onClick={() => handleNameRatingChange(`name${nameIndex}${criteria}`, rating)}
-                            className={`w-6 h-6 rounded-full border text-xs font-semibold transition-colors ${
-                              nameLogoData.nameRatings[`name${nameIndex}${criteria}` as keyof typeof nameLogoData.nameRatings] === rating
-                                ? isArchitect
-                                  ? "bg-architect-indigo border-architect-indigo text-white"
-                                  : "bg-scale-orange border-scale-orange text-white"
-                                : "border-gray-300 text-gray-600 hover:border-gray-400"
-                            }`}
-                          >
-                            {rating}
-                          </button>
-                        ))}
-                      </div>
-                    </td>
-                  ))}
-                  <td className="p-3 text-center font-bold text-architect-indigo">
-                    {nameLogoData.nameRatings[`name${nameIndex}Total` as keyof typeof nameLogoData.nameRatings] || 0}/25
+                  <td className="p-4 text-center border-r border-purple-100">
+                    <div className="flex flex-col items-center space-y-2">
+                      <label className="flex items-center space-x-1">
+                        <input 
+                          type="radio" 
+                          name={`available-${num}`}
+                          value="yes"
+                          className="w-4 h-4 text-purple-600" 
+                        />
+                        <span className="text-sm text-gray-700">Yes</span>
+                      </label>
+                      <label className="flex items-center space-x-1">
+                        <input 
+                          type="radio" 
+                          name={`available-${num}`}
+                          value="no"
+                          className="w-4 h-4 text-purple-600" 
+                        />
+                        <span className="text-sm text-gray-700">No</span>
+                      </label>
+                    </div>
+                  </td>
+                  <td className="p-4 text-center">
+                    <Input
+                      type="number"
+                      min="1"
+                      max="5"
+                      placeholder="______"
+                      className="w-20 text-center border-none bg-transparent p-0 focus:ring-0 focus:outline-none shadow-none text-gray-700"
+                    />
                   </td>
                 </tr>
               ))}
@@ -458,48 +476,84 @@ Make sure everything feels professional but approachable, and works for both dig
         </div>
       </div>
 
-      {/* Final Decisions */}
+      {/* Your Chosen Name & Brand */}
       <div className="mb-8">
-        <h3 className="font-semibold text-strategic-black text-lg mb-4">Final Decisions</h3>
-        <div className="space-y-4">
+        <h3 className="font-semibold text-strategic-black text-lg mb-6">Your Chosen Name & Brand</h3>
+        
+        <div className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-strategic-black mb-2">Chosen Business Name:</label>
-            <Input
-              value={nameLogoData.finalDecisions.chosenBusinessName}
-              onChange={(e) => handleFinalDecisionChange("chosenBusinessName", e.target.value)}
-              placeholder="Enter your final business name choice"
-            />
+            <label className="block text-sm font-medium text-strategic-black mb-2">
+              Final business name:
+            </label>
+            <div className="border-b border-gray-300 pb-2">
+              <Input
+                value={nameLogoData.finalDecisions.chosenBusinessName}
+                onChange={(e) => handleFinalDecisionChange('chosenBusinessName', e.target.value)}
+                placeholder=""
+                className="border-none bg-transparent p-0 focus:ring-0 text-gray-700"
+              />
+            </div>
           </div>
-          
+
           <div>
-            <label className="block text-sm font-medium text-strategic-black mb-2">Chosen Logo Direction:</label>
-            <Textarea
-              value={nameLogoData.finalDecisions.chosenLogoDirection}
-              onChange={(e) => handleFinalDecisionChange("chosenLogoDirection", e.target.value)}
-              placeholder="Describe your chosen logo concept"
-              rows={2}
-            />
+            <label className="block text-sm font-medium text-strategic-black mb-2">
+              Tagline:
+            </label>
+            <div className="border-b border-gray-300 pb-2">
+              <Input
+                value={nameLogoData.finalDecisions.chosenTagline}
+                onChange={(e) => handleFinalDecisionChange('chosenTagline', e.target.value)}
+                placeholder=""
+                className="border-none bg-transparent p-0 focus:ring-0 text-gray-700"
+              />
+            </div>
           </div>
-          
+
           <div>
-            <label className="block text-sm font-medium text-strategic-black mb-2">Chosen Tagline:</label>
-            <Input
-              value={nameLogoData.finalDecisions.chosenTagline}
-              onChange={(e) => handleFinalDecisionChange("chosenTagline", e.target.value)}
-              placeholder="Enter your final tagline choice"
-            />
+            <label className="block text-sm font-medium text-strategic-black mb-2">
+              Brand colors:
+            </label>
+            <div className="border-b border-gray-300 pb-2">
+              <Input
+                value={nameLogoData.finalDecisions.chosenColorPalette}
+                onChange={(e) => handleFinalDecisionChange('chosenColorPalette', e.target.value)}
+                placeholder=""
+                className="border-none bg-transparent p-0 focus:ring-0 text-gray-700"
+              />
+            </div>
           </div>
-          
+
           <div>
-            <label className="block text-sm font-medium text-strategic-black mb-2">Chosen Color Palette:</label>
-            <Input
-              value={nameLogoData.finalDecisions.chosenColorPalette}
-              onChange={(e) => handleFinalDecisionChange("chosenColorPalette", e.target.value)}
-              placeholder="Enter your final color palette (with hex codes)"
-            />
+            <label className="block text-sm font-medium text-strategic-black mb-2">
+              Logo concept:
+            </label>
+            <div className="border-b border-gray-300 pb-2">
+              <Input
+                value={nameLogoData.finalDecisions.chosenLogoDirection}
+                onChange={(e) => handleFinalDecisionChange('chosenLogoDirection', e.target.value)}
+                placeholder=""
+                className="border-none bg-transparent p-0 focus:ring-0 text-gray-700"
+              />
+            </div>
           </div>
         </div>
       </div>
+
+      {/* Bonus Tools */}
+      <div className="mb-8">
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
+          <h3 className="font-semibold text-strategic-black text-lg mb-4">Bonus Tools</h3>
+          
+          <div>
+            <label className="block text-sm font-medium text-strategic-black mb-2">
+              Free logo creation:
+            </label>
+            <p className="text-gray-700">- Looka.com - Hatchful by Shopify - Logomakr.com</p>
+            <div className="border-b border-gray-300 mt-2"></div>
+          </div>
+        </div>
+      </div>
+
     </Card>
   );
 }

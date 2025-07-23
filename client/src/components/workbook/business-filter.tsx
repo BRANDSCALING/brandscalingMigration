@@ -44,7 +44,8 @@ Can you help me refine this and tell me what's missing?`
 
   const updateSessionMutation = useMutation({
     mutationFn: async (updates: Partial<WorkbookSession>) => {
-      return apiRequest("PATCH", `/api/workbook/session`, updates);
+      if (!session?.id) throw new Error("No session ID");
+      return apiRequest("PATCH", `/api/workbook/session/${session.id}`, updates);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/workbook/session"] });
@@ -77,6 +78,7 @@ Can you help me refine this and tell me what's missing?`
   const generateAIResponseMutation = useMutation({
     mutationFn: (prompt: string) => AIService.generateResponse(prompt),
     onSuccess: (response) => {
+      console.log("AI Response received:", response);
       setAiResponse(response);
       const updatedFilter = { ...filter, aiResponse: response, customPrompt: promptText };
       updateSessionMutation.mutate({ businessFilter: updatedFilter });
@@ -86,6 +88,7 @@ Can you help me refine this and tell me what's missing?`
       });
     },
     onError: (error) => {
+      console.error("AI Generation Error:", error);
       toast({
         title: "Generation Failed",
         description: error instanceof Error ? error.message : "Failed to generate AI response",
@@ -153,7 +156,7 @@ Can you help me refine this and tell me what's missing?`
           This page builds clarity, confidence, and alignment before moving forward.
         </p>
         <div className="p-3 sm:p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <h3 className="font-semibold text-gray-900 mb-2">Quick Insight</h3>
+          <h3 className="font-semibold text-strategic-black mb-2">Quick Insight</h3>
           <p className="text-gray-700 italic">
             "A business idea works when it solves a real problem, for a real person, in a way that 
             makes you money — and doesn't drain your energy." — Brandscaling Philosophy
@@ -169,11 +172,11 @@ Can you help me refine this and tell me what's missing?`
       {/* E-DNA Insights Box */}
       <div className={`mb-6 sm:mb-8 p-4 sm:p-6 rounded-lg border ${
         isArchitect 
-          ? "bg-purple-100 border-purple-300" 
+          ? "bg-purple-50 border-purple-200" 
           : "bg-orange-50 border-orange-200"
       }`}>
         <h3 className={`font-semibold mb-4 ${
-          isArchitect ? "text-purple-600" : "text-orange-500"
+          isArchitect ? "text-architect-indigo" : "text-scale-orange"
         }`}>
           {isArchitect ? "Architect Mode: Strategic Analysis" : "Alchemist Mode: Intuitive Flow"}
         </h3>
@@ -197,11 +200,11 @@ Can you help me refine this and tell me what's missing?`
         {questions.map((q, index) => (
           <div key={q.key} className="p-4 sm:p-6 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
             <div className="flex items-start space-x-3 sm:space-x-4">
-              <div className="w-7 h-7 sm:w-8 sm:h-8 bg-purple-600 text-white rounded-full flex items-center justify-center text-xs sm:text-sm font-bold">
+              <div className="w-7 h-7 sm:w-8 sm:h-8 bg-brand-gradient text-white rounded-full flex items-center justify-center text-xs sm:text-sm font-bold">
                 {index + 1}
               </div>
               <div className="flex-1">
-                <h4 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base">{q.title}</h4>
+                <h4 className="font-semibold text-strategic-black mb-2 text-sm sm:text-base">{q.title}</h4>
                 <p className="text-gray-600 mb-3 sm:mb-4 text-sm sm:text-base">{q.question}</p>
                 <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
                   <label className="flex items-center space-x-2 cursor-pointer">
@@ -210,7 +213,7 @@ Can you help me refine this and tell me what's missing?`
                       name={q.key}
                       checked={filter[q.key] === true}
                       onChange={() => handleFilterChange(q.key, true)}
-                      className="text-purple-600 focus:ring-purple-600" 
+                      className="text-architect-indigo focus:ring-architect-indigo" 
                     />
                     <span className="text-sm font-medium text-green-600">Yes</span>
                   </label>
@@ -220,9 +223,9 @@ Can you help me refine this and tell me what's missing?`
                       name={q.key}
                       checked={filter[q.key] === false}
                       onChange={() => handleFilterChange(q.key, false)}
-                      className="text-red-600 focus:ring-red-600" 
+                      className="text-founder-red focus:ring-founder-red" 
                     />
-                    <span className="text-sm font-medium text-red-600">No</span>
+                    <span className="text-sm font-medium text-founder-red">No</span>
                   </label>
                 </div>
                 <p className="text-xs text-gray-500 mt-2">{q.tip}</p>
@@ -233,8 +236,8 @@ Can you help me refine this and tell me what's missing?`
       </div>
 
       {/* AI Assistance Section */}
-      <div className="mt-6 sm:mt-8 p-4 sm:p-6 bg-orange-50 border border-orange-200 rounded-lg">
-        <h3 className="font-semibold text-gray-900 mb-3">Get AI Clarity</h3>
+      <div className="mt-6 sm:mt-8 p-4 sm:p-6 bg-brand-gradient-light border border-scale-orange/30 rounded-lg">
+        <h3 className="font-semibold text-strategic-black mb-3">Get AI Clarity</h3>
         <p className="text-gray-700 mb-4">Edit the prompt below and get instant AI feedback:</p>
         <Textarea
           value={promptText}
@@ -253,16 +256,18 @@ Can you help me refine this and tell me what's missing?`
           <Button 
             onClick={copyPrompt} 
             variant="outline"
-            className="border-orange-500 text-orange-500 hover:bg-orange-50"
+            className="border-scale-orange text-scale-orange hover:bg-orange-50"
           >
             Copy Prompt
           </Button>
         </div>
+        
+
       </div>
 
       {/* AI Response Space - Always Visible */}
-      <div className="mt-6 sm:mt-8 p-4 sm:p-6 bg-orange-50 border border-orange-200 rounded-lg">
-        <h3 className="font-semibold text-gray-900 mb-3">Your AI Response Space</h3>
+      <div className="mt-6 sm:mt-8 p-4 sm:p-6 bg-brand-gradient-light border border-scale-orange/30 rounded-lg">
+        <h3 className="font-semibold text-strategic-black mb-3">Your AI Response Space</h3>
         <Textarea
           value={aiResponse}
           onChange={(e) => handleAiResponseChange(e.target.value)}

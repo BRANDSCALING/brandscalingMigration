@@ -126,108 +126,107 @@ export default function EdnaReflection({ session }: EdnaReflectionProps) {
               </div>
               <div>
                 <p className="font-medium text-strategic-black">When you need the opposite</p>
-                <p className="text-gray-700">For delivery scaling, systems, measurement</p>
+                <p className="text-gray-700">For systems, scaling, profit clarity</p>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Pro Tip Box */}
-      <div className="mb-8 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-        <div className="flex items-start space-x-2">
-          <div className="w-6 h-6 bg-yellow-500 text-white rounded-full flex items-center justify-center text-xs font-bold">💡</div>
-          <div>
-            <h4 className="font-semibold text-strategic-black mb-1">Pro Tip</h4>
-            <p className="text-gray-700 text-sm">
-              Great business ideas combine Architect and Alchemist qualities: deep to see their ideal customer would think about each approach in their everyday life.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Why This Matters Section */}
-      <div className="mb-8 p-6 bg-white border border-gray-200 rounded-lg">
-        <h3 className="font-semibold text-strategic-black mb-3">Why This Matters</h3>
-        <p className="text-gray-700 mb-3">
-          Architects tend to build systematic, scalable businesses but may miss emotional connection.
-        </p>
-        <p className="text-gray-700">
-          Alchemists create magnetic, inspiring businesses but may struggle with structure and delivery. Both approaches work — when applied correctly.
+      {/* Key Insight */}
+      <div className="mb-8 p-4 bg-gray-50 border border-gray-200 rounded-lg text-center">
+        <p className="text-gray-700 italic">
+          You are both — but one side leads. Use it to build from your natural zone, then develop the opposite when it's time to scale.
         </p>
       </div>
 
-      {/* DNA Mode Specific Coaching */}
-      <div className={`mb-8 p-6 rounded-lg border ${
-        isArchitect 
-          ? "bg-purple-50 border-purple-200" 
-          : "bg-orange-50 border-orange-200"
-      }`}>
-        <h3 className={`font-semibold mb-4 ${
-          isArchitect ? "text-architect-indigo" : "text-scale-orange"
-        }`}>
-          {isArchitect ? "Architect Mode: Strategic Deep Dive" : "Alchemist Mode: Vision-Led Flow"}
-        </h3>
+      {/* Reflection Prompts */}
+      <div className="space-y-6">
+        <h3 className="font-semibold text-strategic-black text-lg">Reflection Prompt</h3>
         
-        {isArchitect ? (
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="architect-q1" className="text-sm font-medium text-strategic-black mb-2 block">
-                1. What systems, processes, or frameworks could make this business more efficient and scalable?
-              </Label>
-              <p className="text-xs text-gray-600 mb-2">Think about automation, standardization, measurable outcomes...</p>
-              <Textarea
-                id="architect-q1"
-                value={reflection.architectReflection1}
-                onChange={(e) => handleInputChange("architectReflection1", e.target.value)}
-                placeholder="Consider systems thinking, process optimization, scalability frameworks..."
-                className="min-h-[100px]"
-              />
-            </div>
-            <div>
-              <Label htmlFor="architect-q2" className="text-sm font-medium text-strategic-black mb-2 block">
-                2. How can you add emotional resonance and story to make people genuinely excited about this?
-              </Label>
-              <p className="text-xs text-gray-600 mb-2">Consider the transformation story, personal connection, aspirational elements...</p>
-              <Textarea
-                id="architect-q2"
-                value={reflection.architectReflection2}
-                onChange={(e) => handleInputChange("architectReflection2", e.target.value)}
-                placeholder="Think about storytelling, emotional hooks, aspirational outcomes..."
-                className="min-h-[100px]"
-              />
-            </div>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="alchemist-q1" className="text-sm font-medium text-strategic-black mb-2 block">
-                1. How can you translate this vision into clear systems that can be repeated?
-              </Label>
-              <p className="text-xs text-gray-600 mb-2">Think about replicable processes, standard deliveries, measurable outcomes...</p>
-              <Textarea
-                id="alchemist-q1"
-                value={reflection.alchemistReflection1}
-                onChange={(e) => handleInputChange("alchemistReflection1", e.target.value)}
-                placeholder="Consider structured delivery, repeatable processes, systematic approaches..."
-                className="min-h-[100px]"
-              />
-            </div>
-            <div>
-              <Label htmlFor="alchemist-q2" className="text-sm font-medium text-strategic-black mb-2 block">
-                2. What would make this irresistible? What's the deeper transformation or feeling?
-              </Label>
-              <p className="text-xs text-gray-600 mb-2">Consider personal impact, emotional outcomes, aspirational elements...</p>
-              <Textarea
-                id="alchemist-q2"
-                value={reflection.alchemistReflection2}
-                onChange={(e) => handleInputChange("alchemistReflection2", e.target.value)}
-                placeholder="Think about emotional impact, transformational outcomes, magnetic appeal..."
-                className="min-h-[100px]"
-              />
+        {/* Architect Reflections - Only show when Architect mode is selected */}
+        {isArchitect && (
+          <div className="p-6 bg-purple-50 border border-purple-200 rounded-lg">
+            <h4 className="font-semibold text-architect-indigo mb-4">Architect Reflection:</h4>
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="architectReflection1" className="text-sm font-medium">
+                  What parts of my business idea already feel logical, practical, and structured?
+                </Label>
+                <Textarea
+                  id="architectReflection1"
+                  rows={3}
+                  placeholder="Reflect on the logical aspects..."
+                  value={reflection.architectReflection1}
+                  onChange={(e) => handleInputChange("architectReflection1", e.target.value)}
+                  className="mt-2"
+                />
+              </div>
+              <div>
+                <Label htmlFor="architectReflection2" className="text-sm font-medium">
+                  Where do I avoid emotion or storytelling — and could that be hurting magnetism?
+                </Label>
+                <Textarea
+                  id="architectReflection2"
+                  rows={3}
+                  placeholder="Consider emotional aspects..."
+                  value={reflection.architectReflection2}
+                  onChange={(e) => handleInputChange("architectReflection2", e.target.value)}
+                  className="mt-2"
+                />
+              </div>
             </div>
           </div>
         )}
+
+        {/* Alchemist Reflections - Only show when Alchemist mode is selected */}
+        {isAlchemist && (
+          <div className="p-6 bg-orange-50 border border-orange-200 rounded-lg">
+            <h4 className="font-semibold text-scale-orange mb-4">Alchemist Reflection:</h4>
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="alchemistReflection1" className="text-sm font-medium">
+                  What parts of my idea feel emotionally aligned, exciting, and resonant?
+                </Label>
+                <Textarea
+                  id="alchemistReflection1"
+                  rows={3}
+                  placeholder="Reflect on emotional alignment..."
+                  value={reflection.alchemistReflection1}
+                  onChange={(e) => handleInputChange("alchemistReflection1", e.target.value)}
+                  className="mt-2"
+                />
+              </div>
+              <div>
+                <Label htmlFor="alchemistReflection2" className="text-sm font-medium">
+                  Where might I be avoiding structure or pricing clarity out of fear or friction?
+                </Label>
+                <Textarea
+                  id="alchemistReflection2"
+                  rows={3}
+                  placeholder="Consider structural aspects..."
+                  value={reflection.alchemistReflection2}
+                  onChange={(e) => handleInputChange("alchemistReflection2", e.target.value)}
+                  className="mt-2"
+                />
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Bonus Insight Box */}
+      <div className="mt-8 p-6 bg-brand-gradient-light border border-scale-orange/30 rounded-lg">
+        <h3 className="font-semibold text-strategic-black mb-3">Bonus Insight</h3>
+        <p className="text-gray-700 mb-2">
+          <strong>You don't need to become a hybrid.</strong>
+        </p>
+        <p className="text-gray-700">
+          You need to become the best version of yourself — with a clear understanding of how your opposite works.
+        </p>
+        <p className="text-gray-700 mt-2 italic">
+          This is the core of the Brandscaling system.
+        </p>
       </div>
     </Card>
   );

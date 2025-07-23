@@ -123,7 +123,7 @@ Then, summarize the final idea in 5 bullet points.`
       updateSessionMutation.mutate({ clarityPrompts: updatedPrompts });
       toast({
         title: "AI Response Generated!",
-        description: "Your business clarity analysis is ready.",
+        description: "Your business concept has been enhanced with AI insights.",
       });
     },
     onError: (error) => {
@@ -155,14 +155,13 @@ Then, summarize the final idea in 5 bullet points.`
           <div className="w-8 h-8 bg-architect-indigo text-white rounded-full flex items-center justify-center text-sm font-bold">1.3</div>
           <h2 className="text-2xl font-bold text-strategic-black">Business Idea Clarity Prompts</h2>
         </div>
-        <p className="text-gray-600 text-lg mb-6">
-          Use AI to extract, sharpen, and simplify your business idea — instantly.
-        </p>
-
-        <div className="mb-6">
+        <p className="text-gray-600 text-lg mb-4">Use AI to extract, sharpen, and simplify your business idea — instantly</p>
+        
+        <div className="p-6 bg-brand-gradient-light border border-purple-200 rounded-lg mb-6">
           <h3 className="font-semibold text-strategic-black mb-3">Purpose of This Section</h3>
           <p className="text-gray-700 mb-4">
-            To help you use a master ChatGPT prompt to clearly articulate your business idea — combining logic and energy — so you stop spinning and start building.
+            To help you use a master ChatGPT prompt to clearly articulate your business idea — 
+            combining logic and energy — so you stop spinning and start building.
           </p>
           <p className="text-gray-700">
             This is a single, powerful prompt designed to:
@@ -324,17 +323,11 @@ Then, summarize the final idea in 5 bullet points.`
           
           <div>
             <Label htmlFor="completionAnswers" className="text-sm font-medium">
-              Your answers:
+              Your Answers:
             </Label>
             <Textarea
               id="completionAnswers"
-              value={prompts.clarityReflection || ""}
-              onChange={(e) => {
-                const updatedPrompts = { ...prompts, clarityReflection: e.target.value };
-                setPrompts(updatedPrompts);
-                updateSessionMutation.mutate({ clarityPrompts: updatedPrompts });
-              }}
-              rows={4}
+              rows={6}
               placeholder="Reflect on what became clearer after using the AI prompt..."
               className="mt-2"
             />

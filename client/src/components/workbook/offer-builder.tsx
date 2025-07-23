@@ -6,7 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Copy, Sparkles } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Copy } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { AIService } from "@/lib/ai-service";
 import type { WorkbookSession } from "@shared/schema";
@@ -27,35 +29,32 @@ export default function OfferBuilder({ session }: OfferBuilderProps) {
       price: "",
       timeline: "",
       promise: "",
-      customPrompt: "",
-      aiResponse: ""
+      aiResponseSpace: "",
+      offerChecklist: {
+        transformationClear: false,
+        vehicleValuable: false,
+        priceProfitable: false,
+        urgencyReason: false,
+        repeatableProfitable: false
+      }
     }
   );
 
   // Editable prompt text
   const [promptText, setPromptText] = useState(
     session?.offerBuilder?.customPrompt || 
-    `"Here's my offer canvas:
+    `"Here's what I'm thinking of offering:
 
-• The Transformation: [insert]
-• The Vehicle: [insert]
-• The Price: [insert]
-• The Timeline: [insert]
-• The Promise: [insert]
+Transformation/result: [insert]
+What they get (vehicle): [insert]
+Price: [insert]
+Timeline: [insert]
+Why it matters now: [insert]
 
-Please analyse this offer and tell me:
-1. What sounds compelling and clear?
-2. What feels weak or confusing?
-3. How could I improve the emotional appeal without losing the logic?
-4. What price concerns or objections might arise, and how should I address them?
-5. Does this feel like something people would actually buy?
-
-Be honest but constructive."`
-  );
-
-  // AI Response State
-  const [aiResponse, setAiResponse] = useState(
-    session?.offerBuilder?.aiResponse || ""
+Can you help me:
+Improve how I describe this offer?
+Spot any confusion or missing pieces?
+Suggest how to position this better?"`
   );
 
   const updateSessionMutation = useMutation({
@@ -68,8 +67,17 @@ Be honest but constructive."`
     },
   });
 
-  const handleInputChange = (field: keyof typeof offer, value: string) => {
+  const handleInputChange = (field: string, value: string) => {
     const updatedOffer = { ...offer, [field]: value };
+    setOffer(updatedOffer);
+    updateSessionMutation.mutate({ offerBuilder: updatedOffer });
+  };
+
+  const handleChecklistChange = (field: string, checked: boolean) => {
+    const updatedOffer = { 
+      ...offer, 
+      offerChecklist: { ...offer.offerChecklist, [field]: checked }
+    };
     setOffer(updatedOffer);
     updateSessionMutation.mutate({ offerBuilder: updatedOffer });
   };
@@ -79,6 +87,11 @@ Be honest but constructive."`
     const updatedOffer = { ...offer, customPrompt: value };
     updateSessionMutation.mutate({ offerBuilder: updatedOffer });
   };
+
+  // AI Response State
+  const [aiResponse, setAiResponse] = useState(
+    session?.offerBuilder?.aiResponse || ""
+  );
 
   const copyOfferPrompt = () => {
     navigator.clipboard.writeText(promptText);
@@ -383,9 +396,12 @@ Be honest but constructive."`
             <Button
               onClick={handleGenerateWithAI}
               disabled={generateAIResponseMutation.isPending}
-              className="bg-gradient-to-r from-purple-600 to-orange-500 hover:from-purple-700 hover:to-orange-600 text-white"
+              className={`${
+                isArchitect 
+                  ? "bg-purple-600 hover:bg-purple-700" 
+                  : "bg-orange-600 hover:bg-orange-700"
+              } text-white`}
             >
-              <Sparkles className="w-4 h-4 mr-2" />
               {generateAIResponseMutation.isPending ? "Generating..." : "Generate with AI"}
             </Button>
           </div>
@@ -409,6 +425,81 @@ Be honest but constructive."`
               </div>
             </div>
           )}
+        </div>
+
+        {/* Your AI Response Space */}
+        <div className="p-6 bg-gray-50 border border-gray-200 rounded-lg">
+          <h3 className="font-semibold text-strategic-black mb-4">Your AI Response Space</h3>
+          <Textarea
+            id="aiResponseSpace"
+            rows={6}
+            placeholder="Paste your AI response and insights here..."
+            value={offer.aiResponseSpace}
+            onChange={(e) => handleInputChange("aiResponseSpace", e.target.value)}
+          />
+        </div>
+
+        {/* Offer Test Checklist */}
+        <div className="p-6 bg-blue-50 border border-blue-200 rounded-lg">
+          <h3 className="font-semibold text-strategic-black mb-4">Offer Test Checklist</h3>
+          <p className="text-gray-700 mb-4">Before finalising your offer, run it through this:</p>
+          
+          <div className="space-y-4">
+            <div className="flex items-center space-x-3">
+              <Checkbox
+                id="transformationClear"
+                checked={offer.offerChecklist.transformationClear}
+                onCheckedChange={(checked) => handleChecklistChange("transformationClear", checked as boolean)}
+              />
+              <Label htmlFor="transformationClear" className="text-sm">
+                Is the transformation crystal clear?
+              </Label>
+            </div>
+            
+            <div className="flex items-center space-x-3">
+              <Checkbox
+                id="vehicleValuable"
+                checked={offer.offerChecklist.vehicleValuable}
+                onCheckedChange={(checked) => handleChecklistChange("vehicleValuable", checked as boolean)}
+              />
+              <Label htmlFor="vehicleValuable" className="text-sm">
+                Does the vehicle sound valuable and credible?
+              </Label>
+            </div>
+            
+            <div className="flex items-center space-x-3">
+              <Checkbox
+                id="priceProfitable"
+                checked={offer.offerChecklist.priceProfitable}
+                onCheckedChange={(checked) => handleChecklistChange("priceProfitable", checked as boolean)}
+              />
+              <Label htmlFor="priceProfitable" className="text-sm">
+                Is the price profitable but not off-putting?
+              </Label>
+            </div>
+            
+            <div className="flex items-center space-x-3">
+              <Checkbox
+                id="urgencyReason"
+                checked={offer.offerChecklist.urgencyReason}
+                onCheckedChange={(checked) => handleChecklistChange("urgencyReason", checked as boolean)}
+              />
+              <Label htmlFor="urgencyReason" className="text-sm">
+                Is there a reason to buy now (urgency)?
+              </Label>
+            </div>
+            
+            <div className="flex items-center space-x-3">
+              <Checkbox
+                id="repeatableProfitable"
+                checked={offer.offerChecklist.repeatableProfitable}
+                onCheckedChange={(checked) => handleChecklistChange("repeatableProfitable", checked as boolean)}
+              />
+              <Label htmlFor="repeatableProfitable" className="text-sm">
+                Could someone repeat this offer 10x and still be profitable?
+              </Label>
+            </div>
+          </div>
         </div>
       </div>
     </Card>

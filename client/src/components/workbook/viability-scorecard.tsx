@@ -4,9 +4,10 @@ import { useDNAMode } from "@/hooks/use-dna-mode";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Copy, Sparkles } from "lucide-react";
+import { Copy } from "lucide-react";
 import type { WorkbookSession } from "@shared/schema";
 import { AIService } from "@/lib/ai-service";
 
@@ -330,69 +331,106 @@ Can you analyse where this idea is weak and suggest improvements that would rais
         </div>
 
         {/* Total Score Display */}
-        <div className="text-center mb-8">
-          <div className="inline-block p-6 bg-white border border-purple-200 rounded-lg shadow-sm">
-            <div className="mb-4">
-              <div className="text-4xl font-bold text-architect-indigo mb-2">
-                {totalScore}/40
-              </div>
-              <p className="text-gray-600">Total Viability Score</p>
-            </div>
-            
-            <div className={`inline-block px-4 py-2 rounded-full text-white font-semibold ${interpretation.color}`}>
-              {interpretation.title}
-            </div>
-            <p className="text-gray-700 mt-2 text-sm">{interpretation.description}</p>
+        <div className="p-4 sm:p-6 bg-blue-50 border border-blue-200 rounded-lg text-center">
+          <h4 className="font-semibold text-strategic-black mb-2">Your Total Score</h4>
+          <div className="text-2xl sm:text-3xl font-bold text-architect-indigo mb-2">
+            {totalScore} / 40
           </div>
+          <div className={`inline-block px-4 py-2 rounded-lg text-white font-medium ${interpretation.color}`}>
+            {interpretation.title}
+          </div>
+          <p className="text-gray-700 mt-2">{interpretation.description}</p>
+        </div>
+      </div>
+
+      {/* Score Interpretation */}
+      <div className="mb-8">
+        <h3 className="font-semibold text-strategic-black text-lg mb-4">Score Interpretation</h3>
+        
+        <div className="overflow-x-auto border border-gray-300 rounded-lg">
+          <table className="w-full min-w-[600px]">
+            <thead className="bg-gradient-to-r from-purple-100 to-orange-100">
+              <tr>
+                <th className="px-4 py-3 text-left font-semibold text-strategic-black border-b border-gray-300">Score Range</th>
+                <th className="px-4 py-3 text-left font-semibold text-strategic-black border-b border-gray-300">Interpretation</th>
+                <th className="px-4 py-3 text-left font-semibold text-strategic-black border-b border-gray-300">Next Steps</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white">
+              <tr className="border-b border-gray-200 hover:bg-green-50">
+                <td className="px-4 py-3 font-medium text-green-700">32-40</td>
+                <td className="px-4 py-3">Strong idea — move forward with confidence</td>
+                <td className="px-4 py-3">Start building your MVP or first offer</td>
+              </tr>
+              <tr className="border-b border-gray-200 hover:bg-blue-50">
+                <td className="px-4 py-3 font-medium text-blue-700">24-31</td>
+                <td className="px-4 py-3">Good foundation — needs refinement</td>
+                <td className="px-4 py-3">Focus on your lowest-scoring pillars</td>
+              </tr>
+              <tr className="border-b border-gray-200 hover:bg-yellow-50">
+                <td className="px-4 py-3 font-medium text-yellow-700">16-23</td>
+                <td className="px-4 py-3">Promising but needs work</td>
+                <td className="px-4 py-3">Revisit your core concept and target audience</td>
+              </tr>
+              <tr className="hover:bg-red-50">
+                <td className="px-4 py-3 font-medium text-red-700">8-15</td>
+                <td className="px-4 py-3">Significant gaps — consider pivoting</td>
+                <td className="px-4 py-3">Go back to ideation or find a different angle</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Action Planning */}
+
+
+      {/* AI Prompt & Response */}
+      <div>
+        <h3 className="font-semibold text-strategic-black text-lg mb-4">Optional AI Prompt</h3>
+        <p className="text-gray-700 mb-4">Edit the prompt below and copy it to ChatGPT:</p>
+        
+        <Textarea
+          value={promptText}
+          onChange={(e) => handlePromptChange(e.target.value)}
+          className="bg-gray-50 text-sm text-gray-700 font-mono mb-4 min-h-[120px] resize-none"
+          placeholder="Edit your prompt here..."
+        />
+        
+        <div className="flex flex-col sm:flex-row gap-3 mb-6">
+          <Button
+            onClick={copyAiPrompt}
+            className={`${
+              isArchitect 
+                ? "bg-architect-indigo hover:bg-purple-variant" 
+                : "bg-scale-orange hover:bg-orange-600"
+            } text-white`}
+          >
+            <Copy className="w-4 h-4 mr-2" />
+            Copy AI Analysis Prompt
+          </Button>
+          
+          <Button
+            onClick={handleGenerateWithAI}
+            disabled={generateAIResponseMutation.isPending}
+            className={`${
+              isArchitect 
+                ? "bg-purple-600 hover:bg-purple-700" 
+                : "bg-orange-600 hover:bg-orange-700"
+            } text-white`}
+          >
+            {generateAIResponseMutation.isPending ? "Generating..." : "Generate with AI"}
+          </Button>
         </div>
 
-        {/* AI Analysis Section */}
-        <div className="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg">
-          <h3 className="font-semibold text-strategic-black mb-2">AI Analysis Prompt</h3>
-          <p className="text-sm text-gray-700 mb-3">Edit the prompt below and use it to get AI feedback on your scores:</p>
+        <div>
+          <h4 className="font-medium text-strategic-black mb-3">Your AI Response Space</h4>
           <Textarea
-            value={promptText}
-            onChange={(e) => handlePromptChange(e.target.value)}
-            className="bg-white text-sm text-gray-700 font-mono mb-4 min-h-[120px] resize-none"
-            placeholder="Edit your prompt here..."
+            rows={6}
+            placeholder="Paste your AI response and insights here..."
+            value={aiResponseSpace}
+            onChange={(e) => handleAiResponseChange(e.target.value)}
           />
-          
-          <div className="flex flex-col sm:flex-row gap-3 mb-4">
-            <Button
-              onClick={copyAiPrompt}
-              className={`${
-                isArchitect 
-                  ? "bg-architect-indigo hover:bg-purple-variant" 
-                  : "bg-scale-orange hover:bg-orange-600"
-              } text-white`}
-            >
-              <Copy className="w-4 h-4 mr-2" />
-              Copy Analysis Prompt
-            </Button>
-            
-            <Button
-              onClick={handleGenerateWithAI}
-              disabled={generateAIResponseMutation.isPending}
-              className="bg-gradient-to-r from-purple-600 to-orange-500 hover:from-purple-700 hover:to-orange-600 text-white"
-            >
-              <Sparkles className="w-4 h-4 mr-2" />
-              {generateAIResponseMutation.isPending ? "Generating..." : "Generate with AI"}
-            </Button>
-          </div>
-
-          {/* AI Response Section */}
-          <div className="mt-4">
-            <h4 className="font-semibold text-strategic-black mb-3">AI Response Space:</h4>
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <p className="text-sm text-gray-600 mb-2">Date: {new Date().toLocaleDateString()}</p>
-              <Textarea
-                value={aiResponseSpace}
-                onChange={(e) => handleAiResponseChange(e.target.value)}
-                placeholder="Your AI analysis will appear here, or paste your own response..."
-                className="w-full h-32 resize-y"
-              />
-            </div>
-          </div>
         </div>
       </div>
     </Card>
