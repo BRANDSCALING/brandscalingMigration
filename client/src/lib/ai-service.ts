@@ -19,9 +19,17 @@ export class AIService {
       }
       
       const response: AIResponse = await res.json();
-      console.log("AI Service - Response received:", response.response?.substring(0, 100) + "...");
+      console.log("AI Service - Full JSON response:", response);
+      console.log("AI Service - Response.response field:", response.response);
+      console.log("AI Service - Response type:", typeof response.response);
+      console.log("AI Service - Response length:", response.response?.length || 'undefined');
       
-      return response.response || "No response received";
+      if (!response.response) {
+        console.error("AI Service - No response field in JSON:", response);
+        throw new Error("No response field in API response");
+      }
+      
+      return response.response;
     } catch (error) {
       console.error("AI Service Error:", error);
       throw new Error("Failed to generate AI response");

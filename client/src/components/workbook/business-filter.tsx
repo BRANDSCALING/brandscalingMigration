@@ -83,21 +83,32 @@ Can you help me refine this and tell me what's missing?`
     },
     onSuccess: (response) => {
       console.log("Business Filter AI Response received:", response);
-      console.log("Business Filter - Response length:", response.length);
-      console.log("Business Filter - Setting aiResponse state to:", response.substring(0, 100) + "...");
+      console.log("Business Filter - Response type:", typeof response);
+      console.log("Business Filter - Response length:", response?.length || 'undefined');
+      console.log("Business Filter - Raw response:", response);
       
-      setAiResponse(response);
-      
-      const updatedFilter = { ...filter, aiResponse: response, customPrompt: promptText };
-      console.log("Business Filter - Updated filter object:", updatedFilter);
-      
-      setFilter(updatedFilter);
-      updateSessionMutation.mutate({ businessFilter: updatedFilter });
-      
-      toast({
-        title: "AI Response Generated!",
-        description: "Your business idea analysis is ready.",
-      });
+      if (response && typeof response === 'string') {
+        console.log("Business Filter - Setting aiResponse state to:", response.substring(0, 100) + "...");
+        setAiResponse(response);
+        
+        const updatedFilter = { ...filter, aiResponse: response, customPrompt: promptText };
+        console.log("Business Filter - Updated filter object:", updatedFilter);
+        
+        setFilter(updatedFilter);
+        updateSessionMutation.mutate({ businessFilter: updatedFilter });
+        
+        toast({
+          title: "AI Response Generated!",
+          description: "Your business idea analysis is ready.",
+        });
+      } else {
+        console.error("Business Filter - Invalid response format:", response);
+        toast({
+          title: "Response Format Error",
+          description: "Received invalid response format from AI service",
+          variant: "destructive",
+        });
+      }
     },
     onError: (error) => {
       console.error("Business Filter AI Generation Error:", error);
