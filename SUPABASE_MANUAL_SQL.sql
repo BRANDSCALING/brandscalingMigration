@@ -1,24 +1,29 @@
--- COPY AND PASTE THIS SQL INTO YOUR SUPABASE SQL EDITOR
--- This will create the tables and test data that you can see in your Table Editor
+-- MANUAL SUPABASE DATABASE SETUP
+-- Copy this SQL into your Supabase SQL Editor and run it
 
--- Create test_connection table
-CREATE TABLE IF NOT EXISTS public.test_connection (
-  id BIGSERIAL PRIMARY KEY,
+-- ============================================
+-- STEP 1: Create test_connection table
+-- ============================================
+CREATE TABLE IF NOT EXISTS test_connection (
+  id SERIAL PRIMARY KEY,
   name TEXT NOT NULL,
   email TEXT NOT NULL,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Insert test data into test_connection
-INSERT INTO public.test_connection (name, email) VALUES 
-('Supabase Manual Creation', 'manual@brandscaling.com'),
-('Database Connection Test', 'test@brandscaling.com'),
-('Replit Integration Success', 'success@brandscaling.com')
-ON CONFLICT DO NOTHING;
+-- ============================================
+-- STEP 2: Insert connection test data
+-- ============================================
+INSERT INTO test_connection (name, email) VALUES 
+('Manual Supabase Setup', 'manual@supabase.com'),
+('Connection Verification', 'verification@brandscaling.com'),
+('Database Integration Ready', 'ready@module1.com');
 
--- Create workbook_sessions table for Module 1
-CREATE TABLE IF NOT EXISTS public.workbook_sessions (
-  id BIGSERIAL PRIMARY KEY,
+-- ============================================
+-- STEP 3: Create workbook_sessions table
+-- ============================================
+CREATE TABLE IF NOT EXISTS workbook_sessions (
+  id SERIAL PRIMARY KEY,
   user_id TEXT NOT NULL,
   user_email TEXT,
   dna_mode TEXT DEFAULT 'architect',
@@ -37,24 +42,44 @@ CREATE TABLE IF NOT EXISTS public.workbook_sessions (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Insert sample workbook session data
-INSERT INTO public.workbook_sessions (user_id, user_email, dna_mode, business_filter, edna_reflection) VALUES 
-('supabase-test-user', 'test@supabase.com', 'architect', 
- '{"problem": true, "person": true, "profit": false, "pull": true, "aiResponse": "Business validation successful!", "customPrompt": "Test business filter prompt"}',
- '{"clarityReflection": "Strong entrepreneurial self-awareness demonstrated", "customPrompt": "Test reflection prompt"}'
+-- ============================================
+-- STEP 4: Insert workbook test data
+-- ============================================
+INSERT INTO workbook_sessions (user_id, user_email, dna_mode, business_filter, edna_reflection, clarity_prompts, current_section, completed_sections) VALUES 
+(
+  'manual-architect-user', 
+  'architect@manual.com', 
+  'architect',
+  '{"problem": true, "person": true, "profit": false, "pull": true, "aiResponse": "Manual Supabase setup successful! Systematic business validation complete.", "customPrompt": "Manual setup architect validation"}',
+  '{"clarityReflection": "Analytical entrepreneurial approach confirmed through manual Supabase integration", "customPrompt": "Manual setup architect reflection"}',
+  '{"prompt1": "What drives your systematic approach?", "response1": "Data-driven analysis and structured planning", "prompt2": "How do you validate opportunities?", "response2": "Through comprehensive research and feasibility studies"}',
+  2,
+  '["business_filter", "edna_reflection"]'
 ),
-('manual-creation-user', 'manual@brandscaling.com', 'alchemist',
- '{"problem": true, "person": false, "profit": true, "pull": true, "aiResponse": "Creative business approach identified!", "customPrompt": "Alchemist business validation"}',
- '{"clarityReflection": "Intuitive entrepreneurial style confirmed", "customPrompt": "Alchemist reflection"}'
-)
-ON CONFLICT DO NOTHING;
+(
+  'manual-alchemist-user',
+  'alchemist@manual.com',
+  'alchemist',
+  '{"problem": true, "person": false, "profit": true, "pull": true, "aiResponse": "Creative opportunity identified through manual Supabase setup! Innovation validated.", "customPrompt": "Manual setup alchemist validation"}',
+  '{"clarityReflection": "Creative entrepreneurial style demonstrated through manual Supabase integration", "customPrompt": "Manual setup alchemist reflection"}',
+  '{"prompt1": "What creative insights guide you?", "response1": "Intuitive market understanding and innovative solutions", "prompt2": "How do you approach challenges?", "response2": "Through creative problem-solving and breakthrough thinking"}',
+  2,
+  '["business_filter", "edna_reflection"]'
+);
 
--- Verify the data was created
-SELECT 'test_connection table:' as table_info, COUNT(*) as record_count FROM public.test_connection
-UNION ALL
-SELECT 'workbook_sessions table:', COUNT(*) FROM public.workbook_sessions;
+-- ============================================
+-- STEP 5: Verification queries
+-- ============================================
+SELECT 'test_connection' as table_name, COUNT(*) as records FROM test_connection;
+SELECT 'workbook_sessions' as table_name, COUNT(*) as records FROM workbook_sessions;
 
 -- Show sample data
-SELECT 'Sample test_connection data:' as info, name, email, created_at FROM public.test_connection LIMIT 2
-UNION ALL
-SELECT 'Sample workbook data:', user_id, user_email, dna_mode FROM public.workbook_sessions LIMIT 2;
+SELECT name, email FROM test_connection LIMIT 2;
+SELECT user_id, dna_mode, current_section FROM workbook_sessions;
+
+-- Test JSONB functionality
+SELECT 
+  user_id,
+  business_filter->>'aiResponse' as ai_response,
+  jsonb_array_length(completed_sections) as completed_count
+FROM workbook_sessions;
