@@ -128,7 +128,7 @@ export default function Courses() {
                 
                 <Button 
                   className="w-full bg-scale-orange text-white hover:bg-orange-600"
-                  onClick={() => window.open('https://fariza.funnelish.com/mastermind-application', '_blank')}
+                  onClick={() => window.open('https://brandscale-mastermind-info7025.replit.app/', '_blank')}
                 >
                   Apply Now
                 </Button>

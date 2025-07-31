@@ -346,7 +346,7 @@ export default function Landing() {
                 
                 <Button 
                   className="w-full bg-scale-orange text-white hover:bg-orange-600"
-                  onClick={() => window.open('https://brandscalingschoolforentrepreneurs.com/mastermind-landing-page-page541638', '_blank')}
+                  onClick={() => window.open('https://brandscale-mastermind-info7025.replit.app/', '_blank')}
                 >
                   Apply Now
                 </Button>
