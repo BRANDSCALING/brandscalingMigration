@@ -1,0 +1,48 @@
+Pause all current build modules (including Resend email automation), and now focus fully on building the Student Dashboard for the Brandscaling platform. Use our existing React + Node.js + Firebase (or PostgreSQL) modular setup. Do NOT use any dummy data or mockups — only real data from authenticated users in the database.
+
+Follow these master rules:
+- NO dummy users or placeholder JSON
+- NO hardcoded states
+- Use real, queryable user data (courses, payments, bookings)
+- UI must be clean, modular, scalable (like Kajabi, but better)
+- Component folders must be well-organized and re-usable
+- Assume Stripe is already integrated and fetch real payment data via Stripe API
+- Resend is paused — no email triggers required for now
+
+🎯 Build the Student Dashboard with the following sections (use real data from database and Stripe):
+1. **Welcome Section**  
+   - Show user’s first name and quiz type (Architect/Alchemist)  
+   - Use avatar or emoji per quiz result (optional: logic-ready for profile picture upload)
+
+2. **My Courses**  
+   - Query which courses are unlocked for the user  
+   - Link to LMS system (if not yet built, add placeholder route)
+
+3. **Book a Call**  
+   - Embed Cal.com or Calendly iframe (placeholder link okay)  
+   - User should never leave the dashboard
+
+4. **My Payments**  
+   - Pull actual Stripe payment history for the logged-in user  
+   - Show date, amount, product, and invoice link if available
+
+5. **Announcements / Messages**  
+   - Fetch announcements from a `messages` or `announcements` DB collection  
+   - Allow future logic for staff-only pinning or filtering by type
+
+6. **Course Progress (Future Ready)**  
+   - Include structure for future LMS progress bar per module  
+   - Use placeholder logic only if no progress tracking is built yet
+
+🛠️ Tech Notes:
+- Use Tailwind for styling (Brandscaling uses premium, modern aesthetic)
+- Authenticated users only — redirect if not logged in
+- Structure all API calls in the backend (`/routes/dashboard.js` or similar)
+- Use reusable components in `/components/dashboard/`
+- Respect mobile responsiveness
+- Use Firebase or PostgreSQL as per existing project config
+- Create placeholder routes only if LMS modules or messaging systems are not yet built
+
+This dashboard must be modular and expandable. Prepare for future logic like quizzes, mentor notes, and community features.
+
+Do not touch email, automation, or CRM logic unless told. This build is ONLY the Student Dashboard UI + API logic. Confirm when structure is complete.

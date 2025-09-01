@@ -1,0 +1,59 @@
+You are working in the Brandscaling LMS platform codebase. Follow the instructions below exactly, with no placeholders, no mock data, and no assumptions. Use only precise and fully functional code.
+
+OBJECTIVE:
+Create a full-featured Entrepreneurial DNA Quiz system at `/quiz` with:
+
+1. ✅ **Frontend**
+   - Route: `/quiz`
+   - 12 multiple-choice questions
+   - Each question has 4 answer options:
+     • 🧱 Architect
+     • 🔮 Alchemist
+     • 🌫 Undeclared
+     • ⚖️ Blurred Identity
+   - User selects one per question
+   - At end of quiz:
+     • Tally answers by type
+     • Show result screen: dominant type
+     • Save result to localStorage
+     • Send result to backend via POST API call
+     • Redirect to `/quiz/result`
+
+2. ✅ **Result Page at `/quiz/result`**
+   - Show result (e.g. “You are the Architect”)
+   - Background color:
+     • Architect = `#42047D`
+     • Alchemist = `#F6782F`
+     • Undeclared = `#8E8E8E`
+     • Blurred Identity = `#C72170`
+   - Summary paragraph (real content)
+   - Button: “View tailored resources” → routes to `/courses?dna=[TYPE]`
+
+3. ✅ **Database Schema Update**
+   - Table: `user_dna_result`
+     - id (primary key)
+     - user_id (FK to users table)
+     - result (text: 'Architect' | 'Alchemist' | 'Undeclared' | 'Blurred Identity')
+     - completed_at (timestamp)
+
+4. ✅ **API Endpoint**
+   - `POST /api/quiz/submit`
+   - Request body: `{ userId: string, result: string }`
+   - Logic:
+     • Upsert user’s quiz result into `user_dna_result` table
+     • Ensure this is tied to logged-in user
+
+5. ✅ **LMS Integration**
+   - On `/courses` route, add logic to read URL param `?dna=`
+   - Filter courses shown by tag or type matching the DNA result
+   - Example: `/courses?dna=Alchemist` shows only Alchemist-tagged content
+   - Use real course filtering logic already present in system
+   - Bonus: preload the user’s DNA type if stored in DB and apply automatically
+
+REQUIREMENTS:
+- Do NOT invent dummy questions or summaries — only implement quiz logic and structure
+- Do NOT use fake users, mock components, or test IDs
+- All content and functionality must be fully working and cleanly integrated with the existing system
+- Comment where manual content input is required (e.g. `// ADD REAL QUESTIONS HERE`)
+
+Confirm each part has been created with real logic and routes wired correctly.

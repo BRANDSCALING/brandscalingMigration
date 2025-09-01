@@ -1,0 +1,183 @@
+You are working in the Brandscaling LMS platform codebase. Follow these instructions exactly. You must NOT generate placeholders, dummy content, lorem ipsum, fake answers, or make assumptions. Only use the real content and logic provided below.
+
+⚠️ DO NOT:
+- Invent UI copy or messages
+- Add fake data or test examples
+- Change wording, styling, or button behavior unless explicitly stated
+
+---
+
+OBJECTIVE:
+Build the full Entrepreneurial DNA Quiz system. This includes:
+1. Full React quiz with 12 real questions
+2. Scoring logic to determine dominant type
+3. Result screen at /quiz/result
+4. API to save result to database
+5. LMS course filtering based on result
+6. Use Tailwind + Font = Poppins
+7. Store result in both localStorage and the DB
+
+---
+
+✅ FRONTEND:
+
+### Route: `/quiz`
+
+Render a 12-question multiple-choice quiz. Each question has exactly 4 options. Users select one option per question.
+
+Each option is linked to one of 4 types:
+- Architect 🧱
+- Alchemist 🔮
+- Undeclared 🌫
+- Blurred Identity ⚖️
+
+When all 12 are answered:
+- Count answers per type
+- Determine dominant type (highest count)
+- Store in `localStorage` as `quizResult`
+- POST to `/api/quiz/submit` with `{ userId, result }`
+- Navigate to `/quiz/result`
+
+---
+
+✅ FULL QUESTION ARRAY (Do not modify):
+
+const questions = [
+  {
+    prompt: "You’re offered a major growth opportunity. It could stretch your ops team and timelines. What do you do first?",
+    options: [
+      { text: "Create a quick working outline of execution to see where the cracks may appear.", type: "Architect" },
+      { text: "Say yes. The timing feels right, and you’ll adjust along the way.", type: "Alchemist" },
+      { text: "Wait 24 hours before replying. You want to feel how your team shows up first.", type: "Undeclared" },
+      { text: "Ask for a call to understand every angle — you’ll decide based on a mix of inputs.", type: "Blurred Identity" },
+    ],
+  },
+  {
+    prompt: "A campaign underdelivers, and feedback is conflicting. How do you respond?",
+    options: [
+      { text: "Break the campaign into phases. Something likely misfired at execution level.", type: "Architect" },
+      { text: "Ask: Did the message still feel true? Maybe it lost its pulse.", type: "Alchemist" },
+      { text: "Let things settle. You want clarity before changing anything.", type: "Undeclared" },
+      { text: "Schedule a brainstorm to gather different perspectives and decide next steps.", type: "Blurred Identity" },
+    ],
+  },
+  {
+    prompt: "You need to replace yourself in a leadership role. What’s your focus?",
+    options: [
+      { text: "Find someone who can mirror your systems and drive delivery.", type: "Architect" },
+      { text: "Look for energy match and vision alignment — someone who “gets it.”", type: "Alchemist" },
+      { text: "Postpone the decision until the business model feels more stable.", type: "Undeclared" },
+      { text: "Write a broad job spec and stay open to who shows up.", type: "Blurred Identity" },
+    ],
+  },
+  {
+    prompt: "A team member keeps missing deadlines, but believes in the mission. You:",
+    options: [
+      { text: "Review their workload, assess blockers, and reassign tasks accordingly.", type: "Architect" },
+      { text: "Sit down with them — something deeper may be driving this.", type: "Alchemist" },
+      { text: "Wait for one more project. You’re not fully sure what the issue is yet.", type: "Undeclared" },
+      { text: "Shift their role slightly and see if a change helps.", type: "Blurred Identity" },
+    ],
+  },
+  {
+    prompt: "A partner offers a last-minute opportunity for exposure. It means reshuffling your week. What’s your instinct?",
+    options: [
+      { text: "Decline for now — disruptions aren’t worth reactive delivery.", type: "Architect" },
+      { text: "Say yes — you move best with momentum.", type: "Alchemist" },
+      { text: "Say maybe. If the window stays open, you’ll decide last minute.", type: "Undeclared" },
+      { text: "Try to move things around and fit it in, even if it’s tight.", type: "Blurred Identity" },
+    ],
+  },
+  {
+    prompt: "You’re asked to give a keynote to early-stage entrepreneurs. What do you focus on?",
+    options: [
+      { text: "Frameworks that saved time, stress, and cashflow.", type: "Architect" },
+      { text: "The moments where you trusted what couldn’t be explained.", type: "Alchemist" },
+      { text: "Your observations — you’re still deciding how you operate best.", type: "Undeclared" },
+      { text: "A bit of both — you toggle based on what the audience needs.", type: "Blurred Identity" },
+    ],
+  },
+  {
+    prompt: "Your team is stuck between two competing strategies. You:",
+    options: [
+      { text: "Model out projections for each and choose based on potential ROI.", type: "Architect" },
+      { text: "Pause the debate. You need to reconnect with the larger vision.", type: "Alchemist" },
+      { text: "Ask them to vote — you want to see where their energy naturally flows.", type: "Undeclared" },
+      { text: "Take pieces from both and build a hybrid option.", type: "Blurred Identity" },
+    ],
+  },
+  {
+    prompt: "A rebrand is on the table. What’s your first move?",
+    options: [
+      { text: "Update the brand architecture, messaging, and visual guidelines.", type: "Architect" },
+      { text: "Tune in: What is the energy of this business now? Does the brand reflect it?", type: "Alchemist" },
+      { text: "Ask customers what they notice first — you want an outside perspective.", type: "Undeclared" },
+      { text: "Pull bits from brands you admire and see what fits.", type: "Blurred Identity" },
+    ],
+  },
+  {
+    prompt: "You’re planning a restructure. What drives your design choices?",
+    options: [
+      { text: "Functional logic and operational efficiency.", type: "Architect" },
+      { text: "Emotional alignment — who thrives in what type of flow?", type: "Alchemist" },
+      { text: "You’re not ready. You need more context before making changes.", type: "Undeclared" },
+      { text: "A little of both — structure matters, but so does energy.", type: "Blurred Identity" },
+    ],
+  },
+  {
+    prompt: "A mentor tells you to change your offer to suit the market better. You:",
+    options: [
+      { text: "Review trends and adjust positioning where needed.", type: "Architect" },
+      { text: "Check inward: Does this shift feel true to the original intent?", type: "Alchemist" },
+      { text: "Wait. If the market really demands it, you’ll feel it more clearly soon.", type: "Undeclared" },
+      { text: "Start adapting — no harm in trialing different angles.", type: "Blurred Identity" },
+    ],
+  },
+  {
+    prompt: "You’re scaling fast. What’s your priority?",
+    options: [
+      { text: "Operations. Without delivery clarity, scale breaks everything.", type: "Architect" },
+      { text: "Culture. If the energy breaks, everything breaks.", type: "Alchemist" },
+      { text: "You’re watching what unfolds before making any priority call.", type: "Undeclared" },
+      { text: "Balance. You need momentum and stability — even if both are shaky.", type: "Blurred Identity" },
+    ],
+  },
+  {
+    prompt: "You’re launching a new vertical. What’s your first step?",
+    options: [
+      { text: "Build the executional roadmap. Then assign accountable owners.", type: "Architect" },
+      { text: "Write the story and feeling of it — what will this mean to people?", type: "Alchemist" },
+      { text: "Sketch some light ideas, but wait for signs to move ahead.", type: "Undeclared" },
+      { text: "Start a conversation with collaborators and see what direction forms.", type: "Blurred Identity" },
+    ],
+  },
+];
+
+---
+
+✅ BACKEND:
+
+1. **Create database table `user_dna_result`**
+   - Fields: id, user_id (FK), result (text), completed_at (timestamp)
+2. **API Route**: `POST /api/quiz/submit`
+   - Body: `{ userId: string, result: string }`
+   - Save or upsert DNA result for user
+
+---
+
+✅ COURSE FILTERING:
+
+- On `/courses`, read `?dna=[TYPE]` param
+- Filter visible courses based on DNA tag match
+- Use actual LMS logic and course metadata
+- Also preload user’s DNA result (from DB) and auto-filter if not specified in URL
+
+---
+
+🔐 FINAL RULES:
+- No guessing
+- No placeholder questions
+- No fake routes or schemas
+- Use actual routing, db setup, and course system already in place
+
+If any required field or data is missing, STOP and return a list of what’s needed.

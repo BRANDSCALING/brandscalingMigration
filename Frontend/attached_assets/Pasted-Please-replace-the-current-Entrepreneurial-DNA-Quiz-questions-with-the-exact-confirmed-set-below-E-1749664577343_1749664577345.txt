@@ -1,0 +1,157 @@
+Please replace the current Entrepreneurial DNA Quiz™ questions with the exact confirmed set below. Each question has four answer options. Use these labels for scoring:
+
+- A = Architect
+- B = Alchemist
+- C = Blurred
+- D = Undeclared
+
+Maintain the existing structure, logic, and scoring engine. Do not change the scoring rules. Keep all styling and progress tracking in place.
+
+Replace the entire existing quiz question array with the following:
+
+[
+{
+  "question": "You’re going away for the weekend. How do you prepare the night before?",
+  "answers": [
+    "I mentally run through what I need and pack once — essentials are covered.",
+    "I write a full list, check everything off, repack a few times, still feel uneasy.",
+    "I throw things in last minute and trust it’ll be fine.",
+    "I pack, unpack, and get overwhelmed deciding what I even need."
+  ]
+},
+{
+  "question": "A close friend unintentionally hurts your feelings. How do you respond?",
+  "answers": [
+    "I won’t say anything — they’ll figure it out or I’ll quietly move on.",
+    "I’ll express it — maybe now, maybe later — but it will come out.",
+    "I react suddenly, then second-guess if I was overdramatic.",
+    "I feel stuck about whether I should say something or not."
+  ]
+},
+{
+  "question": "You walk into a room full of strangers. What do you do?",
+  "answers": [
+    "I observe quietly, scan the room, and engage when it makes sense.",
+    "I act on how I feel — I might blend in or suddenly become the centre of attention.",
+    "I linger around and wait for someone to notice or invite me.",
+    "I’m unsure how to show up — I feel pressure to act right."
+  ]
+},
+{
+  "question": "You’ve committed to waking up at 6am for a week. Day 3, you're exhausted. What happens?",
+  "answers": [
+    "I stick to it. Fatigue doesn’t override commitment unless it’s serious.",
+    "I ask myself if the reason still matters — if not, I adjust without guilt.",
+    "I sleep in, feel bad, and try again tomorrow.",
+    "I feel torn — I want to keep going but can’t force myself either."
+  ]
+},
+{
+  "question": "You’ve completed a project and it performs well. How do you feel about it?",
+  "answers": [
+    "If the result is strong, I’m satisfied — no need to change anything.",
+    "I immediately wonder how it could have been even better.",
+    "I feel good but uneasy — maybe I missed something important.",
+    "I can’t tell if I’m happy or not — depends what others say."
+  ]
+},
+{
+  "question": "You’re pursuing a goal no one else has achieved. How do you think about it?",
+  "answers": [
+    "I need to see a path or example — otherwise I’m not sure it’s achievable.",
+    "Even if no one’s done it, I know it’s possible — I just need the steps.",
+    "I doubt myself, but I still try in case it works out.",
+    "I switch between confidence and confusion depending on the day."
+  ]
+},
+{
+  "question": "You’re preparing for something two weeks away. How do you usually plan?",
+  "answers": [
+    "I break it down early and map out tasks by week or day, so it doesn’t stack up.",
+    "I map it out in detail far in advance, but then I keep improving and adding to it, often creating overwhelm — and later try to simplify again.",
+    "I kind of half-plan, get distracted, and usually scramble to pull it together.",
+    "I don’t really plan — I usually go with what happens closer to the time."
+  ]
+},
+{
+  "question": "Someone challenges your viewpoint in a conversation. How do you respond?",
+  "answers": [
+    "I stay calm, clarify my logic, and listen to see if their view has merit.",
+    "If I strongly believe in it, I won’t give up until I feel they understand — but if I’m neutral, I stay open.",
+    "I react emotionally, then question whether I overdid it.",
+    "I nod along even if I disagree, and then think about it for hours later."
+  ]
+},
+{
+  "question": "You’re working with someone who’s doing things 'wrong.' What’s your response?",
+  "answers": [
+    "I re-explain the system and ask them to stick to the structure.",
+    "I try to understand why they’re doing it that way — if I like them, I’ll adapt or just do it myself out of frustration.",
+    "I take over entirely and avoid explaining.",
+    "I get confused about whether to fix it, explain, or let them do it their way."
+  ]
+},
+{
+  "question": "How do you work toward a long-term goal (6–12 months away)?",
+  "answers": [
+    "I set clear milestones and track them until the goal is complete.",
+    "I envision the end result, emotionally commit, and make it real in my mind — then build toward it as it gets closer.",
+    "I try to start but never build momentum — it stays an idea.",
+    "I keep rethinking the goal before I even begin."
+  ]
+},
+{
+  "question": "You’ve discovered a new strategy or tool. What’s your style of using it?",
+  "answers": [
+    "I test a small piece, measure the results, and build on it.",
+    "I dive in, get obsessed, test everything, and either burn out or master it.",
+    "I research endlessly and then hesitate to take action.",
+    "I get excited, start it, then forget to follow through."
+  ]
+},
+{
+  "question": "Something makes perfect sense on paper, but feels wrong to you. What do you do?",
+  "answers": [
+    "If it’s logical, I move forward — emotion won’t hold me back.",
+    "I need to figure out why it feels wrong. If it doesn’t make sense to me, something must be missing.",
+    "I keep asking people for advice and still stay stuck.",
+    "I do it anyway but feel disconnected the whole time."
+  ]
+},
+{
+  "question": "You’re asked to speak in front of a large group. What happens internally?",
+  "answers": [
+    "I know exactly what I want to say and how to explain it. I’ve rehearsed or practiced mentally.",
+    "I’m happy to speak — even if I don’t know the topic, I’ll admit that. I can shine or stumble depending on the moment. I’ve been working on articulating more clearly.",
+    "I stress out, lose clarity mid-sentence, and overcorrect.",
+    "I prepare, but get nervous and change everything at the last minute."
+  ]
+},
+{
+  "question": "You’ve spent the entire week at home, alone. How do you feel?",
+  "answers": [
+    "Drained, foggy, and ready to get out. I need movement and stimulation.",
+    "I could be super productive or completely still — and both are fine. When ready, I come alive in a moment.",
+    "Unproductive and annoyed at myself for wasting the time.",
+    "I’m not sure — part of me liked it, part of me wants to escape."
+  ]
+},
+{
+  "question": "Your regular routine is completely disrupted for 3 days. How do you respond?",
+  "answers": [
+    "I feel off-track, so I rebuild the routine as quickly as I can.",
+    "I struggle with fixed routines. I can do the same tasks — just at different times and moods.",
+    "I don’t recover well — the disruption throws off everything.",
+    "I like the break but get disoriented when it’s time to get back to work."
+  ]
+},
+{
+  "question": "You’re up against a tight deadline and still working. What happens?",
+  "answers": [
+    "I execute in structured sprints, track deliverables, and get it done on time.",
+    "I try to work in structured sprints, but I keep tweaking — sometimes I miss deadlines and deliver brilliance late.",
+    "I overthink, delay too much, then panic.",
+    "I avoid working until the pressure is too high to ignore."
+  ]
+}
+]

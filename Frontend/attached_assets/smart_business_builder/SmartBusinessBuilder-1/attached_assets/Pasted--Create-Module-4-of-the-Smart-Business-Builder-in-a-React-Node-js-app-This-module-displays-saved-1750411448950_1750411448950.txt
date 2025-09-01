@@ -1,0 +1,62 @@
+"Create Module 4 of the Smart Business Builder™ in a React + Node.js app. This module displays saved models from the dashboard and allows users to view, edit, or resubmit previous versions. Include frontend and backend logic:
+
+---
+### 🔹 Frontend (React + Tailwind)
+- Create a component: `DashboardPanel.jsx`
+- On load, fetch from backend endpoint: `/api/models/:userId`
+- Display each saved model as a card:
+  - Show `label`, `status`, `timestamp`, and preview of `model`
+  - Button: `\"View Full Model\"`
+  - Button: `\"Edit & Resubmit\"`
+- When user clicks **\"View Full Model\"**:
+  - Expand the card or open a modal to show:
+    - Full `model`
+    - `warnings`, `suggestions`, and `confidence`
+- When user clicks **\"Edit & Resubmit\"**:
+  - Pre-fill their 10 answers into the wizard (assume routing logic to reenter wizard with preloaded data)
+- Style the layout using Tailwind:
+  - White background, responsive grid of cards
+  - Indigo for Architect, Coral for Alchemist depending on saved DNA
+
+---
+### 🔹 Backend (Node.js + Express + PostgreSQL-ready)
+- Create a GET route: `/api/models/:userId`
+- Respond with saved models like:
+```json
+[
+  {
+    "label": "Smart Business Builder – v1",
+    "status": "Complete",
+    "model": "...",
+    "warnings": "...",
+    "suggestions": "...",
+    "confidence": 8,
+    "timestamp": "2025-06-20T12:00:00Z",
+    "dnaType": "Architect"
+  },
+  {...}
+]
+```
+- Later connect this to a PostgreSQL `business_models` table
+- Add placeholder logic that returns mock data now for demo:
+```js
+res.json([{
+  label: "Smart Business Builder – v1",
+  status: "Complete",
+  model: "Example model summary...",
+  warnings: "Demo mode warning...",
+  suggestions: "Demo next steps...",
+  confidence: 7,
+  timestamp: new Date().toISOString(),
+  dnaType: "Architect"
+}]);
+```
+- Mount route in `/backend/routes/models.js` and register in `index.js`
+
+---
+### Folder Structure:
+- Frontend: `/src/components/DashboardPanel.jsx`
+- Backend: `/backend/routes/models.js`
+
+---
+This module lets users browse their saved business models, revisit GPT output, and prepare new versions by resubmitting existing ones."

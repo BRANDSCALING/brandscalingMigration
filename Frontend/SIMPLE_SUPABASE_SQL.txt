@@ -1,0 +1,37 @@
+-- SIMPLE SUPABASE SQL - Copy each section one at a time into your Supabase SQL Editor
+
+-- SECTION 1: Create test_connection table
+CREATE TABLE test_connection (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- SECTION 2: Insert test data
+INSERT INTO test_connection (name, email) VALUES 
+('Supabase Manual Success', 'manual@brandscaling.com'),
+('Table Creation Working', 'working@supabase.com'),
+('Database Integration', 'integration@complete.com');
+
+-- SECTION 3: Create workbook_sessions table
+CREATE TABLE workbook_sessions (
+  id SERIAL PRIMARY KEY,
+  user_id TEXT NOT NULL,
+  user_email TEXT,
+  dna_mode TEXT DEFAULT 'architect',
+  business_filter JSONB DEFAULT '{}',
+  edna_reflection JSONB DEFAULT '{}',
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- SECTION 4: Insert workbook test data
+INSERT INTO workbook_sessions (user_id, user_email, dna_mode, business_filter, edna_reflection) VALUES 
+('manual-supabase-user', 'manual@supabase.com', 'architect', 
+ '{"problem": true, "person": true, "profit": false, "pull": true}',
+ '{"clarityReflection": "Manual Supabase creation successful"}'
+);
+
+-- SECTION 5: Verify data (run this to check)
+SELECT COUNT(*) FROM test_connection;
+SELECT COUNT(*) FROM workbook_sessions;

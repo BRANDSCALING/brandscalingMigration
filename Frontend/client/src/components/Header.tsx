@@ -1,0 +1,167 @@
+import { Link } from "wouter";
+import { User, Infinity, Menu, X } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
+import { useState, useEffect, useCallback } from "react";
+
+export default function Header() {
+  const { user, isAuthenticated } = useAuth();
+  const [localUser, setLocalUser] = useState<any>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  
+  // Check for local student authentication
+  const checkAuthState = useCallback(() => {
+    const studentId = localStorage.getItem('studentId');
+    const studentEmail = localStorage.getItem('studentEmail');
+    const adminId = sessionStorage.getItem('adminId');
+    
+    if (studentId && studentEmail) {
+      setLocalUser({
+        id: studentId,
+        email: studentEmail,
+        role: 'student',
+        accessTier: 'beginner'
+      });
+    } else if (adminId) {
+      setLocalUser({
+        id: adminId,
+        email: 'admin@brandscaling.com',
+        role: 'admin',
+        accessTier: 'mastermind'
+      });
+    } else {
+      setLocalUser(null);
+    }
+  }, []);
+
+  useEffect(() => {
+    checkAuthState();
+    
+    // Listen for storage changes
+    const handleStorageChange = () => {
+      checkAuthState();
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Custom event for localStorage.clear()
+    const handleLocalStorageClear = () => {
+      console.log('Custom logout event received');
+      checkAuthState();
+    };
+    
+    // Listen for multiple event types
+    window.addEventListener('localStorageCleared', handleLocalStorageClear);
+    window.addEventListener('auth-logout', handleLocalStorageClear);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('localStorageCleared', handleLocalStorageClear);
+      window.removeEventListener('auth-logout', handleLocalStorageClear);
+    };
+  }, [user]);
+
+  const getDashboardLink = () => {
+    if (!localUser) return '/auth';
+    
+    if (localUser.role === 'admin') return '/admin';
+    
+    // All students go to the main Student Dashboard
+    if (localUser.role === 'student') {
+      return '/student';
+    }
+    
+    return '/auth';
+  };
+
+  return (
+    <header className="bg-white/95 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-50">
+      <div className="container-brandscaling">
+        <div className="flex justify-between items-center h-20">
+          {/* Brandscaling Logo with Infinity Symbol */}
+          <div className="flex items-center space-x-3">
+            <Link href="/" className="flex items-center space-x-3 group">
+              <div className="p-2 rounded-xl gradient-brandscaling">
+                <Infinity className="h-6 w-6 text-white" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-2xl font-bold gradient-brandscaling bg-clip-text text-transparent">
+                  Brandscaling
+                </span>
+                <span className="text-xs text-gray-500 font-medium tracking-wide">
+                  Purpose → Profit → Purpose
+                </span>
+              </div>
+            </Link>
+          </div>
+
+          {/* Navigation */}
+          <nav className="hidden lg:flex items-center space-x-8">
+            <Link href="/about" className="text-gray-700 hover:text-architect transition-colors font-medium">
+              About
+            </Link>
+            <Link href="/courses" className="text-gray-700 hover:text-architect transition-colors font-medium">
+              Courses
+            </Link>
+            <Link href="/entrepreneurial-dna-quiz">
+              <Button variant="outline" className="border-architect-indigo text-architect-indigo hover:bg-architect-indigo hover:text-white">
+                Discover Your E-DNA
+              </Button>
+            </Link>
+          </nav>
+
+          {/* Mobile Menu Button & User Dashboard Access */}
+          <div className="flex items-center space-x-4">
+            {/* Mobile menu toggle button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="lg:hidden text-gray-700 hover:text-architect hover:bg-gray-50"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </Button>
+            
+            {/* User Dashboard Access */}
+            <Link href={getDashboardLink()}>
+              <Button variant="ghost" size="icon" className="text-gray-700 hover:text-architect hover:bg-gray-50">
+                <User className="h-5 w-5" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+
+        {/* Mobile Navigation - Only show when menu is open */}
+        {isMobileMenuOpen && (
+          <div className="lg:hidden border-t border-gray-100 py-4">
+            <nav className="flex flex-col space-y-3">
+              <Link 
+                href="/about" 
+                className="text-gray-700 hover:text-architect font-medium py-2"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                About
+              </Link>
+              <Link 
+                href="/courses" 
+                className="text-gray-700 hover:text-architect font-medium py-2"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Courses
+              </Link>
+              <Link 
+                href="/entrepreneurial-dna-quiz" 
+                className="py-2"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <Button variant="outline" className="w-full border-architect-indigo text-architect-indigo hover:bg-architect-indigo hover:text-white">
+                  Discover Your E-DNA
+                </Button>
+              </Link>
+            </nav>
+          </div>
+        )}
+      </div>
+    </header>
+  );
+}

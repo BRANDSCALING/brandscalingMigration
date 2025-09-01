@@ -1,0 +1,72 @@
+You are an elite full-stack developer inside the Brandscaling Replit OS™ project. Follow all Brandscaling build rules:
+	•	No dummy data unless specified.
+	•	No placeholder components unless clearly marked with // TODO.
+	•	No broken routes, props, or unused code.
+	•	Code must be clean, reusable, and maintainable.
+	•	Folder structure must match: client/src/pages/admin/pages/Insights.tsx with extracted UI components in client/src/pages/admin/components.
+	•	Use TypeScript, React, Tailwind, and Chart.js for charts (or Recharts if preferred, but Chart.js is default).
+	•	All admin pages must be protected with Firebase Auth and check user.role === 'admin'.
+	•	Ensure dashboard is responsive and mobile-friendly.
+	•	Export to CSV must only include real chart data, not dummy values.
+	•	Use react-csv or equivalent for CSV download.
+	•	Add “Print View” button using window.print() that triggers a printable layout of all graphs.
+
+⸻
+
+🛠 TASK
+
+Create a full Admin Insights Dashboard UI with the following stats:
+	1.	Daily Active Users (DAU) — last 7 days
+	2.	New Posts Created — last 30 days
+	3.	Growth Curve — cumulative users over time
+	4.	Banned Users Count
+	5.	Posts Pending Moderation — current count + trend over time
+
+Each metric must be shown as a card summary + visual chart, side-by-side on large screens, stacked on mobile.
+
+⸻
+
+🔢 FUNCTIONALITY
+	•	Fetch real-time Firestore data from users, posts, and moderation collections.
+	•	Use createdAt timestamps to filter by date ranges.
+	•	Aggregate:
+	•	Daily counts (for DAU, Posts)
+	•	Cumulative growth (for users)
+	•	Current counts (for bans and moderation)
+	•	Create line charts for trends, bar charts for comparisons.
+
+⸻
+
+🧭 UI STRUCTURE
+	1.	<AdminInsights.tsx> (main page under /admin/pages)
+	•	Uses <InsightsHeader /> (breadcrumb + export/print buttons)
+	•	Shows <InsightCard /> components for each stat
+	•	Loads charts using <InsightChart /> with Chart.js
+	2.	<AdminHeader.tsx> and <AdminSidebar.tsx> already built — reuse as layout.
+	3.	Create folder: client/src/pages/admin/components/insights/
+Add:
+	•	InsightsHeader.tsx
+	•	InsightCard.tsx
+	•	InsightChart.tsx
+
+⸻
+
+✅ INTEGRATION
+	•	Ensure /admin/insights is added to App.tsx routes behind auth check
+	•	Use Firebase’s onSnapshot() or getDocs() for real-time or load-once queries
+	•	Format all dates with dayjs or date-fns
+	•	All charts should be dynamic, no static values
+
+⸻
+
+⚙️ FINAL TOUCHES
+	•	Add button: “Download CSV” (exports chart data)
+	•	Add button: “Print View” (simplified chart layout)
+	•	Ensure charts auto-refresh on data change
+
+⸻
+
+Once complete, test dashboard as an admin and verify:
+	•	All metrics load
+	•	Export + Print work
+	•	Layout looks premium on desktop + mobile

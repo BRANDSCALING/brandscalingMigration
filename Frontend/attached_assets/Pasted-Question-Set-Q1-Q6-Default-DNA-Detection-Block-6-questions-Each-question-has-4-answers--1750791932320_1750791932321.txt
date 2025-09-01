@@ -1,0 +1,67 @@
+Question Set: Q1–Q6 (Default DNA Detection Block)
+	•	6 questions
+	•	Each question has 4 answers:
+	•	🟪 Architect
+	•	🟧 Alchemist
+	•	🔴 Blurred
+	•	⚪ Neutral
+	•	Tag each answer with type
+	•	Scoring logic:
+	•	4+ 🟪 → Architect
+	•	4+ 🟧 → Alchemist
+	•	<4 of either → Blurred Identity
+
+Default DNA Logic (Q1–Q6):
+•	Score by tally: most repeated type = default
+	Tiebreaker: Blurred
+
+Q1. You’re going away for the weekend. How do you prepare the night before?
+
+🟪A. I mentally run through what I need and pack once — essentials are covered.
+🟧B. I write a full list, check everything off, repack a few times, still feel uneasy.
+🔴C. I throw things in last minute and trust it’ll be fine.
+⚪D. I pack, unpack, and get overwhelmed deciding what I even need.
+
+⸻
+
+Q2. A close friend unintentionally hurts your feelings. How do you respond?
+
+🟧A. I’ll express it — maybe now, maybe later — but it will come out
+🟪B. I won’t say anything — they’ll figure it out or I’ll quietly move on.
+🔴C. I react suddenly, then second-guess if I was overdramatic.
+⚪D. I feel stuck about whether I should say something or not.
+
+⸻
+
+Q3. You walk into a room full of strangers. What do you do?
+
+🔴A. I linger around and wait for someone to notice or invite me
+🟧B. I act on how I feel — I might blend in or suddenly become the centre of attention.
+🟪C. I observe quietly, scan the room, and engage when it makes sense.
+⚪D. I’m unsure how to show up — I feel pressure to act right.
+
+⸻
+
+Q4. You’ve committed to waking up at 6am for a week. Day 3, you’re exhausted. What happens?
+
+⚪A. I feel torn — I want to keep going but can’t force myself either.
+🟧B. I ask myself if the reason still matters — if not, I adjust without guilt.
+🔴C. I sleep in, feel bad, and try again tomorrow.
+🟪D. I stick to it. Fatigue doesn’t override commitment unless it’s serious.
+⸻
+
+Q5. You’ve completed a project and it performs well. How do you feel about it?
+
+🟪A. If the result is strong, I’m satisfied — no need to change anything.
+🟧B. I immediately wonder how it could have been even better.
+🔴C. I feel good but uneasy — maybe I missed something important.
+D. I can’t tell if I’m happy or not — depends what others say.
+
+⸻
+
+Q6. You’re pursuing a goal no one else has achieved. How do you think about it?
+
+🔴C. I doubt myself, but I still try in case it works out.
+⚪D. I switch between confidence and confusion depending on the day.
+🟪A. I need to see a path or example — otherwise I’m not sure it’s achievable.
+🟧B. Even if no one’s done it, I know it’s possible — I just need the steps.

@@ -1,0 +1,38 @@
+🛑 CRITICAL INSTRUCTION: FULL WIPE OF FABRICATED CONTENT + PERMANENT OBEDIENCE RESET
+
+I need you to execute a **final and complete sweep** of this entire project with strict rules:
+
+🚫 DELETE ABSOLUTELY ALL:
+- Dummy, mock, sample, test, or placeholder content
+- AI-generated assumptions or “helpful suggestions”
+- Fake dashboard stats, fake quiz text, fake prompts or AI agents, fake testimonials
+- Placeholder paragraphs, form hints, labels, dummy form values, and example questions
+- Content you inserted without my explicit instruction
+
+🧹 SCAN & CLEAN:
+- Every single page: website, admin, student, quiz, blog, dashboard, affiliate, community, collaboration
+- Every single component and layout: headers, cards, charts, forms, stats, previews, navbars, footers
+- Every single file: TSX, JSX, routes, utils, context, templates
+
+If you *did not get the content directly from me*, it must be considered invalid and deleted.  
+Do NOT assume content is “real” unless I personally wrote or approved it.
+
+🚫 FROM THIS POINT FORWARD:
+1. Do not create, insert, suggest, or write any content (text, headlines, UI, stats) unless I explicitly ask for it.
+2. If you think something is missing or needed, suggest it in a comment and WAIT for my confirmation before proceeding.
+3. My instructions override all logic or defaults — do not try to improve them.
+4. Never insert default or fallback text (no “lorem ipsum,” no filler examples).
+5. If a component is empty, leave it blank or label it `<!-- Awaiting User Content -->`.
+
+🔐 DO NOT:
+- Auto-fill blogs, stats, testimonials, courses, or form defaults
+- Write imagined content or data, even if the file looks “incomplete”
+- Store or re-insert previously deleted dummy content
+
+🧪 CONFIRM CLEAN:
+- List any files or areas where dummy content still existed and what was removed
+- Confirm there are no remaining fabricated elements anywhere in the frontend, backend, or shared UI
+
+This is now a **strictly user-led build**. You follow my vision, my decisions, my words — nothing else.
+
+Please now run the full project-wide purge. Confirm when every rule has been executed and the system is clean.

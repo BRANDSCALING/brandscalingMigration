@@ -1,0 +1,55 @@
+You are building a 20-question personality quiz called the Entrepreneurial DNA Quiz™ to classify users as one of the following types: Architect, Alchemist, or Blurred Identity. Each question has 4 answer choices: A, B, C, or D.
+
+INSTRUCTIONS:
+
+1. FRONTEND:
+- Use React and Tailwind for a clean mobile-first design.
+- Create a question interface with a progress bar (20 steps).
+- After Q6, show a temporary "Processing..." screen before continuing.
+- At the end, display a full-screen Results page with:
+    - Their Default Type (Architect / Alchemist / Blurred Identity)
+    - Their Awareness % of the opposite type
+    - Two progress bars side-by-side
+    - Dynamic result text and CTA button
+
+2. BACKEND:
+- Use Node.js with Express.
+- Create a scoring engine:
+    - Q1–Q6 determine Default DNA
+        - A = +1 Architect
+        - B = +1 Alchemist
+        - C or D = +1 Blurred
+        - If Architect ≥ 4 → Architect
+        - If Alchemist ≥ 4 → Alchemist
+        - Else → Blurred Identity
+    - Q7–Q12 measure Awareness:
+        - Opposite of default = +1 Awareness
+        - C or D = +0.5 Awareness
+        - Awareness Score = sum of 6 → convert to %  
+    - Q13–Q16 reinforce or conflict (use for logging, but not outcome override)
+
+3. DATABASE:
+- Use PostgreSQL or Firebase to store:
+    - User ID
+    - Answers to each question
+    - Final DNA type
+    - Awareness %
+    - Timestamp
+    - Retest lock (30-day cooldown logic)
+
+4. RETEST RULES:
+- After taking quiz, user cannot retake for 30 days.
+- Show countdown timer on retest screen if accessed early.
+
+5. OUTPUT COPY:
+Use dynamic templates from these variables:
+    - Default Type
+    - Awareness %
+    - Awareness-based CTA
+    - Architect or Alchemist paragraph from the result copy
+
+6. FUTURE EXPANSION READY:
+- Design progress bar and user record to allow updates over time.
+- Prepare placeholder hooks for increasing Awareness score as user completes frameworks or course modules.
+
+Display with full responsiveness, keyboard accessibility, and dark mode toggle. Use a premium, clean UX tone with modern button feedback and smooth transitions.

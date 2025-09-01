@@ -1,0 +1,80 @@
+You are a full-stack engineer inside Replit working on the Brandscaling platform. Merge the following 3 systems into one unified backend admin dashboard, with Firebase-authenticated access and real PostgreSQL database integration.
+
+🟣 MASTER RULESET — FOLLOW EXACTLY:
+- ❌ No dummy data anywhere. All components must use live database connections.
+- ✅ All admin pages must load inside the unified `/admin` layout — do not isolate views.
+- ✅ Firebase authentication is already implemented — reuse it for route protection.
+- ✅ All UI components must be mobile-first, clean, and use consistent styles.
+- ✅ All logic must be reusable (hooks, middleware, config).
+- ✅ Use tier access levels already defined (`beginner`, `intermediate`, `advanced`, `mastermind`)
+- ✅ Reuse existing DB schema where possible. Extend with migrations if needed.
+- ✅ All frontend views must fetch real data and support full CRUD (no stubs or console.logs).
+- ✅ Stripe upgrades must update tier in DB for permission-based visibility.
+
+---
+
+🧩 PART 1: COURSE MANAGEMENT (already working at /admin/courses)
+- Move course + lesson management directly into the sidebar of main Brandscaling Admin Panel
+- Route: `/admin/courses`
+- Sidebar label: `Courses`
+- Support: Create/edit/delete course
+- Add/edit/delete lessons per course (video + workbook)
+- Store access tier for each course (`access_tier`)
+- Enforce permissions via tier config file
+- Match admin dashboard design (use same layout shell)
+
+---
+
+🧩 PART 2: COMMUNITY MANAGEMENT BACKEND
+- Route: `/admin/community`
+- Sidebar label: `Community`
+- View all posts with:
+  - Author name, tier, avatar tag
+  - Post content (text/image/emoji/file)
+  - Timestamp
+- Features:
+  - Pin/unpin post
+  - Hide/delete post
+  - Filter by tier (e.g., only show beginner posts)
+  - Filter by avatar tag (e.g., “Idea-Stuck Dreamer”)
+  - Add new announcement post (admin only)
+  - Set visibility of post (e.g., show only to `mastermind`)
+- DB table: `posts`
+  - `id`, `author_id`, `content`, `media_url`, `visibility_tier`, `is_pinned`, `created_at`
+- DB table: `comments`
+  - `id`, `post_id`, `author_id`, `content`, `created_at`
+
+---
+
+🧩 PART 3: EXISTING ADMIN PANEL
+- Keep all current sections:
+  - `Leads`, `Email Campaigns`, `Templates`, `Analytics`, `Settings`
+- Ensure consistent sidebar UI
+- Admin header should show name/email + Sign Out
+- Firebase `admin=true` check must gate all `/admin/*` routes
+- Shared layout file should render everything
+
+---
+
+🛡️ AUTH / SECURITY
+- Use existing Firebase tokens to gate all `/admin` access
+- Deny access to non-admins
+- Show clean error message if unauthorized
+
+---
+
+📦 COMPONENTS TO REUSE OR REFINE
+- `GateComponent` (from student side) logic can be reused in reverse for admin visibility control
+- Reuse or create API routes in `/server/routes.ts`:
+  - `/admin/courses`
+  - `/admin/lessons`
+  - `/admin/community/posts`
+  - `/admin/community/comments`
+- Shared UI: cards, modals, forms, dropdowns
+
+---
+
+🎯 GOAL
+This is one backend system to rule everything: course control, content creation, post moderation, student visibility — all from a single dashboard. Must be 100% real, modular, scalable, and ready to layer AI tools, CRM, and automation logic on top.
+
+Begin now. No mockups. Build the real thing.

@@ -1,0 +1,91 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+const questions = [
+  {
+    prompt: "When faced with a challenge, you prefer to:",
+    options: [
+      { text: "Analyze the logic and plan a system", type: "Architect" },
+      { text: "Trust your gut and feel your way through", type: "Alchemist" },
+    ],
+  },
+  {
+    prompt: "You make decisions by:",
+    options: [
+      { text: "Mapping pros and cons", type: "Architect" },
+      { text: "Following the energy and excitement", type: "Alchemist" },
+    ],
+  },
+  // Add 8 more similar questions here...
+];
+
+export default function Quiz() {
+  const [step, setStep] = useState(0);
+  const [answers, setAnswers] = useState([]);
+  const navigate = useNavigate();
+
+  const handleAnswer = (type) => {
+    const updated = [...answers, type];
+    setAnswers(updated);
+    if (step < questions.length - 1) {
+      setStep(step + 1);
+    } else {
+      const architectCount = updated.filter((a) => a === 'Architect').length;
+      const alchemistCount = updated.filter((a) => a === 'Alchemist').length;
+      const result = architectCount > alchemistCount ? 'Architect' : 'Alchemist';
+      localStorage.setItem('quizResult', result);
+      navigate('/quiz/result');
+    }
+  };
+
+  if (step === -1) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center text-center p-4 font-[Poppins]">
+        <h1 className="text-3xl font-bold mb-2">Are You the Architect or the Alchemist?</h1>
+        <p className="mb-6 text-lg">Discover your unique scaling style and how to harness it.</p>
+        <button onClick={() => setStep(0)} className="bg-black text-white px-6 py-2 rounded">Start Quiz</button>
+      </div>
+    );
+  }
+
+  const current = questions[step];
+
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center text-center p-4 font-[Poppins]">
+      <h2 className="text-xl mb-4">{current.prompt}</h2>
+      <div className="space-y-4 w-full max-w-md">
+        {current.options.map((option, idx) => (
+          <button
+            key={idx}
+            onClick={() => handleAnswer(option.type)}
+            className="w-full py-3 px-4 border rounded shadow hover:shadow-lg bg-white"
+          >
+            {option.text}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function QuizResult() {
+  const result = localStorage.getItem('quizResult');
+  const navigate = useNavigate();
+  const background = result === 'Architect' ? '#42047D' : '#F6782F';
+  const summary = result === 'Architect'
+    ? 'You lead with structure, systems, and clarity. Your superpower is strategic vision.'
+    : 'You lead with energy, intuition, and connection. Your superpower is magnetic creativity.';
+
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center text-center p-6 text-white font-[Poppins]" style={{ background }}>
+      <h1 className="text-4xl font-bold mb-4">You’re the {result}</h1>
+      <p className="mb-6 text-lg max-w-xl">{summary}</p>
+      <button
+        onClick={() => navigate('/courses')}
+        className="bg-white text-black px-6 py-3 rounded text-lg"
+      >
+        View Tailored Resources
+      </button>
+    </div>
+  );
+}

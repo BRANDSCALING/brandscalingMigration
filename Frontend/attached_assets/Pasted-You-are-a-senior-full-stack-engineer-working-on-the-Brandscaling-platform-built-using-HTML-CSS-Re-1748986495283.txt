@@ -1,0 +1,64 @@
+You are a senior full-stack engineer working on the Brandscaling platform, built using HTML, CSS, React (frontend), Node.js with Express (backend), and Firebase or PostgreSQL (database). Follow the rules below to build a fully working tier-based access filter for courses, Q&A, events, and features.
+
+🟣 MASTER PROMPT RULESET — NO DUMMY DATA
+1. Do not use placeholder/dummy users or hardcoded tiers. Use reusable logic and access control middleware.
+2. Assume user authentication is already implemented and you can access `user.tier` and `user.avatar` from a decoded JWT or session.
+3. There are four access tiers: Beginner, Intermediate, Advanced (Mastermind), Next-Level Advanced (£100K Club). Users may also be tagged by avatar: "Idea-Stuck Dreamer", "Framework-Frustrated", "Mastermind Graduate", "Successful-but-Stuck Founder".
+4. Build reusable access middleware (e.g. `checkAccess('courseName')`) to gate routes or frontend elements.
+5. Define access levels per course or module in a config object or database lookup.
+6. Show “locked” modules with blurred content and a CTA button that routes to the correct upgrade funnel (e.g. /upgrade or /join-mastermind).
+7. Allow frontend components to check access via `user.tier`, and dynamically show or hide gated features (e.g. 1:1 strategy booking, Portfolio Days).
+8. If user purchases a higher tier (via Stripe), update their `user.tier` and `user.permissions` accordingly.
+9. On backend, create a global `tierPermissions.js` config that maps tier to features/courses, so no logic is duplicated in routes.
+10. All code must be real and minimal — don’t write filler components, mock UIs, or extra console.logs.
+
+📘 COURSE & FEATURE PERMISSIONS LOGIC:
+const tierPermissions = {
+  Beginner: {
+    courses: ['getting-started', 'business-idea-lab'],
+    qna: true,
+    strategyDay: false,
+    events: false,
+    aiAgents: false
+  },
+  Intermediate: {
+    courses: ['getting-started', 'business-idea-lab', 'frameworks-101', 'foundations'],
+    qna: true,
+    strategyDay: false,
+    events: false,
+    aiAgents: false
+  },
+  Advanced: {
+    courses: 'ALL',
+    qna: true,
+    strategyDay: true,
+    events: true,
+    aiAgents: true
+  },
+  NextLevel: {
+    courses: 'ALL',
+    qna: true,
+    strategyDay: true,
+    events: true,
+    aiAgents: true,
+    boardAccess: true
+  }
+};
+
+📦 BACKEND REQUIREMENTS:
+- Create `tierPermissions.js`
+- Create `checkAccess(req, res, next, featureName)` middleware
+- Sample endpoint: `/api/course/:courseId` uses `checkAccess()` to protect route
+
+🎨 FRONTEND REQUIREMENTS:
+- On course page, use a reusable `GateComponent` that:
+  - Checks `user.tier` against course permission
+  - If allowed → render content
+  - If not allowed → show blurred preview with “Upgrade to Access” CTA
+- “You Are Here” component: displays user’s tier and a progress suggestion (e.g., “Complete this to unlock Intermediate”)
+
+📈 FUTURE-PROOF:
+- Code must support Stripe webhook to upgrade tier
+- Must allow adding new courses or changing tier logic in one file (central config)
+
+Now begin coding.

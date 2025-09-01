@@ -1,0 +1,48 @@
+Pause all other modules and now build the public-facing “Courses” page for the Brandscaling platform. This route should be accessible from the homepage menu under the label “Courses”.
+
+Use our existing React + Tailwind + modular folder structure. Do NOT use dummy content, but DO build clean dynamic components with placeholders for actual data. Do not hardcode any course details — all components must be structured to pull from the real database in the future.
+
+🎯 Build the following structure:
+
+1. **Hero Header**
+   - Headline: “Learn the Brandscaling Way”
+   - Subheading: “Built for Entrepreneurs Scaling from Chaos to Clarity”
+   - CTA button: “Take the Free Quiz” (route to quiz)
+
+2. **Track Overview**
+   - Two-column card split: Architect vs Alchemist
+   - Icons, short copy, CTA to take quiz (route-ready)
+   - Optional: Hover animation or animated border
+
+3. **Courses Grid Section**
+   - Dynamic course cards (future-connected to database)
+   - Each card should include:
+     - Course title
+     - Track tags: [Architect], [Alchemist], or [All]
+     - Access tags: [Free], [Paid], [Mastermind]
+     - Placeholder for image/video
+     - Short description placeholder
+     - “View More” button (route to /courses/[slug] per course)
+   - Filter bar: “All”, “Free”, “Paid”, “Mastermind”, “Architect Track”, “Alchemist Track”
+
+4. **Course Teaser Video Block**
+   - Embed one sample video component
+   - Include mock progress bar (future LMS-ready)
+
+5. **Student Outcomes Section**
+   - Placeholder stats (e.g. “18,000+ modules completed”, “Used by 1,200+ scaling businesses”)
+   - Visual icons or testimonials carousel (placeholder)
+
+6. **Join CTA Block**
+   - “Start Learning Today” section with Stripe-ready button (route placeholder for now)
+
+🛠️ Additional Requirements:
+- Mobile-first responsive layout
+- Use Tailwind for spacing, layout, font hierarchy
+- Create reusable components in /components/courses/
+- Structure each card so that Stripe payment logic, quiz logic, and access tier can be easily connected later
+- No hardcoded content — leave data-driven props ready (title, access, track, slug, etc.)
+- Prepare routes like `/courses/[slug]` for later build of course landing pages
+- Do NOT build LMS content delivery pages yet — just the public-facing sales/preview site
+
+Once this is built and live, I will manually upload each module and bundle backend by backend. Confirm when this is complete and connected.

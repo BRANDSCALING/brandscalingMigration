@@ -1,0 +1,108 @@
+You are a full-stack expert inside a Replit project. Follow these Master Prompt Rules:
+
+1. Do not use placeholder or dummy data — always use real database integration.
+2. Use the existing modular folder structure (frontend, backend, auth, admin, database, etc).
+3. All features must be secure and functional for real users.
+4. Always protect routes using Firebase authentication and admin role checks.
+5. Use Tailwind and React on frontend. Use TypeScript throughout.
+6. Do not scaffold sample content — make all interfaces ready for real content to be uploaded.
+7. Follow exact tier structure: beginner, intermediate, advanced, mastermind.
+8. Follow naming and structure conventions already present in the project.
+9. Never break existing functionality. Integrate cleanly.
+10. Always respect that this is a production platform, not a test environment.
+
+---
+
+Now that tier-based access control is fully implemented, build a complete LMS Admin Panel so I can add real courses, lessons, videos, and workbooks using a no-code UI. Use our existing backend and frontend architecture. This is for real users, no dummy data.
+
+### CONTEXT:
+- Firebase auth already works
+- Tier access control is active via `accessTier`
+- GateComponent is functional
+- Stripe is integrated
+- Filtering and upgrade logic complete
+- Folder structure includes: /frontend, /backend, /admin, /auth, /utils, /database
+
+User tiers:
+🟢 Beginner  
+🟡 Intermediate  
+🔴 Advanced (Mastermind and above)
+
+All users are authenticated. Admins need a full UI to upload and manage real course content today.
+
+---
+
+### BUILD NOW:
+
+1. ADMIN PANEL UI (/admin/courses)
+- Create a secure page that lets admins:
+  - View all courses
+  - Add/edit course: title, description, image, accessTier
+  - Add/edit/delete lessons per course
+  - Reorder lessons
+  - Add video URL (YouTube, Vimeo, Wistia)
+  - Add workbook file (PDF URL or upload)
+  - Assign tier per lesson
+
+2. ADMIN AUTH PROTECTION
+- Only users with `role: admin` can access `/admin/courses`
+- Block access for others
+- Secure all APIs for course creation/editing
+
+3. COURSE SCHEMA (no dummy data):
+{
+  id: string,
+  title: string,
+  description: string,
+  accessTier: "beginner" | "intermediate" | "advanced" | "mastermind",
+  imageUrl?: string,
+  lessons: [
+    {
+      id: string,
+      title: string,
+      videoUrl: string,
+      workbookUrl?: string,
+      requiredTier: "beginner" | "intermediate" | "advanced" | "mastermind",
+      order: number
+    }
+  ]
+}
+
+4. BACKEND ROUTES:
+- `GET /api/courses`
+- `POST /api/courses`
+- `PUT /api/courses/:id`
+- `DELETE /api/courses/:id`
+- `POST /api/courses/:id/lessons`
+- `PUT /api/courses/:id/lessons/:lessonId`
+- `DELETE /api/courses/:id/lessons/:lessonId`
+
+5. LESSON PLAYER UI:
+- Course viewer with lesson sidebar
+- Video player and workbook download
+- Gate each lesson with `GateComponent` by tier
+
+6. OPTIONAL:
+- Allow lesson progress tracking (prepare schema)
+- Each user can have:
+  `user.progress = { [courseId]: [completedLessonId, ...] }`
+
+---
+
+### TECH RULES:
+✅ Use Tailwind + React  
+✅ Use real database, no fake data  
+✅ All routes secured  
+✅ Tiers: beginner, intermediate, advanced, mastermind  
+✅ No hardcoded logic — fully dynamic
+
+---
+
+### DESIGN INTENT:
+- Clean, responsive UI
+- Editable without database access
+- Real content upload begins this week
+
+---
+
+START NOW.

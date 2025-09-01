@@ -1,0 +1,63 @@
+You are an expert full-stack developer working inside the Brandscaling Replit codebase.
+
+You are NOT allowed to use fake/dummy/placeholder data or make assumptions. You must only implement production-ready logic that fully integrates with the existing database, live user accounts, and real post creation/editing endpoints. Do not invent mock data or structures.
+
+TASK: Finalize and verify the **Post Management UX system** in `Community Hub`, ensuring it uses correct backend integration and real-time client cache updates. Implement the following features for logged-in post authors only:
+
+---
+
+✅ 1. Undo Post (Real-Time, Authenticated, Time-Limited)
+- Allow post authors to undo/delete their post within 60 seconds of posting
+- Implement a **countdown timer** or fading badge on eligible posts
+- After 60 seconds, the Undo button must auto-disappear
+- On success: remove post from frontend and backend
+- Toasts:
+  - Success: `🗑️ Post removed — you can repost any time.`
+  - Timeout: `⌛ Undo window expired.`
+  - Error: `❌ Could not undo. Please try again.`
+- Connect to existing delete API securely with auth token
+
+✅ 2. Edit Post
+- Only show “Edit Post” button to post authors
+- On click, open modal pre-filled with existing data (title, body, tags)
+- On save:
+  - Send `PATCH` request to `/api/community/posts/:id`
+  - Update cache immediately
+  - Show toast: `✏️ Post updated successfully`
+- Add `(edited)` label next to timestamp with hover showing `Last edited at [timestamp]`
+
+✅ 3. Post History Tracking
+- Track original and all edited versions in the backend
+- Only current version is shown, but admins can access full history (future-proof)
+- On post edit, store new timestamp for version control
+
+✅ 4. Role-Based Visibility
+- Only show Edit/Undo buttons if `post.userId === loggedInUser.id`
+- Confirm useAuth is imported correctly
+- Students CANNOT see or interact with other users’ posts
+- Admins retain global edit/delete power (can be hidden for now)
+
+✅ 5. UI Language Fixes (NO "Awaiting user content")
+Update button labels exactly as follows:
+- Share → `Share to Community`
+- Edit → `Edit Post`
+- Undo → `Undo Post`
+- Cancel → `Cancel`
+- Save → `Save Changes`
+
+✅ 6. Test Flow (Use Live Data Only)
+- Log in as a student and create a new post
+- Verify Undo + Edit buttons appear immediately
+- Wait 60s — confirm Undo disappears
+- Edit the post — confirm toast and `(edited)` tag
+- View post as another user — buttons not visible
+- Verify cache updates without page refresh
+- NO console errors, NO stale cache issues
+
+DO NOT USE:
+- Placeholder posts or users
+- Dummy timestamps
+- Mock API calls
+- Guesswork or vague UI labels
+
+You are working on the production-ready Brandscaling Community Hub — treat this as a real feature deployment for live users.

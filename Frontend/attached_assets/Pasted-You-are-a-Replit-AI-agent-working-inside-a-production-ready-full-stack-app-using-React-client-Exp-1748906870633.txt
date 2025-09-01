@@ -1,0 +1,45 @@
+You are a Replit AI agent working inside a production-ready full-stack app using React (client), Express + PostgreSQL (server), and Firebase authentication. Follow all rules strictly and build only what is requested.
+
+⛔️ MASTER RULES (Do NOT break):
+- DO NOT hardcode any sample names, emails, or placeholder users.
+- DO NOT insert mock/dummy/fake content anywhere.
+- DO NOT create test data.
+- All data must come from real user input only.
+- DO NOT add extra routes, features, or components unless specified.
+- Use existing Firebase auth + PostgreSQL setup already in place.
+
+✅ GOAL:
+Build an authenticated **Leads Management System** inside the admin panel. Admins must be able to:
+1. View a list of all leads from the database
+2. Add new leads (name and email only)
+3. Trigger the existing Resend welcome email automation
+4. All leads must save with `created_by_admin_uid` using Firebase's UID
+5. Add a new sidebar item: “Leads” under Admin navigation
+6. All backend routes must be Firebase-protected
+7. All leads save to the existing `leads` table if already present
+
+📦 Required Components:
+- `client/src/pages/admin/Leads.tsx`: Page to list + add leads
+- `server/routes.ts`: Add GET `/api/leads` and POST `/api/leads/add` (Firebase auth required)
+- Reuse the existing Resend integration to send welcome emails
+- Update sidebar navigation (AdminDashboard.tsx) to link to Leads page
+
+📌 UI Requirements:
+- Display all existing leads in a table with name, email, created_at
+- Form to add a lead with name and email input
+- When submitted: POST to `/api/leads/add` → save to DB → send Resend welcome email
+- Do NOT prefill any data — must rely on user input only
+- Show success/error messages only after real interaction
+
+💾 Database:
+Use the already created `leads` table with the following fields:
+- id (SERIAL PRIMARY KEY)
+- name (VARCHAR)
+- email (VARCHAR)
+- created_by_admin_uid (VARCHAR)
+- created_at (TIMESTAMP DEFAULT NOW())
+
+👮 Auth:
+All routes and components must check for Firebase auth and enforce admin role.
+
+⏹ Build only what is listed above. Do NOT add dummy routes, hardcoded values, or placeholder users.
