@@ -14,3 +14,9 @@ vite.config.ts.*
 *.env
 .env.supabase
 .env.supabase.bak
+
+.env
+.env.*
+*.env
+.env.supabase
+.env.supabase.bak
